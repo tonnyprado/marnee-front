@@ -1,24 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+// src/App.js
+import React from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+
+import LandingPage from "./Pages/LandingPage";
+import AuthPage from "./Pages/AuthPage";
+import BrandingTestIntro from "./Pages/BrandingTestIntro";
+import BrandTestPage from "./Pages/BrandTestPage";
+
+import AppLayout from "./Layout/Layout";
+import IAWebPage from "./Pages/Tools/IAWebPage";
+import CalendarPage from "./Pages/Tools/CalendarPage";
+import MyDashboard from "./Pages/Tools/MyDashboard";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Routes>
+      {/* públicas */}
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/auth" element={<AuthPage />} />
+      <Route path="/brand-test/intro" element={<BrandingTestIntro />} />
+      <Route path="/brand-test/questions" element={<BrandTestPage />} />
+
+      {/* privadas / con navbar */}
+      <Route path="/app" element={<AppLayout />}>
+        {/* /app → chat */}
+        <Route index element={<IAWebPage />} />
+        {/* /app/calendar */}
+        <Route path="calendar" element={<CalendarPage />} />
+        {/* /app/dashboard */}
+        <Route path="dashboard" element={<MyDashboard />} />
+      </Route>
+
+      {/* fallback */}
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   );
 }
 
