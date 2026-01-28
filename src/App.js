@@ -2,6 +2,8 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
+import { MarneeProvider } from "./context/MarneeContext";
+
 import LandingPage from "./Pages/LandingPage";
 import AuthPage from "./Pages/AuthPage";
 import BrandingTestIntro from "./Pages/BrandingTestIntro";
@@ -14,6 +16,7 @@ import MyDashboard from "./Pages/Tools/MyDashboard";
 
 function App() {
   return (
+    <MarneeProvider>
     <Routes>
       {/* públicas */}
       <Route path="/" element={<LandingPage />} />
@@ -34,6 +37,7 @@ function App() {
       {/* fallback */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
+    </MarneeProvider>
   );
 }
 

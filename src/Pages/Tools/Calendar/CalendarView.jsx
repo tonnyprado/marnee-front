@@ -1,20 +1,45 @@
-import React from "react";
+import React, { useState } from "react";
 
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
+const PILLAR_COLORS = {
+  Authority: "bg-purple-500/20 text-purple-300 border-purple-500/30",
+  "Behind the scenes": "bg-blue-500/20 text-blue-300 border-blue-500/30",
+  Tips: "bg-green-500/20 text-green-300 border-green-500/30",
+  Story: "bg-orange-500/20 text-orange-300 border-orange-500/30",
+  Engagement: "bg-pink-500/20 text-pink-300 border-pink-500/30",
+  default: "bg-gray-500/20 text-gray-300 border-gray-500/30",
+};
+
+const STATUS_COLORS = {
+  draft: "border-l-yellow-400",
+  scheduled: "border-l-blue-400",
+  published: "border-l-green-400",
+};
+
 export default function CalendarView({
-  campaigns,
+  posts = [],
+  calendar,
   statusFilter,
   setStatusFilter,
-  onDayClick,
+  onPostClick,
 }) {
-  // septiembre 2025
-  const year = 2025;
-  const month = 8; // 0-based: 8 = septiembre
+  // Parse calendar dates
+  const startDate = calendar?.startDate ? new Date(calendar.startDate) : new Date();
+
+  // Calculate the month to display (use start date's month)
+  const [currentMonth, setCurrentMonth] = useState(() => {
+    return new Date(startDate.getFullYear(), startDate.getMonth(), 1);
+  });
+
+  const year = currentMonth.getFullYear();
+  const month = currentMonth.getMonth();
+  const monthName = currentMonth.toLocaleString("default", { month: "long", year: "numeric" });
 
   const firstDay = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
 
+  // Build calendar cells
   const cells = [];
   for (let i = 0; i < firstDay; i++) {
     cells.push(null);
@@ -24,16 +49,38 @@ export default function CalendarView({
     cells.push(dateStr);
   }
 
+  // Navigation
+  const goToPrevMonth = () => {
+    setCurrentMonth(new Date(year, month - 1, 1));
+  };
+
+  const goToNextMonth = () => {
+    setCurrentMonth(new Date(year, month + 1, 1));
+  };
+
+  // Get original index of post in full posts array
+  const getPostIndex = (post) => {
+    return calendar?.posts?.findIndex(
+      (p) => p.date === post.date && p.hook === post.hook
+    ) ?? -1;
+  };
+
   return (
     <div className="bg-[#0c0719]">
-      {/* top controls */}
+      {/* Top controls */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
-          <button className="px-4 py-1 rounded-lg bg-gray-600/60 text-white text-sm">
+          <button
+            onClick={goToPrevMonth}
+            className="px-4 py-1 rounded-lg bg-gray-600/60 text-white text-sm hover:bg-gray-600/80 transition"
+          >
             Previous
           </button>
-          <h2 className="text-lg font-semibold">September 2025</h2>
-          <button className="px-4 py-1 rounded-lg bg-gray-600/60 text-white text-sm">
+          <h2 className="text-lg font-semibold min-w-[180px] text-center">{monthName}</h2>
+          <button
+            onClick={goToNextMonth}
+            className="px-4 py-1 rounded-lg bg-gray-600/60 text-white text-sm hover:bg-gray-600/80 transition"
+          >
             Next
           </button>
         </div>
@@ -45,15 +92,16 @@ export default function CalendarView({
             className="bg-[#0c0719] border border-pink-400/60 rounded-md px-3 py-1 text-sm focus:outline-none"
           >
             <option value="all">All Status</option>
-            <option value="pending">Pending</option>
-            <option value="uploaded">Uploaded</option>
+            <option value="draft">Draft</option>
+            <option value="scheduled">Scheduled</option>
+            <option value="published">Published</option>
           </select>
         </div>
       </div>
 
-      {/* calendar grid */}
+      {/* Calendar grid */}
       <div className="bg-black/20 border border-white/5 rounded-2xl overflow-hidden">
-        {/* headers */}
+        {/* Headers */}
         <div className="grid grid-cols-7 border-b border-white/5">
           {DAYS.map((d) => (
             <div
@@ -65,51 +113,80 @@ export default function CalendarView({
           ))}
         </div>
 
-        {/* days */}
+        {/* Days */}
         <div className="grid grid-cols-7">
           {cells.map((dateStr, idx) => {
             const dayNum = dateStr ? Number(dateStr.split("-")[2]) : null;
+            const isToday = dateStr === new Date().toISOString().slice(0, 10);
 
-            // campañas de este día
-            const dayCampaigns = dateStr
-              ? campaigns.filter((c) => c.date === dateStr)
+            // Posts for this day
+            const dayPosts = dateStr
+              ? posts.filter((p) => p.date === dateStr)
               : [];
 
             return (
               <div
                 key={idx}
-                className="h-28 border-r border-b border-white/5 last:border-r-0 cursor-pointer hover:bg-white/5 transition relative"
-                onClick={() => dateStr && onDayClick(dateStr)}
+                className={`min-h-[120px] border-r border-b border-white/5 last:border-r-0 relative ${
+                  isToday ? "bg-purple-500/5" : ""
+                }`}
               >
                 <div className="p-2">
                   {dayNum && (
-                    <div className="text-sm font-semibold text-white mb-1">
+                    <div
+                      className={`text-sm font-semibold mb-1 ${
+                        isToday
+                          ? "w-7 h-7 rounded-full bg-purple-500 text-white flex items-center justify-center"
+                          : "text-white"
+                      }`}
+                    >
                       {dayNum}
                     </div>
                   )}
 
-                  {/* badges campañas */}
+                  {/* Post badges */}
                   <div className="space-y-1">
-                    {dayCampaigns.map((c) => (
-                      <div
-                        key={c.id}
-                        className={`text-[10px] px-2 py-1 rounded-full inline-block ${
-                          c.status === "pending"
-                            ? "bg-yellow-400/20 text-yellow-200"
-                            : "bg-emerald-400/20 text-emerald-200"
-                        }`}
-                      >
-                        {c.title.length > 16
-                          ? c.title.slice(0, 16) + "…"
-                          : c.title}
-                      </div>
-                    ))}
+                    {dayPosts.map((post) => {
+                      const pillarColor = PILLAR_COLORS[post.pillar] || PILLAR_COLORS.default;
+                      const statusColor = STATUS_COLORS[post.status] || "";
+                      const postIndex = getPostIndex(post);
+
+                      return (
+                        <div
+                          key={`${post.date}-${post.hook}`}
+                          onClick={() => onPostClick(post, postIndex)}
+                          className={`text-[10px] px-2 py-1.5 rounded border-l-2 cursor-pointer hover:opacity-80 transition ${pillarColor} ${statusColor}`}
+                        >
+                          <div className="font-medium truncate">
+                            {post.hook?.length > 25
+                              ? post.hook.slice(0, 25) + "..."
+                              : post.hook}
+                          </div>
+                          <div className="text-[9px] opacity-70 mt-0.5">
+                            {post.pillar} | {post.format}
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               </div>
             );
           })}
         </div>
+      </div>
+
+      {/* Legend */}
+      <div className="mt-4 flex items-center gap-6 text-xs text-gray-400">
+        <span className="flex items-center gap-2">
+          <span className="w-3 h-3 rounded bg-yellow-400/30" /> Draft
+        </span>
+        <span className="flex items-center gap-2">
+          <span className="w-3 h-3 rounded bg-blue-400/30" /> Scheduled
+        </span>
+        <span className="flex items-center gap-2">
+          <span className="w-3 h-3 rounded bg-green-400/30" /> Published
+        </span>
       </div>
     </div>
   );
