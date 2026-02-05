@@ -96,7 +96,6 @@ export default function IAWebPage() {
 
   // Detect if message needs approval buttons
   const detectNeedsApproval = (text, step) => {
-    // Simple heuristic: if Marnee proposes something or asks for confirmation
     const approvalKeywords = [
       "recommend",
       "suggest",
@@ -194,17 +193,22 @@ export default function IAWebPage() {
   // Show message if no session
   if (!hasSession) {
     return (
-      <div className="flex min-h-screen bg-black items-center justify-center">
-        <div className="text-center p-8">
-          <h2 className="text-2xl font-bold text-white mb-4">
+      <div className="flex min-h-screen bg-gray-50 items-center justify-center">
+        <div className="text-center p-8 bg-white rounded-2xl shadow-sm border border-gray-100 max-w-md">
+          <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg className="w-8 h-8 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+            </svg>
+          </div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">
             Complete Your Brand Test First
           </h2>
-          <p className="text-gray-400 mb-6">
+          <p className="text-gray-500 mb-6">
             To chat with Marnee, you need to complete the brand personality test.
           </p>
           <a
             href="/brand-test/questions"
-            className="px-6 py-3 rounded-lg bg-gradient-to-r from-purple-500 to-blue-400 text-black font-semibold hover:opacity-90 transition inline-block"
+            className="px-6 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-pink-500 text-white font-medium hover:from-purple-700 hover:to-pink-600 transition inline-block shadow-lg shadow-purple-500/25"
           >
             Start Brand Test
           </a>
@@ -214,12 +218,12 @@ export default function IAWebPage() {
   }
 
   return (
-    <div className="flex min-h-screen bg-black flex-col">
+    <div className="flex min-h-screen bg-gray-50 flex-col">
       {/* Step Indicator */}
       <StepIndicator currentStep={currentStep} />
 
       {/* Chat Header */}
-      <header className="h-14 border-b border-white/5 flex items-center px-6 text-white bg-black">
+      <header className="h-14 border-b border-gray-100 flex items-center px-6 text-gray-900 bg-white">
         <h1 className="text-xl font-semibold">Chat with Marnee</h1>
         <span className="ml-auto text-sm text-gray-500">
           Step {currentStep} of 5
@@ -231,10 +235,10 @@ export default function IAWebPage() {
         {messages.map((msg, idx) => (
           <div key={msg.id}>
             <div
-              className={`max-w-3xl rounded-3xl px-5 py-4 border ${
+              className={`max-w-3xl rounded-2xl px-5 py-4 ${
                 msg.from === "ai"
-                  ? "bg-transparent border-blue-500/60 text-white"
-                  : "ml-auto bg-gradient-to-r from-purple-400 to-blue-400 text-black border-transparent"
+                  ? "bg-white border border-gray-100 text-gray-800 shadow-sm"
+                  : "ml-auto bg-gradient-to-r from-purple-600 to-pink-500 text-white"
               }`}
             >
               {msg.text}
@@ -257,15 +261,15 @@ export default function IAWebPage() {
 
         {/* Loading indicator */}
         {isLoading && (
-          <div className="max-w-3xl rounded-3xl px-5 py-4 border border-blue-500/60 text-white">
+          <div className="max-w-3xl rounded-2xl px-5 py-4 bg-white border border-gray-100 shadow-sm">
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" />
+              <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" />
               <div
-                className="w-2 h-2 bg-blue-400 rounded-full animate-bounce"
+                className="w-2 h-2 bg-purple-400 rounded-full animate-bounce"
                 style={{ animationDelay: "0.1s" }}
               />
               <div
-                className="w-2 h-2 bg-blue-400 rounded-full animate-bounce"
+                className="w-2 h-2 bg-purple-400 rounded-full animate-bounce"
                 style={{ animationDelay: "0.2s" }}
               />
             </div>
@@ -274,7 +278,7 @@ export default function IAWebPage() {
 
         {/* Error message */}
         {error && (
-          <div className="max-w-3xl p-4 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-sm">
+          <div className="max-w-3xl p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm">
             {error}
             <button
               onClick={() => setError(null)}
@@ -289,11 +293,11 @@ export default function IAWebPage() {
       </div>
 
       {/* Input bar */}
-      <div className="h-16 border-t border-white/5 flex items-center px-6 gap-3 bg-black">
+      <div className="h-20 border-t border-gray-100 flex items-center px-6 gap-3 bg-white">
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          className="flex-1 bg-black border border-white/10 rounded-full px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-purple-400"
+          className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent"
           placeholder="Type your message here..."
           onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && handleSend()}
           disabled={isLoading}
@@ -302,9 +306,15 @@ export default function IAWebPage() {
           id="send-btn"
           onClick={handleSend}
           disabled={isLoading || !input.trim()}
-          className="w-11 h-11 rounded-full bg-gradient-to-r from-purple-500 to-blue-400 flex items-center justify-center text-2xl text-white hover:opacity-90 transition disabled:opacity-50"
+          className="w-12 h-12 rounded-xl bg-gradient-to-r from-purple-600 to-pink-500 flex items-center justify-center text-white hover:from-purple-700 hover:to-pink-600 transition disabled:opacity-50 shadow-lg shadow-purple-500/25"
         >
-          {isLoading ? "..." : String.fromCharCode(10148)}
+          {isLoading ? (
+            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+          ) : (
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+            </svg>
+          )}
         </button>
       </div>
     </div>

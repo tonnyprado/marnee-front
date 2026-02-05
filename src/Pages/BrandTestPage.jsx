@@ -334,7 +334,6 @@ export default function BrandTestPage() {
 
   // Build payload for API
   const buildPayload = () => {
-    // Convert multiSelect arrays to lowercase for backend
     const payload = {};
 
     STEPS.forEach((s) => {
@@ -362,14 +361,12 @@ export default function BrandTestPage() {
       const payload = buildPayload();
       const response = await api.submitQuestionnaire(payload);
 
-      // Initialize session with response
       initSession({
         founderId: response.founderId,
         sessionId: response.sessionId,
         welcomeMessage: response.welcomeMessage,
       });
 
-      // Navigate to chat
       navigate('/app');
     } catch (err) {
       setError(err.message || 'Failed to submit questionnaire');
@@ -405,18 +402,18 @@ export default function BrandTestPage() {
                   onClick={() => handleRadioSelect(option.value)}
                   className={`w-full text-left border rounded-xl px-5 py-4 flex items-center gap-3 transition ${
                     selected
-                      ? "border-blue-400 bg-blue-400/10"
-                      : "border-white/10 hover:border-white/30"
+                      ? "border-purple-400 bg-purple-50"
+                      : "border-gray-200 hover:border-purple-200 hover:bg-purple-50/50"
                   }`}
                 >
                   <span
-                    className={`w-5 h-5 rounded-full border flex-shrink-0 flex items-center justify-center ${
-                      selected ? "border-blue-400 bg-blue-400" : "border-gray-500"
+                    className={`w-5 h-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center ${
+                      selected ? "border-purple-500 bg-purple-500" : "border-gray-300"
                     }`}
                   >
-                    {selected && <span className="w-2 h-2 bg-black rounded-full" />}
+                    {selected && <span className="w-2 h-2 bg-white rounded-full" />}
                   </span>
-                  <span className="text-sm">{option.label}</span>
+                  <span className="text-sm text-gray-700">{option.label}</span>
                 </button>
               );
             })}
@@ -437,8 +434,8 @@ export default function BrandTestPage() {
                     onClick={() => handleMultiSelect(option)}
                     className={`px-4 py-2 rounded-full border text-sm transition ${
                       isSelected
-                        ? "border-blue-400 bg-blue-400/20 text-blue-300"
-                        : "border-white/20 hover:border-white/40 text-gray-300"
+                        ? "border-purple-400 bg-purple-100 text-purple-700"
+                        : "border-gray-200 hover:border-purple-200 text-gray-600 hover:bg-purple-50"
                     }`}
                   >
                     {option}
@@ -461,7 +458,7 @@ export default function BrandTestPage() {
             onChange={(e) => handleTextChange(e.target.value)}
             placeholder={step.placeholder}
             rows={4}
-            className="w-full bg-[#1a1a1a] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none"
+            className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent resize-none transition"
           />
         );
 
@@ -475,11 +472,11 @@ export default function BrandTestPage() {
               max={step.max}
               value={sliderValue}
               onChange={(e) => handleSliderChange(e.target.value)}
-              className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-blue-400"
+              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-purple-500"
             />
-            <div className="flex justify-between text-sm text-gray-400">
+            <div className="flex justify-between text-sm text-gray-500">
               <span>{step.min}</span>
-              <span className="text-2xl text-blue-400 font-bold">{sliderValue}</span>
+              <span className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent">{sliderValue}</span>
               <span>{step.max}</span>
             </div>
           </div>
@@ -491,15 +488,15 @@ export default function BrandTestPage() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white flex">
+    <div className="min-h-screen bg-white text-gray-900 flex">
       {/* Sidebar */}
-      <aside className="w-72 bg-white/5 backdrop-blur-sm border-r border-white/5 p-6 flex flex-col">
-        <h2 className="text-lg font-semibold mb-1">Personal Brand Test</h2>
-        <p className="text-xs text-gray-400 mb-6">
+      <aside className="w-72 bg-gray-50 border-r border-gray-100 p-6 flex flex-col">
+        <h2 className="text-lg font-semibold mb-1 text-gray-900">Personal Brand Test</h2>
+        <p className="text-xs text-gray-500 mb-6">
           Complete all sections to unlock your AI brand strategist.
         </p>
 
-        <p className="text-xs text-gray-400 mb-3 tracking-wide">SECTIONS</p>
+        <p className="text-xs text-gray-400 mb-3 tracking-wide uppercase">Sections</p>
         <div className="space-y-2 overflow-y-auto flex-1">
           {SECTIONS.map((section) => {
             const sectionSteps = STEPS.filter((s) => s.section === section);
@@ -512,16 +509,16 @@ export default function BrandTestPage() {
             return (
               <div
                 key={section}
-                className={`rounded-lg p-3 cursor-pointer transition ${
-                  isActive ? "bg-white/10" : "hover:bg-white/5"
+                className={`rounded-xl p-3 cursor-pointer transition ${
+                  isActive ? "bg-purple-100 border border-purple-200" : "hover:bg-gray-100"
                 }`}
                 onClick={() => setCurrentStep(sectionStart)}
               >
                 <div className="flex justify-between items-center">
-                  <p className={`text-sm ${isActive ? 'text-white' : 'text-gray-400'}`}>
+                  <p className={`text-sm ${isActive ? 'text-purple-700 font-medium' : 'text-gray-600'}`}>
                     {section}
                   </p>
-                  <span className="text-xs text-gray-500">
+                  <span className={`text-xs ${isActive ? 'text-purple-500' : 'text-gray-400'}`}>
                     {completedInSection}/{sectionSteps.length}
                   </span>
                 </div>
@@ -531,17 +528,17 @@ export default function BrandTestPage() {
         </div>
 
         {/* Progress */}
-        <div className="pt-6 border-t border-white/10 mt-4">
-          <div className="text-xs text-gray-400 mb-1">
+        <div className="pt-6 border-t border-gray-200 mt-4">
+          <div className="text-xs text-gray-500 mb-2">
             Question {currentStep + 1} of {STEPS.length}
           </div>
-          <div className="w-full h-1 bg-white/5 rounded">
+          <div className="w-full h-2 bg-gray-200 rounded-full">
             <div
-              className="h-1 bg-blue-400 rounded transition-all"
+              className="h-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full transition-all"
               style={{ width: `${progress}%` }}
             />
           </div>
-          <div className="text-right text-xs text-gray-400 mt-1">{progress}%</div>
+          <div className="text-right text-xs text-gray-500 mt-1">{progress}%</div>
         </div>
       </aside>
 
@@ -549,34 +546,36 @@ export default function BrandTestPage() {
       <main className="flex-1 flex flex-col">
         <div className="max-w-3xl mx-auto w-full pt-12 pb-32 px-6">
           {/* Section tag */}
-          <p className="text-xs tracking-widest text-purple-300 mb-3 uppercase">
-            {step.section} • Question {currentStep + 1}
-          </p>
+          <div className="mb-4">
+            <span className="bg-purple-50 text-purple-600 px-3 py-1 rounded-full text-xs font-medium">
+              {step.section} · Question {currentStep + 1}
+            </span>
+          </div>
 
           {/* Question */}
-          <h1 className="text-3xl md:text-4xl font-bold mb-2">{step.question}</h1>
-          {step.subtitle && <p className="text-gray-400 mb-8">{step.subtitle}</p>}
+          <h1 className="text-3xl md:text-4xl font-bold mb-2 text-gray-900">{step.question}</h1>
+          {step.subtitle && <p className="text-gray-500 mb-8">{step.subtitle}</p>}
 
           {/* Input */}
           <div className="mt-6">{renderInput()}</div>
 
           {/* Error */}
           {error && (
-            <div className="mt-4 p-4 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-sm">
+            <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm">
               {error}
             </div>
           )}
         </div>
 
         {/* Footer nav */}
-        <div className="fixed bottom-0 left-72 right-0 bg-black/80 border-t border-white/5 backdrop-blur-sm px-8 py-4 flex justify-between items-center">
+        <div className="fixed bottom-0 left-72 right-0 bg-white/80 backdrop-blur-sm border-t border-gray-100 px-8 py-4 flex justify-between items-center">
           <button
             onClick={handleBack}
             disabled={currentStep === 0}
-            className={`px-5 py-2 rounded-lg border text-sm ${
+            className={`px-5 py-2.5 rounded-xl border text-sm font-medium ${
               currentStep === 0
-                ? "border-white/10 text-gray-500 cursor-not-allowed"
-                : "border-white/10 text-white hover:bg-white/5"
+                ? "border-gray-200 text-gray-300 cursor-not-allowed"
+                : "border-gray-200 text-gray-700 hover:bg-gray-50"
             }`}
           >
             Back
@@ -585,7 +584,7 @@ export default function BrandTestPage() {
           <button
             onClick={handleNext}
             disabled={isSubmitting}
-            className={`px-6 py-2 rounded-lg bg-gradient-to-r from-purple-500 to-blue-400 text-black font-semibold text-sm hover:opacity-90 transition ${
+            className={`px-6 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-pink-500 text-white font-medium text-sm hover:from-purple-700 hover:to-pink-600 transition shadow-lg shadow-purple-500/25 ${
               isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           >

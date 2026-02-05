@@ -5,6 +5,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { MarneeProvider } from "./context/MarneeContext";
 
 import LandingPage from "./Pages/LandingPage";
+import PresentationPage from "./Pages/PresentationPage";
 import AuthPage from "./Pages/AuthPage";
 import BrandingTestIntro from "./Pages/BrandingTestIntro";
 import BrandTestPage from "./Pages/BrandTestPage";
@@ -20,6 +21,7 @@ function App() {
     <Routes>
       {/* públicas */}
       <Route path="/" element={<LandingPage />} />
+      <Route path="/presentation" element={<PresentationPage />} />
       <Route path="/auth" element={<AuthPage />} />
       <Route path="/brand-test/intro" element={<BrandingTestIntro />} />
       <Route path="/brand-test/questions" element={<BrandTestPage />} />

@@ -15,7 +15,7 @@ export default function AppLayout() {
   return (
     <div className="flex min-h-screen">
       <Navbar active={active} />
-      <div className="flex-1 bg-black min-h-screen">
+      <div className="flex-1 bg-gray-50 min-h-screen">
         <Outlet />
       </div>
     </div>

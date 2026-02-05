@@ -33,12 +33,10 @@ export default function CalendarPage() {
 
       try {
         if (calendarId) {
-          // Load existing calendar
           const data = await api.getCalendar(calendarId);
           setCalendar(data.calendar || data);
         }
       } catch (err) {
-        // Calendar not found, will need to generate
         console.log('No existing calendar found');
         setCalendarId(null);
       } finally {
@@ -84,7 +82,6 @@ export default function CalendarPage() {
     try {
       await api.updatePost(calendarId, selectedPostIndex, updatedData);
 
-      // Update local state
       setCalendar((prev) => ({
         ...prev,
         posts: prev.posts.map((p, idx) =>
@@ -110,15 +107,20 @@ export default function CalendarPage() {
   // Show message if no session
   if (!hasSession) {
     return (
-      <div className="min-h-screen bg-[#0c0719] text-white flex items-center justify-center">
-        <div className="text-center p-8">
+      <div className="min-h-screen bg-gray-50 text-gray-900 flex items-center justify-center">
+        <div className="text-center p-8 bg-white rounded-2xl shadow-sm border border-gray-100 max-w-md">
+          <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg className="w-8 h-8 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+          </div>
           <h2 className="text-2xl font-bold mb-4">Complete Your Brand Test First</h2>
-          <p className="text-gray-400 mb-6">
+          <p className="text-gray-500 mb-6">
             To access the content calendar, you need to complete the brand personality test.
           </p>
           <a
             href="/brand-test/questions"
-            className="px-6 py-3 rounded-lg bg-gradient-to-r from-purple-500 to-blue-400 text-black font-semibold hover:opacity-90 transition inline-block"
+            className="px-6 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-pink-500 text-white font-medium hover:from-purple-700 hover:to-pink-600 transition inline-block shadow-lg shadow-purple-500/25"
           >
             Start Brand Test
           </a>
@@ -130,10 +132,10 @@ export default function CalendarPage() {
   // Loading state
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#0c0719] text-white flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 text-gray-900 flex items-center justify-center">
         <div className="text-center">
-          <div className="w-8 h-8 border-2 border-purple-400 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-gray-400">Loading calendar...</p>
+          <div className="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-gray-500">Loading calendar...</p>
         </div>
       </div>
     );
@@ -142,16 +144,21 @@ export default function CalendarPage() {
   // No calendar yet - show generate button
   if (!calendar) {
     return (
-      <div className="min-h-screen bg-[#0c0719] text-white p-6">
+      <div className="min-h-screen bg-gray-50 text-gray-900 p-6">
         <div className="max-w-2xl mx-auto text-center py-20">
+          <div className="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg className="w-10 h-10 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+          </div>
           <h1 className="text-3xl font-bold mb-4">Generate Your Content Calendar</h1>
-          <p className="text-gray-400 mb-8">
+          <p className="text-gray-500 mb-8 max-w-md mx-auto">
             Based on your brand profile and content strategy, Marnee will create a personalized
             content calendar with hooks, angles, and CTAs for each post.
           </p>
 
           {error && (
-            <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-sm">
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm max-w-md mx-auto">
               {error}
             </div>
           )}
@@ -160,11 +167,11 @@ export default function CalendarPage() {
             <button
               onClick={() => handleGenerateCalendar(4)}
               disabled={isGenerating}
-              className="px-8 py-4 rounded-xl bg-gradient-to-r from-purple-500 to-blue-400 text-black font-semibold text-lg hover:opacity-90 transition disabled:opacity-50"
+              className="px-8 py-4 rounded-xl bg-gradient-to-r from-purple-600 to-pink-500 text-white font-medium text-lg hover:from-purple-700 hover:to-pink-600 transition disabled:opacity-50 shadow-lg shadow-purple-500/25"
             >
               {isGenerating ? (
                 <span className="flex items-center gap-2">
-                  <div className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   Generating...
                 </span>
               ) : (
@@ -176,14 +183,14 @@ export default function CalendarPage() {
               <button
                 onClick={() => handleGenerateCalendar(2)}
                 disabled={isGenerating}
-                className="px-4 py-2 rounded-lg border border-white/10 hover:bg-white/5 transition"
+                className="px-4 py-2 rounded-lg border border-gray-200 hover:bg-gray-100 transition"
               >
                 2 weeks
               </button>
               <button
                 onClick={() => handleGenerateCalendar(8)}
                 disabled={isGenerating}
-                className="px-4 py-2 rounded-lg border border-white/10 hover:bg-white/5 transition"
+                className="px-4 py-2 rounded-lg border border-gray-200 hover:bg-gray-100 transition"
               >
                 8 weeks
               </button>
@@ -195,12 +202,12 @@ export default function CalendarPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0c0719] text-white p-6">
+    <div className="min-h-screen bg-gray-50 text-gray-900 p-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold">Content Calendar</h1>
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-gray-500">
             {calendar.totalPosts} posts from {calendar.startDate} to {calendar.endDate}
           </p>
         </div>
@@ -210,25 +217,25 @@ export default function CalendarPage() {
           <button
             onClick={() => handleGenerateCalendar(4)}
             disabled={isGenerating}
-            className="px-4 py-2 rounded-lg border border-white/20 text-sm hover:bg-white/5 transition disabled:opacity-50"
+            className="px-4 py-2 rounded-lg border border-gray-200 text-sm hover:bg-gray-100 transition disabled:opacity-50"
           >
             {isGenerating ? 'Generating...' : 'Regenerate'}
           </button>
 
           {/* View toggle */}
-          <div className="flex bg-white/5 rounded-full overflow-hidden">
+          <div className="flex bg-gray-100 rounded-full overflow-hidden p-1">
             <button
               onClick={() => setView("calendar")}
-              className={`px-4 py-2 text-sm ${
-                view === "calendar" ? "bg-[#9ca9ff] text-black" : "text-white/70"
+              className={`px-4 py-2 text-sm rounded-full transition ${
+                view === "calendar" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"
               }`}
             >
               Calendar
             </button>
             <button
               onClick={() => setView("list")}
-              className={`px-4 py-2 text-sm ${
-                view === "list" ? "bg-white/10 text-white" : "text-white/70"
+              className={`px-4 py-2 text-sm rounded-full transition ${
+                view === "list" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"
               }`}
             >
               List
@@ -239,7 +246,7 @@ export default function CalendarPage() {
 
       {/* Error message */}
       {error && (
-        <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-sm">
+        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm">
           {error}
           <button onClick={() => setError(null)} className="ml-2 underline">
             Dismiss
