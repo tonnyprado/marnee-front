@@ -1,16 +1,107 @@
-import React from "react";
+import { useState } from "react";
 import Logo from "../Component/Logo";
+import { api } from "../services/api";
 
 export default function PresentationPage() {
+  const [email, setEmail] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(null); // 'success' | 'error' | null
+  const [errorMessage, setErrorMessage] = useState("");
+
   const scrollToSection = (id) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
 
+  const handleWaitlistSubmit = async (e) => {
+    e.preventDefault();
+    if (!email || isSubmitting) return;
+
+    setIsSubmitting(true);
+    setSubmitStatus(null);
+    setErrorMessage("");
+
+    try {
+      await api.subscribeWaitlist(email);
+      setSubmitStatus("success");
+      setEmail("");
+    } catch (err) {
+      setSubmitStatus("error");
+      setErrorMessage(err.message || "Something went wrong. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // Waitlist form component to reuse
+  const WaitlistForm = ({ variant = "light", className = "" }) => {
+    const isLight = variant === "light";
+
+    if (submitStatus === "success") {
+      return (
+        <div className={`flex items-center gap-3 ${className}`}>
+          <div className={`flex items-center gap-2 px-6 py-4 rounded-full ${isLight ? 'bg-green-50 text-green-700' : 'bg-white/20 text-white'}`}>
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+            </svg>
+            <span className="font-medium">You're on the list! We'll be in touch soon.</span>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <form onSubmit={handleWaitlistSubmit} className={`${className}`}>
+        <div className={`flex flex-col sm:flex-row gap-3 p-2 rounded-full ${isLight ? 'bg-white shadow-xl shadow-purple-500/10 border border-gray-100' : 'bg-white/10 backdrop-blur-sm border border-white/20'}`}>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Enter your email"
+            required
+            className={`flex-1 px-6 py-3 rounded-full outline-none text-base ${isLight ? 'bg-transparent text-gray-900 placeholder-gray-400' : 'bg-transparent text-white placeholder-white/60'}`}
+          />
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className={`px-8 py-3 rounded-full font-medium text-base transition whitespace-nowrap disabled:opacity-50 ${
+              isLight
+                ? 'bg-gradient-to-r from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600 text-white shadow-lg shadow-purple-500/30'
+                : 'bg-white text-purple-600 hover:bg-gray-100'
+            }`}
+          >
+            {isSubmitting ? (
+              <span className="flex items-center gap-2">
+                <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                Joining...
+              </span>
+            ) : (
+              'Join the waitlist'
+            )}
+          </button>
+        </div>
+        {submitStatus === "error" && (
+          <p className={`mt-3 text-sm ${isLight ? 'text-red-500' : 'text-red-300'}`}>{errorMessage}</p>
+        )}
+      </form>
+    );
+  };
+
   return (
-    <div className="min-h-screen bg-white text-gray-900">
-      {/* Navbar */}
-      <nav className="flex items-center justify-between px-6 md:px-12 py-4 bg-white/80 backdrop-blur-sm sticky top-0 z-50 border-b border-gray-100">
-        <Logo />
+    <div className="min-h-screen bg-white text-gray-900 font-sans">
+      {/* Custom animation styles */}
+      <style>{`
+        @keyframes breathe {
+          0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.08; }
+          50% { transform: translate(-50%, -50%) scale(1.15); opacity: 0.12; }
+        }
+        .animate-breathe {
+          animation: breathe 8s ease-in-out infinite;
+        }
+      `}</style>
+
+      {/* Navbar - Fixed */}
+      <nav className="fixed top-0 left-0 right-0 flex items-center justify-between px-6 md:px-12 py-4 bg-white/90 backdrop-blur-md z-50 border-b border-gray-100">
+        <Logo dark={true} />
         <div className="hidden md:flex items-center gap-8">
           <button
             onClick={() => scrollToSection("how-it-works")}
@@ -25,365 +116,641 @@ export default function PresentationPage() {
             Features
           </button>
           <button
-            onClick={() => scrollToSection("pricing")}
+            onClick={() => scrollToSection("marnee")}
             className="text-gray-600 hover:text-gray-900 transition text-sm font-medium"
           >
-            Pricing
-          </button>
-          <button
-            onClick={() => scrollToSection("contact")}
-            className="text-gray-600 hover:text-gray-900 transition text-sm font-medium"
-          >
-            Contact
-          </button>
-          <button className="bg-gradient-to-r from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600 text-white px-5 py-2.5 rounded-full text-sm font-medium transition shadow-lg shadow-purple-500/25">
-            Book a demo
+            Meet Marnee
           </button>
         </div>
-        {/* Mobile menu button */}
-        <button className="md:hidden text-gray-600">
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
+        <button
+          onClick={() => scrollToSection("hero-form")}
+          className="bg-gradient-to-r from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600 text-white px-5 py-2.5 rounded-full text-sm font-medium transition shadow-lg shadow-purple-500/25"
+        >
+          Join waitlist
         </button>
       </nav>
 
-      {/* Hero Section */}
-      <section className="px-6 md:px-12 py-20 md:py-32 max-w-6xl mx-auto">
-        <div className="text-center">
-          <div className="inline-block mb-6">
-            <span className="bg-purple-50 text-purple-700 px-4 py-2 rounded-full text-sm font-medium">
-              AI-powered marketing strategy
-            </span>
-          </div>
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+      {/* Hero Section - Full Screen */}
+      <section className="min-h-screen flex flex-col justify-center items-center px-6 md:px-12 pt-20 relative overflow-hidden">
+        {/* Background decorations */}
+        <div className="absolute top-20 right-10 w-[500px] h-[500px] bg-gradient-to-br from-purple-200 to-pink-200 rounded-full blur-3xl opacity-40 -z-10" />
+        <div className="absolute bottom-20 left-10 w-[400px] h-[400px] bg-gradient-to-br from-blue-200 to-purple-200 rounded-full blur-3xl opacity-30 -z-10" />
+
+        {/* Animated compass logo background */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -z-10 animate-breathe">
+          <svg width="800" height="800" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg" className="blur-sm">
+            <circle cx="15" cy="15" r="13" stroke="url(#heroCompassGrad)" strokeWidth="0.5" fill="none" />
+            <circle cx="15" cy="15" r="10" stroke="url(#heroCompassGrad)" strokeWidth="0.3" fill="none" opacity="0.5" />
+            <circle cx="15" cy="15" r="7" stroke="url(#heroCompassGrad)" strokeWidth="0.2" fill="none" opacity="0.3" />
+            <path d="M15 15L22 8" stroke="url(#heroCompassGrad)" strokeWidth="0.8" strokeLinecap="round" />
+            <path d="M15 15L10 20" stroke="url(#heroCompassGrad2)" strokeWidth="0.5" strokeLinecap="round" opacity="0.5" />
+            <circle cx="15" cy="15" r="1.5" fill="url(#heroCompassGrad)" />
+            <circle cx="15" cy="4" r="0.8" fill="url(#heroCompassGrad)" />
+            <circle cx="15" cy="26" r="0.5" fill="url(#heroCompassGrad)" opacity="0.5" />
+            <circle cx="4" cy="15" r="0.5" fill="url(#heroCompassGrad)" opacity="0.5" />
+            <circle cx="26" cy="15" r="0.5" fill="url(#heroCompassGrad)" opacity="0.5" />
+            <defs>
+              <linearGradient id="heroCompassGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#8B5CF6" />
+                <stop offset="100%" stopColor="#EC4899" />
+              </linearGradient>
+              <linearGradient id="heroCompassGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#A855F7" />
+                <stop offset="100%" stopColor="#F472B6" />
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+
+        <div className="text-center max-w-4xl mx-auto">
+          <h1 className="text-5xl md:text-7xl font-bold mb-8 leading-tight tracking-tight">
             Stop guessing.
             <br />
             <span className="bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent">
               Start scaling.
             </span>
           </h1>
-          <p className="text-gray-600 max-w-2xl mx-auto mb-10 text-lg leading-relaxed">
-            DNHub turns social signals into marketing decisions — what to post, when, and why, tailored to your brand.
+
+          <p className="text-gray-600 max-w-2xl mx-auto mb-10 text-xl leading-relaxed">
+            DNHub turns social signals into marketing decisions. What to post, when, and why, tailored to your brand.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button
-              onClick={() => (window.location.href = "/auth")}
-              className="bg-gradient-to-r from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600 text-white px-8 py-4 rounded-full font-medium transition shadow-lg shadow-purple-500/25"
-            >
-              Get started free
-            </button>
+
+          {/* Waitlist form */}
+          <div id="hero-form" className="max-w-xl mx-auto mb-8">
+            <WaitlistForm variant="light" />
+          </div>
+
+          <p className="text-gray-400 text-sm mb-12">
+            Apply for early access and be the first to try it.
+          </p>
+
+          <button
+            onClick={() => scrollToSection("how-it-works")}
+            className="text-gray-500 hover:text-purple-600 transition text-sm font-medium"
+          >
+            or see how it works ↓
+          </button>
+        </div>
+
+        {/* Scroll indicator */}
+        <button
+          onClick={() => scrollToSection("problem")}
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center text-gray-400 hover:text-purple-600 transition cursor-pointer"
+        >
+          <span className="text-xs mb-2 uppercase tracking-widest">Scroll</span>
+          <div className="w-6 h-10 border-2 border-current rounded-full flex justify-center pt-2">
+            <div className="w-1.5 h-3 bg-current rounded-full animate-bounce" />
+          </div>
+        </button>
+      </section>
+
+      {/* Problem Section - Full Screen */}
+      <section id="problem" className="min-h-screen flex items-center bg-gray-50 px-6 md:px-12 py-20">
+        <div className="max-w-6xl mx-auto w-full">
+          <div className="grid md:grid-cols-2 gap-16 items-center">
+            <div>
+              <span className="text-purple-600 font-medium text-sm uppercase tracking-widest mb-4 block">The Problem</span>
+              <h2 className="text-4xl md:text-5xl font-bold mb-8 leading-tight">
+                Marketing shouldn't feel like
+                <span className="text-gray-400"> throwing darts in the dark</span>
+              </h2>
+              <div className="space-y-6">
+                <div className="flex items-start gap-4">
+                  <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                    <svg className="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg mb-1">No clarity on what to post</h3>
+                    <p className="text-gray-600">You're constantly guessing what content will resonate with your audience.</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4">
+                  <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                    <svg className="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg mb-1">Trends move too fast</h3>
+                    <p className="text-gray-600">By the time you spot a trend, it's already old news in your niche.</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4">
+                  <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                    <svg className="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg mb-1">Strategy feels overwhelming</h3>
+                    <p className="text-gray-600">Building a content strategy from scratch takes time you don't have.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Stats */}
+            <div className="grid grid-cols-2 gap-6">
+              <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 text-center">
+                <div className="text-5xl font-bold bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent mb-2">73%</div>
+                <p className="text-gray-600 text-sm">of founders struggle with content strategy</p>
+              </div>
+              <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 text-center">
+                <div className="text-5xl font-bold bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent mb-2">15h</div>
+                <p className="text-gray-600 text-sm">average weekly time spent on content planning</p>
+              </div>
+              <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 text-center">
+                <div className="text-5xl font-bold bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent mb-2">60%</div>
+                <p className="text-gray-600 text-sm">of social posts underperform expectations</p>
+              </div>
+              <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 text-center">
+                <div className="text-5xl font-bold bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent mb-2">$0</div>
+                <p className="text-gray-600 text-sm">budget for expensive marketing agencies</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Solution Section - Full Screen */}
+      <section className="min-h-screen flex items-center bg-gradient-to-br from-purple-600 via-purple-700 to-pink-600 px-6 md:px-12 py-20 relative overflow-hidden">
+        {/* Background pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-20 left-20 w-40 h-40 border border-white rounded-full" />
+          <div className="absolute bottom-40 right-20 w-60 h-60 border border-white rounded-full" />
+          <div className="absolute top-1/2 left-1/3 w-32 h-32 border border-white rounded-full" />
+        </div>
+
+        <div className="max-w-6xl mx-auto w-full relative z-10">
+          <div className="text-center mb-16">
+            <span className="text-purple-200 font-medium text-sm uppercase tracking-widest mb-4 block">The Solution</span>
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+              DNHub gives you clarity, not complexity
+            </h2>
+            <p className="text-purple-100 text-xl max-w-2xl mx-auto">
+              We analyze what's working in your niche and turn it into a personalized strategy you can actually execute.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-8 border border-white/20 hover:bg-white/20 transition">
+              <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-6">
+                <svg className="w-7 h-7 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                </svg>
+              </div>
+              <h3 className="text-white font-semibold text-xl mb-3">AI-Powered Research</h3>
+              <p className="text-purple-100">
+                We scan thousands of posts in your niche to find what's actually working right now.
+              </p>
+            </div>
+
+            <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-8 border border-white/20 hover:bg-white/20 transition">
+              <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-6">
+                <svg className="w-7 h-7 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+              </div>
+              <h3 className="text-white font-semibold text-xl mb-3">Brand-First Strategy</h3>
+              <p className="text-purple-100">
+                Every suggestion is tailored to your unique tone, audience, and positioning.
+              </p>
+            </div>
+
+            <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-8 border border-white/20 hover:bg-white/20 transition">
+              <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-6">
+                <svg className="w-7 h-7 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                </svg>
+              </div>
+              <h3 className="text-white font-semibold text-xl mb-3">Ready-to-Execute Plans</h3>
+              <p className="text-purple-100">
+                Get complete content briefs with hooks, angles, and visual direction.
+              </p>
+            </div>
+          </div>
+
+          <div className="text-center mt-12">
             <button
               onClick={() => scrollToSection("how-it-works")}
-              className="border border-gray-200 text-gray-700 hover:bg-gray-50 px-8 py-4 rounded-full font-medium transition"
+              className="bg-white text-purple-600 hover:bg-gray-100 px-8 py-4 rounded-full font-medium text-lg transition shadow-xl hover:scale-105"
             >
               See how it works
             </button>
           </div>
         </div>
-
-        {/* Decorative gradient blob */}
-        <div className="absolute top-20 right-0 w-96 h-96 bg-gradient-to-br from-purple-200 to-pink-200 rounded-full blur-3xl opacity-30 -z-10" />
-        <div className="absolute top-40 left-0 w-72 h-72 bg-gradient-to-br from-blue-200 to-purple-200 rounded-full blur-3xl opacity-20 -z-10" />
       </section>
 
-      {/* Social Proof */}
-      <section className="px-6 md:px-12 py-12 border-y border-gray-100 bg-gray-50/50">
-        <p className="text-center text-gray-500 text-sm mb-6">Trusted by marketing teams worldwide</p>
-        <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-60">
-          <span className="text-xl font-semibold text-gray-400">Startup A</span>
-          <span className="text-xl font-semibold text-gray-400">Brand Co</span>
-          <span className="text-xl font-semibold text-gray-400">Agency X</span>
-          <span className="text-xl font-semibold text-gray-400">Growth Inc</span>
-        </div>
-      </section>
-
-      {/* How it works Section */}
-      <section id="how-it-works" className="px-6 md:px-12 py-20 md:py-28 max-w-6xl mx-auto">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">How it works</h2>
-          <p className="text-gray-600 max-w-xl mx-auto">
-            Three simple steps to transform your marketing strategy
-          </p>
-        </div>
-
-        <div className="grid md:grid-cols-3 gap-8">
-          {/* Step 1 */}
-          <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-lg hover:border-purple-100 transition-all">
-            <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-6">
-              <span className="text-purple-600 font-bold text-lg">1</span>
-            </div>
-            <h3 className="font-semibold text-xl mb-3">Define your brand</h3>
-            <p className="text-gray-600 leading-relaxed">
-              Complete our branding tests. We match your answers with real-time social media research from your niche.
-            </p>
-            <p className="text-purple-600 text-sm mt-4 font-medium">
-              Your goals meet what's actually working.
+      {/* How it works Section - Full Screen */}
+      <section id="how-it-works" className="min-h-screen flex items-center px-6 md:px-12 py-20">
+        <div className="max-w-6xl mx-auto w-full">
+          <div className="text-center mb-20">
+            <span className="text-purple-600 font-medium text-sm uppercase tracking-widest mb-4 block">How it works</span>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              Three steps to <span className="font-serif italic">marketing clarity</span>
+            </h2>
+            <p className="text-gray-600 text-xl max-w-2xl mx-auto">
+              From brand definition to a complete content strategy in minutes, not months.
             </p>
           </div>
 
-          {/* Step 2 */}
-          <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-lg hover:border-purple-100 transition-all">
-            <div className="w-12 h-12 bg-pink-100 rounded-xl flex items-center justify-center mb-6">
-              <span className="text-pink-600 font-bold text-lg">2</span>
-            </div>
-            <h3 className="font-semibold text-xl mb-3">Marnee builds your strategy</h3>
-            <p className="text-gray-600 leading-relaxed">
-              Our AI consultant guides you through the entire strategy process, suggesting angles, formats, and content directions.
-            </p>
-            <p className="text-pink-600 text-sm mt-4 font-medium">
-              You approve, tweak or discard. Stay in control.
-            </p>
-          </div>
+          <div className="relative">
+            {/* Connection line */}
+            <div className="hidden md:block absolute top-24 left-1/2 -translate-x-1/2 w-2/3 h-0.5 bg-gradient-to-r from-purple-200 via-pink-200 to-purple-200" />
 
-          {/* Step 3 */}
-          <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-lg hover:border-purple-100 transition-all">
-            <div className="w-12 h-12 bg-gradient-to-br from-purple-100 to-pink-100 rounded-xl flex items-center justify-center mb-6">
-              <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent font-bold text-lg">3</span>
-            </div>
-            <h3 className="font-semibold text-xl mb-3">Everything in your dashboard</h3>
-            <p className="text-gray-600 leading-relaxed">
-              All approved decisions live in your DNHub dashboard. View them as a calendar or kanban board with full details.
-            </p>
-            <p className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent text-sm mt-4 font-medium">
-              One clear overview. No chaos.
-            </p>
-          </div>
-        </div>
+            <div className="grid md:grid-cols-3 gap-12">
+              {/* Step 1 */}
+              <div className="relative">
+                <div className="bg-white rounded-3xl p-8 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow h-full">
+                  <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-purple-500/30">
+                    <span className="text-white font-bold text-2xl">1</span>
+                  </div>
+                  <h3 className="font-bold text-2xl mb-4">Define your brand</h3>
+                  <p className="text-gray-600 mb-6">
+                    Complete our branding tests. We match your answers with real-time social media research from your niche.
+                  </p>
+                  <div className="bg-purple-50 rounded-xl p-4">
+                    <p className="text-purple-700 text-sm font-medium">
+                      Your goals, tone, audience & positioning meet what's actually working.
+                    </p>
+                  </div>
+                </div>
+              </div>
 
-        <div className="text-center mt-12">
-          <button
-            onClick={() => (window.location.href = "/auth")}
-            className="bg-gradient-to-r from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600 text-white px-8 py-4 rounded-full font-medium transition shadow-lg shadow-purple-500/25"
-          >
-            Start building your strategy
-          </button>
+              {/* Step 2 */}
+              <div className="relative">
+                <div className="bg-white rounded-3xl p-8 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow h-full">
+                  <div className="w-16 h-16 bg-gradient-to-br from-pink-500 to-pink-600 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-pink-500/30">
+                    <span className="text-white font-bold text-2xl">2</span>
+                  </div>
+                  <h3 className="font-bold text-2xl mb-4">
+                    <span className="font-serif italic text-purple-600">Marnee</span> builds your strategy
+                  </h3>
+                  <p className="text-gray-600 mb-6">
+                    Our AI consultant guides you through the entire process. She suggests angles, formats, hooks and explains why.
+                  </p>
+                  <div className="bg-pink-50 rounded-xl p-4">
+                    <p className="text-pink-700 text-sm font-medium">
+                      You approve, tweak or discard. You stay in control.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Step 3 */}
+              <div className="relative">
+                <div className="bg-white rounded-3xl p-8 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow h-full">
+                  <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-purple-500/30">
+                    <span className="text-white font-bold text-2xl">3</span>
+                  </div>
+                  <h3 className="font-bold text-2xl mb-4">Execute from your dashboard</h3>
+                  <p className="text-gray-600 mb-6">
+                    All approved decisions live in your DNHub dashboard. View as calendar or kanban board.
+                  </p>
+                  <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-4">
+                    <p className="bg-gradient-to-r from-purple-700 to-pink-700 bg-clip-text text-transparent text-sm font-medium">
+                      One clear overview. No chaos. No guesswork.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section id="features" className="px-6 md:px-12 py-20 md:py-28 bg-gradient-to-br from-purple-50 via-white to-pink-50">
-        <div className="max-w-6xl mx-auto">
+      {/* Features Section - Full Screen */}
+      <section id="features" className="min-h-screen flex items-center bg-gray-50 px-6 md:px-12 py-20">
+        <div className="max-w-6xl mx-auto w-full">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Powerful features</h2>
-            <p className="text-gray-600 max-w-xl mx-auto">
-              Built for speed, clarity and consistency
-            </p>
+            <span className="text-purple-600 font-medium text-sm uppercase tracking-widest mb-4 block">Features</span>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              Built for <span className="font-serif italic bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent">speed, clarity</span> and consistency
+            </h2>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* Feature 1 */}
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-              <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center mb-4">
-                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 hover:shadow-lg hover:border-purple-100 transition-all group">
+              <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                 </svg>
               </div>
-              <h3 className="font-semibold text-lg mb-2">Trend detection</h3>
-              <p className="text-gray-600 text-sm">
-                Identify what's working right now in your niche with real-time analysis.
+              <h3 className="font-bold text-xl mb-3">Trend Detection</h3>
+              <p className="text-gray-600">
+                Identify what's working right now in your niche with real-time social analysis.
               </p>
             </div>
 
             {/* Feature 2 */}
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-              <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center mb-4">
-                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 hover:shadow-lg hover:border-purple-100 transition-all group">
+              <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                 </svg>
               </div>
-              <h3 className="font-semibold text-lg mb-2">Brand intelligence</h3>
-              <p className="text-gray-600 text-sm">
-                Your strategy adapts to your tone, audience and positioning automatically.
+              <h3 className="font-bold text-xl mb-3">Brand Intelligence</h3>
+              <p className="text-gray-600">
+                Your strategy adapts to your unique tone, audience and market positioning.
               </p>
             </div>
 
             {/* Feature 3 */}
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-              <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center mb-4">
-                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 hover:shadow-lg hover:border-purple-100 transition-all group">
+              <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                 </svg>
               </div>
-              <h3 className="font-semibold text-lg mb-2">AI strategy guidance</h3>
-              <p className="text-gray-600 text-sm">
-                Marnee explains, suggests and helps you decide, not just generate.
+              <h3 className="font-bold text-xl mb-3">AI Strategy Guidance</h3>
+              <p className="text-gray-600">
+                <span className="font-serif italic text-purple-600">Marnee</span> explains, suggests and helps you decide — not just generate.
               </p>
             </div>
 
             {/* Feature 4 */}
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-              <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center mb-4">
-                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
+            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 hover:shadow-lg hover:border-purple-100 transition-all group">
+              <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
               </div>
-              <h3 className="font-semibold text-lg mb-2">Strategy dashboard</h3>
-              <p className="text-gray-600 text-sm">
-                All decisions in one place. Calendar and Kanban views included.
+              <h3 className="font-bold text-xl mb-3">Strategy Dashboard</h3>
+              <p className="text-gray-600">
+                All decisions in one place. Calendar and Kanban views to keep you organized.
               </p>
             </div>
 
             {/* Feature 5 */}
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-              <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center mb-4">
-                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 hover:shadow-lg hover:border-purple-100 transition-all group">
+              <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
               </div>
-              <h3 className="font-semibold text-lg mb-2">Content-ready outputs</h3>
-              <p className="text-gray-600 text-sm">
-                Ideas, titles, copy and visual direction. Ready for production.
+              <h3 className="font-bold text-xl mb-3">Content-Ready Outputs</h3>
+              <p className="text-gray-600">
+                Ideas, titles, copy and visual direction. Ready for UGC, AI or talking head production.
               </p>
             </div>
 
             {/* Feature 6 */}
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-              <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center mb-4">
-                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 hover:shadow-lg hover:border-purple-100 transition-all group">
+              <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <h3 className="font-semibold text-lg mb-2">Save hours weekly</h3>
-              <p className="text-gray-600 text-sm">
-                Stop overthinking every post. Get strategic clarity in minutes.
+              <h3 className="font-bold text-xl mb-3">Save Hours Weekly</h3>
+              <p className="text-gray-600">
+                Reduce content planning from 15+ hours to under 2 hours per week.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Meet Marnee Section */}
-      <section className="px-6 md:px-12 py-20 md:py-28 max-w-6xl mx-auto">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
-          <div>
-            <span className="bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent text-sm font-semibold uppercase tracking-wider">
-              Your AI Consultant
-            </span>
-            <h2 className="text-3xl md:text-4xl font-bold mt-2 mb-6">Meet Marnee</h2>
-            <p className="text-gray-600 mb-4 leading-relaxed">
-              Marnee helps you think, not just post. She explains the reasoning behind every suggestion, so you understand what works and why.
-            </p>
-            <div className="space-y-3 text-gray-500 italic mb-8">
-              <p className="flex items-start gap-2">
-                <span className="text-purple-500">"</span>
-                What content should we test next week?
-              </p>
-              <p className="flex items-start gap-2">
-                <span className="text-purple-500">"</span>
-                Rewrite this in a confident but warm tone.
-              </p>
-              <p className="flex items-start gap-2">
-                <span className="text-purple-500">"</span>
-                Why is this format performing better in our niche?
-              </p>
-            </div>
-            <p className="text-purple-600 font-medium">
-              Strategy with context. Decisions with confidence.
-            </p>
-          </div>
-          <div className="relative">
-            <div className="bg-gradient-to-br from-purple-100 to-pink-100 rounded-3xl p-8 md:p-12">
-              <div className="bg-white rounded-2xl p-6 shadow-lg">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
-                    <span className="text-white font-bold text-sm">M</span>
-                  </div>
-                  <div>
-                    <p className="font-semibold text-sm">Marnee</p>
-                    <p className="text-xs text-gray-500">AI Consultant</p>
+      {/* Meet Marnee Section - Full Screen */}
+      <section id="marnee" className="min-h-screen flex items-center px-6 md:px-12 py-20 relative overflow-hidden">
+        {/* Background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-pink-50 -z-10" />
+        <div className="absolute top-1/4 right-0 w-[600px] h-[600px] bg-gradient-to-br from-purple-200 to-pink-200 rounded-full blur-3xl opacity-30 -z-10" />
+
+        <div className="max-w-6xl mx-auto w-full">
+          <div className="grid md:grid-cols-2 gap-16 items-center">
+            <div>
+              <span className="text-purple-600 font-medium text-sm uppercase tracking-widest mb-4 block">Your AI Partner</span>
+              <h2 className="text-4xl md:text-5xl font-bold mb-6">
+                Meet <span className="font-serif italic text-purple-600">Marnee</span>
+              </h2>
+              <p className="text-2xl text-gray-700 font-medium mb-6">Your AI marketing consultant.</p>
+
+              <div className="space-y-6 mb-10">
+                <p className="text-gray-600 text-lg">
+                  <span className="font-serif italic text-purple-600">Marnee</span> helps you think, not just post. She explains the reasoning behind every suggestion, so you understand what works and why.
+                </p>
+
+                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                  <p className="text-gray-500 text-sm mb-4 font-medium">Ask her anything:</p>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-2 bg-purple-500 rounded-full" />
+                      <p className="text-gray-700 italic">"What content should we test next week?"</p>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-2 bg-pink-500 rounded-full" />
+                      <p className="text-gray-700 italic">"Rewrite this in a confident but warm tone."</p>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-2 bg-purple-500 rounded-full" />
+                      <p className="text-gray-700 italic">"Why is this format performing better?"</p>
+                    </div>
                   </div>
                 </div>
-                <p className="text-gray-600 text-sm leading-relaxed">
-                  Based on your brand positioning and current trends in your niche, I recommend testing short-form educational content this week. Here's why...
-                </p>
+              </div>
+
+              <p className="text-lg font-medium bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent">
+                Strategy with context. Decisions with confidence.
+              </p>
+            </div>
+
+            {/* Marnee visual */}
+            <div className="relative">
+              <div className="bg-white rounded-3xl p-8 shadow-2xl border border-gray-100">
+                {/* Chat header */}
+                <div className="flex items-center gap-4 mb-6 pb-6 border-b border-gray-100">
+                  <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center shadow-lg shadow-purple-500/30">
+                    <span className="text-white font-serif italic font-bold text-xl">M</span>
+                  </div>
+                  <div>
+                    <p className="font-serif italic font-bold text-xl text-purple-600">Marnee</p>
+                    <div className="flex items-center gap-2">
+                      <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                      <span className="text-sm text-gray-500">AI Marketing Consultant</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Chat messages */}
+                <div className="space-y-4">
+                  <div className="bg-gray-50 rounded-2xl rounded-tl-sm p-4 max-w-[85%]">
+                    <p className="text-gray-700 text-sm leading-relaxed">
+                      Based on your brand positioning and what's trending in your niche, I recommend testing short-form educational content this week. Here's why...
+                    </p>
+                  </div>
+                  <div className="bg-gray-50 rounded-2xl rounded-tl-sm p-4 max-w-[85%]">
+                    <p className="text-gray-700 text-sm leading-relaxed">
+                      Your competitors are seeing <span className="font-semibold text-purple-600">40% higher engagement</span> with "myth-busting" hooks. Want me to generate 5 variations for your brand?
+                    </p>
+                  </div>
+                  <div className="bg-gradient-to-r from-purple-600 to-pink-500 rounded-2xl rounded-tr-sm p-4 max-w-[85%] ml-auto">
+                    <p className="text-white text-sm">Yes, let's try that approach!</p>
+                  </div>
+                </div>
+
+                {/* Input */}
+                <div className="mt-6 pt-6 border-t border-gray-100">
+                  <div className="flex items-center gap-3 bg-gray-50 rounded-full px-5 py-3">
+                    <input
+                      type="text"
+                      placeholder="Ask Marnee anything..."
+                      className="flex-1 bg-transparent text-sm outline-none text-gray-700 placeholder-gray-400"
+                      disabled
+                    />
+                    <button className="w-10 h-10 bg-gradient-to-r from-purple-600 to-pink-500 rounded-full flex items-center justify-center">
+                      <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Who it's for Section */}
-      <section className="px-6 md:px-12 py-20 md:py-28 bg-gray-50">
-        <div className="max-w-6xl mx-auto">
+      {/* Who it's for Section - Full Screen */}
+      <section className="min-h-screen flex items-center bg-gray-900 px-6 md:px-12 py-20 relative overflow-hidden">
+        {/* Background pattern */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute top-10 left-10 w-32 h-32 border border-white rounded-full" />
+          <div className="absolute bottom-20 right-20 w-48 h-48 border border-white rounded-full" />
+          <div className="absolute top-1/2 right-1/3 w-24 h-24 border border-white rounded-full" />
+        </div>
+
+        <div className="max-w-6xl mx-auto w-full relative z-10">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Who it's for</h2>
-            <p className="text-gray-600 max-w-xl mx-auto">
-              Built for anyone who needs marketing clarity without the complexity
-            </p>
+            <span className="text-purple-400 font-medium text-sm uppercase tracking-widest mb-4 block">Who it's for</span>
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+              Built for those who need clarity,<br />
+              <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">not complexity</span>
+            </h2>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
             {[
-              "Early-stage startups",
-              "Founders who need clarity",
-              "Social media managers",
-              "Small teams without marketing",
-              "Multi-brand businesses",
-              "Agencies & consultants",
-            ].map((audience, index) => (
+              { title: "Early-stage startups", desc: "Get your marketing foundation right from day one" },
+              { title: "Founders who need clarity", desc: "Stop second-guessing every content decision" },
+              { title: "Social media managers", desc: "Streamline your workflow with AI-powered insights" },
+              { title: "Small teams", desc: "No marketing department? No problem." },
+              { title: "Multi-brand businesses", desc: "Manage multiple brand strategies in one place" },
+              { title: "Agencies & consultants", desc: "Deliver structured strategies at scale" },
+            ].map((item, index) => (
               <div
                 key={index}
-                className="bg-white rounded-2xl p-6 text-center shadow-sm border border-gray-100 hover:border-purple-200 hover:shadow-md transition-all"
+                className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:bg-white/10 hover:border-purple-500/50 transition-all group"
               >
-                <div className="w-12 h-12 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <div className="w-3 h-3 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full" />
+                <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
                 </div>
-                <p className="font-medium text-gray-800">{audience}</p>
+                <h3 className="text-white font-semibold text-lg mb-2">{item.title}</h3>
+                <p className="text-gray-400 text-sm">{item.desc}</p>
               </div>
             ))}
           </div>
+
+          <div className="text-center mt-16">
+            <button
+              onClick={() => scrollToSection("hero-form")}
+              className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-10 py-5 rounded-full font-medium text-lg transition shadow-xl shadow-purple-500/30 hover:scale-105"
+            >
+              Join the waitlist today
+            </button>
+          </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section id="pricing" className="px-6 md:px-12 py-20 md:py-28">
-        <div className="max-w-4xl mx-auto">
-          <div className="bg-gradient-to-r from-purple-600 to-pink-500 rounded-3xl p-10 md:p-16 text-center text-white relative overflow-hidden">
-            {/* Decorative elements */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
-            <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full blur-3xl" />
+      {/* Final CTA Section - Full Screen */}
+      <section className="min-h-screen flex items-center justify-center px-6 md:px-12 py-20 relative overflow-hidden">
+        {/* Background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-600 via-purple-700 to-pink-600" />
+        <div className="absolute top-0 left-0 w-full h-full">
+          <div className="absolute top-10 left-10 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
+          <div className="absolute bottom-20 right-20 w-64 h-64 bg-pink-500/20 rounded-full blur-3xl" />
+          <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-purple-400/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
+        </div>
 
-            <div className="relative z-10">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                Ready to build your strategy today?
-              </h2>
-              <p className="text-white/80 mb-8 max-w-lg mx-auto">
-                From zero clarity to a structured marketing plan, guided by AI. Start free, upgrade when you're ready.
-              </p>
-              <button
-                onClick={() => (window.location.href = "/auth")}
-                className="bg-white text-purple-600 hover:bg-gray-100 px-8 py-4 rounded-full font-medium transition shadow-lg"
-              >
-                Get started free
-              </button>
-            </div>
+        <div className="max-w-4xl mx-auto text-center relative z-10">
+          <h2 className="text-4xl md:text-6xl font-bold text-white mb-8 leading-tight">
+            Ready to build your
+            <br />
+            <span className="font-serif italic">marketing strategy</span> today?
+          </h2>
+          <p className="text-purple-100 text-xl mb-12 max-w-2xl mx-auto">
+            From zero clarity to a structured marketing plan, guided by AI. Be the first to experience DNHub.
+          </p>
+
+          {/* Waitlist form */}
+          <div className="max-w-xl mx-auto">
+            <WaitlistForm variant="dark" />
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer id="contact" className="px-6 md:px-12 py-12 border-t border-gray-100">
+      <footer className="px-6 md:px-12 py-16 bg-gray-900 text-white">
         <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-            <Logo />
-            <div className="flex items-center gap-8">
-              <button className="text-gray-500 hover:text-gray-900 transition text-sm">
-                About
-              </button>
-              <button className="text-gray-500 hover:text-gray-900 transition text-sm">
-                Contact
-              </button>
-              <button className="text-gray-500 hover:text-gray-900 transition text-sm">
-                Privacy
-              </button>
-              <button className="text-gray-500 hover:text-gray-900 transition text-sm">
-                Terms
-              </button>
+          <div className="grid md:grid-cols-4 gap-12 mb-12">
+            {/* Logo & Description */}
+            <div className="md:col-span-2">
+              <Logo dark={false} size="large" />
+              <p className="text-gray-400 mt-4 max-w-md">
+                DNHub turns social signals into marketing decisions — what to post, when, and why, tailored to your brand.
+              </p>
+              <div className="flex gap-4 mt-6">
+                <button className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition">
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
+                  </svg>
+                </button>
+                <button className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition">
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                  </svg>
+                </button>
+                <button className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition">
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            {/* Links */}
+            <div>
+              <h4 className="font-semibold text-white mb-4">Product</h4>
+              <ul className="space-y-3">
+                <li><button onClick={() => scrollToSection("features")} className="text-gray-400 hover:text-white transition">Features</button></li>
+                <li><button onClick={() => scrollToSection("how-it-works")} className="text-gray-400 hover:text-white transition">How it works</button></li>
+                <li><button className="text-gray-400 hover:text-white transition">Roadmap</button></li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="font-semibold text-white mb-4">Company</h4>
+              <ul className="space-y-3">
+                <li><button className="text-gray-400 hover:text-white transition">About</button></li>
+                <li><button className="text-gray-400 hover:text-white transition">Blog</button></li>
+                <li><button className="text-gray-400 hover:text-white transition">Contact</button></li>
+                <li><button className="text-gray-400 hover:text-white transition">Privacy</button></li>
+              </ul>
             </div>
           </div>
-          <div className="text-center mt-8 pt-8 border-t border-gray-100">
-            <p className="text-gray-400 text-sm">&copy; 2026 DNHub. All rights reserved.</p>
+
+          {/* Bottom */}
+          <div className="pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-gray-500 text-sm">&copy; 2026 DNHub. All rights reserved.</p>
+            <div className="flex items-center gap-6 text-gray-500 text-sm">
+              <button className="hover:text-white transition">Terms</button>
+              <button className="hover:text-white transition">Privacy</button>
+              <button className="hover:text-white transition">Cookies</button>
+            </div>
           </div>
         </div>
       </footer>

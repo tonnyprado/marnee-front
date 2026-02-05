@@ -87,4 +87,15 @@ export const api = {
       method: 'PUT',
       body: JSON.stringify(data),
     }),
+
+  // =====================
+  // WAITLIST ENDPOINTS
+  // =====================
+
+  // POST /waitlist/subscribe - Subscribe to waitlist
+  subscribeWaitlist: (email) =>
+    request('/waitlist/subscribe', {
+      method: 'POST',
+      body: JSON.stringify({ email }),
+    }),
 };
