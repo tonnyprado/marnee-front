@@ -23,6 +23,11 @@ export default function IAWebPage() {
   const [error, setError] = useState(null);
   const messagesEndRef = useRef(null);
 
+  // Generate unique ID for messages
+  const generateUniqueId = () => {
+    return `${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
+  };
+
   // Scroll to bottom when messages change
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -36,7 +41,7 @@ export default function IAWebPage() {
   useEffect(() => {
     if (welcomeMessage && messages.length === 0) {
       addMessage({
-        id: Date.now(),
+        id: generateUniqueId(),
         from: "ai",
         text: welcomeMessage,
         step: 1,
@@ -55,7 +60,7 @@ export default function IAWebPage() {
 
     // Add user message immediately
     addMessage({
-      id: Date.now(),
+      id: generateUniqueId(),
       from: "user",
       text: userMessage,
       step: currentStep,
@@ -73,7 +78,7 @@ export default function IAWebPage() {
 
       // Add AI response
       addMessage({
-        id: Date.now() + 1,
+        id: generateUniqueId(),
         from: "ai",
         text: response.reply,
         step: response.currentStep,
@@ -124,7 +129,7 @@ export default function IAWebPage() {
       // Add transition message
       if (response.transitionMessage) {
         addMessage({
-          id: Date.now(),
+          id: generateUniqueId(),
           from: "ai",
           text: response.transitionMessage,
           step: response.currentStep,

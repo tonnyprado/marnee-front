@@ -60,9 +60,14 @@ export function MarneeProvider({ children }) {
     setMessages([]);
   };
 
+  // Generate unique ID for messages
+  const generateUniqueId = () => {
+    return `${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
+  };
+
   // Add message to chat
   const addMessage = (message) => {
-    setMessages((prev) => [...prev, { ...message, id: message.id || Date.now() }]);
+    setMessages((prev) => [...prev, { ...message, id: message.id || generateUniqueId() }]);
   };
 
   // Update step

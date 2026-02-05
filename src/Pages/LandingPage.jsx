@@ -36,13 +36,21 @@ export default function LandingPage() {
         tone, and brand identity. It only takes 20 minutes.
       </p>
 
-      {/* CTA Button */}
-      <button
-        onClick={() => (window.location.href = "/auth")}
-        className="bg-gradient-to-r from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600 text-white font-medium px-8 py-4 rounded-full transition shadow-lg shadow-purple-500/25"
-      >
-        Sign up to start your test
-      </button>
+      {/* CTA Buttons */}
+      <div className="flex flex-col sm:flex-row gap-4">
+        <button
+          onClick={() => (window.location.href = "/auth")}
+          className="bg-gradient-to-r from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600 text-white font-medium px-8 py-4 rounded-full transition shadow-lg shadow-purple-500/25"
+        >
+          Sign up to start your test
+        </button>
+        <button
+          onClick={() => (window.location.href = "/presentation")}
+          className="border-2 border-purple-500 text-purple-600 hover:bg-purple-50 font-medium px-8 py-4 rounded-full transition"
+        >
+          Learn More
+        </button>
+      </div>
 
       {/* Progress Bar */}
       <div className="absolute bottom-8 w-2/3 max-w-md">
