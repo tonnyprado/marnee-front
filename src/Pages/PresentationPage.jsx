@@ -51,19 +51,19 @@ export default function PresentationPage() {
 
     return (
       <form onSubmit={handleWaitlistSubmit} className={`${className}`}>
-        <div className={`flex flex-col sm:flex-row gap-3 p-2 rounded-full ${isLight ? 'bg-white shadow-xl shadow-purple-500/10 border border-gray-100' : 'bg-white/10 backdrop-blur-sm border border-white/20'}`}>
+        <div className={`flex flex-col sm:flex-row gap-3 p-3 sm:p-2 rounded-2xl sm:rounded-full ${isLight ? 'bg-white shadow-xl shadow-purple-500/10 border border-gray-100' : 'bg-white/10 backdrop-blur-sm border border-white/20'}`}>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Enter your email"
             required
-            className={`flex-1 px-6 py-3 rounded-full outline-none text-base ${isLight ? 'bg-transparent text-gray-900 placeholder-gray-400' : 'bg-transparent text-white placeholder-white/60'}`}
+            className={`flex-1 px-5 py-3 rounded-xl sm:rounded-full outline-none text-base ${isLight ? 'bg-transparent text-gray-900 placeholder-gray-400' : 'bg-transparent text-white placeholder-white/60'}`}
           />
           <button
             type="submit"
             disabled={isSubmitting}
-            className={`px-8 py-3 rounded-full font-medium text-base transition whitespace-nowrap disabled:opacity-50 ${
+            className={`px-8 py-3 rounded-xl sm:rounded-full font-medium text-base transition whitespace-nowrap disabled:opacity-50 ${
               isLight
                 ? 'bg-gradient-to-r from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600 text-white shadow-lg shadow-purple-500/30'
                 : 'bg-white text-purple-600 hover:bg-gray-100'
