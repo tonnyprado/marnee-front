@@ -2,6 +2,19 @@ import { useState } from "react";
 import Logo from "../Component/Logo";
 import { api } from "../services/api";
 
+// Mascot images
+import marnee11 from "../assets/mascot/marnee11.png";
+import marnee12 from "../assets/mascot/marnee12.png";
+import marnee13 from "../assets/mascot/marnee13.png";
+import marnee14 from "../assets/mascot/marnee14.png";
+import marnee15 from "../assets/mascot/marnee15.png";
+
+// Demo videos and images
+import videoTest from "../assets/videos/TestPresentation.mov";
+import videoChat from "../assets/videos/ChatMarnee.mov";
+import videoCalendar from "../assets/videos/GenerateCalendar.mov";
+import imgCampaign from "../assets/extras/Campaign.png";
+
 export default function PresentationPage() {
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -97,6 +110,21 @@ export default function PresentationPage() {
         .animate-breathe {
           animation: breathe 8s ease-in-out infinite;
         }
+        @keyframes wobble {
+          0%, 100% { transform: rotate(-3deg) translateY(0); }
+          25% { transform: rotate(3deg) translateY(-5px); }
+          50% { transform: rotate(-2deg) translateY(0); }
+          75% { transform: rotate(2deg) translateY(-3px); }
+        }
+        .animate-wobble {
+          animation: wobble 3s ease-in-out infinite;
+        }
+        .animate-wobble-slow {
+          animation: wobble 4s ease-in-out infinite;
+        }
+        .animate-wobble-delay {
+          animation: wobble 3.5s ease-in-out infinite 0.5s;
+        }
       `}</style>
 
       {/* Navbar - Fixed */}
@@ -135,6 +163,19 @@ export default function PresentationPage() {
         {/* Background decorations */}
         <div className="absolute top-20 right-10 w-[500px] h-[500px] bg-gradient-to-br from-purple-200 to-pink-200 rounded-full blur-3xl opacity-40 -z-10" />
         <div className="absolute bottom-20 left-10 w-[400px] h-[400px] bg-gradient-to-br from-blue-200 to-purple-200 rounded-full blur-3xl opacity-30 -z-10" />
+
+        {/* Mascot - Hero Left */}
+        <img
+          src={marnee11}
+          alt="Marnee mascot"
+          className="absolute bottom-4 left-2 w-36 sm:w-44 md:w-48 lg:bottom-28 lg:left-24 xl:left-32 lg:w-44 xl:w-56 animate-wobble opacity-90 lg:opacity-95 pointer-events-none drop-shadow-lg z-0"
+        />
+        {/* Mascot - Hero Right */}
+        <img
+          src={marnee14}
+          alt="Marnee with notebook"
+          className="absolute bottom-4 right-2 w-36 sm:w-44 md:w-48 lg:bottom-28 lg:right-24 xl:right-32 lg:w-44 xl:w-56 animate-wobble-delay opacity-90 lg:opacity-95 pointer-events-none drop-shadow-lg z-0"
+        />
 
         {/* Animated compass logo background */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -z-10 animate-breathe">
@@ -205,7 +246,13 @@ export default function PresentationPage() {
       </section>
 
       {/* Problem Section - Full Screen */}
-      <section id="problem" className="min-h-screen flex items-center bg-gray-50 px-6 md:px-12 py-20">
+      <section id="problem" className="min-h-screen flex items-center bg-gray-50 px-6 md:px-12 py-20 relative overflow-hidden">
+        {/* Mascot - Problem */}
+        <img
+          src={marnee12}
+          alt="Marnee working"
+          className="absolute -right-6 bottom-4 w-40 sm:w-48 md:w-52 lg:right-8 xl:right-16 lg:bottom-24 lg:w-48 xl:w-60 animate-wobble-slow opacity-80 lg:opacity-90 pointer-events-none drop-shadow-lg z-0"
+        />
         <div className="max-w-6xl mx-auto w-full">
           <div className="grid md:grid-cols-2 gap-16 items-center">
             <div>
@@ -344,7 +391,13 @@ export default function PresentationPage() {
       </section>
 
       {/* How it works Section - Full Screen */}
-      <section id="how-it-works" className="min-h-screen flex items-center px-6 md:px-12 py-20">
+      <section id="how-it-works" className="min-h-screen flex items-center px-6 md:px-12 py-20 relative overflow-hidden">
+        {/* Mascot - How it works */}
+        <img
+          src={marnee13}
+          alt="Marnee with ideas"
+          className="absolute -right-6 top-20 w-36 sm:w-40 md:w-44 lg:right-12 xl:right-20 lg:top-28 lg:w-44 xl:w-56 animate-wobble-delay opacity-80 lg:opacity-90 pointer-events-none drop-shadow-lg z-0"
+        />
         <div className="max-w-6xl mx-auto w-full">
           <div className="text-center mb-20">
             <span className="text-purple-600 font-medium text-sm uppercase tracking-widest mb-4 block">How it works</span>
@@ -415,6 +468,170 @@ export default function PresentationPage() {
                     </p>
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Demo 1 - Brand Discovery Test */}
+      <section id="demo-test" className="min-h-screen flex items-center px-6 md:px-12 py-20 bg-gradient-to-br from-purple-50 via-white to-pink-50">
+        <div className="max-w-6xl mx-auto w-full">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            {/* Video */}
+            <div className="order-2 lg:order-1">
+              <div className="rounded-3xl overflow-hidden shadow-2xl border border-gray-200">
+                <video
+                  src={videoTest}
+                  className="w-full aspect-video object-cover"
+                  controls
+                  muted
+                  playsInline
+                  preload="auto"
+                />
+              </div>
+            </div>
+            {/* Content */}
+            <div className="order-1 lg:order-2">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/30">
+                  <span className="text-white font-bold text-2xl">1</span>
+                </div>
+                <span className="text-purple-600 font-medium text-sm uppercase tracking-widest">Step One</span>
+              </div>
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 leading-tight">
+                Brand Discovery <span className="bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent">Test</span>
+              </h2>
+              <p className="text-gray-600 text-lg md:text-xl leading-relaxed mb-6">
+                Start by completing a quick questionnaire. Our AI learns about your brand, goals, audience, and tone to create a personalized strategy tailored just for you.
+              </p>
+              <div className="bg-purple-100/50 rounded-2xl p-5 border border-purple-200/50">
+                <p className="text-purple-700 font-medium">
+                  This is where your journey begins — tell us who you are, and we'll show you how to grow.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Demo 2 - Chat with Marnee */}
+      <section id="demo-chat" className="min-h-screen flex items-center px-6 md:px-12 py-20 bg-white">
+        <div className="max-w-6xl mx-auto w-full">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            {/* Content */}
+            <div>
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-14 h-14 bg-gradient-to-br from-pink-500 to-pink-600 rounded-2xl flex items-center justify-center shadow-lg shadow-pink-500/30">
+                  <span className="text-white font-bold text-2xl">2</span>
+                </div>
+                <span className="text-pink-600 font-medium text-sm uppercase tracking-widest">Step Two</span>
+              </div>
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 leading-tight">
+                Chat with <span className="font-serif italic text-purple-600">Marnee</span>
+              </h2>
+              <p className="text-gray-600 text-lg md:text-xl leading-relaxed mb-6">
+                After the questionnaire, Marnee becomes your AI marketing consultant. She'll ask questions, understand your needs deeper, and build your complete campaign strategy.
+              </p>
+              <div className="bg-pink-100/50 rounded-2xl p-5 border border-pink-200/50">
+                <p className="text-pink-700 font-medium">
+                  Marnee doesn't just generate — she thinks, plans, and explains every recommendation.
+                </p>
+              </div>
+            </div>
+            {/* Video */}
+            <div>
+              <div className="rounded-3xl overflow-hidden shadow-2xl border border-gray-200">
+                <video
+                  src={videoChat}
+                  className="w-full aspect-video object-cover"
+                  controls
+                  muted
+                  playsInline
+                  preload="auto"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Demo 3 - Content Calendar */}
+      <section id="demo-calendar" className="min-h-screen flex items-center px-6 md:px-12 py-20 bg-gradient-to-br from-pink-50 via-white to-purple-50">
+        <div className="max-w-6xl mx-auto w-full">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            {/* Video */}
+            <div className="order-2 lg:order-1">
+              <div className="rounded-3xl overflow-hidden shadow-2xl border border-gray-200">
+                <video
+                  src={videoCalendar}
+                  className="w-full aspect-video object-cover"
+                  controls
+                  muted
+                  playsInline
+                  preload="auto"
+                />
+              </div>
+            </div>
+            {/* Content */}
+            <div className="order-1 lg:order-2">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/30">
+                  <span className="text-white font-bold text-2xl">3</span>
+                </div>
+                <span className="text-purple-600 font-medium text-sm uppercase tracking-widest">Step Three</span>
+              </div>
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 leading-tight">
+                Content <span className="bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent">Calendar</span>
+              </h2>
+              <p className="text-gray-600 text-lg md:text-xl leading-relaxed mb-6">
+                Marnee generates a complete publication calendar with dates, content ideas, and detailed instructions for each post. Everything you need to execute your strategy.
+              </p>
+              <div className="bg-gradient-to-r from-purple-100/50 to-pink-100/50 rounded-2xl p-5 border border-purple-200/50">
+                <p className="bg-gradient-to-r from-purple-700 to-pink-700 bg-clip-text text-transparent font-medium">
+                  See your entire month at a glance — what to post, when, and exactly how.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Demo 4 - Campaign Dashboard */}
+      <section id="demo-dashboard" className="min-h-screen flex items-center px-6 md:px-12 py-20 bg-white">
+        <div className="max-w-6xl mx-auto w-full">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            {/* Content */}
+            <div>
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-14 h-14 bg-gradient-to-br from-gray-500 to-gray-600 rounded-2xl flex items-center justify-center shadow-lg shadow-gray-500/30">
+                  <span className="text-white font-bold text-2xl">4</span>
+                </div>
+                <span className="text-gray-600 font-medium text-sm uppercase tracking-widest">Coming Soon</span>
+              </div>
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 leading-tight">
+                Campaign <span className="bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent">Dashboard</span>
+              </h2>
+              <p className="text-gray-600 text-lg md:text-xl leading-relaxed mb-6">
+                View all your active campaigns, track your task list, and monitor progress from a single dashboard. This feature is currently in development.
+              </p>
+              <div className="bg-gray-100 rounded-2xl p-5 border border-gray-200">
+                <p className="text-gray-700 font-medium">
+                  Your command center for marketing execution — coming very soon.
+                </p>
+              </div>
+            </div>
+            {/* Image */}
+            <div className="relative">
+              <div className="rounded-3xl overflow-hidden shadow-2xl border border-gray-200">
+                <img
+                  src={imgCampaign}
+                  alt="Campaign Dashboard"
+                  className="w-full aspect-video object-cover"
+                />
+              </div>
+              <div className="absolute top-4 right-4 bg-purple-600 text-white text-sm font-medium px-4 py-2 rounded-full shadow-lg">
+                In Development
               </div>
             </div>
           </div>
@@ -518,6 +735,13 @@ export default function PresentationPage() {
         {/* Background */}
         <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-pink-50 -z-10" />
         <div className="absolute top-1/4 right-0 w-[600px] h-[600px] bg-gradient-to-br from-purple-200 to-pink-200 rounded-full blur-3xl opacity-30 -z-10" />
+
+        {/* Mascot - Meet Marnee */}
+        <img
+          src={marnee15}
+          alt="Marnee presenting"
+          className="absolute left-1/2 -translate-x-1/2 bottom-4 w-40 sm:w-48 md:w-52 lg:bottom-16 lg:w-56 xl:w-72 animate-wobble opacity-95 pointer-events-none drop-shadow-xl z-10"
+        />
 
         <div className="max-w-6xl mx-auto w-full">
           <div className="grid md:grid-cols-2 gap-16 items-center">
