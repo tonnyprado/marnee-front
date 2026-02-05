@@ -180,22 +180,22 @@ export default function PresentationPage() {
             <WaitlistForm variant="light" />
           </div>
 
-          <p className="text-gray-400 text-sm mb-12">
+          <p className="text-gray-400 text-sm mb-6 md:mb-12">
             Apply for early access and be the first to try it.
           </p>
 
           <button
             onClick={() => scrollToSection("how-it-works")}
-            className="text-gray-500 hover:text-purple-600 transition text-sm font-medium"
+            className="text-gray-500 hover:text-purple-600 transition text-sm font-medium mb-8 md:mb-0"
           >
             or see how it works ↓
           </button>
         </div>
 
-        {/* Scroll indicator */}
+        {/* Scroll indicator - hidden on mobile */}
         <button
           onClick={() => scrollToSection("problem")}
-          className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center text-gray-400 hover:text-purple-600 transition cursor-pointer"
+          className="hidden md:flex absolute bottom-10 left-1/2 -translate-x-1/2 flex-col items-center text-gray-400 hover:text-purple-600 transition cursor-pointer"
         >
           <span className="text-xs mb-2 uppercase tracking-widest">Scroll</span>
           <div className="w-6 h-10 border-2 border-current rounded-full flex justify-center pt-2">
