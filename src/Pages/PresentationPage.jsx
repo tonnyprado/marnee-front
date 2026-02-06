@@ -308,19 +308,19 @@ export default function PresentationPage() {
             {/* Stats */}
             <div className="grid grid-cols-2 gap-6">
               <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 text-center">
-                <div className="text-5xl font-bold bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 bg-clip-text text-transparent mb-2">73%</div>
+                <div className="text-4xl font-bold bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 bg-clip-text text-transparent mb-2">73%</div>
                 <p className="text-gray-600 text-sm">of founders struggle with content strategy</p>
               </div>
               <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 text-center">
-                <div className="text-5xl font-bold bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 bg-clip-text text-transparent mb-2">15h</div>
+                <div className="text-4xl font-bold bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 bg-clip-text text-transparent mb-2">15h</div>
                 <p className="text-gray-600 text-sm">average weekly time spent on content planning</p>
               </div>
               <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 text-center">
-                <div className="text-5xl font-bold bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 bg-clip-text text-transparent mb-2">60%</div>
+                <div className="text-4xl font-bold bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 bg-clip-text text-transparent mb-2">60%</div>
                 <p className="text-gray-600 text-sm">of social posts underperform expectations</p>
               </div>
               <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 text-center">
-                <div className="text-5xl font-bold bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 bg-clip-text text-transparent mb-2">$0</div>
+                <div className="text-4xl font-bold bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 bg-clip-text text-transparent mb-2">$0</div>
                 <p className="text-gray-600 text-sm">budget for expensive marketing agencies</p>
               </div>
             </div>
