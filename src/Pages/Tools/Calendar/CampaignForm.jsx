@@ -95,7 +95,7 @@ export default function CampaignForm({
         {/* Pillar (readonly) */}
         <div>
           <label className="text-xs text-gray-400 block mb-1">Content Pillar</label>
-          <div className="px-3 py-2 bg-purple-500/10 border border-purple-500/30 rounded-lg text-purple-300">
+          <div className="px-3 py-2 bg-violet-500/10 border border-violet-500/30 rounded-lg text-violet-300">
             {form.pillar || "Not set"}
           </div>
         </div>
@@ -108,7 +108,7 @@ export default function CampaignForm({
             onChange={(e) => handleChange("hook", e.target.value)}
             placeholder="The attention-grabbing opening..."
             rows={3}
-            className="w-full bg-black/30 border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-400 resize-none"
+            className="w-full bg-black/30 border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-400 resize-none"
           />
         </div>
 
@@ -120,7 +120,7 @@ export default function CampaignForm({
             value={form.angle}
             onChange={(e) => handleChange("angle", e.target.value)}
             placeholder="e.g., Myth-busting, Personal story..."
-            className="w-full bg-black/30 border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-400"
+            className="w-full bg-black/30 border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-400"
           />
         </div>
 
@@ -132,7 +132,7 @@ export default function CampaignForm({
             value={form.cta}
             onChange={(e) => handleChange("cta", e.target.value)}
             placeholder="e.g., Save this and DM me 'BRAND'"
-            className="w-full bg-black/30 border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-400"
+            className="w-full bg-black/30 border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-400"
           />
         </div>
 
@@ -142,7 +142,7 @@ export default function CampaignForm({
           <select
             value={form.format}
             onChange={(e) => handleChange("format", e.target.value)}
-            className="w-full bg-black/30 border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-400"
+            className="w-full bg-black/30 border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-400"
           >
             <option value="">Select format...</option>
             {FORMAT_OPTIONS.map((format) => (
@@ -209,7 +209,7 @@ export default function CampaignForm({
         <button
           onClick={handleSubmit}
           disabled={isSaving}
-          className="flex-1 py-2.5 rounded-lg bg-gradient-to-r from-purple-500 to-blue-400 text-black font-semibold text-sm hover:opacity-90 transition disabled:opacity-50"
+          className="flex-1 py-2.5 rounded-lg bg-gradient-to-r from-violet-500 via-indigo-500 to-cyan-400 text-black font-semibold text-sm hover:opacity-90 transition disabled:opacity-50"
         >
           {isSaving ? "Saving..." : "Save Changes"}
         </button>

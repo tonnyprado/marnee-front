@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import Logo from "./Logo";
+import { getAuthSession, setAuthSession } from "../services/api";
 
 const navItems = [
   { id: "branding-test", label: "Branding Test", icon: "sparkles", path: "/brand-test/intro" },
@@ -35,6 +36,14 @@ const icons = {
 
 export default function Navbar({ active = "ai-content" }) {
   const navigate = useNavigate();
+  const session = getAuthSession();
+  const displayName = session?.name || session?.email || "User";
+  const initials = displayName
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0].toUpperCase())
+    .join("");
 
   return (
     <aside className="w-72 bg-white text-gray-900 flex flex-col h-screen border-r border-gray-100">
@@ -63,11 +72,11 @@ export default function Navbar({ active = "ai-content" }) {
               onClick={() => navigate(item.path)}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left transition ${
                 isActive
-                  ? "bg-purple-50 text-purple-700 border border-purple-100"
+                  ? "bg-violet-50 text-violet-700 border border-violet-100"
                   : "text-gray-600 hover:bg-gray-50"
               }`}
             >
-              <span className={isActive ? "text-purple-500" : "text-gray-400"}>
+              <span className={isActive ? "text-violet-500" : "text-gray-400"}>
                 {icons[item.icon]}
               </span>
               <span className="text-sm font-medium">{item.label}</span>
@@ -79,24 +88,28 @@ export default function Navbar({ active = "ai-content" }) {
       {/* User box */}
       <div className="mt-auto border-t border-gray-100 px-5 py-4">
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 text-white flex items-center justify-center text-sm font-semibold">
-            DN
+          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-500 via-indigo-500 to-cyan-500 text-white flex items-center justify-center text-sm font-semibold">
+            {initials || "U"}
           </div>
           <div>
-            <p className="text-sm font-semibold text-gray-900">Diana Nonea</p>
-            <p className="text-xs text-gray-500">Pro Plan</p>
+            <p className="text-sm font-semibold text-gray-900">{displayName}</p>
+            <p className="text-xs text-gray-500">{session?.email || "Free Plan"}</p>
           </div>
         </div>
 
         <div className="space-y-2 text-sm text-gray-500">
-          <button className="block hover:text-purple-600 transition">Profile Settings</button>
-          <button className="block hover:text-purple-600 transition">Billing & Plans</button>
-          <button className="block hover:text-purple-600 transition">Notifications</button>
-          <button className="block hover:text-purple-600 transition">Help & Support</button>
+          <button className="block hover:text-violet-600 transition">Profile Settings</button>
+          <button className="block hover:text-violet-600 transition">Billing & Plans</button>
+          <button className="block hover:text-violet-600 transition">Notifications</button>
+          <button className="block hover:text-violet-600 transition">Help & Support</button>
         </div>
 
         <button
-          onClick={() => navigate("/auth")}
+          onClick={() => {
+            setAuthSession(null);
+            window.dispatchEvent(new CustomEvent("app-logout"));
+            navigate("/auth");
+          }}
           className="mt-4 text-sm text-red-500 hover:text-red-600 transition"
         >
           Logout

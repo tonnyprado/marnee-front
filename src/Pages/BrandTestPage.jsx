@@ -340,7 +340,7 @@ export default function BrandTestPage() {
       const value = answers[s.field];
       if (value !== undefined && value !== null && value !== '') {
         if (s.type === 'multiSelect' && Array.isArray(value)) {
-          payload[s.field] = value.map((v) => v.toLowerCase().replace(/\s+/g, '_'));
+          payload[s.field] = value;
         } else if (s.type === 'radio' && typeof value === 'string') {
           payload[s.field] = value;
         } else {
@@ -402,13 +402,13 @@ export default function BrandTestPage() {
                   onClick={() => handleRadioSelect(option.value)}
                   className={`w-full text-left border rounded-xl px-5 py-4 flex items-center gap-3 transition ${
                     selected
-                      ? "border-purple-400 bg-purple-50"
-                      : "border-gray-200 hover:border-purple-200 hover:bg-purple-50/50"
+                      ? "border-violet-400 bg-violet-50"
+                      : "border-gray-200 hover:border-violet-200 hover:bg-violet-50/50"
                   }`}
                 >
                   <span
                     className={`w-5 h-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center ${
-                      selected ? "border-purple-500 bg-purple-500" : "border-gray-300"
+                      selected ? "border-violet-500 bg-violet-500" : "border-gray-300"
                     }`}
                   >
                     {selected && <span className="w-2 h-2 bg-white rounded-full" />}
@@ -434,8 +434,8 @@ export default function BrandTestPage() {
                     onClick={() => handleMultiSelect(option)}
                     className={`px-4 py-2 rounded-full border text-sm transition ${
                       isSelected
-                        ? "border-purple-400 bg-purple-100 text-purple-700"
-                        : "border-gray-200 hover:border-purple-200 text-gray-600 hover:bg-purple-50"
+                        ? "border-violet-400 bg-violet-100 text-violet-700"
+                        : "border-gray-200 hover:border-violet-200 text-gray-600 hover:bg-violet-50"
                     }`}
                   >
                     {option}
@@ -458,7 +458,7 @@ export default function BrandTestPage() {
             onChange={(e) => handleTextChange(e.target.value)}
             placeholder={step.placeholder}
             rows={4}
-            className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent resize-none transition"
+            className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent resize-none transition"
           />
         );
 
@@ -472,11 +472,11 @@ export default function BrandTestPage() {
               max={step.max}
               value={sliderValue}
               onChange={(e) => handleSliderChange(e.target.value)}
-              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-purple-500"
+              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-violet-500"
             />
             <div className="flex justify-between text-sm text-gray-500">
               <span>{step.min}</span>
-              <span className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent">{sliderValue}</span>
+              <span className="text-3xl font-bold bg-gradient-to-r from-violet-600 via-indigo-500 to-cyan-500 bg-clip-text text-transparent">{sliderValue}</span>
               <span>{step.max}</span>
             </div>
           </div>
@@ -510,15 +510,15 @@ export default function BrandTestPage() {
               <div
                 key={section}
                 className={`rounded-xl p-3 cursor-pointer transition ${
-                  isActive ? "bg-purple-100 border border-purple-200" : "hover:bg-gray-100"
+                  isActive ? "bg-violet-100 border border-violet-200" : "hover:bg-gray-100"
                 }`}
                 onClick={() => setCurrentStep(sectionStart)}
               >
                 <div className="flex justify-between items-center">
-                  <p className={`text-sm ${isActive ? 'text-purple-700 font-medium' : 'text-gray-600'}`}>
+                  <p className={`text-sm ${isActive ? 'text-violet-700 font-medium' : 'text-gray-600'}`}>
                     {section}
                   </p>
-                  <span className={`text-xs ${isActive ? 'text-purple-500' : 'text-gray-400'}`}>
+                  <span className={`text-xs ${isActive ? 'text-violet-500' : 'text-gray-400'}`}>
                     {completedInSection}/{sectionSteps.length}
                   </span>
                 </div>
@@ -534,7 +534,7 @@ export default function BrandTestPage() {
           </div>
           <div className="w-full h-2 bg-gray-200 rounded-full">
             <div
-              className="h-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full transition-all"
+              className="h-2 bg-gradient-to-r from-violet-500 via-indigo-500 to-cyan-400 rounded-full transition-all"
               style={{ width: `${progress}%` }}
             />
           </div>
@@ -547,7 +547,7 @@ export default function BrandTestPage() {
         <div className="max-w-3xl mx-auto w-full pt-12 pb-32 px-6">
           {/* Section tag */}
           <div className="mb-4">
-            <span className="bg-purple-50 text-purple-600 px-3 py-1 rounded-full text-xs font-medium">
+            <span className="bg-violet-50 text-violet-600 px-3 py-1 rounded-full text-xs font-medium">
               {step.section} · Question {currentStep + 1}
             </span>
           </div>
@@ -584,7 +584,7 @@ export default function BrandTestPage() {
           <button
             onClick={handleNext}
             disabled={isSubmitting}
-            className={`px-6 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-pink-500 text-white font-medium text-sm hover:from-purple-700 hover:to-pink-600 transition shadow-lg shadow-purple-500/25 ${
+            className={`px-6 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 text-white font-medium text-sm hover:from-violet-700 hover:via-indigo-700 hover:to-cyan-600 transition shadow-lg shadow-violet-500/25 ${
               isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           >

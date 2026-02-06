@@ -200,8 +200,8 @@ export default function IAWebPage() {
     return (
       <div className="flex min-h-screen bg-gray-50 items-center justify-center">
         <div className="text-center p-8 bg-white rounded-2xl shadow-sm border border-gray-100 max-w-md">
-          <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg className="w-8 h-8 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="w-16 h-16 bg-violet-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg className="w-8 h-8 text-violet-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
             </svg>
           </div>
@@ -213,7 +213,7 @@ export default function IAWebPage() {
           </p>
           <a
             href="/brand-test/questions"
-            className="px-6 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-pink-500 text-white font-medium hover:from-purple-700 hover:to-pink-600 transition inline-block shadow-lg shadow-purple-500/25"
+            className="px-6 py-3 rounded-xl bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 text-white font-medium hover:from-violet-700 hover:via-indigo-700 hover:to-cyan-600 transition inline-block shadow-lg shadow-violet-500/25"
           >
             Start Brand Test
           </a>
@@ -243,7 +243,7 @@ export default function IAWebPage() {
               className={`max-w-3xl rounded-2xl px-5 py-4 ${
                 msg.from === "ai"
                   ? "bg-white border border-gray-100 text-gray-800 shadow-sm"
-                  : "ml-auto bg-gradient-to-r from-purple-600 to-pink-500 text-white"
+                  : "ml-auto bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 text-white"
               }`}
             >
               {msg.text}
@@ -268,13 +268,13 @@ export default function IAWebPage() {
         {isLoading && (
           <div className="max-w-3xl rounded-2xl px-5 py-4 bg-white border border-gray-100 shadow-sm">
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" />
+              <div className="w-2 h-2 bg-violet-400 rounded-full animate-bounce" />
               <div
-                className="w-2 h-2 bg-purple-400 rounded-full animate-bounce"
+                className="w-2 h-2 bg-violet-400 rounded-full animate-bounce"
                 style={{ animationDelay: "0.1s" }}
               />
               <div
-                className="w-2 h-2 bg-purple-400 rounded-full animate-bounce"
+                className="w-2 h-2 bg-violet-400 rounded-full animate-bounce"
                 style={{ animationDelay: "0.2s" }}
               />
             </div>
@@ -302,7 +302,7 @@ export default function IAWebPage() {
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent"
+          className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent"
           placeholder="Type your message here..."
           onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && handleSend()}
           disabled={isLoading}
@@ -311,7 +311,7 @@ export default function IAWebPage() {
           id="send-btn"
           onClick={handleSend}
           disabled={isLoading || !input.trim()}
-          className="w-12 h-12 rounded-xl bg-gradient-to-r from-purple-600 to-pink-500 flex items-center justify-center text-white hover:from-purple-700 hover:to-pink-600 transition disabled:opacity-50 shadow-lg shadow-purple-500/25"
+          className="w-12 h-12 rounded-xl bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 flex items-center justify-center text-white hover:from-violet-700 hover:via-indigo-700 hover:to-cyan-600 transition disabled:opacity-50 shadow-lg shadow-violet-500/25"
         >
           {isLoading ? (
             <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />

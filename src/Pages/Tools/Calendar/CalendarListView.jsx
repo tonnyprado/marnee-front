@@ -1,11 +1,11 @@
 import React from "react";
 
 const PILLAR_COLORS = {
-  Authority: "bg-purple-500/20 text-purple-300",
+  Authority: "bg-violet-500/20 text-violet-300",
   "Behind the scenes": "bg-blue-500/20 text-blue-300",
   Tips: "bg-green-500/20 text-green-300",
   Story: "bg-orange-500/20 text-orange-300",
-  Engagement: "bg-pink-500/20 text-pink-300",
+  Engagement: "bg-cyan-500/20 text-cyan-300",
   default: "bg-gray-500/20 text-gray-300",
 };
 
@@ -46,7 +46,7 @@ export default function CalendarListView({
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="bg-[#0c0719] border border-pink-400/60 rounded-md px-3 py-1 text-sm focus:outline-none"
+          className="bg-[#0c0719] border border-violet-400/60 rounded-md px-3 py-1 text-sm focus:outline-none"
         >
           <option value="all">All Status</option>
           <option value="draft">Draft</option>
@@ -108,7 +108,7 @@ export default function CalendarListView({
                       {post.cta && (
                         <div className="flex-shrink-0 text-right">
                           <span className="text-xs text-gray-500 block mb-1">CTA</span>
-                          <span className="text-xs text-purple-300 bg-purple-500/10 px-2 py-1 rounded">
+                          <span className="text-xs text-violet-300 bg-violet-500/10 px-2 py-1 rounded">
                             {post.cta}
                           </span>
                         </div>

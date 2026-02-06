@@ -1,26 +1,98 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Logo from "../Component/Logo";
+import { api, getAuthSession, setAuthSession } from "../services/api";
 
 export default function AuthPage() {
   const [mode, setMode] = useState("signin"); // "signin" | "signup"
+  const [form, setForm] = useState({ name: "", email: "", password: "" });
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  React.useEffect(() => {
+    const session = getAuthSession();
+    if (session?.token) {
+      navigate("/app", { replace: true });
+    }
+  }, [navigate]);
+
+  const handleChange = (field) => (e) => {
+    setForm((prev) => ({ ...prev, [field]: e.target.value }));
+  };
+
+  const isValidEmail = (value) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+
+  const validate = () => {
+    if (mode === "signup" && !form.name.trim()) {
+      return "El nombre no puede estar vacío.";
+    }
+    if (!form.email.trim() || !isValidEmail(form.email)) {
+      return "Ingresa un email válido.";
+    }
+    if (mode === "signup" && form.password.trim().length < 6) {
+      return "La contraseña debe tener mínimo 6 caracteres.";
+    }
+    if (mode === "signin" && !form.password.trim()) {
+      return "La contraseña no puede estar vacía.";
+    }
+    return "";
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    window.location.href = "/app";
+    setError("");
+    const validationError = validate();
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const payload =
+        mode === "signup"
+          ? {
+              name: form.name.trim(),
+              email: form.email.trim(),
+              password: form.password,
+            }
+          : { email: form.email.trim(), password: form.password };
+
+      const response =
+        mode === "signup"
+          ? await api.register(payload)
+          : await api.login(payload);
+
+      setAuthSession({
+        token: response.token,
+        type: response.type,
+        userId: response.userId,
+        email: response.email,
+        name: response.name,
+      });
+
+      navigate("/app");
+    } catch (err) {
+      setError(err.message || "Ocurrió un error. Intenta de nuevo.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 relative flex items-center justify-center px-4">
+    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-cyan-50 relative flex items-center justify-center px-4">
       {/* Decorative blobs */}
-      <div className="pointer-events-none absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-purple-200 to-pink-200 rounded-full blur-3xl opacity-40" />
-      <div className="pointer-events-none absolute bottom-0 left-0 w-72 h-72 bg-gradient-to-br from-blue-200 to-purple-200 rounded-full blur-3xl opacity-30" />
+      <div className="pointer-events-none absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-violet-200 via-indigo-200 to-cyan-200 rounded-full blur-3xl opacity-40" />
+      <div className="pointer-events-none absolute bottom-0 left-0 w-72 h-72 bg-gradient-to-br from-indigo-200 to-cyan-200 rounded-full blur-3xl opacity-30" />
 
       {/* Card */}
       <div className="relative z-10 w-full max-w-md bg-white border border-gray-100 rounded-3xl p-8 shadow-xl">
         {/* Logo */}
         <div className="flex flex-col items-center mb-8">
           <Logo dark={true} size="large" />
-          <div className="h-0.5 w-16 bg-gradient-to-r from-transparent via-purple-300 to-transparent mt-4" />
+          <div className="h-0.5 w-16 bg-gradient-to-r from-transparent via-violet-300 to-transparent mt-4" />
         </div>
 
         {/* Title */}
@@ -34,6 +106,29 @@ export default function AuthPage() {
         </p>
 
         <form className="space-y-5" onSubmit={handleSubmit}>
+          {error && (
+            <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+              {error}
+            </div>
+          )}
+
+          {/* Name (Sign up) */}
+          {mode === "signup" && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                Name
+              </label>
+              <input
+                type="text"
+                required
+                placeholder="Enter your name"
+                value={form.name}
+                onChange={handleChange("name")}
+                className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition"
+              />
+            </div>
+          )}
+
           {/* Email */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1.5">
@@ -43,7 +138,9 @@ export default function AuthPage() {
               type="email"
               required
               placeholder="Enter your email"
-              className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+              value={form.email}
+              onChange={handleChange("email")}
+              className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition"
             />
           </div>
 
@@ -56,34 +153,22 @@ export default function AuthPage() {
               type="password"
               required
               placeholder="Enter your password"
-              className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+              value={form.password}
+              onChange={handleChange("password")}
+              className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition"
             />
           </div>
-
-          {/* Extra field only on Sign up */}
-          {mode === "signup" && (
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                Brand / Company name (optional)
-              </label>
-              <input
-                type="text"
-                placeholder="Marnee Studio, DNHub, etc."
-                className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
-              />
-            </div>
-          )}
 
           {/* Remember + Forgot */}
           {mode === "signin" && (
             <div className="flex items-center justify-between">
               <label className="flex items-center gap-2 text-sm text-gray-600">
-                <input type="checkbox" className="accent-purple-500 rounded" />
+                <input type="checkbox" className="accent-violet-500 rounded" />
                 Remember me
               </label>
               <button
                 type="button"
-                className="text-sm text-purple-600 hover:text-purple-700 font-medium"
+                className="text-sm text-violet-600 hover:text-violet-700 font-medium"
               >
                 Forgot password?
               </button>
@@ -93,9 +178,14 @@ export default function AuthPage() {
           {/* Submit */}
           <button
             type="submit"
-            className="w-full bg-gradient-to-r from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600 text-white font-medium py-3 rounded-xl transition shadow-lg shadow-purple-500/25"
+            disabled={loading}
+            className="w-full bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 hover:from-violet-700 hover:via-indigo-700 hover:to-cyan-600 text-white font-medium py-3 rounded-xl transition shadow-lg shadow-violet-500/25"
           >
-            {mode === "signin" ? "Log in" : "Create account"}
+            {loading
+              ? "Processing..."
+              : mode === "signin"
+              ? "Log in"
+              : "Create account"}
           </button>
 
           {/* Divider */}
@@ -136,10 +226,11 @@ export default function AuthPage() {
         <p className="text-center text-sm text-gray-500 mt-6">
           {mode === "signin" ? "Don't have an account? " : "Already registered? "}
           <button
-            onClick={() =>
-              setMode((prev) => (prev === "signin" ? "signup" : "signin"))
-            }
-            className="text-purple-600 hover:text-purple-700 font-medium"
+            onClick={() => {
+              setMode((prev) => (prev === "signin" ? "signup" : "signin"));
+              setError("");
+            }}
+            className="text-violet-600 hover:text-violet-700 font-medium"
           >
             {mode === "signin" ? "Sign up" : "Sign in"}
           </button>

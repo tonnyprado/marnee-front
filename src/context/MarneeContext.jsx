@@ -90,6 +90,14 @@ export function MarneeProvider({ children }) {
     setWelcomeMessage(null);
   };
 
+  useEffect(() => {
+    const handleLogout = () => {
+      clearSession();
+    };
+    window.addEventListener('app-logout', handleLogout);
+    return () => window.removeEventListener('app-logout', handleLogout);
+  }, []);
+
   // Get messages in API format
   const getMessagesForApi = () => {
     return messages.map((m) => ({

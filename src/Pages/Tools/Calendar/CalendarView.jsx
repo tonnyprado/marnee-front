@@ -3,11 +3,11 @@ import React, { useState } from "react";
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 const PILLAR_COLORS = {
-  Authority: "bg-purple-500/20 text-purple-300 border-purple-500/30",
+  Authority: "bg-violet-500/20 text-violet-300 border-violet-500/30",
   "Behind the scenes": "bg-blue-500/20 text-blue-300 border-blue-500/30",
   Tips: "bg-green-500/20 text-green-300 border-green-500/30",
   Story: "bg-orange-500/20 text-orange-300 border-orange-500/30",
-  Engagement: "bg-pink-500/20 text-pink-300 border-pink-500/30",
+  Engagement: "bg-cyan-500/20 text-cyan-300 border-cyan-500/30",
   default: "bg-gray-500/20 text-gray-300 border-gray-500/30",
 };
 
@@ -89,7 +89,7 @@ export default function CalendarView({
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="bg-[#0c0719] border border-pink-400/60 rounded-md px-3 py-1 text-sm focus:outline-none"
+            className="bg-[#0c0719] border border-violet-400/60 rounded-md px-3 py-1 text-sm focus:outline-none"
           >
             <option value="all">All Status</option>
             <option value="draft">Draft</option>
@@ -128,7 +128,7 @@ export default function CalendarView({
               <div
                 key={idx}
                 className={`min-h-[120px] border-r border-b border-white/5 last:border-r-0 relative ${
-                  isToday ? "bg-purple-500/5" : ""
+                  isToday ? "bg-violet-500/5" : ""
                 }`}
               >
                 <div className="p-2">
@@ -136,7 +136,7 @@ export default function CalendarView({
                     <div
                       className={`text-sm font-semibold mb-1 ${
                         isToday
-                          ? "w-7 h-7 rounded-full bg-purple-500 text-white flex items-center justify-center"
+                          ? "w-7 h-7 rounded-full bg-violet-500 text-white flex items-center justify-center"
                           : "text-white"
                       }`}
                     >
