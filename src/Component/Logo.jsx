@@ -55,8 +55,8 @@ export default function Logo({ dark = true, size = "default" }) {
       </svg>
       {/* Wordmark */}
       <span className={`${text} tracking-tight ${dark ? 'text-gray-900' : 'text-white'}`}>
-        <span className="font-semibold">dn</span>
-        <span className="font-light">hub</span>
+        <span className="font-semibold">DN</span>
+        <span className="font-light">Hub</span>
       </span>
     </div>
   );

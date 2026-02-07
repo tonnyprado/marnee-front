@@ -167,7 +167,7 @@ export default function PresentationPage() {
     if (submitStatus === "success") {
       return (
         <div className={`flex items-center gap-3 ${className}`}>
-          <div className={`flex items-center gap-2 px-6 py-4 rounded-full ${isLight ? 'bg-[#ff5f9e]/10 text-[#b3005e]' : 'bg-white/20 text-white'}`}>
+          <div className={`flex items-center gap-2 px-6 py-4 rounded-full ${isLight ? 'bg-[#c7ccfe]/10 text-[#65589C]' : 'bg-white/20 text-white'}`}>
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
             </svg>
@@ -179,7 +179,7 @@ export default function PresentationPage() {
 
     return (
       <form onSubmit={handleWaitlistSubmit} className={`${className}`}>
-        <div className={`flex flex-col sm:flex-row gap-3 p-3 sm:p-2 rounded-2xl sm:rounded-full ${isLight ? 'bg-white shadow-xl shadow-[#060047]/10 border border-gray-100 glass-card' : 'bg-white/10 backdrop-blur-sm border border-white/20 glass-card-dark'}`}>
+        <div className={`flex flex-col sm:flex-row gap-3 p-3 sm:p-2 rounded-2xl sm:rounded-full ${isLight ? 'bg-white shadow-xl shadow-[#3a2e81]/10 border border-gray-100 glass-card' : 'bg-white/10 backdrop-blur-sm border border-white/20 glass-card-dark'}`}>
           <input
             type="email"
             value={email}
@@ -193,8 +193,8 @@ export default function PresentationPage() {
             disabled={isSubmitting}
             className={`px-8 py-3 rounded-xl sm:rounded-full font-medium text-base transition whitespace-nowrap disabled:opacity-50 ${
               isLight
-                ? 'bg-gradient-to-r from-[#ff5f9e] to-[#e90064] hover:from-[#e90064] hover:to-[#b3005e] text-white shadow-lg shadow-[#ff5f9e]/30'
-                : 'bg-white text-[#e90064] hover:bg-gray-100'
+                ? 'bg-gradient-to-r from-[#c7ccfe] to-[#6f63f1] hover:from-[#6f63f1] hover:to-[#6046e5] text-white shadow-lg shadow-[#c7ccfe]/30'
+                : 'bg-white text-[#65589C] hover:bg-gray-100'
             }`}
           >
             {isSubmitting ? (
@@ -208,7 +208,7 @@ export default function PresentationPage() {
           </button>
         </div>
         {submitStatus === "error" && (
-          <p className={`mt-3 text-sm ${isLight ? 'text-[#e90064]' : 'text-[#ff5f9e]/70'}`}>{errorMessage}</p>
+          <p className={`mt-3 text-sm ${isLight ? 'text-[#65589C]' : 'text-[rgba(203,188,198,0.98)]'}`}>{errorMessage}</p>
         )}
       </form>
     );
@@ -225,23 +225,23 @@ export default function PresentationPage() {
         body.no-scrollbar::-webkit-scrollbar { width: 0; height: 0; }
         .glass-page {
           background:
-            radial-gradient(circle at 20% 10%, rgba(255, 95, 158, 0.18), transparent 55%),
-            radial-gradient(circle at 80% 20%, rgba(233, 0, 100, 0.16), transparent 50%),
-            radial-gradient(circle at 50% 90%, rgba(6, 0, 71, 0.22), transparent 55%);
+            radial-gradient(circle at 20% 10%, rgba(199, 204, 254, 0.18), transparent 55%),
+            radial-gradient(circle at 80% 20%, rgba(111, 99, 241, 0.16), transparent 50%),
+            radial-gradient(circle at 50% 90%, rgba(58, 46, 129, 0.22), transparent 55%);
         }
         .glass-card {
           background: linear-gradient(135deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.05));
           border: 1px solid rgba(255, 255, 255, 0.28);
           box-shadow:
-            0 20px 60px rgba(6, 0, 71, 0.22),
+            0 20px 60px rgba(58, 46, 129, 0.22),
             inset 0 1px 0 rgba(255, 255, 255, 0.35);
           backdrop-filter: blur(18px) saturate(160%);
         }
         .glass-card-dark {
-          background: linear-gradient(135deg, rgba(6, 0, 71, 0.45), rgba(179, 0, 94, 0.25));
+          background: linear-gradient(135deg, rgba(58, 46, 129, 0.45), rgba(96, 70, 229, 0.25));
           border: 1px solid rgba(255, 255, 255, 0.16);
           box-shadow:
-            0 22px 70px rgba(6, 0, 71, 0.35),
+            0 22px 70px rgba(58, 46, 129, 0.35),
             inset 0 1px 0 rgba(255, 255, 255, 0.2);
           backdrop-filter: blur(20px) saturate(140%);
         }
@@ -306,11 +306,11 @@ export default function PresentationPage() {
       `}</style>
 
       {/* Hero Section - Full Screen */}
-      <section data-reveal="up" data-snap className="min-h-screen flex flex-col justify-center px-6 md:px-12 lg:px-16 xl:px-24 pt-6 sm:pt-8 pb-10 sm:pb-20 relative overflow-hidden bg-gradient-to-br from-[#060047] via-[#7a1a60] to-[#ff5f9e]">
+      <section data-reveal="up" data-snap className="min-h-screen flex flex-col justify-center px-6 md:px-12 lg:px-16 xl:px-24 pt-6 sm:pt-8 pb-10 sm:pb-20 relative overflow-hidden bg-gradient-to-br from-[#3a2e81] via-[#4632a9] to-[#c7ccfe]">
         <div className="absolute inset-0 bg-white/5" />
         {/* Background decorations */}
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-[#ff5f9e]/20 via-[#e90064]/10 to-transparent rounded-full blur-3xl -z-10" />
-        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gradient-to-tr from-[#060047]/20 via-[#b3005e]/10 to-transparent rounded-full blur-3xl -z-10" />
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-[#c7ccfe]/20 via-[#6f63f1]/10 to-transparent rounded-full blur-3xl -z-10" />
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gradient-to-tr from-[#3a2e81]/20 via-[#6046e5]/10 to-transparent rounded-full blur-3xl -z-10" />
 
         {/* Hero Logo - Large and prominent */}
         <div
@@ -330,7 +330,7 @@ export default function PresentationPage() {
             <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 sm:mb-6 leading-tight tracking-tight text-white">
               Stop guessing.
               <br />
-              <span className="bg-gradient-to-br from-[#ff5f9e] via-[#e90064] to-[#b3005e] bg-clip-text text-transparent">
+              <span className="bg-gradient-to-br from-[#6046e5] via-[#6f63f1] to-[#eef0ff] bg-clip-text text-transparent">
                 Start scaling.
               </span>
             </h1>
@@ -341,14 +341,14 @@ export default function PresentationPage() {
                 alt="Marnee mascot"
                 className="lg:hidden float-right ml-3 mb-2 w-28 sm:w-36 drop-shadow-2xl pointer-events-none"
               />
-              <p className="text-sm sm:text-lg md:text-xl leading-relaxed text-[#ff5f9e]/85">
+              <p className="text-sm sm:text-lg md:text-xl leading-relaxed text-[rgba(203,188,198,0.98)]">
                 DNHub turns social signals into marketing decisions. What to post, when, and why, tailored to your brand.
               </p>
             </div>
 
             <button
               onClick={() => scrollToSection("how-it-works")}
-              className="bg-gradient-to-r from-[#ff5f9e] to-[#e90064] hover:from-[#e90064] hover:to-[#b3005e] text-white px-7 sm:px-10 py-3.5 sm:py-5 rounded-full font-semibold text-sm sm:text-lg transition shadow-xl shadow-[#ff5f9e]/30 hover:scale-105"
+              className="bg-gradient-to-r from-[#c7ccfe] to-[#6f63f1] hover:from-[#6f63f1] hover:to-[#6046e5] text-white px-7 sm:px-10 py-3.5 sm:py-5 rounded-full font-semibold text-sm sm:text-lg transition shadow-xl shadow-[#c7ccfe]/30 hover:scale-105"
             >
               See how it works
             </button>
@@ -374,8 +374,8 @@ export default function PresentationPage() {
             {/* GIF container with decorative elements */}
             <div className="relative">
               {/* Decorative background shapes */}
-              <div className="absolute -top-8 -right-8 w-full h-full bg-gradient-to-br from-[#ff5f9e]/30 to-[#e90064]/20 rounded-3xl transform rotate-3" />
-              <div className="absolute -bottom-8 -left-8 w-full h-full bg-gradient-to-tr from-[#e90064]/20 to-[#ff5f9e]/10 rounded-3xl transform -rotate-2" />
+              <div className="absolute -top-8 -right-8 w-full h-full bg-gradient-to-br from-[#c7ccfe]/30 to-[#6f63f1]/20 rounded-3xl transform rotate-3" />
+              <div className="absolute -bottom-8 -left-8 w-full h-full bg-gradient-to-tr from-[#6f63f1]/20 to-[#c7ccfe]/10 rounded-3xl transform -rotate-2" />
 
               {/* Main Video - autoplay, loop, no controls */}
               <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-white/10 bg-white glass-card">
@@ -408,7 +408,7 @@ export default function PresentationPage() {
         {/* Scroll indicator - hidden on mobile */}
         <button
           onClick={() => scrollToSection("problem")}
-          className="hidden md:flex absolute bottom-10 left-1/2 -translate-x-1/2 flex-col items-center text-[#ff5f9e]/60 hover:text-white transition cursor-pointer"
+          className="hidden md:flex absolute bottom-10 left-1/2 -translate-x-1/2 flex-col items-center text-[rgba(203,188,198,0.98)] hover:text-white transition cursor-pointer"
         >
           <span className="text-xs mb-2 uppercase tracking-widest">Scroll</span>
           <div className="w-6 h-10 border-2 border-current rounded-full flex justify-center pt-2">
@@ -428,15 +428,15 @@ export default function PresentationPage() {
         <div className="max-w-6xl mx-auto w-full">
           <div className="grid md:grid-cols-2 gap-16 items-center">
             <div>
-              <span className="text-[#ff5f9e] font-medium text-sm uppercase tracking-widest mb-4 block">The Problem</span>
+              <span className="text-[#65589C] font-medium text-sm uppercase tracking-widest mb-4 block">The Problem</span>
               <h2 className="text-4xl md:text-5xl font-bold mb-8 leading-tight">
                 Marketing shouldn't feel like
                 <span className="text-gray-400"> throwing darts in the dark</span>
               </h2>
               <div className="space-y-6">
                 <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 bg-[#ff5f9e]/15 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                    <svg className="w-4 h-4 text-[#e90064]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-8 h-8 bg-[#c7ccfe]/15 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                    <svg className="w-4 h-4 text-[#65589C]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </div>
@@ -446,8 +446,8 @@ export default function PresentationPage() {
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 bg-[#ff5f9e]/15 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                    <svg className="w-4 h-4 text-[#e90064]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-8 h-8 bg-[#c7ccfe]/15 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                    <svg className="w-4 h-4 text-[#65589C]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </div>
@@ -457,8 +457,8 @@ export default function PresentationPage() {
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 bg-[#ff5f9e]/15 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                    <svg className="w-4 h-4 text-[#e90064]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-8 h-8 bg-[#c7ccfe]/15 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                    <svg className="w-4 h-4 text-[#65589C]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </div>
@@ -473,19 +473,19 @@ export default function PresentationPage() {
             {/* Stats */}
             <div className="grid grid-cols-2 gap-6">
               <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 text-center glass-card">
-                <div className="text-4xl font-bold bg-gradient-to-br from-[#ff5f9e] via-[#e90064] to-[#b3005e] bg-clip-text text-transparent mb-2">73%</div>
+                <div className="text-4xl font-bold bg-gradient-to-br from-[#6046e5] via-[#6f63f1] to-[#eef0ff] bg-clip-text text-transparent mb-2">73%</div>
                 <p className="text-gray-600 text-sm">of founders struggle with content strategy</p>
               </div>
               <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 text-center glass-card">
-                <div className="text-4xl font-bold bg-gradient-to-br from-[#ff5f9e] via-[#e90064] to-[#b3005e] bg-clip-text text-transparent mb-2">15h</div>
+                <div className="text-4xl font-bold bg-gradient-to-br from-[#6046e5] via-[#6f63f1] to-[#eef0ff] bg-clip-text text-transparent mb-2">15h</div>
                 <p className="text-gray-600 text-sm">average weekly time spent on content planning</p>
               </div>
               <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 text-center glass-card">
-                <div className="text-4xl font-bold bg-gradient-to-br from-[#ff5f9e] via-[#e90064] to-[#b3005e] bg-clip-text text-transparent mb-2">60%</div>
+                <div className="text-4xl font-bold bg-gradient-to-br from-[#6046e5] via-[#6f63f1] to-[#eef0ff] bg-clip-text text-transparent mb-2">60%</div>
                 <p className="text-gray-600 text-sm">of social posts underperform expectations</p>
               </div>
               <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 text-center glass-card">
-                <div className="text-4xl font-bold bg-gradient-to-br from-[#ff5f9e] via-[#e90064] to-[#b3005e] bg-clip-text text-transparent mb-2">$0</div>
+                <div className="text-4xl font-bold bg-gradient-to-br from-[#6046e5] via-[#6f63f1] to-[#eef0ff] bg-clip-text text-transparent mb-2">$0</div>
                 <p className="text-gray-600 text-sm">budget for expensive marketing agencies</p>
               </div>
             </div>
@@ -494,7 +494,7 @@ export default function PresentationPage() {
       </section>
 
       {/* Solution Section - Full Screen */}
-      <section data-reveal="right" data-snap className="min-h-screen flex items-center bg-gradient-to-br from-[#060047] via-[#b3005e] to-[#e90064] px-6 md:px-12 py-20 relative overflow-hidden">
+      <section data-reveal="right" data-snap className="min-h-screen flex items-center bg-gradient-to-br from-[#3a2e81] via-[#6046e5] to-[#6f63f1] px-6 md:px-12 py-20 relative overflow-hidden">
         {/* Background pattern */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-20 left-20 w-40 h-40 border border-white rounded-full" />
@@ -504,11 +504,11 @@ export default function PresentationPage() {
 
         <div className="max-w-6xl mx-auto w-full relative z-10">
           <div className="text-center mb-16">
-            <span className="text-[#ff5f9e] font-medium text-sm uppercase tracking-widest mb-4 block">The Solution</span>
+            <span className="text-[rgba(203,188,198,0.98)] font-medium text-sm uppercase tracking-widest mb-4 block">The Solution</span>
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
               DNHub gives you clarity, not complexity
             </h2>
-            <p className="text-[#ff5f9e]/85 text-xl max-w-2xl mx-auto">
+            <p className="text-[rgba(203,188,198,0.98)] text-xl max-w-2xl mx-auto">
               We analyze what's working in your niche and turn it into a personalized strategy you can actually execute.
             </p>
           </div>
@@ -516,36 +516,36 @@ export default function PresentationPage() {
           <div className="grid md:grid-cols-3 gap-8">
             <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-8 border border-white/20 hover:bg-white/20 transition glass-card-dark">
               <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-6">
-                <svg className="w-7 h-7 text-[#ff5f9e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-7 h-7 text-[rgba(203,188,198,0.98)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                 </svg>
               </div>
               <h3 className="text-white font-semibold text-xl mb-3">AI-Powered Research</h3>
-              <p className="text-[#ff5f9e]/80">
+              <p className="text-[rgba(203,188,198,0.98)]">
                 We scan thousands of posts in your niche to find what's actually working right now.
               </p>
             </div>
 
             <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-8 border border-white/20 hover:bg-white/20 transition glass-card-dark">
               <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-6">
-                <svg className="w-7 h-7 text-[#ff5f9e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-7 h-7 text-[rgba(203,188,198,0.98)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
               </div>
               <h3 className="text-white font-semibold text-xl mb-3">Brand-First Strategy</h3>
-              <p className="text-[#ff5f9e]/80">
+              <p className="text-[rgba(203,188,198,0.98)]">
                 Every suggestion is tailored to your unique tone, audience, and positioning.
               </p>
             </div>
 
             <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-8 border border-white/20 hover:bg-white/20 transition glass-card-dark">
               <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-6">
-                <svg className="w-7 h-7 text-[#ff5f9e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-7 h-7 text-[rgba(203,188,198,0.98)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
                 </svg>
               </div>
               <h3 className="text-white font-semibold text-xl mb-3">Ready-to-Execute Plans</h3>
-              <p className="text-[#ff5f9e]/80">
+              <p className="text-[rgba(203,188,198,0.98)]">
                 Get complete content briefs with hooks, angles, and visual direction.
               </p>
             </div>
@@ -565,7 +565,7 @@ export default function PresentationPage() {
         />
         <div className="max-w-6xl mx-auto w-full">
           <div className="text-center mb-20">
-            <span className="text-[#ff5f9e] font-medium text-sm uppercase tracking-widest mb-4 block">How it works</span>
+            <span className="text-[#65589C] font-medium text-sm uppercase tracking-widest mb-4 block">How it works</span>
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
               Three steps to <span className="font-serif italic">marketing clarity</span>
             </h2>
@@ -587,15 +587,15 @@ export default function PresentationPage() {
               {/* Step 1 */}
               <div className="relative">
                 <div className="bg-white rounded-3xl p-8 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow h-full glass-card">
-                  <div className="w-16 h-16 bg-gradient-to-r from-[#ff5f9e] to-[#e90064] rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-[#ff5f9e]/30">
+                  <div className="w-16 h-16 bg-gradient-to-r from-[#c7ccfe] to-[#6f63f1] rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-[#c7ccfe]/30">
                     <span className="text-white font-bold text-2xl">1</span>
                   </div>
                   <h3 className="font-bold text-2xl mb-4">Define your brand</h3>
                   <p className="text-gray-600 mb-6">
                     Complete our branding tests. We match your answers with real-time social media research from your niche.
                   </p>
-                  <div className="bg-[#ff5f9e]/8 rounded-xl p-4">
-                    <p className="text-[#b3005e] text-sm font-medium">
+                  <div className="bg-[#c7ccfe]/8 rounded-xl p-4">
+                    <p className="text-[#65589C] text-sm font-medium">
                       Your goals, tone, audience & positioning meet what's actually working.
                     </p>
                   </div>
@@ -605,17 +605,17 @@ export default function PresentationPage() {
               {/* Step 2 */}
               <div className="relative">
                 <div className="bg-white rounded-3xl p-8 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow h-full glass-card">
-                  <div className="w-16 h-16 bg-gradient-to-r from-[#e90064] to-[#b3005e] rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-[#e90064]/30">
+                  <div className="w-16 h-16 bg-gradient-to-r from-[#6f63f1] to-[#6046e5] rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-[#6f63f1]/30">
                     <span className="text-white font-bold text-2xl">2</span>
                   </div>
                   <h3 className="font-bold text-2xl mb-4">
-                    <span className="font-serif italic text-[#ff5f9e]">Marnee</span> builds your strategy
+                    <span className="font-serif italic text-[#65589C]">Marnee</span> builds your strategy
                   </h3>
                   <p className="text-gray-600 mb-6">
                     Our AI consultant guides you through the entire process. She suggests angles, formats, hooks and explains why.
                   </p>
-                  <div className="bg-[#e90064]/8 rounded-xl p-4">
-                    <p className="text-[#b3005e] text-sm font-medium">
+                  <div className="bg-[#6f63f1]/8 rounded-xl p-4">
+                    <p className="text-[#65589C] text-sm font-medium">
                       You approve, tweak or discard. You stay in control.
                     </p>
                   </div>
@@ -625,15 +625,15 @@ export default function PresentationPage() {
               {/* Step 3 */}
               <div className="relative">
                 <div className="bg-white rounded-3xl p-8 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow h-full glass-card">
-                  <div className="w-16 h-16 bg-gradient-to-r from-[#ff5f9e] to-[#e90064] rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-[#ff5f9e]/30">
+                  <div className="w-16 h-16 bg-gradient-to-r from-[#c7ccfe] to-[#6f63f1] rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-[#c7ccfe]/30">
                     <span className="text-white font-bold text-2xl">3</span>
                   </div>
                   <h3 className="font-bold text-2xl mb-4">Execute from your dashboard</h3>
                   <p className="text-gray-600 mb-6">
                     All approved decisions live in your DNHub dashboard. View as calendar or kanban board.
                   </p>
-                  <div className="bg-gradient-to-r from-[#ff5f9e]/8 to-[#e90064]/8 rounded-xl p-4">
-                    <p className="bg-gradient-to-br from-[#ff5f9e] via-[#e90064] to-[#b3005e] bg-clip-text text-transparent text-sm font-medium">
+                  <div className="bg-gradient-to-r from-[#c7ccfe]/8 to-[#6f63f1]/8 rounded-xl p-4">
+                    <p className="bg-gradient-to-br from-[#6046e5] via-[#6f63f1] to-[#eef0ff] bg-clip-text text-transparent text-sm font-medium">
                       One clear overview. No chaos. No guesswork.
                     </p>
                   </div>
@@ -645,7 +645,7 @@ export default function PresentationPage() {
       </section>
 
       {/* Demo 1 - Brand Discovery Test */}
-      <section id="demo-test" data-reveal="right" data-snap className="min-h-screen flex items-center px-6 md:px-12 py-20 bg-gradient-to-br from-[#ff5f9e]/6 via-white to-[#e90064]/6">
+      <section id="demo-test" data-reveal="right" data-snap className="min-h-screen flex items-center px-6 md:px-12 py-20 bg-gradient-to-br from-[#c7ccfe]/6 via-white to-[#6f63f1]/6">
         <div className="max-w-6xl mx-auto w-full">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Video */}
@@ -664,19 +664,19 @@ export default function PresentationPage() {
             {/* Content */}
             <div className="order-1 lg:order-2">
               <div className="flex items-center gap-4 mb-6">
-                <div className="w-14 h-14 bg-gradient-to-r from-[#ff5f9e] to-[#e90064] rounded-2xl flex items-center justify-center shadow-lg shadow-[#ff5f9e]/30">
+                <div className="w-14 h-14 bg-gradient-to-r from-[#c7ccfe] to-[#6f63f1] rounded-2xl flex items-center justify-center shadow-lg shadow-[#c7ccfe]/30">
                   <span className="text-white font-bold text-2xl">1</span>
                 </div>
-                <span className="text-[#ff5f9e] font-medium text-sm uppercase tracking-widest">Step One</span>
+                <span className="text-[#65589C] font-medium text-sm uppercase tracking-widest">Step One</span>
               </div>
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 leading-tight">
-                Brand Discovery <span className="bg-gradient-to-br from-[#ff5f9e] via-[#e90064] to-[#b3005e] bg-clip-text text-transparent">Test</span>
+                Brand Discovery <span className="bg-gradient-to-br from-[#6046e5] via-[#6f63f1] to-[#eef0ff] bg-clip-text text-transparent">Test</span>
               </h2>
               <p className="text-gray-600 text-lg md:text-xl leading-relaxed mb-6">
                 Start by completing a quick questionnaire. Our AI learns about your brand, goals, audience, and tone to create a personalized strategy tailored just for you.
               </p>
-              <div className="bg-[#ff5f9e]/10 rounded-2xl p-5 border border-[#ff5f9e]/20">
-                <p className="text-[#b3005e] font-medium">
+              <div className="bg-[#c7ccfe]/10 rounded-2xl p-5 border border-[#c7ccfe]/20">
+                <p className="text-[#65589C] font-medium">
                   This is where your journey begins — tell us who you are, and we'll show you how to grow.
                 </p>
               </div>
@@ -692,19 +692,19 @@ export default function PresentationPage() {
             {/* Content */}
             <div>
               <div className="flex items-center gap-4 mb-6">
-                <div className="w-14 h-14 bg-gradient-to-r from-[#e90064] to-[#b3005e] rounded-2xl flex items-center justify-center shadow-lg shadow-[#e90064]/30">
+                <div className="w-14 h-14 bg-gradient-to-r from-[#6f63f1] to-[#6046e5] rounded-2xl flex items-center justify-center shadow-lg shadow-[#6f63f1]/30">
                   <span className="text-white font-bold text-2xl">2</span>
                 </div>
-                <span className="text-[#e90064] font-medium text-sm uppercase tracking-widest">Step Two</span>
+                <span className="text-[#65589C] font-medium text-sm uppercase tracking-widest">Step Two</span>
               </div>
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 leading-tight">
-                Chat with <span className="font-serif italic text-[#ff5f9e]">Marnee</span>
+                Chat with <span className="font-serif italic text-[#65589C]">Marnee</span>
               </h2>
               <p className="text-gray-600 text-lg md:text-xl leading-relaxed mb-6">
                 After the questionnaire, Marnee becomes your AI marketing consultant. She'll ask questions, understand your needs deeper, and build your complete campaign strategy.
               </p>
-              <div className="bg-[#e90064]/10 rounded-2xl p-5 border border-[#e90064]/20">
-                <p className="text-[#b3005e] font-medium">
+              <div className="bg-[#6f63f1]/10 rounded-2xl p-5 border border-[#6f63f1]/20">
+                <p className="text-[#65589C] font-medium">
                   Marnee doesn't just generate — she thinks, plans, and explains every recommendation.
                 </p>
               </div>
@@ -727,7 +727,7 @@ export default function PresentationPage() {
       </section>
 
       {/* Demo 3 - Content Calendar */}
-      <section id="demo-calendar" data-reveal="right" data-snap className="min-h-screen flex items-center px-6 md:px-12 py-20 bg-gradient-to-br from-[#e90064]/6 via-white to-[#ff5f9e]/6">
+      <section id="demo-calendar" data-reveal="right" data-snap className="min-h-screen flex items-center px-6 md:px-12 py-20 bg-gradient-to-br from-[#6f63f1]/6 via-white to-[#c7ccfe]/6">
         <div className="max-w-6xl mx-auto w-full">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Video */}
@@ -746,19 +746,19 @@ export default function PresentationPage() {
             {/* Content */}
             <div className="order-1 lg:order-2">
               <div className="flex items-center gap-4 mb-6">
-                <div className="w-14 h-14 bg-gradient-to-r from-[#ff5f9e] to-[#e90064] rounded-2xl flex items-center justify-center shadow-lg shadow-[#ff5f9e]/30">
+                <div className="w-14 h-14 bg-gradient-to-r from-[#c7ccfe] to-[#6f63f1] rounded-2xl flex items-center justify-center shadow-lg shadow-[#c7ccfe]/30">
                   <span className="text-white font-bold text-2xl">3</span>
                 </div>
-                <span className="text-[#ff5f9e] font-medium text-sm uppercase tracking-widest">Step Three</span>
+                <span className="text-[#65589C] font-medium text-sm uppercase tracking-widest">Step Three</span>
               </div>
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 leading-tight">
-                Content <span className="bg-gradient-to-br from-[#ff5f9e] via-[#e90064] to-[#b3005e] bg-clip-text text-transparent">Calendar</span>
+                Content <span className="bg-gradient-to-br from-[#6046e5] via-[#6f63f1] to-[#eef0ff] bg-clip-text text-transparent">Calendar</span>
               </h2>
               <p className="text-gray-600 text-lg md:text-xl leading-relaxed mb-6">
                 Marnee generates a complete publication calendar with dates, content ideas, and detailed instructions for each post. Everything you need to execute your strategy.
               </p>
-              <div className="bg-gradient-to-r from-[#ff5f9e]/10 to-[#e90064]/10 rounded-2xl p-5 border border-[#ff5f9e]/20">
-                <p className="bg-gradient-to-br from-[#ff5f9e] via-[#e90064] to-[#b3005e] bg-clip-text text-transparent font-medium">
+              <div className="bg-gradient-to-r from-[#c7ccfe]/10 to-[#6f63f1]/10 rounded-2xl p-5 border border-[#c7ccfe]/20">
+                <p className="bg-gradient-to-br from-[#6046e5] via-[#6f63f1] to-[#eef0ff] bg-clip-text text-transparent font-medium">
                   See your entire month at a glance — what to post, when, and exactly how.
                 </p>
               </div>
@@ -774,13 +774,13 @@ export default function PresentationPage() {
             {/* Content */}
             <div>
               <div className="flex items-center gap-4 mb-6">
-                <div className="w-14 h-14 bg-gradient-to-br from-gray-500 to-gray-600 rounded-2xl flex items-center justify-center shadow-lg shadow-[#060047]/30">
+                <div className="w-14 h-14 bg-gradient-to-br from-gray-500 to-gray-600 rounded-2xl flex items-center justify-center shadow-lg shadow-[#3a2e81]/30">
                   <span className="text-white font-bold text-2xl">4</span>
                 </div>
                 <span className="text-gray-600 font-medium text-sm uppercase tracking-widest">Coming Soon</span>
               </div>
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 leading-tight">
-                Campaign <span className="bg-gradient-to-br from-[#ff5f9e] via-[#e90064] to-[#b3005e] bg-clip-text text-transparent">Dashboard</span>
+                Campaign <span className="bg-gradient-to-br from-[#6046e5] via-[#6f63f1] to-[#eef0ff] bg-clip-text text-transparent">Dashboard</span>
               </h2>
               <p className="text-gray-600 text-lg md:text-xl leading-relaxed mb-6">
                 View all your active campaigns, track your task list, and monitor progress from a single dashboard. This feature is currently in development.
@@ -800,7 +800,7 @@ export default function PresentationPage() {
                   className="w-full aspect-video object-cover"
                 />
               </div>
-              <div className="absolute top-4 right-4 bg-[#e90064] text-white text-sm font-medium px-4 py-2 rounded-full shadow-lg">
+              <div className="absolute top-4 right-4 bg-[#6f63f1] text-white text-sm font-medium px-4 py-2 rounded-full shadow-lg">
                 In Development
               </div>
             </div>
@@ -812,16 +812,16 @@ export default function PresentationPage() {
       <section id="features" data-reveal="right" data-snap className="min-h-screen flex items-center bg-gray-50 px-6 md:px-12 py-20">
         <div className="max-w-6xl mx-auto w-full">
           <div className="text-center mb-16">
-            <span className="text-[#ff5f9e] font-medium text-sm uppercase tracking-widest mb-4 block">Features</span>
+            <span className="text-[#65589C] font-medium text-sm uppercase tracking-widest mb-4 block">Features</span>
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              Built for <span className="font-serif italic bg-gradient-to-br from-[#ff5f9e] via-[#e90064] to-[#b3005e] bg-clip-text text-transparent">speed, clarity</span> and consistency
+              Built for <span className="font-serif italic bg-gradient-to-br from-[#6046e5] via-[#6f63f1] to-[#eef0ff] bg-clip-text text-transparent">speed, clarity</span> and consistency
             </h2>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* Feature 1 */}
-            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 hover:shadow-lg hover:border-[#ff5f9e]/20 transition-all group glass-card">
-              <div className="w-14 h-14 bg-gradient-to-r from-[#ff5f9e] to-[#e90064] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 hover:shadow-lg hover:border-[#c7ccfe]/20 transition-all group glass-card">
+              <div className="w-14 h-14 bg-gradient-to-r from-[#c7ccfe] to-[#6f63f1] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                 <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                 </svg>
@@ -833,8 +833,8 @@ export default function PresentationPage() {
             </div>
 
             {/* Feature 2 */}
-            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 hover:shadow-lg hover:border-[#ff5f9e]/20 transition-all group glass-card">
-              <div className="w-14 h-14 bg-gradient-to-r from-[#ff5f9e] to-[#e90064] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 hover:shadow-lg hover:border-[#c7ccfe]/20 transition-all group glass-card">
+              <div className="w-14 h-14 bg-gradient-to-r from-[#c7ccfe] to-[#6f63f1] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                 <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                 </svg>
@@ -846,21 +846,21 @@ export default function PresentationPage() {
             </div>
 
             {/* Feature 3 */}
-            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 hover:shadow-lg hover:border-[#ff5f9e]/20 transition-all group glass-card">
-              <div className="w-14 h-14 bg-gradient-to-r from-[#ff5f9e] to-[#e90064] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 hover:shadow-lg hover:border-[#c7ccfe]/20 transition-all group glass-card">
+              <div className="w-14 h-14 bg-gradient-to-r from-[#c7ccfe] to-[#6f63f1] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                 <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                 </svg>
               </div>
               <h3 className="font-bold text-xl mb-3">AI Strategy Guidance</h3>
               <p className="text-gray-600">
-                <span className="font-serif italic text-[#ff5f9e]">Marnee</span> explains, suggests and helps you decide — not just generate.
+                <span className="font-serif italic text-[#65589C]">Marnee</span> explains, suggests and helps you decide — not just generate.
               </p>
             </div>
 
             {/* Feature 4 */}
-            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 hover:shadow-lg hover:border-[#ff5f9e]/20 transition-all group glass-card">
-              <div className="w-14 h-14 bg-gradient-to-r from-[#ff5f9e] to-[#e90064] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 hover:shadow-lg hover:border-[#c7ccfe]/20 transition-all group glass-card">
+              <div className="w-14 h-14 bg-gradient-to-r from-[#c7ccfe] to-[#6f63f1] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                 <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
@@ -872,8 +872,8 @@ export default function PresentationPage() {
             </div>
 
             {/* Feature 5 */}
-            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 hover:shadow-lg hover:border-[#ff5f9e]/20 transition-all group glass-card">
-              <div className="w-14 h-14 bg-gradient-to-r from-[#ff5f9e] to-[#e90064] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 hover:shadow-lg hover:border-[#c7ccfe]/20 transition-all group glass-card">
+              <div className="w-14 h-14 bg-gradient-to-r from-[#c7ccfe] to-[#6f63f1] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                 <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
@@ -885,8 +885,8 @@ export default function PresentationPage() {
             </div>
 
             {/* Feature 6 */}
-            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 hover:shadow-lg hover:border-[#ff5f9e]/20 transition-all group glass-card">
-              <div className="w-14 h-14 bg-gradient-to-r from-[#ff5f9e] to-[#e90064] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 hover:shadow-lg hover:border-[#c7ccfe]/20 transition-all group glass-card">
+              <div className="w-14 h-14 bg-gradient-to-r from-[#c7ccfe] to-[#6f63f1] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                 <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
@@ -903,8 +903,8 @@ export default function PresentationPage() {
       {/* Meet Marnee Section - Full Screen */}
       <section id="marnee" data-reveal="left" data-snap className="min-h-screen flex items-center px-6 md:px-12 py-20 relative overflow-hidden">
         {/* Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#ff5f9e]/6 via-white to-[#e90064]/6 -z-10" />
-        <div className="absolute top-1/4 right-0 w-[600px] h-[600px] bg-gradient-to-br from-[#ff5f9e]/30 via-[#e90064]/30 to-[#b3005e]/30 rounded-full blur-3xl opacity-30 -z-10" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#c7ccfe]/6 via-white to-[#6f63f1]/6 -z-10" />
+        <div className="absolute top-1/4 right-0 w-[600px] h-[600px] bg-gradient-to-br from-[#c7ccfe]/30 via-[#6f63f1]/30 to-[#6046e5]/30 rounded-full blur-3xl opacity-30 -z-10" />
 
         {/* Mascot - Meet Marnee */}
         <img
@@ -916,37 +916,37 @@ export default function PresentationPage() {
         <div className="max-w-6xl mx-auto w-full">
           <div className="grid md:grid-cols-2 gap-16 items-center">
             <div>
-              <span className="text-[#ff5f9e] font-medium text-sm uppercase tracking-widest mb-4 block">Your AI Partner</span>
+              <span className="text-[#65589C] font-medium text-sm uppercase tracking-widest mb-4 block">Your AI Partner</span>
               <h2 className="text-4xl md:text-5xl font-bold mb-6">
-                Meet <span className="font-serif italic text-[#ff5f9e]">Marnee</span>
+                Meet <span className="font-serif italic text-[#65589C]">Marnee</span>
               </h2>
               <p className="text-2xl text-gray-700 font-medium mb-6">Your AI marketing consultant.</p>
 
               <div className="space-y-6 mb-10">
                 <p className="text-gray-600 text-lg">
-                  <span className="font-serif italic text-[#ff5f9e]">Marnee</span> helps you think, not just post. She explains the reasoning behind every suggestion, so you understand what works and why.
+                  <span className="font-serif italic text-[#65589C]">Marnee</span> helps you think, not just post. She explains the reasoning behind every suggestion, so you understand what works and why.
                 </p>
 
                 <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 glass-card">
                   <p className="text-gray-500 text-sm mb-4 font-medium">Ask her anything:</p>
                   <div className="space-y-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-2 h-2 bg-[#ff5f9e] rounded-full" />
+                      <div className="w-2 h-2 bg-[#c7ccfe] rounded-full" />
                       <p className="text-gray-700 italic">"What content should we test next week?"</p>
                     </div>
                     <div className="flex items-center gap-3">
-                      <div className="w-2 h-2 bg-[#e90064] rounded-full" />
+                      <div className="w-2 h-2 bg-[#6f63f1] rounded-full" />
                       <p className="text-gray-700 italic">"Rewrite this in a confident but warm tone."</p>
                     </div>
                     <div className="flex items-center gap-3">
-                      <div className="w-2 h-2 bg-[#ff5f9e] rounded-full" />
+                      <div className="w-2 h-2 bg-[#c7ccfe] rounded-full" />
                       <p className="text-gray-700 italic">"Why is this format performing better?"</p>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <p className="text-lg font-medium bg-gradient-to-br from-[#ff5f9e] via-[#e90064] to-[#b3005e] bg-clip-text text-transparent">
+              <p className="text-lg font-medium bg-gradient-to-br from-[#6046e5] via-[#6f63f1] to-[#eef0ff] bg-clip-text text-transparent">
                 Strategy with context. Decisions with confidence.
               </p>
             </div>
@@ -956,13 +956,13 @@ export default function PresentationPage() {
               <div className="bg-white rounded-3xl p-8 shadow-2xl border border-gray-100 glass-card">
                 {/* Chat header */}
                 <div className="flex items-center gap-4 mb-6 pb-6 border-b border-gray-100">
-                  <div className="w-14 h-14 bg-gradient-to-r from-[#ff5f9e] to-[#e90064] rounded-full flex items-center justify-center shadow-lg shadow-[#ff5f9e]/30">
+                  <div className="w-14 h-14 bg-gradient-to-r from-[#c7ccfe] to-[#6f63f1] rounded-full flex items-center justify-center shadow-lg shadow-[#c7ccfe]/30">
                     <span className="text-white font-serif italic font-bold text-xl">M</span>
                   </div>
                   <div>
-                    <p className="font-serif italic font-bold text-xl text-[#ff5f9e]">Marnee</p>
+                    <p className="font-serif italic font-bold text-xl text-[#65589C]">Marnee</p>
                     <div className="flex items-center gap-2">
-                      <span className="w-2 h-2 bg-[#ff5f9e] rounded-full animate-pulse" />
+                      <span className="w-2 h-2 bg-[#c7ccfe] rounded-full animate-pulse" />
                       <span className="text-sm text-gray-500">AI Marketing Consultant</span>
                     </div>
                   </div>
@@ -977,10 +977,10 @@ export default function PresentationPage() {
                   </div>
                   <div className="bg-gray-50 rounded-2xl rounded-tl-sm p-4 max-w-[85%] glass-card">
                     <p className="text-gray-700 text-sm leading-relaxed">
-                      Your competitors are seeing <span className="font-semibold text-[#ff5f9e]">40% higher engagement</span> with "myth-busting" hooks. Want me to generate 5 variations for your brand?
+                      Your competitors are seeing <span className="font-semibold text-[#65589C]">40% higher engagement</span> with "myth-busting" hooks. Want me to generate 5 variations for your brand?
                     </p>
                   </div>
-                  <div className="bg-gradient-to-r from-[#ff5f9e] to-[#e90064] rounded-2xl rounded-tr-sm p-4 max-w-[85%] ml-auto">
+                  <div className="bg-gradient-to-r from-[#c7ccfe] to-[#6f63f1] rounded-2xl rounded-tr-sm p-4 max-w-[85%] ml-auto">
                     <p className="text-white text-sm">Yes, let's try that approach!</p>
                   </div>
                 </div>
@@ -994,7 +994,7 @@ export default function PresentationPage() {
                       className="flex-1 bg-transparent text-sm outline-none text-gray-700 placeholder-gray-400"
                       disabled
                     />
-                    <button className="w-10 h-10 bg-gradient-to-r from-[#ff5f9e] to-[#e90064] rounded-full flex items-center justify-center">
+                    <button className="w-10 h-10 bg-gradient-to-r from-[#c7ccfe] to-[#6f63f1] rounded-full flex items-center justify-center">
                       <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                       </svg>
@@ -1018,10 +1018,10 @@ export default function PresentationPage() {
 
         <div className="max-w-6xl mx-auto w-full relative z-10">
           <div className="text-center mb-16">
-            <span className="text-[#ff5f9e] font-medium text-sm uppercase tracking-widest mb-4 block">Who it's for</span>
+            <span className="text-[#65589C] font-medium text-sm uppercase tracking-widest mb-4 block">Who it's for</span>
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
               Built for those who need clarity,<br />
-              <span className="bg-gradient-to-br from-[#ff5f9e] via-[#e90064] to-[#b3005e] bg-clip-text text-transparent">not complexity</span>
+              <span className="bg-gradient-to-br from-[#6046e5] via-[#6f63f1] to-[#eef0ff] bg-clip-text text-transparent">not complexity</span>
             </h2>
           </div>
 
@@ -1036,9 +1036,9 @@ export default function PresentationPage() {
             ].map((item, index) => (
               <div
                 key={index}
-                className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:bg-white/10 hover:border-[#ff5f9e]/50 transition-all group glass-card-dark"
+                className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:bg-white/10 hover:border-[#c7ccfe]/50 transition-all group glass-card-dark"
               >
-                <div className="w-12 h-12 bg-gradient-to-r from-[#ff5f9e] to-[#e90064] rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <div className="w-12 h-12 bg-gradient-to-r from-[#c7ccfe] to-[#6f63f1] rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                   <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
@@ -1056,11 +1056,11 @@ export default function PresentationPage() {
       {/* Final CTA Section - Full Screen */}
       <section data-reveal="up" data-snap className="min-h-screen flex items-center justify-center px-6 md:px-12 py-20 relative overflow-hidden">
         {/* Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#060047] via-[#b3005e] to-[#e90064]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#3a2e81] via-[#6046e5] to-[#6f63f1]" />
         <div className="absolute top-0 left-0 w-full h-full">
           <div className="absolute top-10 left-10 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
-          <div className="absolute bottom-20 right-20 w-64 h-64 bg-[#e90064]/20 rounded-full blur-3xl" />
-          <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-[#060047]/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
+          <div className="absolute bottom-20 right-20 w-64 h-64 bg-[#6f63f1]/20 rounded-full blur-3xl" />
+          <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-[#3a2e81]/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
         </div>
 
         <div className="max-w-4xl mx-auto text-center relative z-10">
@@ -1069,7 +1069,7 @@ export default function PresentationPage() {
             <br />
             <span className="font-serif italic">marketing strategy</span> today?
           </h2>
-          <p className="text-[#ff5f9e]/85 text-xl mb-12 max-w-2xl mx-auto">
+          <p className="text-[rgba(203,188,198,0.98)] text-xl mb-12 max-w-2xl mx-auto">
             From zero clarity to a structured marketing plan, guided by AI. Be the first to experience DNHub.
           </p>
 
