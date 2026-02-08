@@ -25,6 +25,9 @@ export default function PresentationPage() {
   const [errorMessage, setErrorMessage] = useState("");
   const [scrollProgress, setScrollProgress] = useState(0);
   const [isPageLoaded, setIsPageLoaded] = useState(false);
+  const [showNav, setShowNav] = useState(false);
+  const [navTheme, setNavTheme] = useState("light");
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -33,6 +36,7 @@ export default function PresentationPage() {
       // Calculate progress from 0 to 1 as user scrolls through hero section
       const progress = Math.min(scrollY / (heroHeight * 0.5), 1);
       setScrollProgress(progress);
+      setShowNav(scrollY >= heroHeight * 0.2);
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -58,10 +62,33 @@ export default function PresentationPage() {
     );
     revealItems.forEach((item) => revealObserver.observe(item));
 
+    const themedSections = Array.from(document.querySelectorAll("[data-nav]"));
+    let activeTheme = "light";
+    const navObserver = new IntersectionObserver(
+      (entries) => {
+        let bestEntry = null;
+        entries.forEach((entry) => {
+          if (!bestEntry || entry.intersectionRatio > bestEntry.intersectionRatio) {
+            bestEntry = entry;
+          }
+        });
+        if (bestEntry && bestEntry.isIntersecting) {
+          const nextTheme = bestEntry.target.getAttribute("data-nav") || "light";
+          if (nextTheme !== activeTheme) {
+            activeTheme = nextTheme;
+            setNavTheme(nextTheme);
+          }
+        }
+      },
+      { threshold: [0.2, 0.4, 0.6] }
+    );
+    themedSections.forEach((section) => navObserver.observe(section));
+
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const finePointer = window.matchMedia("(pointer: fine)").matches;
     const isResponsive = window.matchMedia("(max-width: 768px)").matches;
     const allowSnapScroll = finePointer && !prefersReduced && !isResponsive;
+    const allowMobileSnap = !finePointer && !prefersReduced && isResponsive;
     const sectionNodes = Array.from(document.querySelectorAll("[data-snap]"));
     let isSnapping = false;
     let lastSnapAt = 0;
@@ -123,15 +150,35 @@ export default function PresentationPage() {
       window.addEventListener("wheel", onWheel, { passive: false });
       window.addEventListener("scroll", onScroll);
     }
+    let mobileSnapTimeout;
+    const onMobileScroll = () => {
+      if (!allowMobileSnap) return;
+      if (mobileSnapTimeout) window.clearTimeout(mobileSnapTimeout);
+      mobileSnapTimeout = window.setTimeout(() => {
+        const currentIndex = getCurrentIndex();
+        const targetSection = sectionNodes[currentIndex];
+        if (targetSection) {
+          window.scrollTo({ top: targetSection.offsetTop, behavior: "smooth" });
+        }
+      }, 120);
+    };
+    if (allowMobileSnap) {
+      window.addEventListener("scroll", onMobileScroll, { passive: true });
+    }
 
     return () => {
       window.clearTimeout(loadTimer);
       revealObserver.disconnect();
+      navObserver.disconnect();
       document.body.classList.remove("no-scrollbar");
       if (allowSnapScroll) {
         window.removeEventListener("wheel", onWheel);
         window.removeEventListener("scroll", onScroll);
       }
+      if (allowMobileSnap) {
+        window.removeEventListener("scroll", onMobileScroll);
+      }
+      if (mobileSnapTimeout) window.clearTimeout(mobileSnapTimeout);
       if (snapTimeout) window.clearTimeout(snapTimeout);
     };
   }, []);
@@ -215,7 +262,7 @@ export default function PresentationPage() {
   };
 
   return (
-    <div className={`min-h-screen bg-white text-gray-900 font-sans page-fade glass-page ${isPageLoaded ? "page-fade--in" : ""}`}>
+    <div className="min-h-screen bg-white text-gray-900 font-sans glass-page">
       {/* Custom animation styles */}
       <style>{`
         html { scroll-behavior: smooth; }
@@ -305,8 +352,94 @@ export default function PresentationPage() {
         }
       `}</style>
 
+      {/* Navbar - Fixed, appears on scroll */}
+      <nav
+        className="fixed top-0 left-0 right-0 flex items-center justify-between px-6 md:px-12 py-4 bg-transparent z-50 transition-all duration-300"
+        style={{
+          opacity: showNav ? 1 : 0,
+          transform: `translateY(${showNav ? "0%" : "-100%"})`,
+          pointerEvents: showNav ? 'auto' : 'none'
+        }}
+      >
+        <Logo dark={navTheme === "light"} />
+        <button
+          type="button"
+          onClick={() => setIsMenuOpen((prev) => !prev)}
+          className={`md:hidden inline-flex items-center justify-center w-11 h-11 rounded-full transition ${navTheme === "dark" ? "text-white/90 hover:text-white" : "text-gray-700 hover:text-gray-900"}`}
+          aria-label="Open menu"
+          aria-expanded={isMenuOpen}
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+        <div className="hidden md:flex items-center gap-8">
+          <button
+            onClick={() => scrollToSection("how-it-works")}
+            className={`transition text-sm font-medium ${navTheme === "dark" ? "text-white/80 hover:text-white" : "text-gray-600 hover:text-gray-900"}`}
+          >
+            How it works
+          </button>
+          <button
+            onClick={() => scrollToSection("features")}
+            className={`transition text-sm font-medium ${navTheme === "dark" ? "text-white/80 hover:text-white" : "text-gray-600 hover:text-gray-900"}`}
+          >
+            Features
+          </button>
+          <button
+            onClick={() => scrollToSection("marnee")}
+            className={`transition text-sm font-medium ${navTheme === "dark" ? "text-white/80 hover:text-white" : "text-gray-600 hover:text-gray-900"}`}
+          >
+            Meet Marnee
+          </button>
+        </div>
+        
+        {isMenuOpen && (
+          <div className={`absolute top-full right-6 mt-3 w-52 rounded-2xl border border-white/20 shadow-2xl backdrop-blur-xl ${
+            navTheme === "dark" ? "bg-[#3a2e81]/80 text-white" : "bg-white/90 text-gray-900"
+          }`}>
+            <div className="flex flex-col py-2">
+              <button
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  scrollToSection("how-it-works");
+                }}
+                className={`px-4 py-2 text-left text-sm font-medium transition ${
+                  navTheme === "dark" ? "hover:text-white" : "hover:text-gray-900"
+                }`}
+              >
+                How it works
+              </button>
+              <button
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  scrollToSection("features");
+                }}
+                className={`px-4 py-2 text-left text-sm font-medium transition ${
+                  navTheme === "dark" ? "hover:text-white" : "hover:text-gray-900"
+                }`}
+              >
+                Features
+              </button>
+              <button
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  scrollToSection("marnee");
+                }}
+                className={`px-4 py-2 text-left text-sm font-medium transition ${
+                  navTheme === "dark" ? "hover:text-white" : "hover:text-gray-900"
+                }`}
+              >
+                Meet Marnee
+              </button>
+            </div>
+          </div>
+        )}
+      </nav>
+
+      <div className={`page-fade ${isPageLoaded ? "page-fade--in" : ""}`}>
       {/* Hero Section - Full Screen */}
-      <section data-reveal="up" data-snap className="min-h-screen flex flex-col justify-center px-6 md:px-12 lg:px-16 xl:px-24 pt-6 sm:pt-8 pb-10 sm:pb-20 relative overflow-hidden bg-gradient-to-br from-[#3a2e81] via-[#4632a9] to-[#c7ccfe]">
+      <section data-reveal="up" data-snap data-nav="dark" className="min-h-screen flex flex-col justify-center px-6 md:px-12 lg:px-16 xl:px-24 pt-6 sm:pt-8 pb-10 sm:pb-20 relative overflow-hidden bg-gradient-to-br from-[#3a2e81] via-[#4632a9] to-[#c7ccfe]">
         <div className="absolute inset-0 bg-white/5" />
         {/* Background decorations */}
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-[#c7ccfe]/20 via-[#6f63f1]/10 to-transparent rounded-full blur-3xl -z-10" />
@@ -418,12 +551,12 @@ export default function PresentationPage() {
       </section>
 
       {/* Problem Section - Full Screen */}
-      <section id="problem" data-reveal="left" data-snap className="min-h-screen flex items-center bg-gray-50 px-6 md:px-12 py-20 relative overflow-hidden">
+      <section id="problem" data-reveal="left" data-snap data-nav="light" className="min-h-screen flex items-center bg-gray-50 px-6 md:px-12 py-20 relative overflow-hidden">
         {/* Mascot - Problem */}
         <img
           src={marnee12}
           alt="Marnee working"
-          className="absolute -right-6 bottom-4 w-40 sm:w-48 md:w-52 lg:right-8 xl:right-16 lg:bottom-24 lg:w-48 xl:w-60 animate-wobble-slow opacity-80 lg:opacity-90 pointer-events-none drop-shadow-lg z-0"
+          className="absolute -right-6 bottom-4 w-40 sm:w-48 md:w-52 lg:right-8 xl:right-16 lg:bottom-24 lg:w-48 xl:w-60 animate-wobble-slow opacity-80 lg:opacity-90 pointer-events-none drop-shadow-lg z-50"
         />
         <div className="max-w-6xl mx-auto w-full">
           <div className="grid md:grid-cols-2 gap-16 items-center">
@@ -494,7 +627,7 @@ export default function PresentationPage() {
       </section>
 
       {/* Solution Section - Full Screen */}
-      <section data-reveal="right" data-snap className="min-h-screen flex items-center bg-gradient-to-br from-[#3a2e81] via-[#6046e5] to-[#6f63f1] px-6 md:px-12 py-20 relative overflow-hidden">
+      <section data-reveal="right" data-snap data-nav="dark" className="min-h-screen flex items-center bg-gradient-to-br from-[#3a2e81] via-[#6046e5] to-[#6f63f1] px-6 md:px-12 py-20 relative overflow-hidden">
         {/* Background pattern */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-20 left-20 w-40 h-40 border border-white rounded-full" />
@@ -556,7 +689,7 @@ export default function PresentationPage() {
       </section>
 
       {/* How it works Section - Full Screen */}
-      <section id="how-it-works" data-reveal="left" data-snap className="min-h-screen flex items-center px-6 md:px-12 py-20 relative overflow-hidden">
+      <section id="how-it-works" data-reveal="left" data-snap data-nav="light" className="min-h-screen flex items-center px-6 md:px-12 py-20 relative overflow-hidden">
         {/* Mascot - How it works (desktop only) */}
         <img
           src={marnee13}
@@ -645,7 +778,7 @@ export default function PresentationPage() {
       </section>
 
       {/* Demo 1 - Brand Discovery Test */}
-      <section id="demo-test" data-reveal="right" data-snap className="min-h-screen flex items-center px-6 md:px-12 py-20 bg-gradient-to-br from-[#c7ccfe]/6 via-white to-[#6f63f1]/6">
+      <section id="demo-test" data-reveal="right" data-snap data-nav="light" className="min-h-screen flex items-center px-6 md:px-12 py-20 bg-gradient-to-br from-[#c7ccfe]/6 via-white to-[#6f63f1]/6">
         <div className="max-w-6xl mx-auto w-full">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Video */}
@@ -686,7 +819,7 @@ export default function PresentationPage() {
       </section>
 
       {/* Demo 2 - Chat with Marnee */}
-      <section id="demo-chat" data-reveal="left" data-snap className="min-h-screen flex items-center px-6 md:px-12 py-20 bg-white">
+      <section id="demo-chat" data-reveal="left" data-snap data-nav="light" className="min-h-screen flex items-center px-6 md:px-12 py-20 bg-white">
         <div className="max-w-6xl mx-auto w-full">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Content */}
@@ -727,7 +860,7 @@ export default function PresentationPage() {
       </section>
 
       {/* Demo 3 - Content Calendar */}
-      <section id="demo-calendar" data-reveal="right" data-snap className="min-h-screen flex items-center px-6 md:px-12 py-20 bg-gradient-to-br from-[#6f63f1]/6 via-white to-[#c7ccfe]/6">
+      <section id="demo-calendar" data-reveal="right" data-snap data-nav="light" className="min-h-screen flex items-center px-6 md:px-12 py-20 bg-gradient-to-br from-[#6f63f1]/6 via-white to-[#c7ccfe]/6">
         <div className="max-w-6xl mx-auto w-full">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Video */}
@@ -768,7 +901,7 @@ export default function PresentationPage() {
       </section>
 
       {/* Demo 4 - Campaign Dashboard */}
-      <section id="demo-dashboard" data-reveal="left" data-snap className="min-h-screen flex items-center px-6 md:px-12 py-20 bg-white">
+      <section id="demo-dashboard" data-reveal="left" data-snap data-nav="light" className="min-h-screen flex items-center px-6 md:px-12 py-20 bg-white">
         <div className="max-w-6xl mx-auto w-full">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Content */}
@@ -809,7 +942,7 @@ export default function PresentationPage() {
       </section>
 
       {/* Features Section - Full Screen */}
-      <section id="features" data-reveal="right" data-snap className="min-h-screen flex items-center bg-gray-50 px-6 md:px-12 py-20">
+      <section id="features" data-reveal="right" data-snap data-nav="light" className="min-h-screen flex items-center bg-gray-50 px-6 md:px-12 py-20">
         <div className="max-w-6xl mx-auto w-full">
           <div className="text-center mb-16">
             <span className="text-[#65589C] font-medium text-sm uppercase tracking-widest mb-4 block">Features</span>
@@ -901,7 +1034,7 @@ export default function PresentationPage() {
       </section>
 
       {/* Meet Marnee Section - Full Screen */}
-      <section id="marnee" data-reveal="left" data-snap className="min-h-screen flex items-center px-6 md:px-12 py-20 relative overflow-hidden">
+      <section id="marnee" data-reveal="left" data-snap data-nav="light" className="min-h-screen flex items-center px-6 md:px-12 py-20 relative overflow-hidden">
         {/* Background */}
         <div className="absolute inset-0 bg-gradient-to-br from-[#c7ccfe]/6 via-white to-[#6f63f1]/6 -z-10" />
         <div className="absolute top-1/4 right-0 w-[600px] h-[600px] bg-gradient-to-br from-[#c7ccfe]/30 via-[#6f63f1]/30 to-[#6046e5]/30 rounded-full blur-3xl opacity-30 -z-10" />
@@ -1008,7 +1141,7 @@ export default function PresentationPage() {
       </section>
 
       {/* Who it's for Section - Full Screen */}
-      <section data-reveal="right" data-snap className="min-h-screen flex items-center bg-gray-900 px-6 md:px-12 py-20 relative overflow-hidden">
+      <section data-reveal="right" data-snap data-nav="dark" className="min-h-screen flex items-center bg-gray-900 px-6 md:px-12 py-20 relative overflow-hidden">
         {/* Background pattern */}
         <div className="absolute inset-0 opacity-5">
           <div className="absolute top-10 left-10 w-32 h-32 border border-white rounded-full" />
@@ -1054,7 +1187,7 @@ export default function PresentationPage() {
       </section>
 
       {/* Final CTA Section - Full Screen */}
-      <section data-reveal="up" data-snap className="min-h-screen flex items-center justify-center px-6 md:px-12 py-20 relative overflow-hidden">
+      <section data-reveal="up" data-snap data-nav="dark" className="min-h-screen flex items-center justify-center px-6 md:px-12 py-20 relative overflow-hidden">
         {/* Background */}
         <div className="absolute inset-0 bg-gradient-to-br from-[#3a2e81] via-[#6046e5] to-[#6f63f1]" />
         <div className="absolute top-0 left-0 w-full h-full">
@@ -1081,7 +1214,7 @@ export default function PresentationPage() {
       </section>
 
       {/* Footer */}
-      <footer data-reveal="up" data-snap className="px-6 md:px-12 py-16 bg-gray-900 text-white">
+      <footer data-reveal="up" data-snap data-nav="dark" className="px-6 md:px-12 py-16 bg-gray-900 text-white">
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-4 gap-12 mb-12">
             {/* Logo & Description */}
@@ -1141,6 +1274,7 @@ export default function PresentationPage() {
           </div>
         </div>
       </footer>
+      </div>
     </div>
   );
 }
