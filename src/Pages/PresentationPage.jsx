@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import AOS from "aos";
+import "aos/dist/aos.css";
 import Logo from "../Component/Logo";
 import { api } from "../services/api";
 
@@ -47,20 +49,13 @@ export default function PresentationPage() {
     const loadTimer = window.setTimeout(() => setIsPageLoaded(true), 80);
     document.body.classList.add("no-scrollbar");
 
-    const revealItems = Array.from(document.querySelectorAll("[data-reveal]"));
-    const revealObserver = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("is-visible");
-          } else {
-            entry.target.classList.remove("is-visible");
-          }
-        });
-      },
-      { threshold: 0.18 }
-    );
-    revealItems.forEach((item) => revealObserver.observe(item));
+    AOS.init({
+      duration: 900,
+      easing: "ease-out",
+      once: false,
+      offset: 120,
+    });
+    AOS.refresh();
 
     const themedSections = Array.from(document.querySelectorAll("[data-nav]"));
     let activeTheme = "light";
@@ -168,7 +163,7 @@ export default function PresentationPage() {
 
     return () => {
       window.clearTimeout(loadTimer);
-      revealObserver.disconnect();
+      AOS.refreshHard();
       navObserver.disconnect();
       document.body.classList.remove("no-scrollbar");
       if (allowSnapScroll) {
@@ -301,28 +296,9 @@ export default function PresentationPage() {
           opacity: 1;
           transform: translateY(0);
         }
-        [data-reveal] {
-          opacity: 0;
-          transform: translateX(0);
-          transition: opacity 1100ms ease, transform 1100ms ease;
-          will-change: opacity, transform;
-        }
-        [data-reveal].is-visible {
-          opacity: 1;
-          transform: translateX(0);
-        }
-        [data-reveal="left"] {
-          transform: translateX(-40px);
-        }
-        [data-reveal="right"] {
-          transform: translateX(40px);
-        }
-        [data-reveal="up"] {
-          transform: translateY(30px);
-        }
         @media (prefers-reduced-motion: reduce) {
           .page-fade,
-          [data-reveal] {
+          [data-aos] {
             transition: none;
             transform: none;
             opacity: 1;
@@ -439,7 +415,7 @@ export default function PresentationPage() {
 
       <div className={`page-fade ${isPageLoaded ? "page-fade--in" : ""}`}>
       {/* Hero Section - Full Screen */}
-      <section data-reveal="up" data-snap data-nav="dark" className="min-h-screen flex flex-col justify-center px-6 md:px-12 lg:px-16 xl:px-24 pt-6 sm:pt-8 pb-10 sm:pb-20 relative overflow-hidden bg-gradient-to-br from-[#3a2e81] via-[#4632a9] to-[#c7ccfe]">
+      <section data-snap data-nav="dark" className="min-h-screen flex flex-col justify-center px-6 md:px-12 lg:px-16 xl:px-24 pt-6 sm:pt-8 pb-10 sm:pb-20 relative overflow-hidden bg-gradient-to-br from-[#3a2e81] via-[#4632a9] to-[#c7ccfe]">
         <div className="absolute inset-0 bg-white/5" />
         {/* Background decorations */}
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-[#c7ccfe]/20 via-[#6f63f1]/10 to-transparent rounded-full blur-3xl -z-10" />
@@ -447,6 +423,7 @@ export default function PresentationPage() {
 
         {/* Hero Logo - Large and prominent */}
         <div
+          data-aos="fade-down"
           className="mb-8 md:mb-12 transition-all duration-300"
           style={{
             opacity: 1 - scrollProgress * 0.8,
@@ -460,7 +437,7 @@ export default function PresentationPage() {
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center max-w-7xl mx-auto w-full">
           {/* Left side - Text content */}
           <div className="text-left relative z-10">
-            <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 sm:mb-6 leading-tight tracking-tight text-white">
+            <h1 data-aos="fade-right" className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 sm:mb-6 leading-tight tracking-tight text-white">
               Stop guessing.
               <br />
               <span className="bg-gradient-to-br from-[#6046e5] via-[#6f63f1] to-[#eef0ff] bg-clip-text text-transparent">
@@ -468,7 +445,7 @@ export default function PresentationPage() {
               </span>
             </h1>
 
-            <div className="mb-5 sm:mb-8 max-w-lg">
+            <div data-aos="fade-right" data-aos-delay="100" className="mb-5 sm:mb-8 max-w-lg">
               <img
                 src={marnee11}
                 alt="Marnee mascot"
@@ -482,12 +459,14 @@ export default function PresentationPage() {
             <button
               onClick={() => scrollToSection("how-it-works")}
               className="bg-gradient-to-r from-[#c7ccfe] to-[#6f63f1] hover:from-[#6f63f1] hover:to-[#6046e5] text-white px-7 sm:px-10 py-3.5 sm:py-5 rounded-full font-semibold text-sm sm:text-lg transition shadow-xl shadow-[#c7ccfe]/30 hover:scale-105"
+              data-aos="fade-up"
+              data-aos-delay="200"
             >
               See how it works
             </button>
 
             {/* Hero Video - Mobile */}
-            <div className="lg:hidden mt-6">
+            <div className="lg:hidden mt-6" data-aos="zoom-in" data-aos-delay="150">
               <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-white/10 bg-white glass-card">
                 <video
                   src={heroVideo}
@@ -503,7 +482,7 @@ export default function PresentationPage() {
           </div>
 
           {/* Right side - GIF showcase */}
-          <div className="relative hidden lg:block">
+          <div className="relative hidden lg:block" data-aos="zoom-in">
             {/* GIF container with decorative elements */}
             <div className="relative">
               {/* Decorative background shapes */}
@@ -551,7 +530,7 @@ export default function PresentationPage() {
       </section>
 
       {/* Problem Section - Full Screen */}
-      <section id="problem" data-reveal="left" data-snap data-nav="light" className="min-h-screen flex items-center bg-gray-50 px-6 md:px-12 py-20 relative overflow-hidden">
+      <section id="problem" data-snap data-nav="light" className="min-h-screen flex items-center bg-gray-50 px-6 md:px-12 py-20 relative overflow-hidden">
         {/* Mascot - Problem */}
         <img
           src={marnee12}
@@ -560,7 +539,7 @@ export default function PresentationPage() {
         />
         <div className="max-w-6xl mx-auto w-full">
           <div className="grid md:grid-cols-2 gap-16 items-center">
-            <div>
+            <div data-aos="fade-right">
               <span className="text-[#65589C] font-medium text-sm uppercase tracking-widest mb-4 block">The Problem</span>
               <h2 className="text-4xl md:text-5xl font-bold mb-8 leading-tight">
                 Marketing shouldn't feel like
@@ -604,20 +583,20 @@ export default function PresentationPage() {
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-2 gap-6">
-              <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 text-center glass-card">
+            <div className="grid grid-cols-2 gap-6" data-aos="fade-left">
+              <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 text-center glass-card" data-aos="fade-up" data-aos-delay="0">
                 <div className="text-4xl font-bold bg-gradient-to-br from-[#6046e5] via-[#6f63f1] to-[#eef0ff] bg-clip-text text-transparent mb-2">73%</div>
                 <p className="text-gray-600 text-sm">of founders struggle with content strategy</p>
               </div>
-              <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 text-center glass-card">
+              <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 text-center glass-card" data-aos="fade-up" data-aos-delay="100">
                 <div className="text-4xl font-bold bg-gradient-to-br from-[#6046e5] via-[#6f63f1] to-[#eef0ff] bg-clip-text text-transparent mb-2">15h</div>
                 <p className="text-gray-600 text-sm">average weekly time spent on content planning</p>
               </div>
-              <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 text-center glass-card">
+              <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 text-center glass-card" data-aos="fade-up" data-aos-delay="200">
                 <div className="text-4xl font-bold bg-gradient-to-br from-[#6046e5] via-[#6f63f1] to-[#eef0ff] bg-clip-text text-transparent mb-2">60%</div>
                 <p className="text-gray-600 text-sm">of social posts underperform expectations</p>
               </div>
-              <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 text-center glass-card">
+              <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 text-center glass-card" data-aos="fade-up" data-aos-delay="300">
                 <div className="text-4xl font-bold bg-gradient-to-br from-[#6046e5] via-[#6f63f1] to-[#eef0ff] bg-clip-text text-transparent mb-2">$0</div>
                 <p className="text-gray-600 text-sm">budget for expensive marketing agencies</p>
               </div>
@@ -627,7 +606,7 @@ export default function PresentationPage() {
       </section>
 
       {/* Solution Section - Full Screen */}
-      <section data-reveal="right" data-snap data-nav="dark" className="min-h-screen flex items-center bg-gradient-to-br from-[#3a2e81] via-[#6046e5] to-[#6f63f1] px-6 md:px-12 py-20 relative overflow-hidden">
+      <section data-snap data-nav="dark" className="min-h-screen flex items-center bg-gradient-to-br from-[#3a2e81] via-[#6046e5] to-[#6f63f1] px-6 md:px-12 py-20 relative overflow-hidden">
         {/* Background pattern */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-20 left-20 w-40 h-40 border border-white rounded-full" />
@@ -636,7 +615,7 @@ export default function PresentationPage() {
         </div>
 
         <div className="max-w-6xl mx-auto w-full relative z-10">
-          <div className="text-center mb-16">
+          <div className="text-center mb-16" data-aos="fade-up">
             <span className="text-[rgba(203,188,198,0.98)] font-medium text-sm uppercase tracking-widest mb-4 block">The Solution</span>
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
               DNHub gives you clarity, not complexity
@@ -647,7 +626,7 @@ export default function PresentationPage() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-8 border border-white/20 hover:bg-white/20 transition glass-card-dark">
+            <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-8 border border-white/20 hover:bg-white/20 transition glass-card-dark" data-aos="fade-up" data-aos-delay="0">
               <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-6">
                 <svg className="w-7 h-7 text-[rgba(203,188,198,0.98)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
@@ -659,7 +638,7 @@ export default function PresentationPage() {
               </p>
             </div>
 
-            <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-8 border border-white/20 hover:bg-white/20 transition glass-card-dark">
+            <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-8 border border-white/20 hover:bg-white/20 transition glass-card-dark" data-aos="fade-up" data-aos-delay="100">
               <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-6">
                 <svg className="w-7 h-7 text-[rgba(203,188,198,0.98)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -671,7 +650,7 @@ export default function PresentationPage() {
               </p>
             </div>
 
-            <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-8 border border-white/20 hover:bg-white/20 transition glass-card-dark">
+            <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-8 border border-white/20 hover:bg-white/20 transition glass-card-dark" data-aos="fade-up" data-aos-delay="200">
               <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-6">
                 <svg className="w-7 h-7 text-[rgba(203,188,198,0.98)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
@@ -689,7 +668,7 @@ export default function PresentationPage() {
       </section>
 
       {/* How it works Section - Full Screen */}
-      <section id="how-it-works" data-reveal="left" data-snap data-nav="light" className="min-h-screen flex items-center px-6 md:px-12 py-20 relative overflow-hidden">
+      <section id="how-it-works" data-snap data-nav="light" className="min-h-screen flex items-center px-6 md:px-12 py-20 relative overflow-hidden">
         {/* Mascot - How it works (desktop only) */}
         <img
           src={marnee13}
@@ -697,7 +676,7 @@ export default function PresentationPage() {
           className="hidden md:block absolute -right-6 top-20 w-36 sm:w-40 md:w-44 lg:right-12 xl:right-20 lg:top-28 lg:w-44 xl:w-56 animate-wobble-delay opacity-80 lg:opacity-90 pointer-events-none drop-shadow-lg z-0"
         />
         <div className="max-w-6xl mx-auto w-full">
-          <div className="text-center mb-20">
+          <div className="text-center mb-20" data-aos="fade-up">
             <span className="text-[#65589C] font-medium text-sm uppercase tracking-widest mb-4 block">How it works</span>
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
               Three steps to <span className="font-serif italic">marketing clarity</span>
@@ -719,7 +698,7 @@ export default function PresentationPage() {
             <div className="grid md:grid-cols-3 gap-12">
               {/* Step 1 */}
               <div className="relative">
-                <div className="bg-white rounded-3xl p-8 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow h-full glass-card">
+                <div className="bg-white rounded-3xl p-8 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow h-full glass-card" data-aos="fade-up" data-aos-delay="0">
                   <div className="w-16 h-16 bg-gradient-to-r from-[#c7ccfe] to-[#6f63f1] rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-[#c7ccfe]/30">
                     <span className="text-white font-bold text-2xl">1</span>
                   </div>
@@ -737,7 +716,7 @@ export default function PresentationPage() {
 
               {/* Step 2 */}
               <div className="relative">
-                <div className="bg-white rounded-3xl p-8 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow h-full glass-card">
+                <div className="bg-white rounded-3xl p-8 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow h-full glass-card" data-aos="fade-up" data-aos-delay="100">
                   <div className="w-16 h-16 bg-gradient-to-r from-[#6f63f1] to-[#6046e5] rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-[#6f63f1]/30">
                     <span className="text-white font-bold text-2xl">2</span>
                   </div>
@@ -757,7 +736,7 @@ export default function PresentationPage() {
 
               {/* Step 3 */}
               <div className="relative">
-                <div className="bg-white rounded-3xl p-8 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow h-full glass-card">
+                <div className="bg-white rounded-3xl p-8 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow h-full glass-card" data-aos="fade-up" data-aos-delay="200">
                   <div className="w-16 h-16 bg-gradient-to-r from-[#c7ccfe] to-[#6f63f1] rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-[#c7ccfe]/30">
                     <span className="text-white font-bold text-2xl">3</span>
                   </div>
@@ -778,11 +757,11 @@ export default function PresentationPage() {
       </section>
 
       {/* Demo 1 - Brand Discovery Test */}
-      <section id="demo-test" data-reveal="right" data-snap data-nav="light" className="min-h-screen flex items-center px-6 md:px-12 py-20 bg-gradient-to-br from-[#c7ccfe]/6 via-white to-[#6f63f1]/6">
+      <section id="demo-test" data-snap data-nav="light" className="min-h-screen flex items-center px-6 md:px-12 py-20 bg-gradient-to-br from-[#c7ccfe]/6 via-white to-[#6f63f1]/6">
         <div className="max-w-6xl mx-auto w-full">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Video */}
-            <div className="order-2 lg:order-1">
+            <div className="order-2 lg:order-1" data-aos="fade-left">
               <div className="rounded-3xl overflow-hidden shadow-2xl border border-gray-200 glass-card">
                 <video
                   src={videoTest}
@@ -795,7 +774,7 @@ export default function PresentationPage() {
               </div>
             </div>
             {/* Content */}
-            <div className="order-1 lg:order-2">
+            <div className="order-1 lg:order-2" data-aos="fade-right">
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-14 h-14 bg-gradient-to-r from-[#c7ccfe] to-[#6f63f1] rounded-2xl flex items-center justify-center shadow-lg shadow-[#c7ccfe]/30">
                   <span className="text-white font-bold text-2xl">1</span>
@@ -819,11 +798,11 @@ export default function PresentationPage() {
       </section>
 
       {/* Demo 2 - Chat with Marnee */}
-      <section id="demo-chat" data-reveal="left" data-snap data-nav="light" className="min-h-screen flex items-center px-6 md:px-12 py-20 bg-white">
+      <section id="demo-chat" data-snap data-nav="light" className="min-h-screen flex items-center px-6 md:px-12 py-20 bg-white">
         <div className="max-w-6xl mx-auto w-full">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Content */}
-            <div>
+            <div data-aos="fade-right">
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-14 h-14 bg-gradient-to-r from-[#6f63f1] to-[#6046e5] rounded-2xl flex items-center justify-center shadow-lg shadow-[#6f63f1]/30">
                   <span className="text-white font-bold text-2xl">2</span>
@@ -843,7 +822,7 @@ export default function PresentationPage() {
               </div>
             </div>
             {/* Video */}
-            <div>
+            <div data-aos="fade-left">
               <div className="rounded-3xl overflow-hidden shadow-2xl border border-gray-200 glass-card">
                 <video
                   src={videoChat}
@@ -860,11 +839,11 @@ export default function PresentationPage() {
       </section>
 
       {/* Demo 3 - Content Calendar */}
-      <section id="demo-calendar" data-reveal="right" data-snap data-nav="light" className="min-h-screen flex items-center px-6 md:px-12 py-20 bg-gradient-to-br from-[#6f63f1]/6 via-white to-[#c7ccfe]/6">
+      <section id="demo-calendar" data-snap data-nav="light" className="min-h-screen flex items-center px-6 md:px-12 py-20 bg-gradient-to-br from-[#6f63f1]/6 via-white to-[#c7ccfe]/6">
         <div className="max-w-6xl mx-auto w-full">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Video */}
-            <div className="order-2 lg:order-1">
+            <div className="order-2 lg:order-1" data-aos="fade-left">
               <div className="rounded-3xl overflow-hidden shadow-2xl border border-gray-200 glass-card">
                 <video
                   src={videoCalendar}
@@ -877,7 +856,7 @@ export default function PresentationPage() {
               </div>
             </div>
             {/* Content */}
-            <div className="order-1 lg:order-2">
+            <div className="order-1 lg:order-2" data-aos="fade-right">
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-14 h-14 bg-gradient-to-r from-[#c7ccfe] to-[#6f63f1] rounded-2xl flex items-center justify-center shadow-lg shadow-[#c7ccfe]/30">
                   <span className="text-white font-bold text-2xl">3</span>
@@ -901,11 +880,11 @@ export default function PresentationPage() {
       </section>
 
       {/* Demo 4 - Campaign Dashboard */}
-      <section id="demo-dashboard" data-reveal="left" data-snap data-nav="light" className="min-h-screen flex items-center px-6 md:px-12 py-20 bg-white">
+      <section id="demo-dashboard" data-snap data-nav="light" className="min-h-screen flex items-center px-6 md:px-12 py-20 bg-white">
         <div className="max-w-6xl mx-auto w-full">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Content */}
-            <div>
+            <div data-aos="fade-right">
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-14 h-14 bg-gradient-to-br from-gray-500 to-gray-600 rounded-2xl flex items-center justify-center shadow-lg shadow-[#3a2e81]/30">
                   <span className="text-white font-bold text-2xl">4</span>
@@ -925,7 +904,7 @@ export default function PresentationPage() {
               </div>
             </div>
             {/* Image */}
-            <div className="relative">
+            <div className="relative" data-aos="fade-left">
               <div className="rounded-3xl overflow-hidden shadow-2xl border border-gray-200 glass-card">
                 <img
                   src={imgCampaign}
@@ -942,9 +921,9 @@ export default function PresentationPage() {
       </section>
 
       {/* Features Section - Full Screen */}
-      <section id="features" data-reveal="right" data-snap data-nav="light" className="min-h-screen flex items-center bg-gray-50 px-6 md:px-12 py-20">
+      <section id="features" data-snap data-nav="light" className="min-h-screen flex items-center bg-gray-50 px-6 md:px-12 py-20">
         <div className="max-w-6xl mx-auto w-full">
-          <div className="text-center mb-16">
+          <div className="text-center mb-16" data-aos="fade-up">
             <span className="text-[#65589C] font-medium text-sm uppercase tracking-widest mb-4 block">Features</span>
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
               Built for <span className="font-serif italic bg-gradient-to-br from-[#6046e5] via-[#6f63f1] to-[#eef0ff] bg-clip-text text-transparent">speed, clarity</span> and consistency
@@ -953,7 +932,7 @@ export default function PresentationPage() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* Feature 1 */}
-            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 hover:shadow-lg hover:border-[#c7ccfe]/20 transition-all group glass-card">
+            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 hover:shadow-lg hover:border-[#c7ccfe]/20 transition-all group glass-card" data-aos="fade-up" data-aos-delay="0">
               <div className="w-14 h-14 bg-gradient-to-r from-[#c7ccfe] to-[#6f63f1] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                 <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
@@ -966,7 +945,7 @@ export default function PresentationPage() {
             </div>
 
             {/* Feature 2 */}
-            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 hover:shadow-lg hover:border-[#c7ccfe]/20 transition-all group glass-card">
+            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 hover:shadow-lg hover:border-[#c7ccfe]/20 transition-all group glass-card" data-aos="fade-up" data-aos-delay="100">
               <div className="w-14 h-14 bg-gradient-to-r from-[#c7ccfe] to-[#6f63f1] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                 <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
@@ -979,7 +958,7 @@ export default function PresentationPage() {
             </div>
 
             {/* Feature 3 */}
-            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 hover:shadow-lg hover:border-[#c7ccfe]/20 transition-all group glass-card">
+            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 hover:shadow-lg hover:border-[#c7ccfe]/20 transition-all group glass-card" data-aos="fade-up" data-aos-delay="200">
               <div className="w-14 h-14 bg-gradient-to-r from-[#c7ccfe] to-[#6f63f1] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                 <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
@@ -992,7 +971,7 @@ export default function PresentationPage() {
             </div>
 
             {/* Feature 4 */}
-            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 hover:shadow-lg hover:border-[#c7ccfe]/20 transition-all group glass-card">
+            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 hover:shadow-lg hover:border-[#c7ccfe]/20 transition-all group glass-card" data-aos="fade-up" data-aos-delay="300">
               <div className="w-14 h-14 bg-gradient-to-r from-[#c7ccfe] to-[#6f63f1] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                 <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -1005,7 +984,7 @@ export default function PresentationPage() {
             </div>
 
             {/* Feature 5 */}
-            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 hover:shadow-lg hover:border-[#c7ccfe]/20 transition-all group glass-card">
+            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 hover:shadow-lg hover:border-[#c7ccfe]/20 transition-all group glass-card" data-aos="fade-up" data-aos-delay="400">
               <div className="w-14 h-14 bg-gradient-to-r from-[#c7ccfe] to-[#6f63f1] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                 <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -1018,7 +997,7 @@ export default function PresentationPage() {
             </div>
 
             {/* Feature 6 */}
-            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 hover:shadow-lg hover:border-[#c7ccfe]/20 transition-all group glass-card">
+            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 hover:shadow-lg hover:border-[#c7ccfe]/20 transition-all group glass-card" data-aos="fade-up" data-aos-delay="500">
               <div className="w-14 h-14 bg-gradient-to-r from-[#c7ccfe] to-[#6f63f1] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                 <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -1034,7 +1013,7 @@ export default function PresentationPage() {
       </section>
 
       {/* Meet Marnee Section - Full Screen */}
-      <section id="marnee" data-reveal="left" data-snap data-nav="light" className="min-h-screen flex items-center px-6 md:px-12 py-20 relative overflow-hidden">
+      <section id="marnee" data-snap data-nav="light" className="min-h-screen flex items-center px-6 md:px-12 py-20 relative overflow-hidden">
         {/* Background */}
         <div className="absolute inset-0 bg-gradient-to-br from-[#c7ccfe]/6 via-white to-[#6f63f1]/6 -z-10" />
         <div className="absolute top-1/4 right-0 w-[600px] h-[600px] bg-gradient-to-br from-[#c7ccfe]/30 via-[#6f63f1]/30 to-[#6046e5]/30 rounded-full blur-3xl opacity-30 -z-10" />
@@ -1048,7 +1027,7 @@ export default function PresentationPage() {
 
         <div className="max-w-6xl mx-auto w-full">
           <div className="grid md:grid-cols-2 gap-16 items-center">
-            <div>
+            <div data-aos="fade-right">
               <span className="text-[#65589C] font-medium text-sm uppercase tracking-widest mb-4 block">Your AI Partner</span>
               <h2 className="text-4xl md:text-5xl font-bold mb-6">
                 Meet <span className="font-serif italic text-[#65589C]">Marnee</span>
@@ -1085,7 +1064,7 @@ export default function PresentationPage() {
             </div>
 
             {/* Marnee visual */}
-            <div className="relative">
+            <div className="relative" data-aos="fade-left">
               <div className="bg-white rounded-3xl p-8 shadow-2xl border border-gray-100 glass-card">
                 {/* Chat header */}
                 <div className="flex items-center gap-4 mb-6 pb-6 border-b border-gray-100">
@@ -1141,7 +1120,7 @@ export default function PresentationPage() {
       </section>
 
       {/* Who it's for Section - Full Screen */}
-      <section data-reveal="right" data-snap data-nav="dark" className="min-h-screen flex items-center bg-gray-900 px-6 md:px-12 py-20 relative overflow-hidden">
+      <section data-snap data-nav="dark" className="min-h-screen flex items-center bg-gray-900 px-6 md:px-12 py-20 relative overflow-hidden">
         {/* Background pattern */}
         <div className="absolute inset-0 opacity-5">
           <div className="absolute top-10 left-10 w-32 h-32 border border-white rounded-full" />
@@ -1150,7 +1129,7 @@ export default function PresentationPage() {
         </div>
 
         <div className="max-w-6xl mx-auto w-full relative z-10">
-          <div className="text-center mb-16">
+          <div className="text-center mb-16" data-aos="fade-up">
             <span className="text-[#65589C] font-medium text-sm uppercase tracking-widest mb-4 block">Who it's for</span>
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
               Built for those who need clarity,<br />
@@ -1169,6 +1148,8 @@ export default function PresentationPage() {
             ].map((item, index) => (
               <div
                 key={index}
+                data-aos="fade-up"
+                data-aos-delay={index * 80}
                 className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:bg-white/10 hover:border-[#c7ccfe]/50 transition-all group glass-card-dark"
               >
                 <div className="w-12 h-12 bg-gradient-to-r from-[#c7ccfe] to-[#6f63f1] rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
@@ -1187,7 +1168,7 @@ export default function PresentationPage() {
       </section>
 
       {/* Final CTA Section - Full Screen */}
-      <section data-reveal="up" data-snap data-nav="dark" className="min-h-screen flex items-center justify-center px-6 md:px-12 py-20 relative overflow-hidden">
+      <section data-snap data-nav="dark" className="min-h-screen flex items-center justify-center px-6 md:px-12 py-20 relative overflow-hidden">
         {/* Background */}
         <div className="absolute inset-0 bg-gradient-to-br from-[#3a2e81] via-[#6046e5] to-[#6f63f1]" />
         <div className="absolute top-0 left-0 w-full h-full">
@@ -1197,24 +1178,24 @@ export default function PresentationPage() {
         </div>
 
         <div className="max-w-4xl mx-auto text-center relative z-10">
-          <h2 className="text-4xl md:text-6xl font-bold text-white mb-8 leading-tight">
+          <h2 data-aos="fade-up" className="text-4xl md:text-6xl font-bold text-white mb-8 leading-tight">
             Ready to build your
             <br />
             <span className="font-serif italic">marketing strategy</span> today?
           </h2>
-          <p className="text-[rgba(203,188,198,0.98)] text-xl mb-12 max-w-2xl mx-auto">
+          <p data-aos="fade-up" data-aos-delay="100" className="text-[rgba(203,188,198,0.98)] text-xl mb-12 max-w-2xl mx-auto">
             From zero clarity to a structured marketing plan, guided by AI. Be the first to experience DNHub.
           </p>
 
           {/* Waitlist form */}
-          <div className="max-w-xl mx-auto">
+          <div className="max-w-xl mx-auto" data-aos="zoom-in" data-aos-delay="200">
             <WaitlistForm variant="dark" />
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer data-reveal="up" data-snap data-nav="dark" className="px-6 md:px-12 py-16 bg-gray-900 text-white">
+      <footer data-snap data-nav="dark" className="px-6 md:px-12 py-16 bg-gray-900 text-white" data-aos="fade-up">
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-4 gap-12 mb-12">
             {/* Logo & Description */}
