@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DNHub Business Card - Marco Antonio Prado</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #1a1a2e;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .card {
+      width: 1050px;
+      height: 600px;
+      background: linear-gradient(135deg, #3a2e81 0%, #4632a9 50%, #6f63f1 100%);
+      border-radius: 20px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 25px 80px rgba(0,0,0,0.4);
+    }
+    /* Decorative circles */
+    .circle1 {
+      position: absolute;
+      top: -100px;
+      right: -100px;
+      width: 400px;
+      height: 400px;
+      background: #c7ccfe;
+      opacity: 0.08;
+      border-radius: 50%;
+    }
+    .circle2 {
+      position: absolute;
+      bottom: -80px;
+      left: -80px;
+      width: 300px;
+      height: 300px;
+      background: #6f63f1;
+      opacity: 0.1;
+      border-radius: 50%;
+    }
+    /* Accent line */
+    .accent-line {
+      position: absolute;
+      left: 60px;
+      top: 200px;
+      width: 4px;
+      height: 120px;
+      background: linear-gradient(180deg, #c7ccfe 0%, #6f63f1 100%);
+      border-radius: 2px;
+    }
+    /* Logo section */
+    .logo-section {
+      position: absolute;
+      top: 50px;
+      left: 60px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .logo-icon {
+      width: 65px;
+      height: 65px;
+    }
+    .logo-text {
+      font-size: 42px;
+      color: white;
+    }
+    .logo-text span:first-child { font-weight: 600; }
+    .logo-text span:last-child { font-weight: 300; }
+    /* Name & Title */
+    .name {
+      position: absolute;
+      top: 200px;
+      left: 80px;
+      font-size: 48px;
+      font-weight: 600;
+      color: white;
+    }
+    .title {
+      position: absolute;
+      top: 260px;
+      left: 80px;
+      font-size: 26px;
+      font-weight: 400;
+      color: #c7ccfe;
+    }
+    /* Contact info */
+    .contact {
+      position: absolute;
+      top: 340px;
+      left: 80px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      color: rgba(203, 188, 198, 0.98);
+      font-size: 20px;
+    }
+    .contact-icon {
+      width: 24px;
+      height: 24px;
+      color: #c7ccfe;
+    }
+    /* QR Section */
+    .qr-section {
+      position: absolute;
+      right: 70px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: white;
+      border-radius: 16px;
+      padding: 15px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    }
+    .qr-section img {
+      width: 180px;
+      height: 180px;
+      display: block;
+    }
+    /* Tagline */
+    .tagline {
+      position: absolute;
+      bottom: 40px;
+      right: 70px;
+      font-size: 16px;
+      color: rgba(203, 188, 198, 0.7);
+    }
+
+    @media print {
+      body { background: white; }
+      .card { box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <!-- Decorative elements -->
+    <div class="circle1"></div>
+    <div class="circle2"></div>
+    <div class="accent-line"></div>
+
+    <!-- Logo -->
+    <div class="logo-section">
+      <svg class="logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="marneeBody" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#A855F7" />
+            <stop offset="100%" stop-color="#8B5CF6" />
+          </linearGradient>
+          <linearGradient id="headset" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#7C3AED" />
+            <stop offset="100%" stop-color="#6D28D9" />
+          </linearGradient>
+          <linearGradient id="mic" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#EC4899" />
+            <stop offset="100%" stop-color="#DB2777" />
+          </linearGradient>
+        </defs>
+        <path d="M20 36C28 36 34 30 34 22C34 14 28 10 20 10C12 10 6 14 6 22C6 30 12 36 20 36Z" fill="url(#marneeBody)" />
+        <path d="M10 12C8 8 9 4 12 4C15 4 15 8 14 12" fill="url(#marneeBody)" />
+        <path d="M30 12C32 8 31 4 28 4C25 4 25 8 26 12" fill="url(#marneeBody)" />
+        <path d="M8 18C8 12 13 8 20 8C27 8 32 12 32 18" stroke="url(#headset)" stroke-width="2.5" stroke-linecap="round" fill="none" />
+        <rect x="4" y="16" width="5" height="8" rx="2" fill="url(#headset)" />
+        <rect x="31" y="16" width="5" height="8" rx="2" fill="url(#headset)" />
+        <path d="M9 22C9 22 12 24 14 28" stroke="url(#headset)" stroke-width="2" stroke-linecap="round" fill="none" />
+        <circle cx="15" cy="29" r="2.5" fill="url(#mic)" />
+      </svg>
+      <div class="logo-text">
+        <span>DN</span><span>Hub</span>
+      </div>
+    </div>
+
+    <!-- Name & Title -->
+    <div class="name">Marco Antonio Prado</div>
+    <div class="title">Co-Founder</div>
+
+    <!-- Contact Info -->
+    <div class="contact">
+      <div class="contact-item">
+        <svg class="contact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <rect x="2" y="4" width="20" height="16" rx="2" stroke-width="2"/>
+          <path d="M2 6l10 8 10-8" stroke-width="2"/>
+        </svg>
+        <span>tonnypradog@hotmail.com</span>
+      </div>
+      <div class="contact-item">
+        <svg class="contact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <rect x="2" y="2" width="20" height="20" rx="4" stroke-width="2"/>
+          <text x="6" y="17" font-size="12" font-weight="700" fill="currentColor">in</text>
+        </svg>
+        <span>linkedin.com/in/marco-antonio-prado-5188981b1</span>
+      </div>
+      <div class="contact-item">
+        <svg class="contact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="10" stroke-width="2"/>
+          <ellipse cx="12" cy="12" rx="4" ry="10" stroke-width="1.5"/>
+          <line x1="2" y1="12" x2="22" y2="12" stroke-width="1.5"/>
+        </svg>
+        <span>dn-hub.com</span>
+      </div>
+    </div>
+
+    <!-- QR Code -->
+    <div class="qr-section">
+      <img src="9yNwKb.svg" alt="QR Code to dn-hub.com" />
+    </div>
+
+    <!-- Tagline -->
+    <div class="tagline">AI-Powered Marketing Strategy</div>
+  </div>
+</body>
+</html>

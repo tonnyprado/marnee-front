@@ -1,44 +1,42 @@
 <svg width="160" height="40" viewBox="0 0 160 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- 3D Cube Icon -->
-  <g transform="translate(4, 4)">
-    <!-- Top face -->
-    <path d="M16 6L26 12V14L16 8L6 14V12L16 6Z" fill="url(#cubeTop)" />
-    <!-- Left face -->
-    <path d="M6 12L16 18V28L6 22V12Z" fill="url(#cubeLeft)" />
-    <!-- Right face -->
-    <path d="M26 12L16 18V28L26 22V12Z" fill="url(#cubeRight)" />
-    <!-- Top surface -->
-    <path d="M16 8L26 14L16 20L6 14L16 8Z" fill="url(#cubeTopFace)" />
-    <!-- Inner glow accent -->
-    <path d="M16 20L16 28" stroke="url(#cubeAccent)" stroke-width="1" opacity="0.6" />
+  <!-- Marnee Icon with Headset -->
+  <g transform="translate(2, 2)">
+    <!-- Marnee body silhouette -->
+    <path d="M18 34C26 34 32 28 32 20C32 12 26 8 18 8C10 8 4 12 4 20C4 28 10 34 18 34Z" fill="url(#marneeBody)" />
+    <!-- Left ear -->
+    <path d="M8 10C6 6 7 2 10 2C13 2 13 6 12 10" fill="url(#marneeBody)" />
+    <!-- Right ear -->
+    <path d="M28 10C30 6 29 2 26 2C23 2 23 6 24 10" fill="url(#marneeBody)" />
+    <!-- Headset band -->
+    <path d="M6 16C6 10 11 6 18 6C25 6 30 10 30 16" stroke="url(#headset)" stroke-width="2.5" stroke-linecap="round" fill="none" />
+    <!-- Left headphone -->
+    <rect x="2" y="14" width="5" height="8" rx="2" fill="url(#headset)" />
+    <!-- Right headphone -->
+    <rect x="29" y="14" width="5" height="8" rx="2" fill="url(#headset)" />
+    <!-- Microphone arm -->
+    <path d="M7 20C7 20 10 22 12 26" stroke="url(#headset)" stroke-width="2" stroke-linecap="round" fill="none" />
+    <!-- Microphone tip -->
+    <circle cx="13" cy="27" r="2.5" fill="url(#mic)" />
   </g>
 
   <!-- Wordmark -->
   <text x="42" y="27" font-family="system-ui, -apple-system, sans-serif" font-size="22" letter-spacing="-0.5">
-    <tspan font-weight="600" fill="#1f2937">dn</tspan><tspan font-weight="300" fill="#1f2937">hub</tspan>
+    <tspan font-weight="600" fill="#1f2937">DN</tspan><tspan font-weight="300" fill="#1f2937">Hub</tspan>
   </text>
 
   <!-- Gradients -->
   <defs>
-    <linearGradient id="cubeTop" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="marneeBody" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#A855F7" />
-      <stop offset="100%" stop-color="#EC4899" />
+      <stop offset="100%" stop-color="#8B5CF6" />
     </linearGradient>
-    <linearGradient id="cubeLeft" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="headset" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#7C3AED" />
+      <stop offset="100%" stop-color="#6D28D9" />
+    </linearGradient>
+    <linearGradient id="mic" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#EC4899" />
       <stop offset="100%" stop-color="#DB2777" />
-    </linearGradient>
-    <linearGradient id="cubeRight" x1="100%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#8B5CF6" />
-      <stop offset="100%" stop-color="#EC4899" />
-    </linearGradient>
-    <linearGradient id="cubeTopFace" x1="50%" y1="0%" x2="50%" y2="100%">
-      <stop offset="0%" stop-color="#C084FC" />
-      <stop offset="100%" stop-color="#F472B6" />
-    </linearGradient>
-    <linearGradient id="cubeAccent" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#E879F9" />
-      <stop offset="100%" stop-color="#FB7185" />
     </linearGradient>
   </defs>
 </svg>
