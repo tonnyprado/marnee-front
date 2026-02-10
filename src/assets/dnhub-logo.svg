@@ -1,0 +1,44 @@
+<svg width="160" height="40" viewBox="0 0 160 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 3D Cube Icon -->
+  <g transform="translate(4, 4)">
+    <!-- Top face -->
+    <path d="M16 6L26 12V14L16 8L6 14V12L16 6Z" fill="url(#cubeTop)" />
+    <!-- Left face -->
+    <path d="M6 12L16 18V28L6 22V12Z" fill="url(#cubeLeft)" />
+    <!-- Right face -->
+    <path d="M26 12L16 18V28L26 22V12Z" fill="url(#cubeRight)" />
+    <!-- Top surface -->
+    <path d="M16 8L26 14L16 20L6 14L16 8Z" fill="url(#cubeTopFace)" />
+    <!-- Inner glow accent -->
+    <path d="M16 20L16 28" stroke="url(#cubeAccent)" stroke-width="1" opacity="0.6" />
+  </g>
+
+  <!-- Wordmark -->
+  <text x="42" y="27" font-family="system-ui, -apple-system, sans-serif" font-size="22" letter-spacing="-0.5">
+    <tspan font-weight="600" fill="#1f2937">dn</tspan><tspan font-weight="300" fill="#1f2937">hub</tspan>
+  </text>
+
+  <!-- Gradients -->
+  <defs>
+    <linearGradient id="cubeTop" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#A855F7" />
+      <stop offset="100%" stop-color="#EC4899" />
+    </linearGradient>
+    <linearGradient id="cubeLeft" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7C3AED" />
+      <stop offset="100%" stop-color="#DB2777" />
+    </linearGradient>
+    <linearGradient id="cubeRight" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#8B5CF6" />
+      <stop offset="100%" stop-color="#EC4899" />
+    </linearGradient>
+    <linearGradient id="cubeTopFace" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#C084FC" />
+      <stop offset="100%" stop-color="#F472B6" />
+    </linearGradient>
+    <linearGradient id="cubeAccent" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#E879F9" />
+      <stop offset="100%" stop-color="#FB7185" />
+    </linearGradient>
+  </defs>
+</svg>

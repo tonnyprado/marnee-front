@@ -18,7 +18,7 @@ import videoCalendar from "../assets/videos/GenerateCalendar.mov";
 import imgCampaign from "../assets/extras/Campaign.png";
 
 // Hero video
-import heroVideo from "../assets/videos/0207.mp4";
+import heroVideo from "../assets/videos/0207-optimized.mp4";
 
 export default function PresentationPage() {
   const [email, setEmail] = useState("");
@@ -30,6 +30,7 @@ export default function PresentationPage() {
   const [showNav, setShowNav] = useState(false);
   const [navTheme, setNavTheme] = useState("light");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isHeroVideoError, setIsHeroVideoError] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -257,7 +258,7 @@ export default function PresentationPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-gray-900 font-sans glass-page">
+    <div className="min-h-viewport bg-white text-gray-900 font-sans glass-page">
       {/* Custom animation styles */}
       <style>{`
         html { scroll-behavior: smooth; }
@@ -415,7 +416,7 @@ export default function PresentationPage() {
 
       <div className={`page-fade ${isPageLoaded ? "page-fade--in" : ""}`}>
       {/* Hero Section - Full Screen */}
-      <section data-snap data-nav="dark" className="min-h-screen flex flex-col justify-center px-6 md:px-12 lg:px-16 xl:px-24 pt-6 sm:pt-8 pb-10 sm:pb-20 relative overflow-hidden bg-gradient-to-br from-[#3a2e81] via-[#4632a9] to-[#c7ccfe]">
+      <section data-snap data-nav="dark" className="min-h-viewport flex flex-col justify-center px-6 md:px-12 lg:px-16 xl:px-24 pt-6 sm:pt-8 pb-10 sm:pb-20 relative overflow-hidden bg-gradient-to-br from-[#3a2e81] via-[#4632a9] to-[#c7ccfe]">
         <div className="absolute inset-0 bg-white/5" />
         {/* Background decorations */}
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-[#c7ccfe]/20 via-[#6f63f1]/10 to-transparent rounded-full blur-3xl -z-10" />
@@ -468,13 +469,23 @@ export default function PresentationPage() {
             {/* Hero Video - Mobile */}
             <div className="lg:hidden mt-6" data-aos="zoom-in" data-aos-delay="150">
               <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-white/10 bg-white glass-card">
+                {isHeroVideoError && (
+                  <img
+                    src={imgCampaign}
+                    alt="Marnee demo preview"
+                    className="w-full h-auto aspect-video object-cover"
+                  />
+                )}
                 <video
                   src={heroVideo}
                   autoPlay
                   loop
                   muted
                   playsInline
-                  className="w-full h-auto aspect-video object-cover pointer-events-none"
+                  preload="metadata"
+                  poster={imgCampaign}
+                  onError={() => setIsHeroVideoError(true)}
+                  className={`w-full h-auto aspect-video object-cover pointer-events-none ${isHeroVideoError ? "hidden" : ""}`}
                   style={{ userSelect: 'none' }}
                 />
               </div>
@@ -491,13 +502,23 @@ export default function PresentationPage() {
 
               {/* Main Video - autoplay, loop, no controls */}
               <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-white/10 bg-white glass-card">
+                {isHeroVideoError && (
+                  <img
+                    src={imgCampaign}
+                    alt="Marnee demo preview"
+                    className="w-full h-auto object-cover"
+                  />
+                )}
                 <video
                   src={heroVideo}
                   autoPlay
                   loop
                   muted
                   playsInline
-                  className="w-full h-auto pointer-events-none"
+                  preload="metadata"
+                  poster={imgCampaign}
+                  onError={() => setIsHeroVideoError(true)}
+                  className={`w-full h-auto pointer-events-none ${isHeroVideoError ? "hidden" : ""}`}
                   style={{ userSelect: 'none' }}
                 />
               </div>
@@ -530,7 +551,7 @@ export default function PresentationPage() {
       </section>
 
       {/* Problem Section - Full Screen */}
-      <section id="problem" data-snap data-nav="light" className="min-h-screen flex items-center bg-gray-50 px-6 md:px-12 py-20 relative overflow-hidden">
+      <section id="problem" data-snap data-nav="light" className="min-h-viewport flex items-center bg-gray-50 px-6 md:px-12 py-20 relative overflow-hidden">
         {/* Mascot - Problem */}
         <img
           src={marnee12}
@@ -606,7 +627,7 @@ export default function PresentationPage() {
       </section>
 
       {/* Solution Section - Full Screen */}
-      <section data-snap data-nav="dark" className="min-h-screen flex items-center bg-gradient-to-br from-[#3a2e81] via-[#6046e5] to-[#6f63f1] px-6 md:px-12 py-20 relative overflow-hidden">
+      <section data-snap data-nav="dark" className="min-h-viewport flex items-center bg-gradient-to-br from-[#3a2e81] via-[#6046e5] to-[#6f63f1] px-6 md:px-12 py-20 relative overflow-hidden">
         {/* Background pattern */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-20 left-20 w-40 h-40 border border-white rounded-full" />
@@ -668,7 +689,7 @@ export default function PresentationPage() {
       </section>
 
       {/* How it works Section - Full Screen */}
-      <section id="how-it-works" data-snap data-nav="light" className="min-h-screen flex items-center px-6 md:px-12 py-20 relative overflow-hidden">
+      <section id="how-it-works" data-snap data-nav="light" className="min-h-viewport flex items-center px-6 md:px-12 py-20 relative overflow-hidden">
         {/* Mascot - How it works (desktop only) */}
         <img
           src={marnee13}
@@ -757,7 +778,7 @@ export default function PresentationPage() {
       </section>
 
       {/* Demo 1 - Brand Discovery Test */}
-      <section id="demo-test" data-snap data-nav="light" className="min-h-screen flex items-center px-6 md:px-12 py-20 bg-gradient-to-br from-[#c7ccfe]/6 via-white to-[#6f63f1]/6">
+      <section id="demo-test" data-snap data-nav="light" className="min-h-viewport flex items-center px-6 md:px-12 py-20 bg-gradient-to-br from-[#c7ccfe]/6 via-white to-[#6f63f1]/6">
         <div className="max-w-6xl mx-auto w-full">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Video */}
@@ -798,7 +819,7 @@ export default function PresentationPage() {
       </section>
 
       {/* Demo 2 - Chat with Marnee */}
-      <section id="demo-chat" data-snap data-nav="light" className="min-h-screen flex items-center px-6 md:px-12 py-20 bg-white">
+      <section id="demo-chat" data-snap data-nav="light" className="min-h-viewport flex items-center px-6 md:px-12 py-20 bg-white">
         <div className="max-w-6xl mx-auto w-full">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Content */}
@@ -839,7 +860,7 @@ export default function PresentationPage() {
       </section>
 
       {/* Demo 3 - Content Calendar */}
-      <section id="demo-calendar" data-snap data-nav="light" className="min-h-screen flex items-center px-6 md:px-12 py-20 bg-gradient-to-br from-[#6f63f1]/6 via-white to-[#c7ccfe]/6">
+      <section id="demo-calendar" data-snap data-nav="light" className="min-h-viewport flex items-center px-6 md:px-12 py-20 bg-gradient-to-br from-[#6f63f1]/6 via-white to-[#c7ccfe]/6">
         <div className="max-w-6xl mx-auto w-full">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Video */}
@@ -880,7 +901,7 @@ export default function PresentationPage() {
       </section>
 
       {/* Demo 4 - Campaign Dashboard */}
-      <section id="demo-dashboard" data-snap data-nav="light" className="min-h-screen flex items-center px-6 md:px-12 py-20 bg-white">
+      <section id="demo-dashboard" data-snap data-nav="light" className="min-h-viewport flex items-center px-6 md:px-12 py-20 bg-white">
         <div className="max-w-6xl mx-auto w-full">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Content */}
@@ -921,7 +942,7 @@ export default function PresentationPage() {
       </section>
 
       {/* Features Section - Full Screen */}
-      <section id="features" data-snap data-nav="light" className="min-h-screen flex items-center bg-gray-50 px-6 md:px-12 py-20">
+      <section id="features" data-snap data-nav="light" className="min-h-viewport flex items-center bg-gray-50 px-6 md:px-12 py-20">
         <div className="max-w-6xl mx-auto w-full">
           <div className="text-center mb-16" data-aos="fade-up">
             <span className="text-[#65589C] font-medium text-sm uppercase tracking-widest mb-4 block">Features</span>
@@ -1013,7 +1034,7 @@ export default function PresentationPage() {
       </section>
 
       {/* Meet Marnee Section - Full Screen */}
-      <section id="marnee" data-snap data-nav="light" className="min-h-screen flex items-center px-6 md:px-12 py-20 relative overflow-hidden">
+      <section id="marnee" data-snap data-nav="light" className="min-h-viewport flex items-center px-6 md:px-12 py-20 relative overflow-hidden">
         {/* Background */}
         <div className="absolute inset-0 bg-gradient-to-br from-[#c7ccfe]/6 via-white to-[#6f63f1]/6 -z-10" />
         <div className="absolute top-1/4 right-0 w-[600px] h-[600px] bg-gradient-to-br from-[#c7ccfe]/30 via-[#6f63f1]/30 to-[#6046e5]/30 rounded-full blur-3xl opacity-30 -z-10" />
@@ -1120,7 +1141,7 @@ export default function PresentationPage() {
       </section>
 
       {/* Who it's for Section - Full Screen */}
-      <section data-snap data-nav="dark" className="min-h-screen flex items-center bg-gray-900 px-6 md:px-12 py-20 relative overflow-hidden">
+      <section data-snap data-nav="dark" className="min-h-viewport flex items-center bg-gray-900 px-6 md:px-12 py-20 relative overflow-hidden">
         {/* Background pattern */}
         <div className="absolute inset-0 opacity-5">
           <div className="absolute top-10 left-10 w-32 h-32 border border-white rounded-full" />
@@ -1168,7 +1189,7 @@ export default function PresentationPage() {
       </section>
 
       {/* Final CTA Section - Full Screen */}
-      <section data-snap data-nav="dark" className="min-h-screen flex items-center justify-center px-6 md:px-12 py-20 relative overflow-hidden">
+      <section data-snap data-nav="dark" className="min-h-viewport flex items-center justify-center px-6 md:px-12 py-20 relative overflow-hidden">
         {/* Background */}
         <div className="absolute inset-0 bg-gradient-to-br from-[#3a2e81] via-[#6046e5] to-[#6f63f1]" />
         <div className="absolute top-0 left-0 w-full h-full">
