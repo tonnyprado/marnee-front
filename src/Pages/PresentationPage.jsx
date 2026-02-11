@@ -416,7 +416,7 @@ export default function PresentationPage() {
 
       <div className={`page-fade ${isPageLoaded ? "page-fade--in" : ""}`}>
       {/* Hero Section - Full Screen */}
-      <section data-snap data-nav="dark" className="min-h-viewport flex flex-col justify-center px-6 md:px-12 lg:px-16 xl:px-24 pt-6 sm:pt-8 pb-10 sm:pb-20 relative overflow-hidden bg-gradient-to-br from-[#3a2e81] via-[#4632a9] to-[#c7ccfe]">
+      <section data-snap data-nav="dark" className="min-h-viewport flex flex-col justify-center px-4 sm:px-6 md:px-12 lg:px-16 xl:px-24 pt-4 sm:pt-8 pb-6 sm:pb-20 relative overflow-hidden bg-gradient-to-br from-[#3a2e81] via-[#4632a9] to-[#c7ccfe]">
         <div className="absolute inset-0 bg-white/5" />
         {/* Background decorations */}
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-[#c7ccfe]/20 via-[#6f63f1]/10 to-transparent rounded-full blur-3xl -z-10" />
@@ -425,7 +425,7 @@ export default function PresentationPage() {
         {/* Hero Logo - Large and prominent */}
         <div
           data-aos="fade-down"
-          className="mb-8 md:mb-12 transition-all duration-300"
+          className="mb-4 sm:mb-8 md:mb-12 transition-all duration-300"
           style={{
             opacity: 1 - scrollProgress * 0.8,
             transform: `scale(${1 - scrollProgress * 0.3})`
@@ -435,7 +435,7 @@ export default function PresentationPage() {
         </div>
 
         {/* Main content grid */}
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center max-w-7xl mx-auto w-full">
+        <div className="grid lg:grid-cols-2 gap-4 sm:gap-8 lg:gap-12 items-center max-w-7xl mx-auto w-full">
           {/* Left side - Text content */}
           <div className="text-left relative z-10">
             <h1 data-aos="fade-right" className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 sm:mb-6 leading-tight tracking-tight text-white">
@@ -446,7 +446,7 @@ export default function PresentationPage() {
               </span>
             </h1>
 
-            <div data-aos="fade-right" data-aos-delay="100" className="mb-5 sm:mb-8 max-w-lg">
+            <div data-aos="fade-right" data-aos-delay="100" className="mb-4 sm:mb-8 max-w-lg">
               <img
                 src={marnee11}
                 alt="Marnee mascot"
@@ -467,7 +467,7 @@ export default function PresentationPage() {
             </button>
 
             {/* Hero Video - Mobile */}
-            <div className="lg:hidden mt-6" data-aos="zoom-in" data-aos-delay="150">
+            <div className="lg:hidden mt-4" data-aos="zoom-in" data-aos-delay="150">
               <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-white/10 bg-white glass-card">
                 {isHeroVideoError && (
                   <img
