@@ -80,102 +80,11 @@ export default function PresentationPage() {
     );
     themedSections.forEach((section) => navObserver.observe(section));
 
-    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const finePointer = window.matchMedia("(pointer: fine)").matches;
-    const isResponsive = window.matchMedia("(max-width: 768px)").matches;
-    const allowSnapScroll = finePointer && !prefersReduced && !isResponsive;
-    const allowMobileSnap = !finePointer && !prefersReduced && isResponsive;
-    const sectionNodes = Array.from(document.querySelectorAll("[data-snap]"));
-    let isSnapping = false;
-    let lastSnapAt = 0;
-    let snapTimeout;
-    let targetY = null;
-
-    const getCurrentIndex = () => {
-      const current = window.scrollY + window.innerHeight * 0.5;
-      let idx = sectionNodes.findIndex((section) => {
-        const top = section.offsetTop;
-        const bottom = top + section.offsetHeight;
-        return current >= top && current < bottom;
-      });
-      if (idx === -1) idx = 0;
-      return idx;
-    };
-
-    const unlockSnap = () => {
-      isSnapping = false;
-      targetY = null;
-      if (snapTimeout) window.clearTimeout(snapTimeout);
-    };
-
-    const snapToIndex = (index) => {
-      if (!sectionNodes[index]) return;
-      isSnapping = true;
-      targetY = sectionNodes[index].offsetTop;
-      window.scrollTo({ top: targetY, behavior: "smooth" });
-      snapTimeout = window.setTimeout(unlockSnap, 1100);
-    };
-
-    const onWheel = (event) => {
-      if (prefersReduced || !finePointer) return;
-      event.preventDefault();
-      if (isSnapping) return;
-      const now = Date.now();
-      const delta = Math.abs(event.deltaY);
-      if (delta < 24 || now - lastSnapAt < 900) return;
-      lastSnapAt = now;
-      const direction = event.deltaY > 0 ? 1 : -1;
-      const currentIndex = getCurrentIndex();
-      const nextIndex = Math.min(
-        sectionNodes.length - 1,
-        Math.max(0, currentIndex + direction)
-      );
-      if (nextIndex !== currentIndex) {
-        snapToIndex(nextIndex);
-      }
-    };
-
-    const onScroll = () => {
-      if (!isSnapping || targetY === null) return;
-      if (Math.abs(window.scrollY - targetY) < 2) {
-        unlockSnap();
-      }
-    };
-
-    if (allowSnapScroll) {
-      window.addEventListener("wheel", onWheel, { passive: false });
-      window.addEventListener("scroll", onScroll);
-    }
-    let mobileSnapTimeout;
-    const onMobileScroll = () => {
-      if (!allowMobileSnap) return;
-      if (mobileSnapTimeout) window.clearTimeout(mobileSnapTimeout);
-      mobileSnapTimeout = window.setTimeout(() => {
-        const currentIndex = getCurrentIndex();
-        const targetSection = sectionNodes[currentIndex];
-        if (targetSection) {
-          window.scrollTo({ top: targetSection.offsetTop, behavior: "smooth" });
-        }
-      }, 120);
-    };
-    if (allowMobileSnap) {
-      window.addEventListener("scroll", onMobileScroll, { passive: true });
-    }
-
     return () => {
       window.clearTimeout(loadTimer);
       AOS.refreshHard();
       navObserver.disconnect();
       document.body.classList.remove("no-scrollbar");
-      if (allowSnapScroll) {
-        window.removeEventListener("wheel", onWheel);
-        window.removeEventListener("scroll", onScroll);
-      }
-      if (allowMobileSnap) {
-        window.removeEventListener("scroll", onMobileScroll);
-      }
-      if (mobileSnapTimeout) window.clearTimeout(mobileSnapTimeout);
-      if (snapTimeout) window.clearTimeout(snapTimeout);
     };
   }, []);
 
@@ -416,7 +325,7 @@ export default function PresentationPage() {
 
       <div className={`page-fade ${isPageLoaded ? "page-fade--in" : ""}`}>
       {/* Hero Section - Full Screen */}
-      <section data-snap data-nav="dark" className="min-h-viewport flex flex-col justify-center px-4 sm:px-6 md:px-12 lg:px-16 xl:px-24 pt-4 sm:pt-8 pb-6 sm:pb-20 relative overflow-hidden bg-gradient-to-br from-[#3a2e81] via-[#4632a9] to-[#c7ccfe]">
+      <section data-snap data-nav="dark" className="min-h-viewport flex flex-col justify-center px-4 sm:px-6 md:px-12 lg:px-16 xl:px-24 pt-[max(1rem,env(safe-area-inset-top))] sm:pt-8 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:pb-20 relative overflow-hidden bg-gradient-to-br from-[#3a2e81] via-[#4632a9] to-[#c7ccfe]">
         <div className="absolute inset-0 bg-white/5" />
         {/* Background decorations */}
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-[#c7ccfe]/20 via-[#6f63f1]/10 to-transparent rounded-full blur-3xl -z-10" />
