@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import Logo from "../Component/Logo";
-import { api } from "../services/api";
 
 // Mascot images
 import marnee11 from "../assets/mascot/marnee11.png";
@@ -21,10 +20,6 @@ import imgCampaign from "../assets/extras/Campaign.png";
 import heroVideo from "../assets/videos/0207-optimized.mp4";
 
 export default function PresentationPage() {
-  const [email, setEmail] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState(null); // 'success' | 'error' | null
-  const [errorMessage, setErrorMessage] = useState("");
   const [scrollProgress, setScrollProgress] = useState(0);
   const [isPageLoaded, setIsPageLoaded] = useState(false);
   const [showNav, setShowNav] = useState(false);
@@ -92,77 +87,25 @@ export default function PresentationPage() {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const handleWaitlistSubmit = async (e) => {
-    e.preventDefault();
-    if (!email || isSubmitting) return;
-
-    setIsSubmitting(true);
-    setSubmitStatus(null);
-    setErrorMessage("");
-
-    try {
-      await api.subscribeWaitlist(email);
-      setSubmitStatus("success");
-      setEmail("");
-    } catch (err) {
-      setSubmitStatus("error");
-      setErrorMessage(err.message || "Something went wrong. Please try again.");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  // Waitlist form component to reuse
+  // Waitlist button component to reuse
   const WaitlistForm = ({ variant = "light", className = "" }) => {
     const isLight = variant === "light";
 
-    if (submitStatus === "success") {
-      return (
-        <div className={`flex items-center gap-3 ${className}`}>
-          <div className={`flex items-center gap-2 px-6 py-4 rounded-full ${isLight ? 'bg-[#c7ccfe]/10 text-[#65589C]' : 'bg-white/20 text-white'}`}>
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-            </svg>
-            <span className="font-medium">You're on the list! We'll be in touch soon.</span>
-          </div>
-        </div>
-      );
-    }
-
     return (
-      <form onSubmit={handleWaitlistSubmit} className={`${className}`}>
-        <div className={`flex flex-col sm:flex-row gap-3 p-3 sm:p-2 rounded-2xl sm:rounded-full ${isLight ? 'bg-white shadow-xl shadow-[#3a2e81]/10 border border-gray-100 glass-card' : 'bg-white/10 backdrop-blur-sm border border-white/20 glass-card-dark'}`}>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter your email"
-            required
-            className={`flex-1 px-5 py-3 rounded-xl sm:rounded-full outline-none text-base ${isLight ? 'bg-transparent text-gray-900 placeholder-gray-400' : 'bg-transparent text-white placeholder-white/60'}`}
-          />
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className={`px-8 py-3 rounded-xl sm:rounded-full font-medium text-base transition whitespace-nowrap disabled:opacity-50 ${
-              isLight
-                ? 'bg-gradient-to-r from-[#c7ccfe] to-[#6f63f1] hover:from-[#6f63f1] hover:to-[#6046e5] text-white shadow-lg shadow-[#c7ccfe]/30'
-                : 'bg-white text-[#65589C] hover:bg-gray-100'
-            }`}
-          >
-            {isSubmitting ? (
-              <span className="flex items-center gap-2">
-                <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                Joining...
-              </span>
-            ) : (
-              'Join the waitlist'
-            )}
-          </button>
-        </div>
-        {submitStatus === "error" && (
-          <p className={`mt-3 text-sm ${isLight ? 'text-[#65589C]' : 'text-[rgba(203,188,198,0.98)]'}`}>{errorMessage}</p>
-        )}
-      </form>
+      <div className={`${className}`}>
+        <a
+          href="https://tally.so/r/D4NkGl"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`inline-block px-8 py-3 rounded-full font-medium text-base transition whitespace-nowrap ${
+            isLight
+              ? 'bg-gradient-to-r from-[#c7ccfe] to-[#6f63f1] hover:from-[#6f63f1] hover:to-[#6046e5] text-white shadow-lg shadow-[#c7ccfe]/30'
+              : 'bg-white text-[#65589C] hover:bg-gray-100'
+          }`}
+        >
+          Join the waitlist
+        </a>
+      </div>
     );
   };
 
