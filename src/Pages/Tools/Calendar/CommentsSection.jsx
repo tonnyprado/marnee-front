@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { api } from "../../../services/api";
 
 export default function CommentsSection({ postId }) {
@@ -9,13 +9,7 @@ export default function CommentsSection({ postId }) {
   const [editingId, setEditingId] = useState(null);
   const [editContent, setEditContent] = useState("");
 
-  useEffect(() => {
-    if (postId) {
-      loadComments();
-    }
-  }, [postId]);
-
-  const loadComments = async () => {
+  const loadComments = useCallback(async () => {
     setIsLoading(true);
     try {
       const data = await api.getPostComments(postId);
@@ -25,7 +19,13 @@ export default function CommentsSection({ postId }) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [postId]);
+
+  useEffect(() => {
+    if (postId) {
+      loadComments();
+    }
+  }, [postId, loadComments]);
 
   const handleAddComment = async (e) => {
     e.preventDefault();

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { api } from "../../../services/api";
 import { useMarnee } from "../../../context/MarneeContext";
 
@@ -27,13 +27,7 @@ export default function BrainstormingSection({ calendarId }) {
     notes: "",
   });
 
-  useEffect(() => {
-    if (founderId) {
-      loadIdeas();
-    }
-  }, [founderId, calendarId]);
-
-  const loadIdeas = async () => {
+  const loadIdeas = useCallback(async () => {
     setIsLoading(true);
     try {
       const data = await api.getBrainstormingIdeas(founderId, calendarId);
@@ -43,7 +37,13 @@ export default function BrainstormingSection({ calendarId }) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [founderId, calendarId]);
+
+  useEffect(() => {
+    if (founderId) {
+      loadIdeas();
+    }
+  }, [founderId, loadIdeas]);
 
   const resetForm = () => {
     setForm({
