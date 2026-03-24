@@ -1,9 +1,44 @@
 import React, { useState, useEffect } from "react";
+import CommentsSection from "./CommentsSection";
 
 const STATUS_OPTIONS = [
-  { value: "draft", label: "Draft" },
-  { value: "scheduled", label: "Scheduled" },
-  { value: "published", label: "Published" },
+  { value: "todo", label: "To Do", color: "gray" },
+  { value: "in_progress", label: "In Progress", color: "blue" },
+  { value: "done", label: "Done", color: "green" },
+  { value: "skipped", label: "Skipped", color: "gray" },
+];
+
+const TASK_TYPES = [
+  { value: "content", label: "Content Task" },
+  { value: "marketing", label: "Marketing Task" },
+];
+
+const PLATFORMS = [
+  "TikTok",
+  "Instagram",
+  "LinkedIn",
+  "YouTube",
+  "Twitter/X",
+  "Facebook",
+  "Pinterest",
+];
+
+const ASSET_TYPES = ["Video", "Text", "Carousel", "Image", "Other"];
+
+const CONTENT_TYPES = [
+  { value: "Viral", label: "Viral (Top Funnel)", desc: "Awareness content" },
+  { value: "Educational", label: "Educational (Mid Funnel)", desc: "Value & education" },
+  { value: "Authority", label: "Authority (Bottom Funnel)", desc: "Credibility & conversion" },
+];
+
+const EFFORT_LEVELS = ["Low", "Medium", "High"];
+
+const GOALS = ["Awareness", "Leads", "Sales"];
+
+const FEEDBACK_TYPES = [
+  { value: "Repeat", label: "Repeat", desc: "This worked well" },
+  { value: "Iterate", label: "Iterate", desc: "Needs adjustments" },
+  { value: "Drop", label: "Drop", desc: "Not worth continuing" },
 ];
 
 const FORMAT_OPTIONS = [
@@ -14,6 +49,8 @@ const FORMAT_OPTIONS = [
   "story",
   "static post",
   "live",
+  "tutorial",
+  "behind-the-scenes",
 ];
 
 export default function CampaignForm({
@@ -23,26 +60,64 @@ export default function CampaignForm({
   onSave,
 }) {
   const [form, setForm] = useState({
+    // Basic Information
+    title: "",
+    taskType: "content",
+    platform: "",
+    assetType: "",
+    contentType: "",
+    effortLevel: "",
+    // Scheduling (read-only)
+    // Strategic Context
+    goal: "",
+    reason: "",
+    basedOn: "",
+    pillar: "",
+    // Content Structure
     hook: "",
+    body: "",
     angle: "",
     cta: "",
+    // Execution Details
     format: "",
-    pillar: "",
-    status: "draft",
     assets: [],
+    // Status & Tracking
+    status: "todo",
+    // Feedback
+    feedbackType: "",
+    notes: "",
   });
   const [isSaving, setIsSaving] = useState(false);
+  const [activeTab, setActiveTab] = useState("details"); // details | comments
 
   useEffect(() => {
     if (post) {
       setForm({
+        // Basic Information
+        title: post.title || "",
+        taskType: post.taskType || "content",
+        platform: post.platform || "",
+        assetType: post.assetType || "",
+        contentType: post.contentType || "",
+        effortLevel: post.effortLevel || "",
+        // Strategic Context
+        goal: post.goal || "",
+        reason: post.reason || "",
+        basedOn: post.basedOn || "",
+        pillar: post.pillar || "",
+        // Content Structure
         hook: post.hook || "",
+        body: post.body || "",
         angle: post.angle || "",
         cta: post.cta || "",
+        // Execution Details
         format: post.format || "",
-        pillar: post.pillar || "",
-        status: post.status || "draft",
         assets: post.assets || [],
+        // Status & Tracking
+        status: post.status || "todo",
+        // Feedback
+        feedbackType: post.feedbackType || "",
+        notes: post.notes || "",
       });
     }
   }, [post]);
@@ -73,16 +148,16 @@ export default function CampaignForm({
   };
 
   return (
-    <div className="fixed top-0 right-0 h-full w-96 bg-[#1a1a2e] text-white shadow-xl flex flex-col z-50 border-l border-white/10">
+    <div className="fixed top-0 right-0 h-full w-[480px] bg-white text-gray-900 shadow-2xl flex flex-col z-50 border-l border-gray-200">
       {/* Header */}
-      <div className="flex items-center justify-between px-5 py-4 border-b border-white/10">
+      <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 bg-gray-50">
         <div>
-          <p className="text-sm text-gray-400">{formatDate(post?.date)}</p>
+          <p className="text-sm text-gray-500">{formatDate(post?.date)}</p>
           <h2 className="text-lg font-semibold">Edit Post</h2>
         </div>
         <button
           onClick={onClose}
-          className="text-gray-400 hover:text-white transition"
+          className="text-gray-400 hover:text-gray-600 transition"
         >
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -90,137 +165,421 @@ export default function CampaignForm({
         </button>
       </div>
 
-      {/* Form */}
-      <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-5 space-y-5">
-        {/* Pillar (readonly) */}
-        <div>
-          <label className="text-xs text-gray-400 block mb-1">Content Pillar</label>
-          <div className="px-3 py-2 bg-violet-500/10 border border-violet-500/30 rounded-lg text-violet-300">
-            {form.pillar || "Not set"}
-          </div>
-        </div>
-
-        {/* Hook */}
-        <div>
-          <label className="text-xs text-gray-400 block mb-1">Hook</label>
-          <textarea
-            value={form.hook}
-            onChange={(e) => handleChange("hook", e.target.value)}
-            placeholder="The attention-grabbing opening..."
-            rows={3}
-            className="w-full bg-black/30 border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-400 resize-none"
-          />
-        </div>
-
-        {/* Angle */}
-        <div>
-          <label className="text-xs text-gray-400 block mb-1">Angle</label>
-          <input
-            type="text"
-            value={form.angle}
-            onChange={(e) => handleChange("angle", e.target.value)}
-            placeholder="e.g., Myth-busting, Personal story..."
-            className="w-full bg-black/30 border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-400"
-          />
-        </div>
-
-        {/* CTA */}
-        <div>
-          <label className="text-xs text-gray-400 block mb-1">Call to Action</label>
-          <input
-            type="text"
-            value={form.cta}
-            onChange={(e) => handleChange("cta", e.target.value)}
-            placeholder="e.g., Save this and DM me 'BRAND'"
-            className="w-full bg-black/30 border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-400"
-          />
-        </div>
-
-        {/* Format */}
-        <div>
-          <label className="text-xs text-gray-400 block mb-1">Format</label>
-          <select
-            value={form.format}
-            onChange={(e) => handleChange("format", e.target.value)}
-            className="w-full bg-black/30 border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-400"
-          >
-            <option value="">Select format...</option>
-            {FORMAT_OPTIONS.map((format) => (
-              <option key={format} value={format}>
-                {format}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Assets */}
-        <div>
-          <label className="text-xs text-gray-400 block mb-1">Assets Needed</label>
-          <div className="flex flex-wrap gap-2">
-            {(form.assets || []).map((asset, idx) => (
-              <span
-                key={idx}
-                className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded text-xs"
-              >
-                {asset}
-              </span>
-            ))}
-            {(!form.assets || form.assets.length === 0) && (
-              <span className="text-gray-500 text-sm">No assets specified</span>
-            )}
-          </div>
-        </div>
-
-        {/* Status */}
-        <div>
-          <label className="text-xs text-gray-400 block mb-1">Status</label>
-          <div className="flex gap-2">
-            {STATUS_OPTIONS.map((option) => (
-              <button
-                key={option.value}
-                type="button"
-                onClick={() => handleChange("status", option.value)}
-                className={`flex-1 px-3 py-2 rounded-lg text-sm transition ${
-                  form.status === option.value
-                    ? option.value === "draft"
-                      ? "bg-yellow-500/20 text-yellow-300 border border-yellow-500/30"
-                      : option.value === "scheduled"
-                      ? "bg-blue-500/20 text-blue-300 border border-blue-500/30"
-                      : "bg-green-500/20 text-green-300 border border-green-500/30"
-                    : "bg-black/30 border border-white/10 text-gray-400 hover:bg-white/5"
-                }`}
-              >
-                {option.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Week info */}
-        {post?.weekNumber && (
-          <div className="text-xs text-gray-500 pt-2">
-            Week {post.weekNumber} | {post.dayOfWeek}
-          </div>
-        )}
-      </form>
-
-      {/* Footer */}
-      <div className="p-5 border-t border-white/10 flex gap-3">
+      {/* Tabs */}
+      <div className="flex border-b border-gray-200 px-6">
         <button
-          onClick={handleSubmit}
-          disabled={isSaving}
-          className="flex-1 py-2.5 rounded-lg bg-gradient-to-r from-violet-500 via-indigo-500 to-cyan-400 text-black font-semibold text-sm hover:opacity-90 transition disabled:opacity-50"
+          onClick={() => setActiveTab("details")}
+          className={`px-4 py-3 text-sm font-medium border-b-2 transition ${
+            activeTab === "details"
+              ? "border-violet-500 text-violet-600"
+              : "border-transparent text-gray-500 hover:text-gray-700"
+          }`}
         >
-          {isSaving ? "Saving..." : "Save Changes"}
+          Details
         </button>
         <button
-          type="button"
-          onClick={onClose}
-          className="px-4 py-2.5 rounded-lg border border-white/20 text-gray-400 text-sm hover:bg-white/5 transition"
+          onClick={() => setActiveTab("comments")}
+          className={`px-4 py-3 text-sm font-medium border-b-2 transition ${
+            activeTab === "comments"
+              ? "border-violet-500 text-violet-600"
+              : "border-transparent text-gray-500 hover:text-gray-700"
+          }`}
         >
-          Cancel
+          Comments
         </button>
       </div>
+
+      {/* Form */}
+      {activeTab === "details" ? (
+        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-6">
+          {/* === BASIC INFORMATION === */}
+          <div>
+            <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
+              Basic Information
+            </h3>
+
+            {/* Title */}
+            <div className="mb-4">
+              <label className="text-sm font-medium text-gray-700 block mb-1.5">Title</label>
+              <input
+                type="text"
+                value={form.title}
+                onChange={(e) => handleChange("title", e.target.value)}
+                placeholder="Clear summary of the content..."
+                className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
+              />
+            </div>
+
+            {/* Task Type & Platform */}
+            <div className="grid grid-cols-2 gap-3 mb-4">
+              <div>
+                <label className="text-sm font-medium text-gray-700 block mb-1.5">Task Type</label>
+                <select
+                  value={form.taskType}
+                  onChange={(e) => handleChange("taskType", e.target.value)}
+                  className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
+                >
+                  {TASK_TYPES.map((type) => (
+                    <option key={type.value} value={type.value}>
+                      {type.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="text-sm font-medium text-gray-700 block mb-1.5">Platform</label>
+                <select
+                  value={form.platform}
+                  onChange={(e) => handleChange("platform", e.target.value)}
+                  className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
+                >
+                  <option value="">Select...</option>
+                  {PLATFORMS.map((platform) => (
+                    <option key={platform} value={platform}>
+                      {platform}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* Asset Type & Content Type */}
+            <div className="grid grid-cols-2 gap-3 mb-4">
+              <div>
+                <label className="text-sm font-medium text-gray-700 block mb-1.5">Asset Type</label>
+                <select
+                  value={form.assetType}
+                  onChange={(e) => handleChange("assetType", e.target.value)}
+                  className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
+                >
+                  <option value="">Select...</option>
+                  {ASSET_TYPES.map((type) => (
+                    <option key={type} value={type}>
+                      {type}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="text-sm font-medium text-gray-700 block mb-1.5">Content Type</label>
+                <select
+                  value={form.contentType}
+                  onChange={(e) => handleChange("contentType", e.target.value)}
+                  className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
+                >
+                  <option value="">Select...</option>
+                  {CONTENT_TYPES.map((type) => (
+                    <option key={type.value} value={type.value}>
+                      {type.label}
+                    </option>
+                  ))}
+                </select>
+                {form.contentType && (
+                  <p className="text-xs text-gray-500 mt-1">
+                    {CONTENT_TYPES.find((t) => t.value === form.contentType)?.desc}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            {/* Effort Level */}
+            <div className="mb-4">
+              <label className="text-sm font-medium text-gray-700 block mb-1.5">Effort Level</label>
+              <div className="flex gap-2">
+                {EFFORT_LEVELS.map((level) => (
+                  <button
+                    key={level}
+                    type="button"
+                    onClick={() => handleChange("effortLevel", level)}
+                    className={`flex-1 px-3 py-2 rounded-lg text-sm border transition ${
+                      form.effortLevel === level
+                        ? "bg-violet-100 text-violet-700 border-violet-300 font-medium"
+                        : "bg-white border-gray-200 text-gray-600 hover:bg-gray-50"
+                    }`}
+                  >
+                    {level}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* === STRATEGIC CONTEXT === */}
+          <div className="border-t border-gray-200 pt-6">
+            <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
+              Strategic Context
+            </h3>
+
+            {/* Goal */}
+            <div className="mb-4">
+              <label className="text-sm font-medium text-gray-700 block mb-1.5">Goal (Funnel Objective)</label>
+              <div className="flex gap-2">
+                {GOALS.map((goal) => (
+                  <button
+                    key={goal}
+                    type="button"
+                    onClick={() => handleChange("goal", goal)}
+                    className={`flex-1 px-3 py-2 rounded-lg text-sm border transition ${
+                      form.goal === goal
+                        ? "bg-indigo-100 text-indigo-700 border-indigo-300 font-medium"
+                        : "bg-white border-gray-200 text-gray-600 hover:bg-gray-50"
+                    }`}
+                  >
+                    {goal}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Pillar (read-only) */}
+            <div className="mb-4">
+              <label className="text-sm font-medium text-gray-700 block mb-1.5">Content Pillar</label>
+              <div className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-gray-700 text-sm">
+                {form.pillar || "Not set"}
+              </div>
+            </div>
+
+            {/* Reason */}
+            <div className="mb-4">
+              <label className="text-sm font-medium text-gray-700 block mb-1.5">
+                Reason <span className="text-gray-400 font-normal">(Why this content exists)</span>
+              </label>
+              <textarea
+                value={form.reason}
+                onChange={(e) => handleChange("reason", e.target.value)}
+                placeholder="Why are we creating this content?"
+                rows={2}
+                className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 resize-none"
+              />
+            </div>
+
+            {/* Based On */}
+            <div className="mb-4">
+              <label className="text-sm font-medium text-gray-700 block mb-1.5">
+                Based On <span className="text-gray-400 font-normal">(Trends, audience, strategy)</span>
+              </label>
+              <input
+                type="text"
+                value={form.basedOn}
+                onChange={(e) => handleChange("basedOn", e.target.value)}
+                placeholder="e.g., Trending topic in niche, audience behavior..."
+                className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
+              />
+            </div>
+          </div>
+
+          {/* === CONTENT STRUCTURE === */}
+          <div className="border-t border-gray-200 pt-6">
+            <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
+              Content Structure (Video-first/Script)
+            </h3>
+
+            {/* Hook */}
+            <div className="mb-4">
+              <label className="text-sm font-medium text-gray-700 block mb-1.5">
+                Hook <span className="text-gray-400 font-normal">(Attention-grabbing opening)</span>
+              </label>
+              <textarea
+                value={form.hook}
+                onChange={(e) => handleChange("hook", e.target.value)}
+                placeholder="The attention-grabbing opening..."
+                rows={2}
+                className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 resize-none"
+              />
+            </div>
+
+            {/* Body */}
+            <div className="mb-4">
+              <label className="text-sm font-medium text-gray-700 block mb-1.5">
+                Body <span className="text-gray-400 font-normal">(Main content explanation)</span>
+              </label>
+              <textarea
+                value={form.body}
+                onChange={(e) => handleChange("body", e.target.value)}
+                placeholder="Main content explanation..."
+                rows={3}
+                className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 resize-none"
+              />
+            </div>
+
+            {/* Angle */}
+            <div className="mb-4">
+              <label className="text-sm font-medium text-gray-700 block mb-1.5">
+                Angle <span className="text-gray-400 font-normal">(Content approach)</span>
+              </label>
+              <input
+                type="text"
+                value={form.angle}
+                onChange={(e) => handleChange("angle", e.target.value)}
+                placeholder="e.g., Myth-busting, Personal story..."
+                className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
+              />
+            </div>
+
+            {/* CTA */}
+            <div className="mb-4">
+              <label className="text-sm font-medium text-gray-700 block mb-1.5">Call to Action</label>
+              <input
+                type="text"
+                value={form.cta}
+                onChange={(e) => handleChange("cta", e.target.value)}
+                placeholder="e.g., Save this and DM me 'BRAND'"
+                className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
+              />
+            </div>
+          </div>
+
+          {/* === EXECUTION DETAILS === */}
+          <div className="border-t border-gray-200 pt-6">
+            <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
+              Execution Details
+            </h3>
+
+            {/* Format */}
+            <div className="mb-4">
+              <label className="text-sm font-medium text-gray-700 block mb-1.5">Format</label>
+              <select
+                value={form.format}
+                onChange={(e) => handleChange("format", e.target.value)}
+                className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
+              >
+                <option value="">Select format...</option>
+                {FORMAT_OPTIONS.map((format) => (
+                  <option key={format} value={format}>
+                    {format}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Assets */}
+            <div className="mb-4">
+              <label className="text-sm font-medium text-gray-700 block mb-1.5">Assets Needed</label>
+              <div className="flex flex-wrap gap-2">
+                {(form.assets || []).map((asset, idx) => (
+                  <span
+                    key={idx}
+                    className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs"
+                  >
+                    {asset}
+                  </span>
+                ))}
+                {(!form.assets || form.assets.length === 0) && (
+                  <span className="text-gray-400 text-sm">No assets specified</span>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* === STATUS & TRACKING === */}
+          <div className="border-t border-gray-200 pt-6">
+            <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
+              Status & Tracking
+            </h3>
+
+            {/* Status */}
+            <div className="mb-4">
+              <label className="text-sm font-medium text-gray-700 block mb-1.5">Status</label>
+              <div className="grid grid-cols-2 gap-2">
+                {STATUS_OPTIONS.map((option) => (
+                  <button
+                    key={option.value}
+                    type="button"
+                    onClick={() => handleChange("status", option.value)}
+                    className={`px-3 py-2 rounded-lg text-sm border transition ${
+                      form.status === option.value
+                        ? option.color === "gray"
+                          ? "bg-gray-100 text-gray-700 border-gray-300 font-medium"
+                          : option.color === "blue"
+                          ? "bg-blue-100 text-blue-700 border-blue-300 font-medium"
+                          : "bg-green-100 text-green-700 border-green-300 font-medium"
+                        : "bg-white border-gray-200 text-gray-600 hover:bg-gray-50"
+                    }`}
+                  >
+                    {option.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* === FEEDBACK === */}
+          <div className="border-t border-gray-200 pt-6">
+            <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
+              Feedback (Performance)
+            </h3>
+
+            {/* Feedback Type */}
+            <div className="mb-4">
+              <label className="text-sm font-medium text-gray-700 block mb-1.5">Action</label>
+              <div className="flex gap-2">
+                {FEEDBACK_TYPES.map((type) => (
+                  <button
+                    key={type.value}
+                    type="button"
+                    onClick={() => handleChange("feedbackType", type.value)}
+                    className={`flex-1 px-3 py-2 rounded-lg text-sm border transition ${
+                      form.feedbackType === type.value
+                        ? type.value === "Repeat"
+                          ? "bg-green-100 text-green-700 border-green-300 font-medium"
+                          : type.value === "Iterate"
+                          ? "bg-yellow-100 text-yellow-700 border-yellow-300 font-medium"
+                          : "bg-red-100 text-red-700 border-red-300 font-medium"
+                        : "bg-white border-gray-200 text-gray-600 hover:bg-gray-50"
+                    }`}
+                    title={type.desc}
+                  >
+                    {type.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Notes */}
+            <div className="mb-4">
+              <label className="text-sm font-medium text-gray-700 block mb-1.5">Notes</label>
+              <textarea
+                value={form.notes}
+                onChange={(e) => handleChange("notes", e.target.value)}
+                placeholder="Additional notes or feedback..."
+                rows={2}
+                className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 resize-none"
+              />
+            </div>
+          </div>
+
+          {/* Week info */}
+          {post?.weekNumber && (
+            <div className="text-xs text-gray-500 pt-2 border-t border-gray-200">
+              Week {post.weekNumber} • {post.dayOfWeek}
+            </div>
+          )}
+        </form>
+      ) : (
+        <CommentsSection postId={post?.id} />
+      )}
+
+      {/* Footer */}
+      {activeTab === "details" && (
+        <div className="p-6 border-t border-gray-200 flex gap-3 bg-gray-50">
+          <button
+            onClick={handleSubmit}
+            disabled={isSaving}
+            className="flex-1 py-2.5 rounded-lg bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 text-white font-semibold text-sm hover:from-violet-700 hover:via-indigo-700 hover:to-cyan-600 transition disabled:opacity-50 shadow-lg shadow-violet-500/25"
+          >
+            {isSaving ? "Saving..." : "Save Changes"}
+          </button>
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-4 py-2.5 rounded-lg border border-gray-300 text-gray-700 text-sm hover:bg-gray-100 transition"
+          >
+            Cancel
+          </button>
+        </div>
+      )}
     </div>
   );
 }

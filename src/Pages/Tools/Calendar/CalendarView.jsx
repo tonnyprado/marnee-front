@@ -3,18 +3,28 @@ import React, { useState } from "react";
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 const PILLAR_COLORS = {
-  Authority: "bg-violet-500/20 text-violet-300 border-violet-500/30",
-  "Behind the scenes": "bg-blue-500/20 text-blue-300 border-blue-500/30",
-  Tips: "bg-green-500/20 text-green-300 border-green-500/30",
-  Story: "bg-orange-500/20 text-orange-300 border-orange-500/30",
-  Engagement: "bg-cyan-500/20 text-cyan-300 border-cyan-500/30",
-  default: "bg-gray-500/20 text-gray-300 border-gray-500/30",
+  Authority: "bg-violet-100 text-violet-700 border-violet-300",
+  "Behind the scenes": "bg-blue-100 text-blue-700 border-blue-300",
+  Tips: "bg-green-100 text-green-700 border-green-300",
+  Story: "bg-orange-100 text-orange-700 border-orange-300",
+  Engagement: "bg-cyan-100 text-cyan-700 border-cyan-300",
+  default: "bg-gray-100 text-gray-700 border-gray-300",
+};
+
+const CONTENT_TYPE_COLORS = {
+  Viral: "bg-pink-100 text-pink-700 border-pink-300",
+  Educational: "bg-blue-100 text-blue-700 border-blue-300",
+  Authority: "bg-purple-100 text-purple-700 border-purple-300",
 };
 
 const STATUS_COLORS = {
-  draft: "border-l-yellow-400",
-  scheduled: "border-l-blue-400",
-  published: "border-l-green-400",
+  todo: "border-l-gray-400",
+  in_progress: "border-l-blue-500",
+  done: "border-l-green-500",
+  skipped: "border-l-gray-300",
+  draft: "border-l-yellow-500",
+  scheduled: "border-l-indigo-500",
+  published: "border-l-emerald-500",
 };
 
 export default function CalendarView({
@@ -66,20 +76,20 @@ export default function CalendarView({
   };
 
   return (
-    <div className="bg-[#0c0719]">
+    <div className="bg-white rounded-xl shadow-sm border border-gray-100">
       {/* Top controls */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-4 p-4 border-b border-gray-100">
         <div className="flex items-center gap-3">
           <button
             onClick={goToPrevMonth}
-            className="px-4 py-1 rounded-lg bg-gray-600/60 text-white text-sm hover:bg-gray-600/80 transition"
+            className="px-4 py-2 rounded-lg border border-gray-200 text-gray-700 text-sm hover:bg-gray-50 transition"
           >
             Previous
           </button>
-          <h2 className="text-lg font-semibold min-w-[180px] text-center">{monthName}</h2>
+          <h2 className="text-lg font-semibold min-w-[180px] text-center text-gray-900">{monthName}</h2>
           <button
             onClick={goToNextMonth}
-            className="px-4 py-1 rounded-lg bg-gray-600/60 text-white text-sm hover:bg-gray-600/80 transition"
+            className="px-4 py-2 rounded-lg border border-gray-200 text-gray-700 text-sm hover:bg-gray-50 transition"
           >
             Next
           </button>
@@ -89,9 +99,13 @@ export default function CalendarView({
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="bg-[#0c0719] border border-violet-400/60 rounded-md px-3 py-1 text-sm focus:outline-none"
+            className="bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 text-gray-700"
           >
             <option value="all">All Status</option>
+            <option value="todo">To Do</option>
+            <option value="in_progress">In Progress</option>
+            <option value="done">Done</option>
+            <option value="skipped">Skipped</option>
             <option value="draft">Draft</option>
             <option value="scheduled">Scheduled</option>
             <option value="published">Published</option>
@@ -100,13 +114,13 @@ export default function CalendarView({
       </div>
 
       {/* Calendar grid */}
-      <div className="bg-black/20 border border-white/5 rounded-2xl overflow-hidden">
+      <div className="bg-white border-t border-gray-100 overflow-hidden">
         {/* Headers */}
-        <div className="grid grid-cols-7 border-b border-white/5">
+        <div className="grid grid-cols-7 border-b border-gray-200 bg-gray-50">
           {DAYS.map((d) => (
             <div
               key={d}
-              className="text-center py-3 text-sm text-gray-300 font-medium"
+              className="text-center py-3 text-sm text-gray-600 font-medium"
             >
               {d}
             </div>
@@ -127,8 +141,8 @@ export default function CalendarView({
             return (
               <div
                 key={idx}
-                className={`min-h-[120px] border-r border-b border-white/5 last:border-r-0 relative ${
-                  isToday ? "bg-violet-500/5" : ""
+                className={`min-h-[120px] border-r border-b border-gray-100 last:border-r-0 relative ${
+                  isToday ? "bg-violet-50" : ""
                 }`}
               >
                 <div className="p-2">
@@ -137,7 +151,7 @@ export default function CalendarView({
                       className={`text-sm font-semibold mb-1 ${
                         isToday
                           ? "w-7 h-7 rounded-full bg-violet-500 text-white flex items-center justify-center"
-                          : "text-white"
+                          : "text-gray-700"
                       }`}
                     >
                       {dayNum}
@@ -147,7 +161,9 @@ export default function CalendarView({
                   {/* Post badges */}
                   <div className="space-y-1">
                     {dayPosts.map((post) => {
-                      const pillarColor = PILLAR_COLORS[post.pillar] || PILLAR_COLORS.default;
+                      const contentColor = post.contentType
+                        ? CONTENT_TYPE_COLORS[post.contentType] || PILLAR_COLORS.default
+                        : PILLAR_COLORS[post.pillar] || PILLAR_COLORS.default;
                       const statusColor = STATUS_COLORS[post.status] || "";
                       const postIndex = getPostIndex(post);
 
@@ -155,15 +171,20 @@ export default function CalendarView({
                         <div
                           key={`${post.date}-${post.hook}`}
                           onClick={() => onPostClick(post, postIndex)}
-                          className={`text-[10px] px-2 py-1.5 rounded border-l-2 cursor-pointer hover:opacity-80 transition ${pillarColor} ${statusColor}`}
+                          className={`text-[10px] px-2 py-1.5 rounded border border-l-2 cursor-pointer hover:shadow-sm transition ${contentColor} ${statusColor}`}
                         >
                           <div className="font-medium truncate">
-                            {post.hook?.length > 25
+                            {post.title || (post.hook?.length > 25
                               ? post.hook.slice(0, 25) + "..."
-                              : post.hook}
+                              : post.hook)}
                           </div>
-                          <div className="text-[9px] opacity-70 mt-0.5">
-                            {post.pillar} | {post.format}
+                          <div className="text-[9px] opacity-70 mt-0.5 flex items-center justify-between">
+                            <span>{post.contentType || post.pillar}</span>
+                            {post.effortLevel && (
+                              <span className="px-1 bg-white/50 rounded">
+                                {post.effortLevel === 'Low' ? 'L' : post.effortLevel === 'Medium' ? 'M' : 'H'}
+                              </span>
+                            )}
                           </div>
                         </div>
                       );
@@ -177,16 +198,31 @@ export default function CalendarView({
       </div>
 
       {/* Legend */}
-      <div className="mt-4 flex items-center gap-6 text-xs text-gray-400">
-        <span className="flex items-center gap-2">
-          <span className="w-3 h-3 rounded bg-yellow-400/30" /> Draft
-        </span>
-        <span className="flex items-center gap-2">
-          <span className="w-3 h-3 rounded bg-blue-400/30" /> Scheduled
-        </span>
-        <span className="flex items-center gap-2">
-          <span className="w-3 h-3 rounded bg-green-400/30" /> Published
-        </span>
+      <div className="mt-4 px-4 pb-4 flex flex-wrap items-center gap-4 text-xs text-gray-600">
+        <div className="flex items-center gap-4">
+          <span className="font-medium">Status:</span>
+          <span className="flex items-center gap-1.5">
+            <span className="w-3 h-3 rounded bg-gray-100 border-l-2 border-gray-400" /> To Do
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span className="w-3 h-3 rounded bg-blue-100 border-l-2 border-blue-500" /> In Progress
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span className="w-3 h-3 rounded bg-green-100 border-l-2 border-green-500" /> Done
+          </span>
+        </div>
+        <div className="flex items-center gap-4">
+          <span className="font-medium">Content:</span>
+          <span className="flex items-center gap-1.5">
+            <span className="w-3 h-3 rounded bg-pink-100" /> Viral
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span className="w-3 h-3 rounded bg-blue-100" /> Educational
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span className="w-3 h-3 rounded bg-purple-100" /> Authority
+          </span>
+        </div>
       </div>
     </div>
   );

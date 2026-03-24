@@ -223,4 +223,75 @@ export const api = {
 
   // GET /users/me - Get basic user profile
   getMeUser: () => request('/users/me', { baseUrl: API.AUTH }),
+
+  // =====================
+  // COMMENTS ENDPOINTS
+  // =====================
+
+  // POST /comments/post/{postId} - Create comment
+  createComment: (postId, data) =>
+    request(`/comments/post/${postId}`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+
+  // GET /comments/post/{postId} - Get all comments for a post
+  getPostComments: (postId) =>
+    request(`/comments/post/${postId}`),
+
+  // PUT /comments/{commentId} - Update comment
+  updateComment: (commentId, data) =>
+    request(`/comments/${commentId}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }),
+
+  // DELETE /comments/{commentId} - Delete comment
+  deleteComment: (commentId) =>
+    request(`/comments/${commentId}`, {
+      method: 'DELETE',
+    }),
+
+  // =====================
+  // BRAINSTORMING ENDPOINTS
+  // =====================
+
+  // POST /brainstorming - Create brainstorming idea
+  createBrainstormingIdea: (data) =>
+    request('/brainstorming', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+
+  // GET /brainstorming/founder/{founderId} - Get ideas for founder
+  getBrainstormingIdeas: (founderId, calendarId = null) =>
+    request(
+      `/brainstorming/founder/${founderId}${
+        calendarId ? `?calendar_id=${calendarId}` : ''
+      }`
+    ),
+
+  // GET /brainstorming/{ideaId} - Get single idea
+  getBrainstormingIdea: (ideaId) =>
+    request(`/brainstorming/${ideaId}`),
+
+  // PUT /brainstorming/{ideaId} - Update idea
+  updateBrainstormingIdea: (ideaId, data) =>
+    request(`/brainstorming/${ideaId}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }),
+
+  // DELETE /brainstorming/{ideaId} - Delete idea
+  deleteBrainstormingIdea: (ideaId) =>
+    request(`/brainstorming/${ideaId}`, {
+      method: 'DELETE',
+    }),
+
+  // POST /brainstorming/{ideaId}/convert-to-task - Convert idea to task
+  convertIdeaToTask: (ideaId, data) =>
+    request(`/brainstorming/${ideaId}/convert-to-task`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
 };

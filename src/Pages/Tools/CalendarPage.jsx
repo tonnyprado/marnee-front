@@ -4,10 +4,12 @@ import { useMarnee } from "../../context/MarneeContext";
 import CalendarView from "./Calendar/CalendarView";
 import CalendarListView from "./Calendar/CalendarListView";
 import CampaignForm from "./Calendar/CampaignForm";
+import BrainstormingSection from "./Calendar/BrainstormingSection";
 
 export default function CalendarPage() {
   const { founderId, sessionId, calendarId, setCalendarId, hasSession } = useMarnee();
 
+  const [mainTab, setMainTab] = useState("calendar"); // calendar | brainstorming
   const [view, setView] = useState("calendar");
   const [statusFilter, setStatusFilter] = useState("all");
   const [calendar, setCalendar] = useState(null);
@@ -207,41 +209,71 @@ export default function CalendarPage() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold">Content Calendar</h1>
-          <p className="text-sm text-gray-500">
-            {calendar.totalPosts} posts from {calendar.startDate} to {calendar.endDate}
-          </p>
+          {calendar && (
+            <p className="text-sm text-gray-500">
+              {calendar.totalPosts} posts from {calendar.startDate} to {calendar.endDate}
+            </p>
+          )}
         </div>
 
         <div className="flex items-center gap-4">
-          {/* Regenerate button */}
-          <button
-            onClick={() => handleGenerateCalendar(4)}
-            disabled={isGenerating}
-            className="px-4 py-2 rounded-lg border border-gray-200 text-sm hover:bg-gray-100 transition disabled:opacity-50"
-          >
-            {isGenerating ? 'Generating...' : 'Regenerate'}
-          </button>
+          {/* Regenerate button - only show on calendar tab */}
+          {mainTab === "calendar" && calendar && (
+            <button
+              onClick={() => handleGenerateCalendar(4)}
+              disabled={isGenerating}
+              className="px-4 py-2 rounded-lg border border-gray-200 text-sm hover:bg-gray-100 transition disabled:opacity-50"
+            >
+              {isGenerating ? 'Generating...' : 'Regenerate'}
+            </button>
+          )}
 
-          {/* View toggle */}
-          <div className="flex bg-gray-100 rounded-full overflow-hidden p-1">
-            <button
-              onClick={() => setView("calendar")}
-              className={`px-4 py-2 text-sm rounded-full transition ${
-                view === "calendar" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"
-              }`}
-            >
-              Calendar
-            </button>
-            <button
-              onClick={() => setView("list")}
-              className={`px-4 py-2 text-sm rounded-full transition ${
-                view === "list" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"
-              }`}
-            >
-              List
-            </button>
-          </div>
+          {/* View toggle - only show on calendar tab */}
+          {mainTab === "calendar" && calendar && (
+            <div className="flex bg-gray-100 rounded-full overflow-hidden p-1">
+              <button
+                onClick={() => setView("calendar")}
+                className={`px-4 py-2 text-sm rounded-full transition ${
+                  view === "calendar" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"
+                }`}
+              >
+                Calendar
+              </button>
+              <button
+                onClick={() => setView("list")}
+                className={`px-4 py-2 text-sm rounded-full transition ${
+                  view === "list" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"
+                }`}
+              >
+                List
+              </button>
+            </div>
+          )}
         </div>
+      </div>
+
+      {/* Main Tabs */}
+      <div className="flex items-center gap-2 mb-6 border-b border-gray-200">
+        <button
+          onClick={() => setMainTab("calendar")}
+          className={`px-4 py-3 text-sm font-medium border-b-2 transition ${
+            mainTab === "calendar"
+              ? "border-violet-500 text-violet-600"
+              : "border-transparent text-gray-500 hover:text-gray-700"
+          }`}
+        >
+          Calendar
+        </button>
+        <button
+          onClick={() => setMainTab("brainstorming")}
+          className={`px-4 py-3 text-sm font-medium border-b-2 transition ${
+            mainTab === "brainstorming"
+              ? "border-violet-500 text-violet-600"
+              : "border-transparent text-gray-500 hover:text-gray-700"
+          }`}
+        >
+          Brainstorming
+        </button>
       </div>
 
       {/* Error message */}
@@ -255,40 +287,44 @@ export default function CalendarPage() {
       )}
 
       {/* Main content */}
-      <div className="relative flex gap-4">
-        <div className={`flex-1 ${isFormOpen ? "mr-96" : ""}`}>
-          {view === "calendar" ? (
-            <CalendarView
-              posts={filteredPosts}
-              calendar={calendar}
-              statusFilter={statusFilter}
-              setStatusFilter={setStatusFilter}
-              onPostClick={handlePostClick}
-            />
-          ) : (
-            <CalendarListView
-              posts={filteredPosts}
-              statusFilter={statusFilter}
-              setStatusFilter={setStatusFilter}
-              onPostClick={handlePostClick}
+      {mainTab === "calendar" ? (
+        <div className="relative flex gap-4">
+          <div className={`flex-1 ${isFormOpen ? "mr-96" : ""}`}>
+            {view === "calendar" ? (
+              <CalendarView
+                posts={filteredPosts}
+                calendar={calendar}
+                statusFilter={statusFilter}
+                setStatusFilter={setStatusFilter}
+                onPostClick={handlePostClick}
+              />
+            ) : (
+              <CalendarListView
+                posts={filteredPosts}
+                statusFilter={statusFilter}
+                setStatusFilter={setStatusFilter}
+                onPostClick={handlePostClick}
+              />
+            )}
+          </div>
+
+          {/* Side panel */}
+          {isFormOpen && selectedPost && (
+            <CampaignForm
+              post={selectedPost}
+              postIndex={selectedPostIndex}
+              onClose={() => {
+                setIsFormOpen(false);
+                setSelectedPost(null);
+                setSelectedPostIndex(null);
+              }}
+              onSave={handleSavePost}
             />
           )}
         </div>
-
-        {/* Side panel */}
-        {isFormOpen && selectedPost && (
-          <CampaignForm
-            post={selectedPost}
-            postIndex={selectedPostIndex}
-            onClose={() => {
-              setIsFormOpen(false);
-              setSelectedPost(null);
-              setSelectedPostIndex(null);
-            }}
-            onSave={handleSavePost}
-          />
-        )}
-      </div>
+      ) : (
+        <BrainstormingSection calendarId={calendarId} />
+      )}
     </div>
   );
 }
