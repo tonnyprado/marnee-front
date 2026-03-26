@@ -14,6 +14,7 @@ const STEP_NAMES = {
   3: 'posting_cadence',
   4: 'content_pillars',
   5: 'calendar',
+  6: 'script_generation',
 };
 
 export function MarneeProvider({ children }) {

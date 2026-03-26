@@ -168,6 +168,17 @@ export const api = {
       }),
     }),
 
+  // POST /marnee/generate-script - Generate detailed script with Hook-Body-CTA
+  generateScript: ({ founderId, sessionId, contentIdea }) =>
+    request('/marnee/generate-script', {
+      method: 'POST',
+      body: JSON.stringify({
+        founderId,
+        sessionId,
+        contentIdea,
+      }),
+    }),
+
   // =====================
   // CALENDAR ENDPOINTS
   // =====================

@@ -190,6 +190,8 @@ export default function IAWebPage() {
         return { contentPillars: [], contentAngles: [] };
       case 5:
         return { calendarApproved: true };
+      case 6:
+        return { scriptPreference: "ai_generated", scriptsApproved: true };
       default:
         return {};
     }
@@ -231,7 +233,7 @@ export default function IAWebPage() {
       <header className="h-14 border-b border-gray-100 flex items-center px-6 text-gray-900 bg-white">
         <h1 className="text-xl font-semibold">Chat with Marnee</h1>
         <span className="ml-auto text-sm text-gray-500">
-          Step {currentStep} of 5
+          Step {currentStep} of 6
         </span>
       </header>
 

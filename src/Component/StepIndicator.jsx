@@ -6,6 +6,7 @@ const STEPS = [
   { step: 3, name: "Posting Cadence" },
   { step: 4, name: "Content Pillars" },
   { step: 5, name: "Calendar" },
+  { step: 6, name: "Script Generation" },
 ];
 
 export default function StepIndicator({ currentStep = 1 }) {
