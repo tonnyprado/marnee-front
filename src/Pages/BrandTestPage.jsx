@@ -286,6 +286,34 @@ export default function BrandTestPage() {
   const [answers, setAnswers] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadExistingData();
+  }, []);
+
+  const loadExistingData = async () => {
+    try {
+      // Try to load existing founder data (Personal Test)
+      const founder = await api.getMeFounder();
+      if (founder) {
+        // Pre-fill answers with existing data
+        const prefilledAnswers = {};
+        STEPS.forEach((step) => {
+          const value = founder[step.field];
+          if (value !== undefined && value !== null && value !== '') {
+            prefilledAnswers[step.field] = value;
+          }
+        });
+        setAnswers(prefilledAnswers);
+      }
+    } catch (error) {
+      // No existing test, start fresh
+      console.log("No existing personal test found, starting fresh");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const step = STEPS[currentStep];
   const progress = Math.round(((currentStep + 1) / STEPS.length) * 100);
@@ -386,6 +414,17 @@ export default function BrandTestPage() {
     if (currentStep === 0) return;
     setCurrentStep((prev) => prev - 1);
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-violet-200 border-t-violet-600 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading your personal test...</p>
+        </div>
+      </div>
+    );
+  }
 
   // Render input based on type
   const renderInput = () => {
