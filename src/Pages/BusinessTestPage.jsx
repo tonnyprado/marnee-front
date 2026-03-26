@@ -406,8 +406,12 @@ export default function BusinessTestPage() {
           setAnswers(prefilledAnswers);
         }
       } catch (error) {
-        // No existing test, start fresh
-        console.log("No existing business test found, starting fresh");
+        if (error.status === 404) {
+          // First-time users won't have a business test yet.
+          console.log("No existing business test found, starting fresh");
+        } else {
+          throw error;
+        }
       }
     } catch (error) {
       console.error("Error loading data:", error);

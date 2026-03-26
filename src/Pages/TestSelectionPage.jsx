@@ -56,8 +56,11 @@ export default function TestSelectionPage() {
           setBusinessTestProgress(Math.round((filledFields / totalFields) * 100));
         }
       } catch (error) {
-        // No business test yet
-        setBusinessTestProgress(0);
+        if (error.status === 404) {
+          setBusinessTestProgress(0);
+        } else {
+          throw error;
+        }
       }
 
       // Check Personal Test progress (founder data)

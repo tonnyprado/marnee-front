@@ -99,7 +99,10 @@ async function request(endpoint, options = {}) {
       emitGlobalLogout();
       redirectToAuth();
     }
-    throw new Error(message);
+    const requestError = new Error(message);
+    requestError.status = response.status;
+    requestError.body = error;
+    throw requestError;
   }
 
   return response.json();
@@ -310,24 +313,24 @@ export const api = {
   // BUSINESS TEST ENDPOINTS
   // =====================
 
-  // GET /api/test-types - Get available test types
+  // GET /test-types - Get available test types
   getTestTypes: () =>
-    request('/api/test-types', {
+    request('/test-types', {
       auth: false,
     }),
 
-  // POST /api/business-test - Create or update business test
+  // POST /business-test - Create or update business test
   submitBusinessTest: (data) =>
-    request('/api/business-test', {
+    request('/business-test', {
       method: 'POST',
       body: JSON.stringify(data),
     }),
 
-  // GET /api/business-test/me - Get my business test
+  // GET /business-test/me - Get my business test
   getBusinessTestMe: () =>
-    request('/api/business-test/me'),
+    request('/business-test/me'),
 
-  // GET /api/business-test/founder/{founderId} - Get business test by founder ID
+  // GET /business-test/founder/{founderId} - Get business test by founder ID
   getBusinessTestByFounder: (founderId) =>
-    request(`/api/business-test/founder/${founderId}`),
+    request(`/business-test/founder/${founderId}`),
 };
