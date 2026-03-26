@@ -3,7 +3,7 @@ import Logo from "../Component/Logo";
 
 export default function BrandTestIntro() {
   const handleStart = () => {
-    window.location.href = "/brand-test/questions";
+    window.location.href = "/test-selection";
   };
 
   return (
@@ -34,9 +34,9 @@ export default function BrandTestIntro() {
 
       {/* Description */}
       <p className="text-gray-600 text-center max-w-xl mb-10 text-lg leading-relaxed">
-        Our AI-powered test analyzes your tone, values, and personality traits
-        to design a brand identity that feels authentic and powerful.
-        This step will guide us to understand your communication style and core message.
+        Our AI-powered tests analyze your business strategy and personal brand
+        to design a personalized marketing campaign that drives real results.
+        You'll complete two assessments: a Business Test (required) and a Personal Test (optional).
         Ready to start your journey?
       </p>
 

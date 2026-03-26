@@ -294,4 +294,29 @@ export const api = {
       method: 'POST',
       body: JSON.stringify(data),
     }),
+
+  // =====================
+  // BUSINESS TEST ENDPOINTS
+  // =====================
+
+  // GET /api/test-types - Get available test types
+  getTestTypes: () =>
+    request('/api/test-types', {
+      auth: false,
+    }),
+
+  // POST /api/business-test - Create or update business test
+  submitBusinessTest: (data) =>
+    request('/api/business-test', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+
+  // GET /api/business-test/me - Get my business test
+  getBusinessTestMe: () =>
+    request('/api/business-test/me'),
+
+  // GET /api/business-test/founder/{founderId} - Get business test by founder ID
+  getBusinessTestByFounder: (founderId) =>
+    request(`/api/business-test/founder/${founderId}`),
 };

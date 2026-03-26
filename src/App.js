@@ -10,6 +10,8 @@ import PresentationPage from "./Pages/PresentationPage";
 import AuthPage from "./Pages/AuthPage";
 import BrandingTestIntro from "./Pages/BrandingTestIntro";
 import BrandTestPage from "./Pages/BrandTestPage";
+import TestSelectionPage from "./Pages/TestSelectionPage";
+import BusinessTestPage from "./Pages/BusinessTestPage";
 
 import AppLayout from "./Layout/Layout";
 import IAWebPage from "./Pages/Tools/IAWebPage";
@@ -50,6 +52,8 @@ function App() {
       <Route path="/presentation" element={<PresentationPage />} />
       <Route path="/auth" element={<AuthPage />} />
       <Route path="/brand-test/intro" element={<BrandingTestIntro />} />
+      <Route path="/test-selection" element={<TestSelectionPage />} />
+      <Route path="/business-test/questions" element={<BusinessTestPage />} />
       <Route path="/brand-test/questions" element={<BrandTestPage />} />
 
       {/* privadas / con navbar */}
