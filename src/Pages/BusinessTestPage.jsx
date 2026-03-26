@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../services/api";
-import { useMarnee } from "../context/MarneeContext";
 
 // Question types: radio, textarea, url, multiSelect (tags), select
 const STEPS = [
@@ -365,7 +364,6 @@ const SECTIONS = [...new Set(STEPS.map(s => s.section))];
 
 export default function BusinessTestPage() {
   const navigate = useNavigate();
-  const { initSession } = useMarnee();
 
   const [currentStep, setCurrentStep] = useState(0);
   const [answers, setAnswers] = useState({});
