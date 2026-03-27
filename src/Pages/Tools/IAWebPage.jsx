@@ -1,8 +1,73 @@
 import React, { useState, useEffect, useRef } from "react";
+import ReactMarkdown from "react-markdown";
 import { api } from "../../services/api";
 import { useMarnee } from "../../context/MarneeContext";
 import StepIndicator from "../../Component/StepIndicator";
 import ApprovalButtons from "../../Component/ApprovalButtons";
+
+// Custom markdown components with Tailwind styles for AI messages
+// eslint-disable-next-line jsx-a11y/heading-has-content
+const aiMarkdownComponents = {
+  // eslint-disable-next-line jsx-a11y/heading-has-content
+  h1: ({ node, ...props }) => <h1 className="text-3xl font-bold mb-4 mt-6 text-gray-900" {...props} />,
+  // eslint-disable-next-line jsx-a11y/heading-has-content
+  h2: ({ node, ...props }) => <h2 className="text-2xl font-bold mb-3 mt-5 text-gray-900" {...props} />,
+  // eslint-disable-next-line jsx-a11y/heading-has-content
+  h3: ({ node, ...props }) => <h3 className="text-xl font-bold mb-2 mt-4 text-gray-900" {...props} />,
+  // eslint-disable-next-line jsx-a11y/heading-has-content
+  h4: ({ node, ...props }) => <h4 className="text-lg font-semibold mb-2 mt-3 text-gray-800" {...props} />,
+  p: ({ node, ...props }) => <p className="mb-3 leading-relaxed" {...props} />,
+  ul: ({ node, ...props }) => <ul className="list-disc list-inside mb-3 space-y-1 ml-2" {...props} />,
+  ol: ({ node, ...props }) => <ol className="list-decimal list-inside mb-3 space-y-1 ml-2" {...props} />,
+  li: ({ node, ...props }) => <li className="leading-relaxed" {...props} />,
+  strong: ({ node, ...props }) => <strong className="font-bold text-gray-900" {...props} />,
+  em: ({ node, ...props }) => <em className="italic" {...props} />,
+  a: ({ node, ...props }) => (
+    // eslint-disable-next-line jsx-a11y/anchor-has-content
+    <a className="text-violet-600 hover:text-violet-700 underline font-medium" {...props} />
+  ),
+  code: ({ node, inline, ...props }) =>
+    inline ? (
+      <code className="bg-gray-100 px-1.5 py-0.5 rounded text-sm font-mono text-gray-800" {...props} />
+    ) : (
+      <code className="block bg-gray-100 p-3 rounded-lg text-sm font-mono overflow-x-auto mb-3 text-gray-800" {...props} />
+    ),
+  blockquote: ({ node, ...props }) => (
+    <blockquote className="border-l-4 border-violet-300 pl-4 italic my-3 text-gray-700" {...props} />
+  ),
+};
+
+// Custom markdown components for user messages (white text on gradient background)
+// eslint-disable-next-line jsx-a11y/heading-has-content
+const userMarkdownComponents = {
+  // eslint-disable-next-line jsx-a11y/heading-has-content
+  h1: ({ node, ...props }) => <h1 className="text-3xl font-bold mb-4 mt-6 text-white" {...props} />,
+  // eslint-disable-next-line jsx-a11y/heading-has-content
+  h2: ({ node, ...props }) => <h2 className="text-2xl font-bold mb-3 mt-5 text-white" {...props} />,
+  // eslint-disable-next-line jsx-a11y/heading-has-content
+  h3: ({ node, ...props }) => <h3 className="text-xl font-bold mb-2 mt-4 text-white" {...props} />,
+  // eslint-disable-next-line jsx-a11y/heading-has-content
+  h4: ({ node, ...props }) => <h4 className="text-lg font-semibold mb-2 mt-3 text-white" {...props} />,
+  p: ({ node, ...props }) => <p className="mb-3 leading-relaxed text-white" {...props} />,
+  ul: ({ node, ...props }) => <ul className="list-disc list-inside mb-3 space-y-1 ml-2 text-white" {...props} />,
+  ol: ({ node, ...props }) => <ol className="list-decimal list-inside mb-3 space-y-1 ml-2 text-white" {...props} />,
+  li: ({ node, ...props }) => <li className="leading-relaxed text-white" {...props} />,
+  strong: ({ node, ...props }) => <strong className="font-bold text-white" {...props} />,
+  em: ({ node, ...props }) => <em className="italic text-white" {...props} />,
+  a: ({ node, ...props }) => (
+    // eslint-disable-next-line jsx-a11y/anchor-has-content
+    <a className="text-white underline hover:text-gray-100 font-medium" {...props} />
+  ),
+  code: ({ node, inline, ...props }) =>
+    inline ? (
+      <code className="bg-white/20 px-1.5 py-0.5 rounded text-sm font-mono text-white" {...props} />
+    ) : (
+      <code className="block bg-white/20 p-3 rounded-lg text-sm font-mono overflow-x-auto mb-3 text-white" {...props} />
+    ),
+  blockquote: ({ node, ...props }) => (
+    <blockquote className="border-l-4 border-white/50 pl-4 italic my-3 text-white" {...props} />
+  ),
+};
 
 export default function IAWebPage() {
   const {
@@ -248,7 +313,11 @@ export default function IAWebPage() {
                   : "ml-auto bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 text-white"
               }`}
             >
-              {msg.text}
+              <ReactMarkdown
+                components={msg.from === "ai" ? aiMarkdownComponents : userMarkdownComponents}
+              >
+                {msg.text}
+              </ReactMarkdown>
             </div>
 
             {/* Approval buttons for AI messages that need approval */}
