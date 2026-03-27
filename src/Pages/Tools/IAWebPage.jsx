@@ -265,7 +265,7 @@ export default function IAWebPage() {
   // Show message if no session
   if (!hasSession) {
     return (
-      <div className="flex min-h-screen bg-gray-50 items-center justify-center">
+      <div className="flex h-screen bg-gray-50 items-center justify-center">
         <div className="text-center p-8 bg-white rounded-2xl shadow-sm border border-gray-100 max-w-md">
           <div className="w-16 h-16 bg-violet-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <svg className="w-8 h-8 text-violet-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -290,12 +290,12 @@ export default function IAWebPage() {
   }
 
   return (
-    <div className="flex min-h-screen bg-gray-50 flex-col">
+    <div className="flex h-screen bg-gray-50 flex-col">
       {/* Step Indicator */}
       <StepIndicator currentStep={currentStep} />
 
       {/* Chat Header */}
-      <header className="h-14 border-b border-gray-100 flex items-center px-6 text-gray-900 bg-white">
+      <header className="h-14 border-b border-gray-100 flex items-center px-6 text-gray-900 bg-white flex-shrink-0">
         <h1 className="text-xl font-semibold">Chat with Marnee</h1>
         <span className="ml-auto text-sm text-gray-500">
           Step {currentStep} of 6
@@ -303,7 +303,7 @@ export default function IAWebPage() {
       </header>
 
       {/* Chat messages */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-4">
+      <div className="flex-1 overflow-y-auto p-6 space-y-4 flex-shrink-1">
         {messages.map((msg, idx) => (
           <div key={msg.id}>
             <div
@@ -369,7 +369,7 @@ export default function IAWebPage() {
       </div>
 
       {/* Input bar */}
-      <div className="h-20 border-t border-gray-100 flex items-center px-6 gap-3 bg-white">
+      <div className="h-20 border-t border-gray-100 flex items-center px-6 gap-3 bg-white flex-shrink-0">
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
