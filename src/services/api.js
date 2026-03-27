@@ -136,12 +136,13 @@ export const api = {
     }),
 
   // POST /marnee/chat - Send message to Marnee
-  sendMessage: ({ founderId, sessionId, message, messages, brandContext }) =>
+  sendMessage: ({ founderId, sessionId, conversationId, message, messages, brandContext }) =>
     request('/marnee/chat', {
       method: 'POST',
       body: JSON.stringify({
         founderId,
         sessionId,
+        conversationId,
         message,
         messages,
         brandContext,
@@ -158,6 +159,14 @@ export const api = {
         decision,
       }),
     }),
+
+  // GET /marnee/conversations - Get all conversations for current user
+  getConversations: () =>
+    request('/marnee/conversations'),
+
+  // GET /marnee/conversation/{conversationId} - Get conversation with messages
+  getConversation: (conversationId) =>
+    request(`/marnee/conversation/${conversationId}`),
 
   // POST /marnee/generate-ideas - Generate content ideas
   generateIdeas: ({ founderId, sessionId, count = 12, pillar }) =>

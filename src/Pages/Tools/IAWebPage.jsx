@@ -73,18 +73,22 @@ export default function IAWebPage() {
   const {
     founderId,
     sessionId,
+    conversationId,
     currentStep,
     messages,
     welcomeMessage,
     addMessage,
     setMessages,
     updateStep,
+    setConversationId,
+    loadConversation,
     getMessagesForApi,
     hasSession,
   } = useMarnee();
 
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingSession, setIsLoadingSession] = useState(true);
   const [error, setError] = useState(null);
   const messagesEndRef = useRef(null);
 
@@ -102,9 +106,87 @@ export default function IAWebPage() {
     scrollToBottom();
   }, [messages]);
 
-  // Show welcome message on first load
+  // Load session from DB if not in localStorage (after login)
   useEffect(() => {
-    if (welcomeMessage && messages.length === 0) {
+    const loadSessionFromDB = async () => {
+      // If already has session in localStorage, no need to load
+      if (hasSession) {
+        setIsLoadingSession(false);
+        return;
+      }
+
+      try {
+        // Try to get founder data from DB
+        const founder = await api.getMeFounder();
+
+        if (founder && founder.id) {
+          // Get user's sessions
+          const sessions = await api.getMeSessions();
+
+          if (sessions && sessions.length > 0) {
+            // Use the most recent session
+            const latestSession = sessions[0];
+
+            // Initialize session in context
+            initSession({
+              founderId: founder.id,
+              sessionId: latestSession.id,
+              welcomeMessage: latestSession.welcomeMessage || "Welcome back! How can I help you today?",
+            });
+
+            // Try to load conversations
+            try {
+              const conversations = await api.getConversations();
+              if (conversations && conversations.length > 0) {
+                // Load the most recent conversation
+                const latestConversation = conversations[0];
+                const conversationData = await api.getConversation(latestConversation.id);
+                await loadConversation(conversationData);
+              }
+            } catch (convError) {
+              console.log("No existing conversations found");
+            }
+          }
+        }
+      } catch (error) {
+        console.log("No existing session found in DB, user needs to complete test");
+      } finally {
+        setIsLoadingSession(false);
+      }
+    };
+
+    loadSessionFromDB();
+  }, []);
+
+  // Load conversation from localStorage on mount
+  useEffect(() => {
+    const loadExistingConversation = async () => {
+      // Only load if we have conversationId in localStorage and haven't loaded messages yet
+      if (conversationId && hasSession && messages.length === 0 && !isLoadingSession) {
+        try {
+          const conversation = await api.getConversation(conversationId);
+          await loadConversation(conversation);
+        } catch (error) {
+          console.error("Failed to load conversation:", error);
+          // If conversation load fails, show welcome message instead
+          if (welcomeMessage) {
+            addMessage({
+              id: generateUniqueId(),
+              from: "ai",
+              text: welcomeMessage,
+              step: 1,
+              needsApproval: false,
+            });
+          }
+        }
+      }
+    };
+    loadExistingConversation();
+  }, [conversationId, hasSession, isLoadingSession]);
+
+  // Show welcome message on first load (only if no conversation loaded)
+  useEffect(() => {
+    if (welcomeMessage && messages.length === 0 && !conversationId && !isLoadingSession) {
       addMessage({
         id: generateUniqueId(),
         from: "ai",
@@ -113,7 +195,7 @@ export default function IAWebPage() {
         needsApproval: false,
       });
     }
-  }, [welcomeMessage, messages.length, addMessage]);
+  }, [welcomeMessage, messages.length, conversationId, isLoadingSession]);
 
   // Send message to Marnee
   const handleSend = async () => {
@@ -137,9 +219,15 @@ export default function IAWebPage() {
       const response = await api.sendMessage({
         founderId,
         sessionId,
+        conversationId,
         message: userMessage,
         messages: getMessagesForApi(),
       });
+
+      // Save conversationId if this is the first message
+      if (response.conversationId && !conversationId) {
+        setConversationId(response.conversationId);
+      }
 
       // Add AI response
       addMessage({
@@ -261,6 +349,18 @@ export default function IAWebPage() {
         return {};
     }
   };
+
+  // Show loading while checking for existing session
+  if (isLoadingSession) {
+    return (
+      <div className="flex h-screen bg-gray-50 items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-violet-200 border-t-violet-600 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading your session...</p>
+        </div>
+      </div>
+    );
+  }
 
   // Show message if no session
   if (!hasSession) {

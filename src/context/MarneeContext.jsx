@@ -6,6 +6,7 @@ const STORAGE_KEYS = {
   FOUNDER_ID: 'marnee_founderId',
   SESSION_ID: 'marnee_sessionId',
   CALENDAR_ID: 'marnee_calendarId',
+  CONVERSATION_ID: 'marnee_conversationId',
 };
 
 const STEP_NAMES = {
@@ -23,6 +24,9 @@ export function MarneeProvider({ children }) {
   );
   const [sessionId, setSessionId] = useState(() =>
     localStorage.getItem(STORAGE_KEYS.SESSION_ID)
+  );
+  const [conversationId, setConversationId] = useState(() =>
+    localStorage.getItem(STORAGE_KEYS.CONVERSATION_ID)
   );
   const [currentStep, setCurrentStep] = useState(1);
   const [stepName, setStepName] = useState(STEP_NAMES[1]);
@@ -51,10 +55,17 @@ export function MarneeProvider({ children }) {
     }
   }, [calendarId]);
 
+  useEffect(() => {
+    if (conversationId) {
+      localStorage.setItem(STORAGE_KEYS.CONVERSATION_ID, conversationId);
+    }
+  }, [conversationId]);
+
   // Initialize session after questionnaire
-  const initSession = ({ founderId: fId, sessionId: sId, welcomeMessage: wMsg }) => {
+  const initSession = ({ founderId: fId, sessionId: sId, welcomeMessage: wMsg, conversationId: cId }) => {
     setFounderId(fId);
     setSessionId(sId);
+    setConversationId(cId || null);
     setWelcomeMessage(wMsg);
     setCurrentStep(1);
     setStepName(STEP_NAMES[1]);
@@ -77,14 +88,34 @@ export function MarneeProvider({ children }) {
     setStepName(STEP_NAMES[step] || '');
   };
 
+  // Load conversation from backend
+  const loadConversation = async (conversation) => {
+    setConversationId(conversation.id);
+    setFounderId(conversation.founderId);
+    setSessionId(conversation.sessionId);
+
+    // Convert backend messages to UI format
+    const uiMessages = conversation.messages.map((msg) => ({
+      id: msg.id,
+      from: msg.role === 'assistant' ? 'ai' : 'user',
+      text: msg.content,
+      step: msg.step || currentStep,
+      needsApproval: false,
+    }));
+
+    setMessages(uiMessages);
+  };
+
   // Clear session
   const clearSession = () => {
     localStorage.removeItem(STORAGE_KEYS.FOUNDER_ID);
     localStorage.removeItem(STORAGE_KEYS.SESSION_ID);
     localStorage.removeItem(STORAGE_KEYS.CALENDAR_ID);
+    localStorage.removeItem(STORAGE_KEYS.CONVERSATION_ID);
     setFounderId(null);
     setSessionId(null);
     setCalendarId(null);
+    setConversationId(null);
     setCurrentStep(1);
     setStepName(STEP_NAMES[1]);
     setMessages([]);
@@ -110,6 +141,7 @@ export function MarneeProvider({ children }) {
   const value = {
     founderId,
     sessionId,
+    conversationId,
     calendarId,
     currentStep,
     stepName,
@@ -120,6 +152,8 @@ export function MarneeProvider({ children }) {
     setMessages,
     updateStep,
     setCalendarId,
+    setConversationId,
+    loadConversation,
     clearSession,
     getMessagesForApi,
     hasSession: Boolean(founderId && sessionId),
