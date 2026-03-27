@@ -77,6 +77,7 @@ export default function IAWebPage() {
     currentStep,
     messages,
     welcomeMessage,
+    initSession,
     addMessage,
     setMessages,
     updateStep,
@@ -156,6 +157,7 @@ export default function IAWebPage() {
     };
 
     loadSessionFromDB();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Load conversation from localStorage on mount
@@ -182,6 +184,7 @@ export default function IAWebPage() {
       }
     };
     loadExistingConversation();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [conversationId, hasSession, isLoadingSession]);
 
   // Show welcome message on first load (only if no conversation loaded)
@@ -195,6 +198,7 @@ export default function IAWebPage() {
         needsApproval: false,
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [welcomeMessage, messages.length, conversationId, isLoadingSession]);
 
   // Send message to Marnee
