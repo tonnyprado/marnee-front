@@ -237,6 +237,10 @@ export default function IAWebPage() {
         message: userMessage,
         messages: getMessagesForApi(),
       });
+      const shouldOpenCalendar =
+        response.calendarId ||
+        (response.primaryAction?.type === "navigate" &&
+          response.primaryAction?.target === "calendar");
 
       if (response.conversationId && !conversationId) {
         setConversationId(response.conversationId);
@@ -260,6 +264,10 @@ export default function IAWebPage() {
         uiActions: response.uiActions || [],
         needsApproval: false,
       });
+
+      if (shouldOpenCalendar) {
+        navigate("/app/calendar");
+      }
     } catch (err) {
       setError(
         err.message ||

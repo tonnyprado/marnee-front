@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { api } from "../../services/api";
 import { useMarnee } from "../../context/MarneeContext";
 import CalendarView from "./Calendar/CalendarView";
@@ -7,7 +7,8 @@ import CampaignForm from "./Calendar/CampaignForm";
 import BrainstormingSection from "./Calendar/BrainstormingSection";
 
 export default function CalendarPage() {
-  const { founderId, sessionId, calendarId, setCalendarId, hasSession } = useMarnee();
+  const { founderId, sessionId, calendarId, currentStep, setCalendarId, hasSession } = useMarnee();
+  const canAccessCalendar = Boolean(founderId || hasSession);
 
   const [mainTab, setMainTab] = useState("calendar"); // calendar | brainstorming
   const [view, setView] = useState("calendar");
@@ -16,40 +17,13 @@ export default function CalendarPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState(null);
+  const autoGenerateAttemptedRef = useRef(false);
 
   // Form state
   const [selectedPost, setSelectedPost] = useState(null);
   const [selectedPostIndex, setSelectedPostIndex] = useState(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
 
-  // Load or generate calendar
-  useEffect(() => {
-    if (!hasSession) {
-      setIsLoading(false);
-      return;
-    }
-
-    const loadCalendar = async () => {
-      setIsLoading(true);
-      setError(null);
-
-      try {
-        if (calendarId) {
-          const data = await api.getCalendar(calendarId);
-          setCalendar(data.calendar || data);
-        }
-      } catch (err) {
-        console.log('No existing calendar found');
-        setCalendarId(null);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadCalendar();
-  }, [calendarId, hasSession, setCalendarId]);
-
-  // Generate new calendar
   const handleGenerateCalendar = async (weeks = 4) => {
     setIsGenerating(true);
     setError(null);
@@ -69,6 +43,72 @@ export default function CalendarPage() {
       setIsGenerating(false);
     }
   };
+
+  // Load existing calendar when backend already created one
+  useEffect(() => {
+    if (!canAccessCalendar) {
+      setIsLoading(false);
+      return;
+    }
+
+    const loadCalendar = async () => {
+      if (!calendarId) {
+        setIsLoading(false);
+        return;
+      }
+
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const data = await api.getCalendar(calendarId);
+        setCalendar(data.calendar || data);
+      } catch (err) {
+        console.log("No existing calendar found");
+        setCalendarId(null);
+        setCalendar(null);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadCalendar();
+  }, [calendarId, canAccessCalendar, setCalendarId]);
+
+  // If the conversation is already in the calendar phase but no calendar exists yet,
+  // generate it directly in the calendar workspace instead of leaving the user in chat text.
+  useEffect(() => {
+    if (!canAccessCalendar || isLoading || isGenerating || calendarId || calendar) {
+      return;
+    }
+
+    if (currentStep < 5 || autoGenerateAttemptedRef.current) {
+      return;
+    }
+
+    autoGenerateAttemptedRef.current = true;
+    const autoGenerateCalendar = async () => {
+      setIsGenerating(true);
+      setError(null);
+
+      try {
+        const response = await api.generateCalendar({
+          founderId,
+          sessionId,
+          weeks: 4,
+        });
+
+        setCalendarId(response.calendarId);
+        setCalendar(response.calendar);
+      } catch (err) {
+        setError(err.message || "Failed to generate calendar");
+      } finally {
+        setIsGenerating(false);
+      }
+    };
+
+    autoGenerateCalendar();
+  }, [calendar, calendarId, canAccessCalendar, currentStep, founderId, isGenerating, isLoading, sessionId, setCalendarId]);
 
   // Handle post click
   const handlePostClick = (post, index) => {
@@ -107,7 +147,7 @@ export default function CalendarPage() {
     : [];
 
   // Show message if no session
-  if (!hasSession) {
+  if (!canAccessCalendar) {
     return (
       <div className="min-h-screen bg-gray-50 text-gray-900 flex items-center justify-center">
         <div className="text-center p-8 bg-white rounded-2xl shadow-sm border border-gray-100 max-w-md">
