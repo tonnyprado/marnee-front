@@ -2,8 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import { api } from "../../services/api";
 import { useMarnee } from "../../context/MarneeContext";
-import StepIndicator from "../../Component/StepIndicator";
-import ApprovalButtons from "../../Component/ApprovalButtons";
+import marneeMascot from "../../assets/mascot/marnee12.png";
 
 // Custom markdown components with Tailwind styles for AI messages
 // eslint-disable-next-line jsx-a11y/heading-has-content
@@ -80,7 +79,6 @@ export default function IAWebPage() {
     initSession,
     addMessage,
     setMessages,
-    updateStep,
     setConversationId,
     loadConversation,
     getMessagesForApi,
@@ -88,6 +86,7 @@ export default function IAWebPage() {
   } = useMarnee();
 
   const [input, setInput] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingSession, setIsLoadingSession] = useState(true);
   const [error, setError] = useState(null);
@@ -107,39 +106,38 @@ export default function IAWebPage() {
     scrollToBottom();
   }, [messages]);
 
+  const ensureFounderLoaded = async () => {
+    if (founderId) return founderId;
+
+    try {
+      const founder = await api.getMeFounder();
+      return founder?.id || null;
+    } catch (loadError) {
+      return null;
+    }
+  };
+
   // Load session from DB if not in localStorage (after login)
   useEffect(() => {
     const loadSessionFromDB = async () => {
-      // If already has session in localStorage, no need to load
-      if (hasSession) {
-        setIsLoadingSession(false);
-        return;
-      }
-
       try {
-        // Try to get founder data from DB
         const founder = await api.getMeFounder();
 
         if (founder && founder.id) {
-          // Get user's sessions
           const sessions = await api.getMeSessions();
 
           if (sessions && sessions.length > 0) {
-            // Use the most recent session
             const latestSession = sessions[0];
 
-            // Initialize session in context
             initSession({
               founderId: founder.id,
               sessionId: latestSession.id,
               welcomeMessage: latestSession.welcomeMessage || "Welcome back! How can I help you today?",
             });
 
-            // Try to load conversations
             try {
               const conversations = await api.getConversations();
               if (conversations && conversations.length > 0) {
-                // Load the most recent conversation
                 const latestConversation = conversations[0];
                 const conversationData = await api.getConversation(latestConversation.id);
                 await loadConversation(conversationData);
@@ -147,10 +145,17 @@ export default function IAWebPage() {
             } catch (convError) {
               console.log("No existing conversations found");
             }
+          } else {
+            initSession({
+              founderId: founder.id,
+              sessionId: null,
+              welcomeMessage:
+                "Hi, I’m Marnee. Ask me anything about your brand, content ideas, positioning, or messaging and we’ll work through it together.",
+            });
           }
         }
       } catch (error) {
-        console.log("No existing session found in DB, user needs to complete test");
+        console.log("No existing founder or session found in DB");
       } finally {
         setIsLoadingSession(false);
       }
@@ -163,14 +168,12 @@ export default function IAWebPage() {
   // Load conversation from localStorage on mount
   useEffect(() => {
     const loadExistingConversation = async () => {
-      // Only load if we have conversationId in localStorage and haven't loaded messages yet
       if (conversationId && hasSession && messages.length === 0 && !isLoadingSession) {
         try {
           const conversation = await api.getConversation(conversationId);
           await loadConversation(conversation);
         } catch (error) {
           console.error("Failed to load conversation:", error);
-          // If conversation load fails, show welcome message instead
           if (welcomeMessage) {
             addMessage({
               id: generateUniqueId(),
@@ -205,156 +208,62 @@ export default function IAWebPage() {
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
 
-    const userMessage = input.trim();
-    setInput("");
-    setError(null);
-
-    // Add user message immediately
-    addMessage({
-      id: generateUniqueId(),
-      from: "user",
-      text: userMessage,
-      step: currentStep,
-    });
-
-    setIsLoading(true);
-
     try {
+      const userMessage = input.trim();
+      setInput("");
+      setError(null);
+      const ensuredFounderId = await ensureFounderLoaded();
+
+      // Add user message immediately
+      addMessage({
+        id: generateUniqueId(),
+        from: "user",
+        text: userMessage,
+        step: currentStep,
+      });
+
+      setIsLoading(true);
+
       const response = await api.sendMessage({
-        founderId,
-        sessionId,
+        founderId: ensuredFounderId || founderId || null,
+        sessionId: sessionId || null,
         conversationId,
         message: userMessage,
         messages: getMessagesForApi(),
       });
 
-      // Save conversationId if this is the first message
       if (response.conversationId && !conversationId) {
         setConversationId(response.conversationId);
       }
 
-      // Add AI response
       addMessage({
         id: generateUniqueId(),
         from: "ai",
         text: response.reply,
         step: response.currentStep,
         stepName: response.stepName,
-        needsApproval: detectNeedsApproval(response.reply, response.currentStep),
+        needsApproval: false,
       });
-
-      // Update step if changed
-      if (response.currentStep !== currentStep) {
-        updateStep(response.currentStep);
-      }
     } catch (err) {
-      setError(err.message || "Failed to send message");
-      // Remove the user message on error
+      setError(
+        err.message ||
+          "I couldn't send that message right now. Please try again in a moment."
+      );
       setMessages((prev) => prev.slice(0, -1));
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Detect if message needs approval buttons
-  const detectNeedsApproval = (text, step) => {
-    const approvalKeywords = [
-      "recommend",
-      "suggest",
-      "propose",
-      "would you like",
-      "do you approve",
-      "does this work",
-      "what do you think",
-      "here's my recommendation",
-      "i'd suggest",
-    ];
-    const lowerText = text.toLowerCase();
-    return approvalKeywords.some((keyword) => lowerText.includes(keyword));
-  };
+  const normalizedSearchTerm = searchTerm.trim().toLowerCase();
+  const visibleMessages = normalizedSearchTerm
+    ? messages.filter((msg) => msg.text.toLowerCase().includes(normalizedSearchTerm))
+    : messages;
+  const matchesCount = normalizedSearchTerm ? visibleMessages.length : 0;
+  const mascotClassName = isLoading
+    ? "marnee-mascot marnee-mascot--thinking"
+    : "marnee-mascot";
 
-  // Handle approval
-  const handleApprove = async (decision) => {
-    setIsLoading(true);
-    try {
-      const response = await api.approveStep({
-        sessionId,
-        step: currentStep,
-        decision,
-      });
-
-      // Add transition message
-      if (response.transitionMessage) {
-        addMessage({
-          id: generateUniqueId(),
-          from: "ai",
-          text: response.transitionMessage,
-          step: response.currentStep,
-          needsApproval: false,
-        });
-      }
-
-      // Update step if advanced
-      if (response.advanced && response.currentStep !== currentStep) {
-        updateStep(response.currentStep);
-      }
-
-      // Remove approval buttons from last AI message
-      setMessages((prev) =>
-        prev.map((msg, idx) =>
-          idx === prev.length - 2 ? { ...msg, needsApproval: false } : msg
-        )
-      );
-    } catch (err) {
-      setError(err.message || "Failed to approve step");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Handle adjust - send as a regular message
-  const handleAdjust = async (adjustmentText) => {
-    setInput(adjustmentText);
-    // Remove approval buttons from last AI message
-    setMessages((prev) =>
-      prev.map((msg, idx) =>
-        idx === prev.length - 1 && msg.from === "ai"
-          ? { ...msg, needsApproval: false }
-          : msg
-      )
-    );
-    // Trigger send
-    setTimeout(() => {
-      document.getElementById("send-btn")?.click();
-    }, 100);
-  };
-
-  // Handle skip
-  const handleSkip = async () => {
-    await handleApprove({ skipped: true });
-  };
-
-  // Get decision object based on current step
-  const getDecisionForStep = () => {
-    switch (currentStep) {
-      case 1:
-        return { involvementLevel: "on_camera" };
-      case 2:
-        return { coreNiche: "", positioning: "" };
-      case 3:
-        return { postsPerWeek: 3, bestDays: [] };
-      case 4:
-        return { contentPillars: [], contentAngles: [] };
-      case 5:
-        return { calendarApproved: true };
-      case 6:
-        return { scriptPreference: "ai_generated", scriptsApproved: true };
-      default:
-        return {};
-    }
-  };
-
-  // Show loading while checking for existing session
   if (isLoadingSession) {
     return (
       <div className="flex h-screen bg-gray-50 items-center justify-center">
@@ -366,55 +275,65 @@ export default function IAWebPage() {
     );
   }
 
-  // Show message if no session
-  if (!hasSession) {
-    return (
-      <div className="flex h-screen bg-gray-50 items-center justify-center">
-        <div className="text-center p-8 bg-white rounded-2xl shadow-sm border border-gray-100 max-w-md">
-          <div className="w-16 h-16 bg-violet-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg className="w-8 h-8 text-violet-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-            </svg>
-          </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">
-            Complete Your Brand Test First
-          </h2>
-          <p className="text-gray-500 mb-6">
-            To chat with Marnee, you need to complete the brand personality test.
-          </p>
-          <a
-            href="/brand-test/questions"
-            className="px-6 py-3 rounded-xl bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 text-white font-medium hover:from-violet-700 hover:via-indigo-700 hover:to-cyan-600 transition inline-block shadow-lg shadow-violet-500/25"
-          >
-            Start Brand Test
-          </a>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="flex h-screen bg-gray-50 flex-col">
-      {/* Step Indicator */}
-      <StepIndicator currentStep={currentStep} />
+    <div className="flex h-screen bg-[#f8f6ff] flex-col relative overflow-hidden">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(139,92,246,0.12),_transparent_32%),radial-gradient(circle_at_top_right,_rgba(6,182,212,0.12),_transparent_28%)]" />
 
-      {/* Chat Header */}
-      <header className="h-14 border-b border-gray-100 flex items-center px-6 text-gray-900 bg-white flex-shrink-0">
-        <h1 className="text-xl font-semibold">Chat with Marnee</h1>
-        <span className="ml-auto text-sm text-gray-500">
-          Step {currentStep} of 6
-        </span>
+      <header className="border-b border-white/70 px-6 py-5 text-gray-900 bg-white/80 backdrop-blur-md flex-shrink-0 relative">
+        <div className="flex items-center gap-4">
+          <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-100 via-white to-cyan-100 shadow-sm">
+            <img
+              src={marneeMascot}
+              alt="Marnee mascot"
+              className={`${mascotClassName} h-11 w-11 object-contain`}
+            />
+          </div>
+          <div>
+            <h1 className="text-xl font-semibold">Marnee Chat</h1>
+            <p className="text-sm text-gray-500">
+              Your AI content and brand strategist, now in chat-only mode.
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-4 relative">
+          <input
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full bg-white border border-violet-100 rounded-2xl pl-12 pr-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent shadow-sm"
+            placeholder="Search a word in your conversation history..."
+          />
+          <svg
+            className="w-5 h-5 text-violet-400 absolute left-4 top-1/2 -translate-y-1/2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m21 21-4.35-4.35m1.85-5.15a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" />
+          </svg>
+        </div>
+
+        {normalizedSearchTerm && (
+          <p className="mt-2 text-sm text-gray-500">
+            {matchesCount > 0
+              ? `${matchesCount} message${matchesCount === 1 ? "" : "s"} found`
+              : "No messages match that search yet."}
+          </p>
+        )}
       </header>
 
-      {/* Chat messages */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-4 flex-shrink-1">
-        {messages.map((msg, idx) => (
+      <div className="flex-1 overflow-y-auto p-6 space-y-4 flex-shrink-1 relative">
+        {visibleMessages.map((msg) => (
           <div key={msg.id}>
             <div
-              className={`max-w-3xl rounded-2xl px-5 py-4 ${
+              className={`max-w-3xl rounded-2xl px-5 py-4 transition ${
                 msg.from === "ai"
                   ? "bg-white border border-gray-100 text-gray-800 shadow-sm"
-                  : "ml-auto bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 text-white"
+                  : "ml-auto bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 text-white shadow-lg shadow-violet-500/20"
+              } ${
+                normalizedSearchTerm && msg.text.toLowerCase().includes(normalizedSearchTerm)
+                  ? "ring-2 ring-cyan-300 ring-offset-2 ring-offset-transparent"
+                  : ""
               }`}
             >
               <ReactMarkdown
@@ -423,23 +342,15 @@ export default function IAWebPage() {
                 {msg.text}
               </ReactMarkdown>
             </div>
-
-            {/* Approval buttons for AI messages that need approval */}
-            {msg.from === "ai" &&
-              msg.needsApproval &&
-              idx === messages.length - 1 && (
-                <ApprovalButtons
-                  onApprove={handleApprove}
-                  onAdjust={handleAdjust}
-                  onSkip={handleSkip}
-                  disabled={isLoading}
-                  decision={getDecisionForStep()}
-                />
-              )}
           </div>
         ))}
 
-        {/* Loading indicator */}
+        {normalizedSearchTerm && visibleMessages.length === 0 && (
+          <div className="max-w-2xl rounded-2xl border border-dashed border-violet-200 bg-white/80 px-5 py-6 text-sm text-gray-500">
+            Try another word or clear the search to see the full conversation again.
+          </div>
+        )}
+
         {isLoading && (
           <div className="max-w-3xl rounded-2xl px-5 py-4 bg-white border border-gray-100 shadow-sm">
             <div className="flex items-center gap-2">
@@ -456,7 +367,6 @@ export default function IAWebPage() {
           </div>
         )}
 
-        {/* Error message */}
         {error && (
           <div className="max-w-3xl p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm">
             {error}
@@ -472,8 +382,7 @@ export default function IAWebPage() {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input bar */}
-      <div className="h-20 border-t border-gray-100 flex items-center px-6 gap-3 bg-white flex-shrink-0">
+      <div className="border-t border-white/70 flex items-center px-6 py-4 gap-3 bg-white/85 backdrop-blur-md flex-shrink-0 relative">
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
@@ -496,6 +405,19 @@ export default function IAWebPage() {
             </svg>
           )}
         </button>
+      </div>
+
+      <div className="pointer-events-none absolute bottom-24 right-6 hidden md:block">
+        <div className="relative rounded-[28px] bg-white/90 border border-violet-100 shadow-xl px-4 py-3 backdrop-blur-sm">
+          <p className="text-xs text-gray-500 mb-2">
+            {isLoading ? "Marnee is thinking..." : "Marnee is here"}
+          </p>
+          <img
+            src={marneeMascot}
+            alt="Animated Marnee assistant"
+            className={`${mascotClassName} h-20 w-20 object-contain`}
+          />
+        </div>
       </div>
     </div>
   );

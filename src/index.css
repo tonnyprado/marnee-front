@@ -9,3 +9,77 @@
     min-height: 100dvh;
   }
 }
+
+@keyframes marnee-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-1deg) scale(1);
+  }
+  25% {
+    transform: translateY(-6px) rotate(1deg) scale(1.01);
+  }
+  50% {
+    transform: translateY(-10px) rotate(-1deg) scale(1.03);
+  }
+  75% {
+    transform: translateY(-4px) rotate(1deg) scale(1.01);
+  }
+}
+
+@keyframes marnee-glow {
+  0%,
+  100% {
+    filter: drop-shadow(0 8px 16px rgba(139, 92, 246, 0.18));
+  }
+  50% {
+    filter: drop-shadow(0 14px 24px rgba(34, 211, 238, 0.2));
+  }
+}
+
+@keyframes marnee-thinking {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-2deg) scale(1);
+  }
+  20% {
+    transform: translateY(-8px) rotate(2deg) scale(1.03);
+  }
+  40% {
+    transform: translateY(-2px) rotate(-1deg) scale(1.01);
+  }
+  60% {
+    transform: translateY(-10px) rotate(2deg) scale(1.05);
+  }
+  80% {
+    transform: translateY(-3px) rotate(-2deg) scale(1.02);
+  }
+}
+
+@keyframes marnee-thinking-glow {
+  0%,
+  100% {
+    filter: drop-shadow(0 10px 18px rgba(139, 92, 246, 0.22));
+  }
+  50% {
+    filter: drop-shadow(0 18px 28px rgba(34, 211, 238, 0.3));
+  }
+}
+
+.marnee-mascot {
+  animation: marnee-float 3.6s ease-in-out infinite, marnee-glow 3.6s ease-in-out infinite;
+  transform-origin: center bottom;
+}
+
+.marnee-mascot--thinking {
+  animation: marnee-thinking 0.95s ease-in-out infinite, marnee-thinking-glow 0.95s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marnee-mascot {
+    animation: none;
+  }
+
+  .marnee-mascot--thinking {
+    animation: none;
+  }
+}
