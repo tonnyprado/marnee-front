@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
+import { useNavigate } from "react-router-dom";
 import { api } from "../../services/api";
 import { useMarnee } from "../../context/MarneeContext";
 import marneeMascot from "../../assets/mascot/marnee12.png";
@@ -80,6 +81,8 @@ export default function IAWebPage() {
     addMessage,
     setMessages,
     setConversationId,
+    setCalendarId,
+    updateStep,
     loadConversation,
     getMessagesForApi,
   } = useMarnee();
@@ -90,6 +93,7 @@ export default function IAWebPage() {
   const [isLoadingSession, setIsLoadingSession] = useState(true);
   const [error, setError] = useState(null);
   const messagesEndRef = useRef(null);
+  const navigate = useNavigate();
 
   // Generate unique ID for messages
   const generateUniqueId = () => {
@@ -238,12 +242,22 @@ export default function IAWebPage() {
         setConversationId(response.conversationId);
       }
 
+      if (response.calendarId) {
+        setCalendarId(response.calendarId);
+      }
+
+      if (response.currentStep) {
+        updateStep(response.currentStep);
+      }
+
       addMessage({
         id: generateUniqueId(),
         from: "ai",
         text: response.reply,
         step: response.currentStep,
         stepName: response.stepName,
+        primaryAction: response.primaryAction || null,
+        uiActions: response.uiActions || [],
         needsApproval: false,
       });
     } catch (err) {
@@ -343,6 +357,18 @@ export default function IAWebPage() {
               >
                 {msg.text}
               </ReactMarkdown>
+
+              {msg.from === "ai" &&
+                msg.primaryAction?.type === "navigate" &&
+                msg.primaryAction?.target === "calendar" && (
+                  <button
+                    type="button"
+                    onClick={() => navigate("/app/calendar")}
+                    className="mt-4 inline-flex items-center rounded-xl bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 px-4 py-2.5 text-sm font-medium text-white shadow-lg shadow-violet-500/20 transition hover:from-violet-700 hover:via-indigo-700 hover:to-cyan-600"
+                  >
+                    Open Calendar
+                  </button>
+                )}
             </div>
           </div>
         ))}

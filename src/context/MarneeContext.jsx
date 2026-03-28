@@ -100,6 +100,9 @@ export function MarneeProvider({ children }) {
       from: msg.role === 'assistant' ? 'ai' : 'user',
       text: msg.content,
       step: msg.step || currentStep,
+      stepName: msg.stepName || null,
+      primaryAction: msg.primaryAction || null,
+      uiActions: msg.uiActions || [],
       needsApproval: false,
     }));
 
