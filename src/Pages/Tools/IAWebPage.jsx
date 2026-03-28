@@ -82,7 +82,6 @@ export default function IAWebPage() {
     setConversationId,
     loadConversation,
     getMessagesForApi,
-    hasSession,
   } = useMarnee();
 
   const [input, setInput] = useState("");
@@ -125,26 +124,16 @@ export default function IAWebPage() {
 
         if (founder && founder.id) {
           const sessions = await api.getMeSessions();
+          let latestSession = null;
 
           if (sessions && sessions.length > 0) {
-            const latestSession = sessions[0];
+            latestSession = sessions[0];
 
             initSession({
               founderId: founder.id,
               sessionId: latestSession.id,
               welcomeMessage: latestSession.welcomeMessage || "Welcome back! How can I help you today?",
             });
-
-            try {
-              const conversations = await api.getConversations();
-              if (conversations && conversations.length > 0) {
-                const latestConversation = conversations[0];
-                const conversationData = await api.getConversation(latestConversation.id);
-                await loadConversation(conversationData);
-              }
-            } catch (convError) {
-              console.log("No existing conversations found");
-            }
           } else {
             initSession({
               founderId: founder.id,
@@ -152,6 +141,19 @@ export default function IAWebPage() {
               welcomeMessage:
                 "Hi, I’m Marnee. Ask me anything about your brand, content ideas, positioning, or messaging and we’ll work through it together.",
             });
+          }
+
+          try {
+            const conversations = await api.getConversations();
+            if (conversations && conversations.length > 0) {
+              const latestConversation = conversations[0];
+              const conversationData = await api.getConversation(latestConversation.id);
+              await loadConversation(conversationData);
+            } else if (!latestSession) {
+              setConversationId(null);
+            }
+          } catch (convError) {
+            console.log("No existing conversations found");
           }
         }
       } catch (error) {
@@ -168,7 +170,7 @@ export default function IAWebPage() {
   // Load conversation from localStorage on mount
   useEffect(() => {
     const loadExistingConversation = async () => {
-      if (conversationId && hasSession && messages.length === 0 && !isLoadingSession) {
+      if (conversationId && messages.length === 0 && !isLoadingSession) {
         try {
           const conversation = await api.getConversation(conversationId);
           await loadConversation(conversation);
@@ -188,7 +190,7 @@ export default function IAWebPage() {
     };
     loadExistingConversation();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [conversationId, hasSession, isLoadingSession]);
+  }, [conversationId, isLoadingSession]);
 
   // Show welcome message on first load (only if no conversation loaded)
   useEffect(() => {
