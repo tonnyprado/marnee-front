@@ -8,7 +8,7 @@ import BrainstormingSection from "./Calendar/BrainstormingSection";
 
 export default function CalendarPage() {
   const { founderId, sessionId, calendarId, currentStep, setCalendarId, hasSession } = useMarnee();
-  const canAccessCalendar = Boolean(founderId || hasSession);
+  const canAccessCalendar = Boolean(calendarId || founderId || hasSession);
 
   const [mainTab, setMainTab] = useState("calendar"); // calendar | brainstorming
   const [view, setView] = useState("calendar");
@@ -16,6 +16,7 @@ export default function CalendarPage() {
   const [calendar, setCalendar] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [hasCheckedHistory, setHasCheckedHistory] = useState(false);
   const [error, setError] = useState(null);
   const autoGenerateAttemptedRef = useRef(false);
 
@@ -48,37 +49,75 @@ export default function CalendarPage() {
   useEffect(() => {
     if (!canAccessCalendar) {
       setIsLoading(false);
+      setHasCheckedHistory(true);
       return;
     }
 
-    const loadCalendar = async () => {
-      if (!calendarId) {
-        setIsLoading(false);
-        return;
-      }
+    const getCalendarIdFromResponse = (data) =>
+      data?.calendarId || data?.id || data?.calendar?.id || null;
 
+    const getCalendarFromResponse = (data) => {
+      const candidate = data?.calendar || data;
+      return candidate?.posts ? candidate : null;
+    };
+
+    const loadCalendar = async () => {
       setIsLoading(true);
       setError(null);
 
       try {
-        const data = await api.getCalendar(calendarId);
-        setCalendar(data.calendar || data);
+        if (calendarId) {
+          const data = await api.getCalendar(calendarId);
+          setCalendar(data.calendar || data);
+          return;
+        }
+
+        let latestCalendar = null;
+
+        try {
+          latestCalendar = await api.getMyLatestCalendar({
+            founderId,
+            sessionId,
+          });
+        } catch (latestError) {
+          if (founderId) {
+            latestCalendar = await api.getLatestCalendarByFounder(founderId, sessionId);
+          }
+        }
+
+        const latestCalendarId = getCalendarIdFromResponse(latestCalendar);
+        if (latestCalendarId) {
+          setCalendarId(latestCalendarId);
+          const hydratedCalendar = getCalendarFromResponse(latestCalendar);
+          if (hydratedCalendar) {
+            setCalendar(hydratedCalendar);
+          }
+        } else {
+          setCalendar(null);
+        }
       } catch (err) {
         console.log("No existing calendar found");
-        setCalendarId(null);
         setCalendar(null);
       } finally {
         setIsLoading(false);
+        setHasCheckedHistory(true);
       }
     };
 
     loadCalendar();
-  }, [calendarId, canAccessCalendar, setCalendarId]);
+  }, [calendarId, canAccessCalendar, founderId, sessionId, setCalendarId]);
 
   // If the conversation is already in the calendar phase but no calendar exists yet,
   // generate it directly in the calendar workspace instead of leaving the user in chat text.
   useEffect(() => {
-    if (!canAccessCalendar || isLoading || isGenerating || calendarId || calendar) {
+    if (
+      !canAccessCalendar ||
+      !hasCheckedHistory ||
+      isLoading ||
+      isGenerating ||
+      calendarId ||
+      calendar
+    ) {
       return;
     }
 
@@ -108,7 +147,7 @@ export default function CalendarPage() {
     };
 
     autoGenerateCalendar();
-  }, [calendar, calendarId, canAccessCalendar, currentStep, founderId, isGenerating, isLoading, sessionId, setCalendarId]);
+  }, [calendar, calendarId, canAccessCalendar, currentStep, founderId, hasCheckedHistory, isGenerating, isLoading, sessionId, setCalendarId]);
 
   // Handle post click
   const handlePostClick = (post, index) => {

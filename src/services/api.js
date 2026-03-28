@@ -211,6 +211,27 @@ export const api = {
   getCalendar: (calendarId) =>
     request(`/marnee/calendar/${calendarId}`),
 
+  // GET /me/calendars/latest - Get latest calendar for current user
+  getMyLatestCalendar: ({ founderId, sessionId } = {}) => {
+    const params = new URLSearchParams();
+    if (founderId) params.set('founderId', founderId);
+    if (sessionId) params.set('sessionId', sessionId);
+    const query = params.toString();
+    return request(`/me/calendars/latest${query ? `?${query}` : ''}`, {
+      baseUrl: API.MARNEE,
+    });
+  },
+
+  // GET /founder/{founderId}/calendars/latest - Get latest calendar by founder
+  getLatestCalendarByFounder: (founderId, sessionId) => {
+    const params = new URLSearchParams();
+    if (sessionId) params.set('sessionId', sessionId);
+    const query = params.toString();
+    return request(`/founder/${founderId}/calendars/latest${query ? `?${query}` : ''}`, {
+      baseUrl: API.MARNEE,
+    });
+  },
+
   // PUT /marnee/calendar/{calendarId}/post/{postIndex} - Update a post
   updatePost: (calendarId, postIndex, data) =>
     request(`/marnee/calendar/${calendarId}/post/${postIndex}`, {
