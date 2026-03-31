@@ -3,7 +3,9 @@ import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
 import { MarneeProvider } from "./context/MarneeContext";
+import { LanguageProvider, useLanguage } from "./context/LanguageContext";
 import { getAuthSession } from "./services/api";
+import LanguageSwitcher from "./Component/LanguageSwitcher";
 
 import LandingPage from "./Pages/LandingPage";
 import PresentationPage from "./Pages/PresentationPage";
@@ -27,12 +29,21 @@ function RequireAuth({ children }) {
 }
 
 function App() {
+  return (
+    <LanguageProvider>
+      <AppContent />
+    </LanguageProvider>
+  );
+}
+
+function AppContent() {
   const [globalError, setGlobalError] = React.useState("");
+  const { t } = useLanguage();
 
   React.useEffect(() => {
     let timer;
     const handler = (event) => {
-      const message = event?.detail?.message || "Ocurrió un error.";
+      const message = event?.detail?.message || t("app.defaultError");
       setGlobalError(message);
       if (timer) clearTimeout(timer);
       timer = setTimeout(() => setGlobalError(""), 4000);
@@ -42,55 +53,56 @@ function App() {
       window.removeEventListener("app-error", handler);
       if (timer) clearTimeout(timer);
     };
-  }, []);
+  }, [t]);
 
   return (
     <MarneeProvider>
-    <Routes>
-      {/* públicas */}
-      <Route path="/" element={<LandingPage />} />
-      <Route path="/presentation" element={<PresentationPage />} />
-      <Route path="/auth" element={<AuthPage />} />
-      <Route path="/brand-test/intro" element={<BrandingTestIntro />} />
-      <Route path="/test-selection" element={<TestSelectionPage />} />
-      <Route path="/business-test/questions" element={<BusinessTestPage />} />
-      <Route path="/brand-test/questions" element={<BrandTestPage />} />
+      <LanguageSwitcher className="fixed right-4 top-4 z-[60]" />
+      <Routes>
+        {/* públicas */}
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/presentation" element={<PresentationPage />} />
+        <Route path="/auth" element={<AuthPage />} />
+        <Route path="/brand-test/intro" element={<BrandingTestIntro />} />
+        <Route path="/test-selection" element={<TestSelectionPage />} />
+        <Route path="/business-test/questions" element={<BusinessTestPage />} />
+        <Route path="/brand-test/questions" element={<BrandTestPage />} />
 
-      {/* privadas / con navbar */}
-      <Route
-        path="/app"
-        element={
-          <RequireAuth>
-            <AppLayout />
-          </RequireAuth>
-        }
-      >
-        {/* /app → chat */}
-        <Route index element={<IAWebPage />} />
-        {/* /app/calendar */}
-        <Route path="calendar" element={<CalendarPage />} />
-        {/* /app/dashboard */}
-        <Route path="dashboard" element={<MyDashboard />} />
-      </Route>
+        {/* privadas / con navbar */}
+        <Route
+          path="/app"
+          element={
+            <RequireAuth>
+              <AppLayout />
+            </RequireAuth>
+          }
+        >
+          {/* /app → chat */}
+          <Route index element={<IAWebPage />} />
+          {/* /app/calendar */}
+          <Route path="calendar" element={<CalendarPage />} />
+          {/* /app/dashboard */}
+          <Route path="dashboard" element={<MyDashboard />} />
+        </Route>
 
-      {/* fallback */}
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
-    {globalError && (
-      <div className="fixed bottom-6 right-6 z-50 max-w-sm rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800 shadow-lg">
-        <div className="flex items-start gap-3">
-          <span className="mt-0.5 inline-block h-2 w-2 rounded-full bg-red-500" />
-          <div className="flex-1">{globalError}</div>
-          <button
-            onClick={() => setGlobalError("")}
-            className="text-red-500 hover:text-red-700"
-            aria-label="Close"
-          >
-            ×
-          </button>
+        {/* fallback */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+      {globalError && (
+        <div className="fixed bottom-6 right-6 z-50 max-w-sm rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800 shadow-lg">
+          <div className="flex items-start gap-3">
+            <span className="mt-0.5 inline-block h-2 w-2 rounded-full bg-red-500" />
+            <div className="flex-1">{globalError}</div>
+            <button
+              onClick={() => setGlobalError("")}
+              className="text-red-500 hover:text-red-700"
+              aria-label={t("common.close")}
+            >
+              ×
+            </button>
+          </div>
         </div>
-      </div>
-    )}
+      )}
     </MarneeProvider>
   );
 }

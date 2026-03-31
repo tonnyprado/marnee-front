@@ -1,20 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../services/api";
+import { useLanguage } from "../context/LanguageContext";
 
 export default function TestSelectionPage() {
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const [testTypes, setTestTypes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [businessTestProgress, setBusinessTestProgress] = useState(0);
   const [personalTestProgress, setPersonalTestProgress] = useState(0);
 
-  useEffect(() => {
-    loadTestTypes();
-    loadProgress();
-  }, []);
-
-  const loadTestTypes = async () => {
+  const loadTestTypes = React.useCallback(async () => {
     try {
       const types = await api.getTestTypes();
       setTestTypes(types);
@@ -24,15 +21,15 @@ export default function TestSelectionPage() {
       setTestTypes([
         {
           testType: "business",
-          name: "Business Test",
-          description: "Essential assessment to determine your personalized marketing campaign strategy. This test covers your business model, target audience, positioning, and growth priorities.",
+          name: t("testSelection.defaultBusinessName"),
+          description: t("testSelection.defaultBusinessDescription"),
           isMandatory: true,
           priority: 1
         },
         {
           testType: "personal",
-          name: "Personal Test",
-          description: "Optional deeper assessment about your leadership style, values, and personal brand. Helps Marnee create more personalized content recommendations.",
+          name: t("testSelection.defaultPersonalName"),
+          description: t("testSelection.defaultPersonalDescription"),
           isMandatory: false,
           priority: 2
         }
@@ -40,9 +37,9 @@ export default function TestSelectionPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [t]);
 
-  const loadProgress = async () => {
+  const loadProgress = React.useCallback(async () => {
     try {
       // Check Business Test progress
       try {
@@ -104,7 +101,12 @@ export default function TestSelectionPage() {
     } catch (error) {
       console.error("Error loading progress:", error);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    loadTestTypes();
+    loadProgress();
+  }, [loadTestTypes, loadProgress]);
 
   const handleSelectTest = (testType) => {
     if (testType === "business") {
@@ -119,7 +121,7 @@ export default function TestSelectionPage() {
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-violet-200 border-t-violet-600 rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading tests...</p>
+          <p className="text-gray-600">{t("testSelection.loading")}</p>
         </div>
       </div>
     );
@@ -133,10 +135,10 @@ export default function TestSelectionPage() {
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-violet-600 via-indigo-500 to-cyan-500 bg-clip-text text-transparent">
-            Choose Your Test
+            {t("testSelection.title")}
           </h1>
           <p className="text-lg text-gray-600">
-            Complete these assessments to unlock your personalized marketing strategy
+            {t("testSelection.subtitle")}
           </p>
         </div>
 
@@ -159,7 +161,7 @@ export default function TestSelectionPage() {
                 {test.isMandatory && (
                   <div className="absolute -top-3 -right-3 bg-gradient-to-r from-violet-600 to-indigo-600 text-white px-4 py-1 rounded-full text-xs font-semibold shadow-lg flex items-center gap-1">
                     <span>⭐</span>
-                    <span>REQUIRED</span>
+                    <span>{t("testSelection.required")}</span>
                   </div>
                 )}
 
@@ -182,10 +184,10 @@ export default function TestSelectionPage() {
                         ? "bg-violet-100 text-violet-700"
                         : "bg-gray-100 text-gray-600"
                     }`}>
-                      {test.isMandatory ? "Mandatory" : "Optional"}
+                      {test.isMandatory ? t("testSelection.mandatory") : t("testSelection.optional")}
                     </span>
                     <span className="text-xs text-gray-500">
-                      Priority {test.priority}
+                      {t("testSelection.priority")} {test.priority}
                     </span>
                   </div>
 
@@ -193,7 +195,7 @@ export default function TestSelectionPage() {
                   {isStarted && (
                     <div className="mb-4">
                       <div className="flex justify-between items-center mb-2">
-                        <span className="text-xs text-gray-500">Progress</span>
+                        <span className="text-xs text-gray-500">{t("testSelection.progress")}</span>
                         <span className="text-xs font-semibold text-gray-700">{progress}%</span>
                       </div>
                       <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
@@ -216,10 +218,10 @@ export default function TestSelectionPage() {
                   >
                     {isStarted ? (
                       <>
-                        {progress >= 100 ? "Review Test" : "Continue Test"}
+                        {progress >= 100 ? t("testSelection.reviewTest") : t("testSelection.continueTest")}
                       </>
                     ) : (
-                      "Start Test"
+                      t("testSelection.startTest")
                     )}
                   </button>
                 </div>
@@ -233,7 +235,7 @@ export default function TestSelectionPage() {
           <div className="inline-flex items-center gap-2 bg-violet-50 px-6 py-3 rounded-full border border-violet-200">
             <span className="text-2xl">💡</span>
             <p className="text-sm text-violet-700">
-              Start with the <strong>Business Test</strong> to unlock your marketing campaign
+              {t("testSelection.footer")}
             </p>
           </div>
         </div>

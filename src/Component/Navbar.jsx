@@ -2,13 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import Logo from "./Logo";
 import { getAuthSession, setAuthSession } from "../services/api";
-
-const navItems = [
-  { id: "branding-test", label: "Branding Test", icon: "sparkles", path: "/brand-test/intro" },
-  { id: "ai-content", label: "AI Content & Brand Strategist", icon: "brain", path: "/app" },
-  { id: "calendar", label: "Content Calendar", icon: "calendar", path: "/app/calendar" },
-  { id: "dashboard", label: "My Dashboard", icon: "folder", path: "/app/dashboard" },
-];
+import { useLanguage } from "../context/LanguageContext";
 
 // Simple icon components
 const icons = {
@@ -35,15 +29,22 @@ const icons = {
 };
 
 export default function Navbar({ active = "ai-content" }) {
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const session = getAuthSession();
-  const displayName = session?.name || session?.email || "User";
+  const displayName = session?.name || session?.email || t("common.userFallback");
   const initials = displayName
     .split(" ")
     .filter(Boolean)
     .slice(0, 2)
     .map((part) => part[0].toUpperCase())
     .join("");
+  const navItems = [
+    { id: "branding-test", label: t("navbar.brandingTest"), icon: "sparkles", path: "/brand-test/intro" },
+    { id: "ai-content", label: t("navbar.aiContent"), icon: "brain", path: "/app" },
+    { id: "calendar", label: t("navbar.calendar"), icon: "calendar", path: "/app/calendar" },
+    { id: "dashboard", label: t("navbar.dashboard"), icon: "folder", path: "/app/dashboard" },
+  ];
 
   return (
     <aside className="w-72 bg-white text-gray-900 flex flex-col h-screen border-r border-gray-100">
@@ -89,19 +90,19 @@ export default function Navbar({ active = "ai-content" }) {
       <div className="mt-auto border-t border-gray-100 px-5 py-4">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-500 via-indigo-500 to-cyan-500 text-white flex items-center justify-center text-sm font-semibold">
-            {initials || "U"}
+            {initials || t("common.userFallback").slice(0, 1).toUpperCase()}
           </div>
           <div>
             <p className="text-sm font-semibold text-gray-900">{displayName}</p>
-            <p className="text-xs text-gray-500">{session?.email || "Free Plan"}</p>
+            <p className="text-xs text-gray-500">{session?.email || t("common.freePlan")}</p>
           </div>
         </div>
 
         <div className="space-y-2 text-sm text-gray-500">
-          <button className="block hover:text-violet-600 transition">Profile Settings</button>
-          <button className="block hover:text-violet-600 transition">Billing & Plans</button>
-          <button className="block hover:text-violet-600 transition">Notifications</button>
-          <button className="block hover:text-violet-600 transition">Help & Support</button>
+          <button className="block hover:text-violet-600 transition">{t("navbar.profileSettings")}</button>
+          <button className="block hover:text-violet-600 transition">{t("navbar.billingPlans")}</button>
+          <button className="block hover:text-violet-600 transition">{t("navbar.notifications")}</button>
+          <button className="block hover:text-violet-600 transition">{t("navbar.helpSupport")}</button>
         </div>
 
         <button
@@ -112,7 +113,7 @@ export default function Navbar({ active = "ai-content" }) {
           }}
           className="mt-4 text-sm text-red-500 hover:text-red-600 transition"
         >
-          Logout
+          {t("navbar.logout")}
         </button>
       </div>
     </aside>

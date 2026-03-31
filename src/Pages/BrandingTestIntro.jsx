@@ -1,7 +1,10 @@
 import React from "react";
 import Logo from "../Component/Logo";
+import { useLanguage } from "../context/LanguageContext";
 
 export default function BrandTestIntro() {
+  const { t } = useLanguage();
+
   const handleStart = () => {
     window.location.href = "/test-selection";
   };
@@ -20,24 +23,21 @@ export default function BrandTestIntro() {
       {/* Step badge */}
       <div className="mb-6">
         <span className="bg-cyan-50 text-cyan-700 px-4 py-2 rounded-full text-sm font-medium">
-          Step 2: Begin your personalized brand test
+          {t("brandingIntro.stepBadge")}
         </span>
       </div>
 
       {/* Title */}
       <h1 className="text-4xl md:text-6xl font-bold text-center mb-6 leading-tight">
-        Let's Discover Your{" "}
+        {t("brandingIntro.titlePrefix")}{" "}
         <span className="bg-gradient-to-r from-violet-600 via-indigo-500 to-cyan-500 bg-clip-text text-transparent">
-          Unique Brand Voice
+          {t("brandingIntro.titleHighlight")}
         </span>
       </h1>
 
       {/* Description */}
       <p className="text-gray-600 text-center max-w-xl mb-10 text-lg leading-relaxed">
-        Our AI-powered tests analyze your business strategy and personal brand
-        to design a personalized marketing campaign that drives real results.
-        You'll complete two assessments: a Business Test (required) and a Personal Test (optional).
-        Ready to start your journey?
+        {t("brandingIntro.description")}
       </p>
 
       {/* CTA Button */}
@@ -45,7 +45,7 @@ export default function BrandTestIntro() {
         onClick={handleStart}
         className="bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 hover:from-violet-700 hover:via-indigo-700 hover:to-cyan-600 text-white font-medium px-8 py-4 rounded-full transition shadow-lg shadow-violet-500/25"
       >
-        Start Test
+        {t("brandingIntro.cta")}
       </button>
 
       {/* Progress Bar */}

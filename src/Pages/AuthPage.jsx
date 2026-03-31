@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Logo from "../Component/Logo";
 import { api, getAuthSession, setAuthSession } from "../services/api";
+import { useLanguage } from "../context/LanguageContext";
 
 export default function AuthPage() {
+  const { t } = useLanguage();
   const [mode, setMode] = useState("signin"); // "signin" | "signup"
   const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [error, setError] = useState("");
@@ -26,16 +28,16 @@ export default function AuthPage() {
 
   const validate = () => {
     if (mode === "signup" && !form.name.trim()) {
-      return "El nombre no puede estar vacío.";
+      return t("auth.errors.emptyName");
     }
     if (!form.email.trim() || !isValidEmail(form.email)) {
-      return "Ingresa un email válido.";
+      return t("auth.errors.invalidEmail");
     }
     if (mode === "signup" && form.password.trim().length < 6) {
-      return "La contraseña debe tener mínimo 6 caracteres.";
+      return t("auth.errors.passwordMin");
     }
     if (mode === "signin" && !form.password.trim()) {
-      return "La contraseña no puede estar vacía.";
+      return t("auth.errors.passwordEmpty");
     }
     return "";
   };
@@ -75,7 +77,7 @@ export default function AuthPage() {
 
       navigate("/app");
     } catch (err) {
-      setError(err.message || "Ocurrió un error. Intenta de nuevo.");
+      setError(err.message || t("auth.errors.generic"));
     } finally {
       setLoading(false);
     }
@@ -97,12 +99,12 @@ export default function AuthPage() {
 
         {/* Title */}
         <h2 className="text-2xl font-semibold text-gray-900 text-center">
-          {mode === "signin" ? "Welcome back" : "Create your account"}
+          {mode === "signin" ? t("auth.welcomeBack") : t("auth.createAccount")}
         </h2>
         <p className="text-sm text-gray-500 text-center mb-8">
           {mode === "signin"
-            ? "Enter your credentials to continue"
-            : "It takes less than a minute"}
+            ? t("auth.signinSubtitle")
+            : t("auth.signupSubtitle")}
         </p>
 
         <form className="space-y-5" onSubmit={handleSubmit}>
@@ -116,12 +118,12 @@ export default function AuthPage() {
           {mode === "signup" && (
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                Name
+                {t("auth.name")}
               </label>
               <input
                 type="text"
                 required
-                placeholder="Enter your name"
+                placeholder={t("auth.namePlaceholder")}
                 value={form.name}
                 onChange={handleChange("name")}
                 className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition"
@@ -132,12 +134,12 @@ export default function AuthPage() {
           {/* Email */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1.5">
-              Email
+              {t("auth.email")}
             </label>
             <input
               type="email"
               required
-              placeholder="Enter your email"
+              placeholder={t("auth.emailPlaceholder")}
               value={form.email}
               onChange={handleChange("email")}
               className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition"
@@ -147,12 +149,12 @@ export default function AuthPage() {
           {/* Password */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1.5">
-              Password
+              {t("auth.password")}
             </label>
             <input
               type="password"
               required
-              placeholder="Enter your password"
+              placeholder={t("auth.passwordPlaceholder")}
               value={form.password}
               onChange={handleChange("password")}
               className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition"
@@ -164,13 +166,13 @@ export default function AuthPage() {
             <div className="flex items-center justify-between">
               <label className="flex items-center gap-2 text-sm text-gray-600">
                 <input type="checkbox" className="accent-violet-500 rounded" />
-                Remember me
+                {t("auth.rememberMe")}
               </label>
               <button
                 type="button"
                 className="text-sm text-violet-600 hover:text-violet-700 font-medium"
               >
-                Forgot password?
+                {t("auth.forgotPassword")}
               </button>
             </div>
           )}
@@ -182,16 +184,16 @@ export default function AuthPage() {
             className="w-full bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 hover:from-violet-700 hover:via-indigo-700 hover:to-cyan-600 text-white font-medium py-3 rounded-xl transition shadow-lg shadow-violet-500/25"
           >
             {loading
-              ? "Processing..."
+              ? t("auth.processing")
               : mode === "signin"
-              ? "Log in"
-              : "Create account"}
+              ? t("auth.logIn")
+              : t("auth.createAccountCta")}
           </button>
 
           {/* Divider */}
           <div className="flex items-center gap-3">
             <div className="flex-1 h-px bg-gray-200" />
-            <span className="text-xs text-gray-400">or continue with</span>
+            <span className="text-xs text-gray-400">{t("auth.divider")}</span>
             <div className="flex-1 h-px bg-gray-200" />
           </div>
 
@@ -224,7 +226,7 @@ export default function AuthPage() {
 
         {/* Switch mode */}
         <p className="text-center text-sm text-gray-500 mt-6">
-          {mode === "signin" ? "Don't have an account? " : "Already registered? "}
+          {mode === "signin" ? `${t("auth.noAccount")} ` : `${t("auth.alreadyRegistered")} `}
           <button
             onClick={() => {
               setMode((prev) => (prev === "signin" ? "signup" : "signin"));
@@ -232,7 +234,7 @@ export default function AuthPage() {
             }}
             className="text-violet-600 hover:text-violet-700 font-medium"
           >
-            {mode === "signin" ? "Sign up" : "Sign in"}
+            {mode === "signin" ? t("auth.signUp") : t("auth.signIn")}
           </button>
         </p>
       </div>

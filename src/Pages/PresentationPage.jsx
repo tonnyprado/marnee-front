@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import Logo from "../Component/Logo";
+import { useLanguage } from "../context/LanguageContext";
 
 // Mascot images
 import marnee11 from "../assets/mascot/marnee11.png";
@@ -20,6 +21,7 @@ import imgCampaign from "../assets/extras/Campaign.png";
 import heroVideo from "../assets/videos/0207-optimized.mp4";
 
 export default function PresentationPage() {
+  const { t } = useLanguage();
   const [scrollProgress, setScrollProgress] = useState(0);
   const [isPageLoaded, setIsPageLoaded] = useState(false);
   const [showNav, setShowNav] = useState(false);
@@ -103,7 +105,7 @@ export default function PresentationPage() {
               : 'bg-white text-[#65589C] hover:bg-gray-100'
           }`}
         >
-          Join the waitlist
+          {t("presentation.waitlist")}
         </a>
       </div>
     );
@@ -195,7 +197,7 @@ export default function PresentationPage() {
           type="button"
           onClick={() => setIsMenuOpen((prev) => !prev)}
           className={`md:hidden inline-flex items-center justify-center w-11 h-11 rounded-full transition ${navTheme === "dark" ? "text-white/90 hover:text-white" : "text-gray-700 hover:text-gray-900"}`}
-          aria-label="Open menu"
+          aria-label={t("presentation.menuOpen")}
           aria-expanded={isMenuOpen}
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -207,19 +209,19 @@ export default function PresentationPage() {
             onClick={() => scrollToSection("how-it-works")}
             className={`transition text-sm font-medium ${navTheme === "dark" ? "text-white/80 hover:text-white" : "text-gray-600 hover:text-gray-900"}`}
           >
-            How it works
+            {t("presentation.navHow")}
           </button>
           <button
             onClick={() => scrollToSection("features")}
             className={`transition text-sm font-medium ${navTheme === "dark" ? "text-white/80 hover:text-white" : "text-gray-600 hover:text-gray-900"}`}
           >
-            Features
+            {t("presentation.navFeatures")}
           </button>
           <button
             onClick={() => scrollToSection("marnee")}
             className={`transition text-sm font-medium ${navTheme === "dark" ? "text-white/80 hover:text-white" : "text-gray-600 hover:text-gray-900"}`}
           >
-            Meet Marnee
+            {t("presentation.navMeet")}
           </button>
         </div>
         
@@ -237,7 +239,7 @@ export default function PresentationPage() {
                   navTheme === "dark" ? "hover:text-white" : "hover:text-gray-900"
                 }`}
               >
-                How it works
+                {t("presentation.navHow")}
               </button>
               <button
                 onClick={() => {
@@ -248,7 +250,7 @@ export default function PresentationPage() {
                   navTheme === "dark" ? "hover:text-white" : "hover:text-gray-900"
                 }`}
               >
-                Features
+                {t("presentation.navFeatures")}
               </button>
               <button
                 onClick={() => {
@@ -259,7 +261,7 @@ export default function PresentationPage() {
                   navTheme === "dark" ? "hover:text-white" : "hover:text-gray-900"
                 }`}
               >
-                Meet Marnee
+                {t("presentation.navMeet")}
               </button>
             </div>
           </div>
@@ -291,10 +293,10 @@ export default function PresentationPage() {
           {/* Left side - Text content */}
           <div className="text-left relative z-10">
             <h1 data-aos="fade-right" className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 sm:mb-6 leading-tight tracking-tight text-white">
-              Stop guessing.
+              {t("presentation.heroTitle1")}
               <br />
               <span className="bg-gradient-to-br from-[#6046e5] via-[#6f63f1] to-[#eef0ff] bg-clip-text text-transparent">
-                Start scaling.
+                {t("presentation.heroTitle2")}
               </span>
             </h1>
 
@@ -305,7 +307,7 @@ export default function PresentationPage() {
                 className="lg:hidden float-right ml-3 mb-2 w-28 sm:w-36 drop-shadow-2xl pointer-events-none"
               />
               <p className="text-sm sm:text-lg md:text-xl leading-relaxed text-[rgba(203,188,198,0.98)]">
-                DNHub turns social signals into marketing decisions. What to post, when, and why, tailored to your brand.
+                {t("presentation.heroDescription")}
               </p>
             </div>
 
@@ -315,7 +317,7 @@ export default function PresentationPage() {
               data-aos="fade-up"
               data-aos-delay="200"
             >
-              See how it works
+              {t("presentation.heroCta")}
             </button>
 
             {/* Hero Video - Mobile */}

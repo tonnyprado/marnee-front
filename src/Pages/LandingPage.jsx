@@ -1,7 +1,10 @@
 import React from "react";
 import Logo from "../Component/Logo";
+import { useLanguage } from "../context/LanguageContext";
 
 export default function LandingPage() {
+  const { t } = useLanguage();
+
   return (
     <div className="min-h-screen bg-white text-gray-900 flex flex-col items-center justify-center px-6 relative overflow-hidden">
       {/* Decorative gradient blobs */}
@@ -16,24 +19,21 @@ export default function LandingPage() {
       {/* Step badge */}
       <div className="mb-6">
         <span className="bg-violet-50 text-violet-700 px-4 py-2 rounded-full text-sm font-medium">
-          Step 1: Take your personal brand test
+          {t("landing.stepBadge")}
         </span>
       </div>
 
       {/* Title */}
       <h1 className="text-4xl md:text-6xl font-bold text-center mb-6 leading-tight">
-        Discover Your{" "}
+        {t("landing.titlePrefix")}{" "}
         <span className="bg-gradient-to-r from-violet-600 via-indigo-500 to-cyan-500 bg-clip-text text-transparent">
-          Brand Personality
+          {t("landing.titleHighlight")}
         </span>
       </h1>
 
       {/* Description */}
       <p className="text-gray-600 text-center max-w-xl mb-10 text-lg leading-relaxed">
-        This test will help you identify your core values, strengths, and what
-        you truly want to communicate so that any strategy you build is aligned
-        with your essence and purpose. It helps our AI understand your style,
-        tone, and brand identity. It only takes 20 minutes.
+        {t("landing.description")}
       </p>
 
       {/* CTA Buttons */}
@@ -42,13 +42,13 @@ export default function LandingPage() {
           onClick={() => (window.location.href = "/auth")}
           className="bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 hover:from-violet-700 hover:via-indigo-700 hover:to-cyan-600 text-white font-medium px-8 py-4 rounded-full transition shadow-lg shadow-violet-500/25"
         >
-          Sign up to start your test
+          {t("landing.primaryCta")}
         </button>
         <button
           onClick={() => (window.location.href = "/presentation")}
           className="border-2 border-violet-500 text-violet-600 hover:bg-violet-50 font-medium px-8 py-4 rounded-full transition"
         >
-          Learn More
+          {t("landing.secondaryCta")}
         </button>
       </div>
 
