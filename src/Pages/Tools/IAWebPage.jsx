@@ -92,6 +92,7 @@ export default function IAWebPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingSession, setIsLoadingSession] = useState(true);
   const [error, setError] = useState(null);
+  const [showCalendarButton, setShowCalendarButton] = useState(false);
   const messagesEndRef = useRef(null);
   const navigate = useNavigate();
 
@@ -107,6 +108,17 @@ export default function IAWebPage() {
 
   useEffect(() => {
     scrollToBottom();
+  }, [messages]);
+
+  // Check if we should show the calendar button
+  useEffect(() => {
+    const lastMessage = messages[messages.length - 1];
+    if (lastMessage && lastMessage.from === 'ai') {
+      const hasCalendarAction =
+        lastMessage.primaryAction?.type === 'navigate' &&
+        lastMessage.primaryAction?.target === 'calendar';
+      setShowCalendarButton(hasCalendarAction);
+    }
   }, [messages]);
 
   const ensureFounderLoaded = async () => {
@@ -143,10 +155,11 @@ export default function IAWebPage() {
               founderId: founder.id,
               sessionId: null,
               welcomeMessage:
-                "Hi, I’m Marnee. Ask me anything about your brand, content ideas, positioning, or messaging and we’ll work through it together.",
+                "Hi, I'm Marnee. Ask me anything about your brand, content ideas, positioning, or messaging and we'll work through it together.",
             });
           }
 
+          // Always try to load the latest conversation
           try {
             const conversations = await api.getConversations();
             if (conversations && conversations.length > 0) {
@@ -157,11 +170,13 @@ export default function IAWebPage() {
               setConversationId(null);
             }
           } catch (convError) {
-            console.log("No existing conversations found");
+            console.log("No existing conversations found:", convError.message);
+            // Don't show error to user - this is normal for new users
           }
         }
       } catch (error) {
-        console.log("No existing founder or session found in DB");
+        console.log("No existing founder or session found in DB:", error.message);
+        // Don't show error to user - this is normal for new users
       } finally {
         setIsLoadingSession(false);
       }
@@ -269,10 +284,17 @@ export default function IAWebPage() {
         navigate("/app/calendar");
       }
     } catch (err) {
-      setError(
-        err.message ||
-          "I couldn't send that message right now. Please try again in a moment."
-      );
+      let errorMessage = "I couldn't send that message right now. Please try again in a moment.";
+
+      if (err.status === 503) {
+        errorMessage = "Marnee service is temporarily unavailable. Please try again in a few minutes.";
+      } else if (err.status === 404) {
+        errorMessage = "Service endpoint not found. Please contact support.";
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
+
+      setError(errorMessage);
       setMessages((prev) => prev.slice(0, -1));
     } finally {
       setIsLoading(false);
@@ -417,6 +439,31 @@ export default function IAWebPage() {
 
         <div ref={messagesEndRef} />
       </div>
+
+      {/* Prominent Calendar Button */}
+      {showCalendarButton && (
+        <div className="px-6 py-4 bg-gradient-to-r from-violet-50 via-indigo-50 to-cyan-50 border-t border-violet-200 flex-shrink-0 relative">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex-1">
+              <p className="text-sm font-semibold text-gray-900 mb-1">
+                Ready to create your content calendar?
+              </p>
+              <p className="text-xs text-gray-600">
+                Marnee will generate a personalized calendar with all the ideas we discussed.
+              </p>
+            </div>
+            <button
+              onClick={() => navigate("/app/calendar")}
+              className="px-6 py-3 rounded-xl bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 text-white font-semibold text-sm hover:from-violet-700 hover:via-indigo-700 hover:to-cyan-600 transition shadow-lg shadow-violet-500/25 flex items-center gap-2 whitespace-nowrap"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              Go to Calendar
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="border-t border-white/70 flex items-center px-6 py-4 gap-3 bg-white/85 backdrop-blur-md flex-shrink-0 relative">
         <input
