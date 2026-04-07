@@ -34,7 +34,7 @@ export default function BrandTestIntro() {
           {t("brandingIntro.titleHighlight")}
         </span>
       </h1>
-
+{/*testing*/}
       {/* Description */}
       <p className="text-gray-600 text-center max-w-xl mb-10 text-lg leading-relaxed">
         {t("brandingIntro.description")}
