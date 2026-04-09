@@ -18,7 +18,7 @@ import BusinessTestPage from "./Pages/BusinessTestPage";
 import AppLayout from "./Layout/Layout";
 import IAWebPage from "./Pages/Tools/IAWebPage";
 import CalendarPage from "./Pages/Tools/CalendarPage";
-import MyDashboard from "./Pages/Tools/MyDashboard";
+// import MyDashboard from "./Pages/Tools/MyDashboard"; // Disabled for MVP Beta
 
 function RequireAuth({ children }) {
   const session = getAuthSession();
@@ -81,8 +81,8 @@ function AppContent() {
           <Route index element={<IAWebPage />} />
           {/* /app/calendar */}
           <Route path="calendar" element={<CalendarPage />} />
-          {/* /app/dashboard */}
-          <Route path="dashboard" element={<MyDashboard />} />
+          {/* /app/dashboard - Disabled for MVP Beta */}
+          {/* <Route path="dashboard" element={<MyDashboard />} /> */}
         </Route>
 
         {/* fallback */}
