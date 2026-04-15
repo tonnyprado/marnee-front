@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Marnee Design System — single source of truth for tokens, components, animations */
+@import './styles/marnee-design-system.css';
+
 @layer utilities {
   .min-h-viewport {
     min-height: 100vh;

@@ -29,6 +29,7 @@ const icons = {
 };
 
 export default function Navbar({ active = "ai-content" }) {
+  const [collapsed, setCollapsed] = React.useState(false);
   const { t } = useLanguage();
   const navigate = useNavigate();
   const session = getAuthSession();
@@ -47,74 +48,99 @@ export default function Navbar({ active = "ai-content" }) {
   ];
 
   return (
-    <aside className="w-72 bg-white text-gray-900 flex flex-col h-screen border-r border-gray-100">
+    <aside
+      className={`${collapsed ? "w-16" : "w-72"} bg-white text-gray-900 flex flex-col h-screen border-r border-[rgba(30,30,30,0.1)] transition-all duration-200 shrink-0`}
+    >
       {/* Logo */}
-      <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
-        <div
-          onClick={() => navigate("/")}
-          className="cursor-pointer hover:opacity-80 transition"
+      <div className="flex items-center justify-between px-4 py-5 border-b border-[rgba(30,30,30,0.1)]">
+        {!collapsed && (
+          <div
+            onClick={() => navigate("/")}
+            className="cursor-pointer hover:opacity-80 transition"
+          >
+            <Logo dark={true} />
+          </div>
+        )}
+        <button
+          onClick={() => setCollapsed((c) => !c)}
+          className={`text-gray-400 hover:text-gray-600 transition ${collapsed ? "mx-auto" : ""}`}
+          title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
-          <Logo dark={true} />
-        </div>
-        <button className="text-gray-400 hover:text-gray-600 transition">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+            {collapsed ? (
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+            ) : (
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+            )}
           </svg>
         </button>
       </div>
 
       {/* Menu */}
-      <nav className="flex-1 px-4 py-6 space-y-1">
+      <nav className="flex-1 px-2 py-6 space-y-1">
         {navItems.map((item) => {
           const isActive = item.id === active;
           return (
             <button
               key={item.id}
               onClick={() => navigate(item.path)}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left transition ${
+              title={collapsed ? item.label : undefined}
+              className={`w-full flex items-center gap-3 px-3 py-3 rounded text-left transition ${
                 isActive
-                  ? "bg-violet-50 text-violet-700 border border-violet-100"
-                  : "text-gray-600 hover:bg-gray-50"
-              }`}
+                  ? "bg-[#ede0f8] text-[#40086d] border border-[#dccaf4]"
+                  : "text-gray-600 hover:bg-[#f6f6f6]"
+              } ${collapsed ? "justify-center" : ""}`}
             >
-              <span className={isActive ? "text-violet-500" : "text-gray-400"}>
+              <span className={`shrink-0 ${isActive ? "text-[#40086d]" : "text-gray-400"}`}>
                 {icons[item.icon]}
               </span>
-              <span className="text-sm font-medium">{item.label}</span>
+              {!collapsed && (
+                <span className="text-sm font-medium">{item.label}</span>
+              )}
             </button>
           );
         })}
       </nav>
 
       {/* User box */}
-      <div className="mt-auto border-t border-gray-100 px-5 py-4">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-500 via-indigo-500 to-cyan-500 text-white flex items-center justify-center text-sm font-semibold">
-            {initials || t("common.userFallback").slice(0, 1).toUpperCase()}
+      <div className="mt-auto border-t border-[rgba(30,30,30,0.1)] px-3 py-4">
+        {collapsed ? (
+          <div className="flex justify-center">
+            <div className="w-9 h-9 rounded bg-[#40086d] text-[#dccaf4] flex items-center justify-center text-sm font-medium">
+              {initials || t("common.userFallback").slice(0, 1).toUpperCase()}
+            </div>
           </div>
-          <div>
-            <p className="text-sm font-semibold text-gray-900">{displayName}</p>
-            <p className="text-xs text-gray-500">{session?.email || t("common.freePlan")}</p>
-          </div>
-        </div>
+        ) : (
+          <>
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded bg-[#40086d] text-[#dccaf4] flex items-center justify-center text-sm font-medium">
+                {initials || t("common.userFallback").slice(0, 1).toUpperCase()}
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-900">{displayName}</p>
+                <p className="text-xs text-gray-500">{session?.email || t("common.freePlan")}</p>
+              </div>
+            </div>
 
-        <div className="space-y-2 text-sm text-gray-500">
-          <button className="block hover:text-violet-600 transition">{t("navbar.profileSettings")}</button>
-          <button className="block hover:text-violet-600 transition">{t("navbar.billingPlans")}</button>
-          <button className="block hover:text-violet-600 transition">{t("navbar.notifications")}</button>
-          <button className="block hover:text-violet-600 transition">{t("navbar.helpSupport")}</button>
-        </div>
+            <div className="space-y-2 text-sm text-gray-500">
+              <button className="block hover:text-[#40086d] transition">{t("navbar.profileSettings")}</button>
+              <button className="block hover:text-[#40086d] transition">{t("navbar.billingPlans")}</button>
+              <button className="block hover:text-[#40086d] transition">{t("navbar.notifications")}</button>
+              <button className="block hover:text-[#40086d] transition">{t("navbar.helpSupport")}</button>
+            </div>
 
-        <button
-          onClick={() => {
-            setAuthSession(null);
-            window.dispatchEvent(new CustomEvent("app-logout"));
-            navigate("/auth");
-          }}
-          className="mt-4 text-sm text-red-500 hover:text-red-600 transition"
-        >
-          {t("navbar.logout")}
-        </button>
+            <button
+              onClick={() => {
+                setAuthSession(null);
+                window.dispatchEvent(new CustomEvent("app-logout"));
+                navigate("/auth");
+              }}
+              className="mt-4 text-sm text-red-500 hover:text-red-600 transition"
+            >
+              {t("navbar.logout")}
+            </button>
+          </>
+        )}
       </div>
     </aside>
   );

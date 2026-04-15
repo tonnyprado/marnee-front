@@ -13,9 +13,9 @@ export default function AppLayout() {
   else if (location.pathname.startsWith("/brand-test")) active = "branding-test";
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex h-screen overflow-hidden">
       <Navbar active={active} />
-      <div className="flex-1 bg-gray-50 min-h-screen">
+      <div className="flex-1 bg-gray-50 overflow-y-auto">
         <Outlet />
       </div>
     </div>

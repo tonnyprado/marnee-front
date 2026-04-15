@@ -1,18 +1,18 @@
 import React from "react";
 
 const PILLAR_COLORS = {
-  Authority: "bg-violet-500/20 text-violet-300",
-  "Behind the scenes": "bg-blue-500/20 text-blue-300",
-  Tips: "bg-green-500/20 text-green-300",
-  Story: "bg-orange-500/20 text-orange-300",
-  Engagement: "bg-cyan-500/20 text-cyan-300",
-  default: "bg-gray-500/20 text-gray-300",
+  Authority: "bg-[#ede0f8] text-[#40086d]",
+  "Behind the scenes": "bg-blue-100 text-blue-700",
+  Tips: "bg-green-100 text-green-700",
+  Story: "bg-orange-100 text-orange-700",
+  Engagement: "bg-sky-100 text-sky-700",
+  default: "bg-gray-100 text-gray-600",
 };
 
 const STATUS_BADGES = {
-  draft: "bg-yellow-500/20 text-yellow-300",
-  scheduled: "bg-blue-500/20 text-blue-300",
-  published: "bg-green-500/20 text-green-300",
+  draft: "bg-yellow-100 text-yellow-700",
+  scheduled: "bg-blue-100 text-blue-700",
+  published: "bg-green-100 text-green-700",
 };
 
 export default function CalendarListView({
@@ -39,14 +39,14 @@ export default function CalendarListView({
   };
 
   return (
-    <div className="bg-[#0c0719]">
+    <div className="bg-[#f6f6f6]">
       {/* Top controls */}
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold">All Posts</h2>
+        <h2 className="text-lg font-semibold text-[#1e1e1e]">All Posts</h2>
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="bg-[#0c0719] border border-violet-400/60 rounded-md px-3 py-1 text-sm focus:outline-none"
+          className="bg-white border border-[rgba(30,30,30,0.1)] rounded px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-[#40086d] text-[#1e1e1e]"
         >
           <option value="all">All Status</option>
           <option value="draft">Draft</option>
@@ -71,7 +71,7 @@ export default function CalendarListView({
                   <div
                     key={`${post.date}-${post.hook}`}
                     onClick={() => onPostClick(post, post.originalIndex)}
-                    className="bg-black/20 border border-white/5 rounded-xl p-4 cursor-pointer hover:bg-white/5 transition"
+                    className="bg-white border border-[rgba(30,30,30,0.1)] rounded p-4 cursor-pointer hover:bg-[#f6f6f6] transition"
                   >
                     <div className="flex items-start justify-between gap-4">
                       {/* Left side: Date and content */}
@@ -88,7 +88,7 @@ export default function CalendarListView({
                           </span>
                         </div>
 
-                        <h4 className="font-medium text-white mb-1 truncate">
+                        <h4 className="font-medium text-[#1e1e1e] mb-1 truncate">
                           {post.hook}
                         </h4>
 
@@ -108,7 +108,7 @@ export default function CalendarListView({
                       {post.cta && (
                         <div className="flex-shrink-0 text-right">
                           <span className="text-xs text-gray-500 block mb-1">CTA</span>
-                          <span className="text-xs text-violet-300 bg-violet-500/10 px-2 py-1 rounded">
+                          <span className="text-xs text-[#40086d] bg-[#ede0f8] px-2 py-1 rounded">
                             {post.cta}
                           </span>
                         </div>

@@ -564,15 +564,15 @@ export default function BusinessTestPage() {
                   key={option.value}
                   type="button"
                   onClick={() => handleRadioSelect(option.value)}
-                  className={`w-full text-left border rounded-xl px-5 py-4 flex items-center gap-3 transition ${
+                  className={`w-full text-left border rounded px-5 py-4 flex items-center gap-3 transition ${
                     selected
-                      ? "border-violet-400 bg-violet-50"
-                      : "border-gray-200 hover:border-violet-200 hover:bg-violet-50/50"
+                      ? "border-[#dccaf4] bg-[#ede0f8]"
+                      : "border-[rgba(30,30,30,0.1)] hover:border-[#dccaf4] hover:bg-[#ede0f8]/40"
                   }`}
                 >
                   <span
                     className={`w-5 h-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center ${
-                      selected ? "border-violet-500 bg-violet-500" : "border-gray-300"
+                      selected ? "border-[#40086d] bg-[#40086d]" : "border-gray-300"
                     }`}
                   >
                     {selected && <span className="w-2 h-2 bg-white rounded-full" />}
@@ -596,10 +596,10 @@ export default function BusinessTestPage() {
                     key={option}
                     type="button"
                     onClick={() => handleMultiSelect(option)}
-                    className={`px-4 py-2 rounded-full border text-sm transition ${
+                    className={`px-4 py-2 rounded border text-sm transition ${
                       isSelected
-                        ? "border-violet-400 bg-violet-100 text-violet-700"
-                        : "border-gray-200 hover:border-violet-200 text-gray-600 hover:bg-violet-50"
+                        ? "border-[#40086d] bg-[#ede0f8] text-[#40086d]"
+                        : "border-[rgba(30,30,30,0.1)] hover:border-[#dccaf4] text-gray-600 hover:bg-[#ede0f8]"
                     }`}
                   >
                     {option}
@@ -623,7 +623,7 @@ export default function BusinessTestPage() {
             onChange={(e) => handleTextChange(e.target.value)}
             placeholder={step.placeholder}
             rows={step.type === 'url' ? 1 : 4}
-            className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent resize-none transition"
+            className="w-full bg-[#f6f6f6] border border-[rgba(30,30,30,0.1)] rounded px-4 py-3 text-sm text-[#1e1e1e] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#40086d] focus:border-transparent resize-none transition"
           />
         );
 
@@ -636,7 +636,7 @@ export default function BusinessTestPage() {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-violet-200 border-t-violet-600 rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="w-16 h-16 border-4 border-[#dccaf4] border-t-[#40086d] rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-gray-600">Loading your business test...</p>
         </div>
       </div>
@@ -653,7 +653,7 @@ export default function BusinessTestPage() {
   return (
     <div className="min-h-screen bg-white text-gray-900 flex">
       {/* Sidebar */}
-      <aside className="w-72 bg-gray-50 border-r border-gray-100 p-6 flex flex-col">
+      <aside className="w-72 bg-[#f6f6f6] border-r border-[rgba(30,30,30,0.1)] p-6 flex flex-col">
         <h2 className="text-lg font-semibold mb-1 text-gray-900">Business Test</h2>
         <p className="text-xs text-gray-500 mb-6">
           Complete all sections to unlock your personalized marketing campaign.
@@ -672,16 +672,16 @@ export default function BusinessTestPage() {
             return (
               <div
                 key={section}
-                className={`rounded-xl p-3 cursor-pointer transition ${
-                  isActive ? "bg-violet-100 border border-violet-200" : "hover:bg-gray-100"
+                className={`rounded p-3 cursor-pointer transition ${
+                  isActive ? "bg-[#ede0f8] border border-[#dccaf4]" : "hover:bg-white"
                 }`}
                 onClick={() => setCurrentStep(sectionStart)}
               >
                 <div className="flex justify-between items-center">
-                  <p className={`text-sm ${isActive ? 'text-violet-700 font-medium' : 'text-gray-600'}`}>
+                  <p className={`text-sm ${isActive ? 'text-[#40086d] font-medium' : 'text-gray-600'}`}>
                     {section}
                   </p>
-                  <span className={`text-xs ${isActive ? 'text-violet-500' : 'text-gray-400'}`}>
+                  <span className={`text-xs ${isActive ? 'text-[#40086d]' : 'text-gray-400'}`}>
                     {completedInSection}/{sectionSteps.length}
                   </span>
                 </div>
@@ -691,13 +691,13 @@ export default function BusinessTestPage() {
         </div>
 
         {/* Progress */}
-        <div className="pt-6 border-t border-gray-200 mt-4">
+        <div className="pt-6 border-t border-[rgba(30,30,30,0.1)] mt-4">
           <div className="text-xs text-gray-500 mb-2">
             Question {currentStep + 1} of {STEPS.length}
           </div>
-          <div className="w-full h-2 bg-gray-200 rounded-full">
+          <div className="w-full h-2 bg-[rgba(30,30,30,0.08)] rounded-full">
             <div
-              className="h-2 bg-gradient-to-r from-violet-500 via-indigo-500 to-cyan-400 rounded-full transition-all"
+              className="h-2 bg-[#40086d] rounded-full transition-all"
               style={{ width: `${progress}%` }}
             />
           </div>
@@ -710,7 +710,7 @@ export default function BusinessTestPage() {
         <div className="max-w-3xl mx-auto w-full pt-12 pb-32 px-6">
           {/* Section tag */}
           <div className="mb-4 flex items-center gap-2">
-            <span className="bg-violet-50 text-violet-600 px-3 py-1 rounded-full text-xs font-medium">
+            <span className="bg-[#ede0f8] text-[#40086d] px-3 py-1 rounded text-xs font-medium">
               {step.section} · Question {currentStep + 1}
             </span>
             {step.required && (
@@ -727,17 +727,17 @@ export default function BusinessTestPage() {
 
           {/* Error */}
           {error && (
-            <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm">
+            <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded text-red-600 text-sm">
               {error}
             </div>
           )}
         </div>
 
         {/* Footer nav */}
-        <div className="fixed bottom-0 left-72 right-0 bg-white/80 backdrop-blur-sm border-t border-gray-100 px-8 py-4 flex justify-between items-center">
+        <div className="fixed bottom-0 left-72 right-0 bg-white border-t border-[rgba(30,30,30,0.1)] px-8 py-4 flex justify-between items-center">
           <button
             onClick={handleBack}
-            className="px-5 py-2.5 rounded-xl border border-gray-200 text-gray-700 hover:bg-gray-50 text-sm font-medium"
+            className="px-5 py-2.5 rounded border border-[rgba(30,30,30,0.1)] text-gray-700 hover:bg-[#f6f6f6] text-sm font-medium"
           >
             Back
           </button>
@@ -745,7 +745,7 @@ export default function BusinessTestPage() {
           <button
             onClick={handleNext}
             disabled={isSubmitting || (step.required && !answers[step.field])}
-            className={`px-6 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 text-white font-medium text-sm hover:from-violet-700 hover:via-indigo-700 hover:to-cyan-600 transition shadow-lg shadow-violet-500/25 ${
+            className={`px-6 py-2.5 rounded bg-[#1e1e1e] text-white font-medium text-sm hover:bg-[#dccaf4] hover:text-[#1a0530] transition ${
               (isSubmitting || (step.required && !answers[step.field])) ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           >

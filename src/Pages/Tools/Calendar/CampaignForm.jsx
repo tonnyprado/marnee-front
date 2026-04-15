@@ -150,7 +150,7 @@ export default function CampaignForm({
   return (
     <div className="fixed top-0 right-0 h-full w-[480px] bg-white text-gray-900 shadow-2xl flex flex-col z-50 border-l border-gray-200">
       {/* Header */}
-      <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 bg-gray-50">
+      <div className="flex items-center justify-between px-6 py-4 border-b border-[rgba(30,30,30,0.1)] bg-[#f6f6f6]">
         <div>
           <p className="text-sm text-gray-500">{formatDate(post?.date)}</p>
           <h2 className="text-lg font-semibold">Edit Post</h2>
@@ -166,13 +166,13 @@ export default function CampaignForm({
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-gray-200 px-6">
+      <div className="flex border-b border-[rgba(30,30,30,0.1)] px-6">
         <button
           onClick={() => setActiveTab("details")}
           className={`px-4 py-3 text-sm font-medium border-b-2 transition ${
             activeTab === "details"
-              ? "border-violet-500 text-violet-600"
-              : "border-transparent text-gray-500 hover:text-gray-700"
+              ? "border-[#40086d] text-[#40086d]"
+              : "border-transparent text-gray-500 hover:text-[#1e1e1e]"
           }`}
         >
           Details
@@ -181,8 +181,8 @@ export default function CampaignForm({
           onClick={() => setActiveTab("comments")}
           className={`px-4 py-3 text-sm font-medium border-b-2 transition ${
             activeTab === "comments"
-              ? "border-violet-500 text-violet-600"
-              : "border-transparent text-gray-500 hover:text-gray-700"
+              ? "border-[#40086d] text-[#40086d]"
+              : "border-transparent text-gray-500 hover:text-[#1e1e1e]"
           }`}
         >
           Comments
@@ -206,7 +206,7 @@ export default function CampaignForm({
                 value={form.title}
                 onChange={(e) => handleChange("title", e.target.value)}
                 placeholder="Clear summary of the content..."
-                className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
+                className="w-full bg-white border border-gray-200 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#40086d]"
               />
             </div>
 
@@ -217,7 +217,7 @@ export default function CampaignForm({
                 <select
                   value={form.taskType}
                   onChange={(e) => handleChange("taskType", e.target.value)}
-                  className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
+                  className="w-full bg-white border border-gray-200 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#40086d]"
                 >
                   {TASK_TYPES.map((type) => (
                     <option key={type.value} value={type.value}>
@@ -232,7 +232,7 @@ export default function CampaignForm({
                 <select
                   value={form.platform}
                   onChange={(e) => handleChange("platform", e.target.value)}
-                  className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
+                  className="w-full bg-white border border-gray-200 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#40086d]"
                 >
                   <option value="">Select...</option>
                   {PLATFORMS.map((platform) => (
@@ -251,7 +251,7 @@ export default function CampaignForm({
                 <select
                   value={form.assetType}
                   onChange={(e) => handleChange("assetType", e.target.value)}
-                  className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
+                  className="w-full bg-white border border-gray-200 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#40086d]"
                 >
                   <option value="">Select...</option>
                   {ASSET_TYPES.map((type) => (
@@ -267,7 +267,7 @@ export default function CampaignForm({
                 <select
                   value={form.contentType}
                   onChange={(e) => handleChange("contentType", e.target.value)}
-                  className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
+                  className="w-full bg-white border border-gray-200 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#40086d]"
                 >
                   <option value="">Select...</option>
                   {CONTENT_TYPES.map((type) => (
@@ -295,8 +295,8 @@ export default function CampaignForm({
                     onClick={() => handleChange("effortLevel", level)}
                     className={`flex-1 px-3 py-2 rounded-lg text-sm border transition ${
                       form.effortLevel === level
-                        ? "bg-violet-100 text-violet-700 border-violet-300 font-medium"
-                        : "bg-white border-gray-200 text-gray-600 hover:bg-gray-50"
+                        ? "bg-[#ede0f8] text-[#40086d] border-[#dccaf4] font-medium"
+                        : "bg-white border-[rgba(30,30,30,0.1)] text-gray-600 hover:bg-[#f6f6f6]"
                     }`}
                   >
                     {level}
@@ -323,8 +323,8 @@ export default function CampaignForm({
                     onClick={() => handleChange("goal", goal)}
                     className={`flex-1 px-3 py-2 rounded-lg text-sm border transition ${
                       form.goal === goal
-                        ? "bg-indigo-100 text-indigo-700 border-indigo-300 font-medium"
-                        : "bg-white border-gray-200 text-gray-600 hover:bg-gray-50"
+                        ? "bg-[#ede0f8] text-[#40086d] border-[#dccaf4] font-medium"
+                        : "bg-white border-[rgba(30,30,30,0.1)] text-gray-600 hover:bg-[#f6f6f6]"
                     }`}
                   >
                     {goal}
@@ -336,7 +336,7 @@ export default function CampaignForm({
             {/* Pillar (read-only) */}
             <div className="mb-4">
               <label className="text-sm font-medium text-gray-700 block mb-1.5">Content Pillar</label>
-              <div className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-gray-700 text-sm">
+              <div className="px-3 py-2 bg-[#f6f6f6] border border-[rgba(30,30,30,0.1)] rounded text-gray-700 text-sm">
                 {form.pillar || "Not set"}
               </div>
             </div>
@@ -351,7 +351,7 @@ export default function CampaignForm({
                 onChange={(e) => handleChange("reason", e.target.value)}
                 placeholder="Why are we creating this content?"
                 rows={2}
-                className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 resize-none"
+                className="w-full bg-white border border-gray-200 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 resize-none"
               />
             </div>
 
@@ -365,7 +365,7 @@ export default function CampaignForm({
                 value={form.basedOn}
                 onChange={(e) => handleChange("basedOn", e.target.value)}
                 placeholder="e.g., Trending topic in niche, audience behavior..."
-                className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
+                className="w-full bg-white border border-gray-200 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#40086d]"
               />
             </div>
           </div>
@@ -386,7 +386,7 @@ export default function CampaignForm({
                 onChange={(e) => handleChange("hook", e.target.value)}
                 placeholder="The attention-grabbing opening..."
                 rows={2}
-                className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 resize-none"
+                className="w-full bg-white border border-gray-200 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 resize-none"
               />
             </div>
 
@@ -400,7 +400,7 @@ export default function CampaignForm({
                 onChange={(e) => handleChange("body", e.target.value)}
                 placeholder="Main content explanation..."
                 rows={3}
-                className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 resize-none"
+                className="w-full bg-white border border-gray-200 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 resize-none"
               />
             </div>
 
@@ -414,7 +414,7 @@ export default function CampaignForm({
                 value={form.angle}
                 onChange={(e) => handleChange("angle", e.target.value)}
                 placeholder="e.g., Myth-busting, Personal story..."
-                className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
+                className="w-full bg-white border border-gray-200 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#40086d]"
               />
             </div>
 
@@ -426,7 +426,7 @@ export default function CampaignForm({
                 value={form.cta}
                 onChange={(e) => handleChange("cta", e.target.value)}
                 placeholder="e.g., Save this and DM me 'BRAND'"
-                className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
+                className="w-full bg-white border border-gray-200 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#40086d]"
               />
             </div>
           </div>
@@ -443,7 +443,7 @@ export default function CampaignForm({
               <select
                 value={form.format}
                 onChange={(e) => handleChange("format", e.target.value)}
-                className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
+                className="w-full bg-white border border-gray-200 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#40086d]"
               >
                 <option value="">Select format...</option>
                 {FORMAT_OPTIONS.map((format) => (
@@ -488,14 +488,14 @@ export default function CampaignForm({
                     key={option.value}
                     type="button"
                     onClick={() => handleChange("status", option.value)}
-                    className={`px-3 py-2 rounded-lg text-sm border transition ${
+                    className={`px-3 py-2 rounded text-sm border transition ${
                       form.status === option.value
                         ? option.color === "gray"
                           ? "bg-gray-100 text-gray-700 border-gray-300 font-medium"
                           : option.color === "blue"
                           ? "bg-blue-100 text-blue-700 border-blue-300 font-medium"
                           : "bg-green-100 text-green-700 border-green-300 font-medium"
-                        : "bg-white border-gray-200 text-gray-600 hover:bg-gray-50"
+                        : "bg-white border-[rgba(30,30,30,0.1)] text-gray-600 hover:bg-[#f6f6f6]"
                     }`}
                   >
                     {option.label}
@@ -527,7 +527,7 @@ export default function CampaignForm({
                           : type.value === "Iterate"
                           ? "bg-yellow-100 text-yellow-700 border-yellow-300 font-medium"
                           : "bg-red-100 text-red-700 border-red-300 font-medium"
-                        : "bg-white border-gray-200 text-gray-600 hover:bg-gray-50"
+                        : "bg-white border-[rgba(30,30,30,0.1)] text-gray-600 hover:bg-[#f6f6f6]"
                     }`}
                     title={type.desc}
                   >
@@ -545,7 +545,7 @@ export default function CampaignForm({
                 onChange={(e) => handleChange("notes", e.target.value)}
                 placeholder="Additional notes or feedback..."
                 rows={2}
-                className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 resize-none"
+                className="w-full bg-white border border-gray-200 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 resize-none"
               />
             </div>
           </div>
@@ -563,18 +563,18 @@ export default function CampaignForm({
 
       {/* Footer */}
       {activeTab === "details" && (
-        <div className="p-6 border-t border-gray-200 flex gap-3 bg-gray-50">
+        <div className="p-6 border-t border-[rgba(30,30,30,0.1)] flex gap-3 bg-[#f6f6f6]">
           <button
             onClick={handleSubmit}
             disabled={isSaving}
-            className="flex-1 py-2.5 rounded-lg bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 text-white font-semibold text-sm hover:from-violet-700 hover:via-indigo-700 hover:to-cyan-600 transition disabled:opacity-50 shadow-lg shadow-violet-500/25"
+            className="flex-1 py-2.5 rounded bg-[#1e1e1e] text-white font-medium text-sm hover:bg-[#dccaf4] hover:text-[#1a0530] transition disabled:opacity-50"
           >
             {isSaving ? "Saving..." : "Save Changes"}
           </button>
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2.5 rounded-lg border border-gray-300 text-gray-700 text-sm hover:bg-gray-100 transition"
+            className="px-4 py-2.5 rounded border border-[rgba(30,30,30,0.1)] text-gray-700 text-sm hover:bg-[#f6f6f6] transition"
           >
             Cancel
           </button>

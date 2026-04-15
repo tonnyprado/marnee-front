@@ -158,7 +158,7 @@ export default function BrainstormingSection({ calendarId }) {
     return (
       <div className="flex items-center justify-center py-20">
         <div className="text-center">
-          <div className="w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <div className="w-8 h-8 border-2 border-[#dccaf4] border-t-[#40086d] rounded-full animate-spin mx-auto mb-4" />
           <p className="text-gray-500">Loading ideas...</p>
         </div>
       </div>
@@ -177,7 +177,7 @@ export default function BrainstormingSection({ calendarId }) {
         </div>
         <button
           onClick={handleOpenNew}
-          className="px-4 py-2 rounded-lg bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 text-white font-medium text-sm hover:from-violet-700 hover:via-indigo-700 hover:to-cyan-600 transition shadow-lg shadow-violet-500/25"
+          className="px-4 py-2 rounded bg-[#1e1e1e] text-white font-medium text-sm hover:bg-[#dccaf4] hover:text-[#1a0530] transition"
         >
           + New Idea
         </button>
@@ -197,10 +197,10 @@ export default function BrainstormingSection({ calendarId }) {
             <button
               key={filter.value}
               onClick={() => setStatusFilter(filter.value)}
-              className={`px-3 py-1.5 rounded-lg text-sm border transition ${
+              className={`px-3 py-1.5 rounded text-sm border transition ${
                 statusFilter === filter.value
-                  ? "bg-violet-100 text-violet-700 border-violet-300 font-medium"
-                  : "bg-white border-gray-200 text-gray-600 hover:bg-gray-50"
+                  ? "bg-[#ede0f8] text-[#40086d] border-[#dccaf4] font-medium"
+                  : "bg-white border-[rgba(30,30,30,0.1)] text-gray-600 hover:bg-[#f6f6f6]"
               }`}
             >
               {filter.label}
@@ -211,7 +211,7 @@ export default function BrainstormingSection({ calendarId }) {
 
       {/* Ideas Grid */}
       {filteredIdeas.length === 0 ? (
-        <div className="text-center py-16 bg-white rounded-xl border border-gray-100">
+        <div className="text-center py-16 bg-white rounded border border-[rgba(30,30,30,0.1)]">
           <svg
             className="w-16 h-16 mx-auto mb-4 text-gray-300"
             fill="none"
@@ -233,7 +233,7 @@ export default function BrainstormingSection({ calendarId }) {
           </p>
           <button
             onClick={handleOpenNew}
-            className="px-6 py-2.5 rounded-lg bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 text-white font-medium hover:from-violet-700 hover:via-indigo-700 hover:to-cyan-600 transition shadow-lg shadow-violet-500/25"
+            className="px-6 py-2.5 rounded bg-[#1e1e1e] text-white font-medium hover:bg-[#dccaf4] hover:text-[#1a0530] transition"
           >
             Create Your First Idea
           </button>
@@ -243,7 +243,7 @@ export default function BrainstormingSection({ calendarId }) {
           {filteredIdeas.map((idea) => (
             <div
               key={idea.id}
-              className="bg-white border border-gray-200 rounded-xl p-5 hover:shadow-md transition"
+              className="bg-white border border-[rgba(30,30,30,0.1)] rounded p-5 hover:shadow-sm transition"
             >
               {/* Status Badge */}
               <div className="flex items-start justify-between mb-3">
@@ -336,7 +336,7 @@ export default function BrainstormingSection({ calendarId }) {
                   {idea.tags.map((tag, idx) => (
                     <span
                       key={idx}
-                      className="px-2 py-0.5 bg-blue-50 text-blue-600 rounded text-xs"
+                      className="px-2 py-0.5 bg-[#ede0f8] text-[#40086d] rounded text-xs"
                     >
                       {tag}
                     </span>
@@ -345,11 +345,11 @@ export default function BrainstormingSection({ calendarId }) {
               )}
 
               {/* Actions */}
-              <div className="pt-3 border-t border-gray-100 space-y-2">
+              <div className="pt-3 border-t border-[rgba(30,30,30,0.1)] space-y-2">
                 {idea.status === "idea" && (
                   <button
                     onClick={() => handleUpdateStatus(idea.id, "approved")}
-                    className="w-full px-3 py-2 rounded-lg bg-green-50 text-green-700 text-sm font-medium hover:bg-green-100 transition"
+                    className="w-full px-3 py-2 rounded bg-green-50 text-green-700 text-sm font-medium hover:bg-green-100 transition"
                   >
                     Approve
                   </button>
@@ -357,7 +357,7 @@ export default function BrainstormingSection({ calendarId }) {
                 {idea.status === "approved" && (
                   <button
                     onClick={() => handleConvertToTask(idea)}
-                    className="w-full px-3 py-2 rounded-lg bg-violet-600 text-white text-sm font-medium hover:bg-violet-700 transition"
+                    className="w-full px-3 py-2 rounded bg-[#40086d] text-white text-sm font-medium hover:bg-[#1a0530] transition"
                   >
                     Convert to Task
                   </button>
@@ -365,7 +365,7 @@ export default function BrainstormingSection({ calendarId }) {
                 {idea.status === "idea" && (
                   <button
                     onClick={() => handleUpdateStatus(idea.id, "rejected")}
-                    className="w-full px-3 py-2 rounded-lg border border-gray-200 text-gray-600 text-sm hover:bg-gray-50 transition"
+                    className="w-full px-3 py-2 rounded border border-[rgba(30,30,30,0.1)] text-gray-600 text-sm hover:bg-[#f6f6f6] transition"
                   >
                     Reject
                   </button>
@@ -379,9 +379,9 @@ export default function BrainstormingSection({ calendarId }) {
       {/* Form Modal */}
       {isFormOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+          <div className="bg-white rounded shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
             {/* Modal Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[rgba(30,30,30,0.1)]">
               <h3 className="text-lg font-semibold text-gray-900">
                 {editingIdea ? "Edit Idea" : "New Brainstorming Idea"}
               </h3>
@@ -419,7 +419,7 @@ export default function BrainstormingSection({ calendarId }) {
                     setForm((prev) => ({ ...prev, title: e.target.value }))
                   }
                   placeholder="Quick title for this idea..."
-                  className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
+                  className="w-full bg-white border border-gray-200 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#40086d]"
                 />
               </div>
 
@@ -435,7 +435,7 @@ export default function BrainstormingSection({ calendarId }) {
                   }
                   placeholder="Describe the content idea..."
                   rows={4}
-                  className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 resize-none"
+                  className="w-full bg-white border border-gray-200 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#40086d] resize-none"
                 />
               </div>
 
@@ -449,7 +449,7 @@ export default function BrainstormingSection({ calendarId }) {
                   onChange={(e) =>
                     setForm((prev) => ({ ...prev, platform: e.target.value }))
                   }
-                  className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
+                  className="w-full bg-white border border-gray-200 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#40086d]"
                 >
                   <option value="">Select platform...</option>
                   {PLATFORMS.map((platform) => (
@@ -469,19 +469,19 @@ export default function BrainstormingSection({ calendarId }) {
                   type="text"
                   onKeyDown={handleAddTag}
                   placeholder="Type a tag and press Enter..."
-                  className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
+                  className="w-full bg-white border border-gray-200 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#40086d]"
                 />
                 {form.tags.length > 0 && (
                   <div className="flex flex-wrap gap-2 mt-2">
                     {form.tags.map((tag, idx) => (
                       <span
                         key={idx}
-                        className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-sm flex items-center gap-1"
+                        className="px-2 py-1 bg-[#ede0f8] text-[#40086d] rounded text-sm flex items-center gap-1"
                       >
                         {tag}
                         <button
                           onClick={() => handleRemoveTag(tag)}
-                          className="text-blue-500 hover:text-blue-700"
+                          className="text-[#40086d] hover:text-[#1a0530]"
                         >
                           ×
                         </button>
@@ -503,22 +503,22 @@ export default function BrainstormingSection({ calendarId }) {
                   }
                   placeholder="Additional notes..."
                   rows={3}
-                  className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 resize-none"
+                  className="w-full bg-white border border-gray-200 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#40086d] resize-none"
                 />
               </div>
             </div>
 
             {/* Modal Footer */}
-            <div className="px-6 py-4 border-t border-gray-200 flex gap-3">
+            <div className="px-6 py-4 border-t border-[rgba(30,30,30,0.1)] flex gap-3">
               <button
                 onClick={handleSave}
-                className="flex-1 py-2.5 rounded-lg bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 text-white font-semibold text-sm hover:from-violet-700 hover:via-indigo-700 hover:to-cyan-600 transition shadow-lg shadow-violet-500/25"
+                className="flex-1 py-2.5 rounded bg-[#1e1e1e] text-white font-semibold text-sm hover:bg-[#dccaf4] hover:text-[#1a0530] transition"
               >
                 {editingIdea ? "Save Changes" : "Create Idea"}
               </button>
               <button
                 onClick={resetForm}
-                className="px-6 py-2.5 rounded-lg border border-gray-300 text-gray-700 text-sm hover:bg-gray-100 transition"
+                className="px-6 py-2.5 rounded border border-[rgba(30,30,30,0.1)] text-gray-700 text-sm hover:bg-[#f6f6f6] transition"
               >
                 Cancel
               </button>

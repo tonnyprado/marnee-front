@@ -54,14 +54,14 @@ export default function ApprovalButtons({
           onChange={(e) => setAdjustText(e.target.value)}
           placeholder="Tell Marnee what you'd like to adjust..."
           rows={2}
-          className="w-full bg-[#1a1a1a] border border-white/20 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-400 resize-none"
+          className="w-full bg-[#f6f6f6] border border-[rgba(30,30,30,0.1)] rounded px-3 py-2 text-sm text-[#1e1e1e] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#40086d] resize-none"
           autoFocus
         />
         <div className="flex gap-2">
           <button
             onClick={handleAdjust}
             disabled={isLoading || !adjustText.trim()}
-            className="px-4 py-1.5 rounded-lg bg-yellow-500 text-black text-sm font-medium hover:bg-yellow-400 transition disabled:opacity-50"
+            className="px-4 py-1.5 rounded bg-[#1e1e1e] text-white text-sm font-medium hover:bg-[#dccaf4] hover:text-[#1a0530] transition disabled:opacity-50"
           >
             {isLoading ? "Sending..." : "Send Adjustment"}
           </button>
@@ -70,7 +70,7 @@ export default function ApprovalButtons({
               setShowAdjustInput(false);
               setAdjustText("");
             }}
-            className="px-4 py-1.5 rounded-lg border border-white/20 text-gray-400 text-sm hover:bg-white/5 transition"
+            className="px-4 py-1.5 rounded border border-[rgba(30,30,30,0.1)] text-gray-500 text-sm hover:bg-[#f6f6f6] transition"
           >
             Cancel
           </button>
@@ -84,21 +84,21 @@ export default function ApprovalButtons({
       <button
         onClick={handleApprove}
         disabled={disabled || isLoading}
-        className="px-4 py-1.5 rounded-lg bg-green-500 text-white text-sm font-medium hover:bg-green-400 transition disabled:opacity-50 disabled:cursor-not-allowed"
+        className="px-4 py-1.5 rounded bg-[#40086d] text-white text-sm font-medium hover:bg-[#1a0530] transition disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {isLoading ? "..." : "Approve"}
       </button>
       <button
         onClick={handleAdjust}
         disabled={disabled || isLoading}
-        className="px-4 py-1.5 rounded-lg bg-yellow-500 text-black text-sm font-medium hover:bg-yellow-400 transition disabled:opacity-50 disabled:cursor-not-allowed"
+        className="px-4 py-1.5 rounded bg-[#1e1e1e] text-white text-sm font-medium hover:bg-[#dccaf4] hover:text-[#1a0530] transition disabled:opacity-50 disabled:cursor-not-allowed"
       >
         Adjust
       </button>
       <button
         onClick={handleSkip}
         disabled={disabled || isLoading}
-        className="px-4 py-1.5 rounded-lg border border-white/20 text-gray-400 text-sm hover:bg-white/10 transition disabled:opacity-50 disabled:cursor-not-allowed"
+        className="px-4 py-1.5 rounded border border-[rgba(30,30,30,0.1)] text-gray-500 text-sm hover:bg-[#f6f6f6] transition disabled:opacity-50 disabled:cursor-not-allowed"
       >
         Skip
       </button>

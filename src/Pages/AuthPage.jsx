@@ -84,21 +84,17 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-cyan-50 relative flex items-center justify-center px-4">
-      {/* Decorative blobs */}
-      <div className="pointer-events-none absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-violet-200 via-indigo-200 to-cyan-200 rounded-full blur-3xl opacity-40" />
-      <div className="pointer-events-none absolute bottom-0 left-0 w-72 h-72 bg-gradient-to-br from-indigo-200 to-cyan-200 rounded-full blur-3xl opacity-30" />
-
+    <div className="min-h-screen bg-[#f6f6f6] relative flex items-center justify-center px-4">
       {/* Card */}
-      <div className="relative z-10 w-full max-w-md bg-white border border-gray-100 rounded-3xl p-8 shadow-xl">
+      <div className="relative z-10 w-full max-w-md bg-white border border-[rgba(30,30,30,0.1)] rounded p-8 shadow-sm">
         {/* Logo */}
         <div className="flex flex-col items-center mb-8">
           <Logo dark={true} size="large" />
-          <div className="h-0.5 w-16 bg-gradient-to-r from-transparent via-violet-300 to-transparent mt-4" />
+          <div className="h-px w-16 bg-[rgba(64,8,109,0.2)] mt-4" />
         </div>
 
         {/* Title */}
-        <h2 className="text-2xl font-semibold text-gray-900 text-center">
+        <h2 className="text-2xl text-gray-900 text-center">
           {mode === "signin" ? t("auth.welcomeBack") : t("auth.createAccount")}
         </h2>
         <p className="text-sm text-gray-500 text-center mb-8">
@@ -109,7 +105,7 @@ export default function AuthPage() {
 
         <form className="space-y-5" onSubmit={handleSubmit}>
           {error && (
-            <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            <div className="rounded border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
               {error}
             </div>
           )}
@@ -126,7 +122,7 @@ export default function AuthPage() {
                 placeholder={t("auth.namePlaceholder")}
                 value={form.name}
                 onChange={handleChange("name")}
-                className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition"
+                className="w-full bg-[#f6f6f6] border border-[rgba(30,30,30,0.1)] rounded px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#40086d] focus:border-transparent transition"
               />
             </div>
           )}
@@ -142,7 +138,7 @@ export default function AuthPage() {
               placeholder={t("auth.emailPlaceholder")}
               value={form.email}
               onChange={handleChange("email")}
-              className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition"
+              className="w-full bg-[#f6f6f6] border border-[rgba(30,30,30,0.1)] rounded px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#40086d] focus:border-transparent transition"
             />
           </div>
 
@@ -157,7 +153,7 @@ export default function AuthPage() {
               placeholder={t("auth.passwordPlaceholder")}
               value={form.password}
               onChange={handleChange("password")}
-              className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition"
+              className="w-full bg-[#f6f6f6] border border-[rgba(30,30,30,0.1)] rounded px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#40086d] focus:border-transparent transition"
             />
           </div>
 
@@ -165,12 +161,12 @@ export default function AuthPage() {
           {mode === "signin" && (
             <div className="flex items-center justify-between">
               <label className="flex items-center gap-2 text-sm text-gray-600">
-                <input type="checkbox" className="accent-violet-500 rounded" />
+                <input type="checkbox" className="accent-[#40086d] rounded" />
                 {t("auth.rememberMe")}
               </label>
               <button
                 type="button"
-                className="text-sm text-violet-600 hover:text-violet-700 font-medium"
+                className="text-sm text-[#40086d] hover:text-[#1a0530] font-medium"
               >
                 {t("auth.forgotPassword")}
               </button>
@@ -181,7 +177,7 @@ export default function AuthPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 hover:from-violet-700 hover:via-indigo-700 hover:to-cyan-600 text-white font-medium py-3 rounded-xl transition shadow-lg shadow-violet-500/25"
+            className="w-full bg-[#1e1e1e] hover:bg-[#dccaf4] hover:text-[#1a0530] text-white font-medium py-3 rounded transition"
           >
             {loading
               ? t("auth.processing")
@@ -192,15 +188,15 @@ export default function AuthPage() {
 
           {/* Divider */}
           <div className="flex items-center gap-3">
-            <div className="flex-1 h-px bg-gray-200" />
+            <div className="flex-1 h-px bg-[rgba(30,30,30,0.1)]" />
             <span className="text-xs text-gray-400">{t("auth.divider")}</span>
-            <div className="flex-1 h-px bg-gray-200" />
+            <div className="flex-1 h-px bg-[rgba(30,30,30,0.1)]" />
           </div>
 
           {/* Google */}
           <button
             type="button"
-            className="w-full border border-gray-200 rounded-xl py-3 flex items-center justify-center gap-3 text-gray-700 hover:bg-gray-50 transition font-medium"
+            className="w-full border border-[rgba(30,30,30,0.1)] rounded py-3 flex items-center justify-center gap-3 text-gray-700 hover:bg-[#f6f6f6] transition font-medium"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path
@@ -232,7 +228,7 @@ export default function AuthPage() {
               setMode((prev) => (prev === "signin" ? "signup" : "signin"));
               setError("");
             }}
-            className="text-violet-600 hover:text-violet-700 font-medium"
+            className="text-[#40086d] hover:text-[#1a0530] font-medium"
           >
             {mode === "signin" ? t("auth.signUp") : t("auth.signIn")}
           </button>

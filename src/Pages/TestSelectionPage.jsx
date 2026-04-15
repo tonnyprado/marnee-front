@@ -120,7 +120,7 @@ export default function TestSelectionPage() {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-violet-200 border-t-violet-600 rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="w-16 h-16 border-4 border-[#dccaf4] border-t-[#40086d] rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-gray-600">{t("testSelection.loading")}</p>
         </div>
       </div>
@@ -130,11 +130,11 @@ export default function TestSelectionPage() {
   const sortedTests = [...testTypes].sort((a, b) => (a.priority || 0) - (b.priority || 0));
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-cyan-50">
+    <div className="min-h-screen bg-[#f6f6f6]">
       <div className="max-w-4xl mx-auto px-6 py-16">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-violet-600 via-indigo-500 to-cyan-500 bg-clip-text text-transparent">
+          <h1 className="text-4xl md:text-5xl font-light mb-4 text-[#1e1e1e]" style={{ fontFamily: "var(--font-display)" }}>
             {t("testSelection.title")}
           </h1>
           <p className="text-lg text-gray-600">
@@ -151,15 +151,15 @@ export default function TestSelectionPage() {
             return (
               <div
                 key={test.testType}
-                className={`relative bg-white rounded-2xl border-2 transition-all duration-300 hover:shadow-xl ${
+                className={`relative bg-white rounded border transition-all duration-300 hover:shadow-md ${
                   test.isMandatory
-                    ? "border-violet-300 shadow-lg shadow-violet-100"
-                    : "border-gray-200"
+                    ? "border-[#dccaf4] shadow-sm"
+                    : "border-[rgba(30,30,30,0.1)]"
                 }`}
               >
                 {/* Mandatory Badge */}
                 {test.isMandatory && (
-                  <div className="absolute -top-3 -right-3 bg-gradient-to-r from-violet-600 to-indigo-600 text-white px-4 py-1 rounded-full text-xs font-semibold shadow-lg flex items-center gap-1">
+                  <div className="absolute -top-3 -right-3 bg-[#40086d] text-[#dccaf4] px-4 py-1 rounded text-xs font-semibold shadow flex items-center gap-1">
                     <span>⭐</span>
                     <span>{t("testSelection.required")}</span>
                   </div>
@@ -179,10 +179,10 @@ export default function TestSelectionPage() {
 
                   {/* Priority Badge */}
                   <div className="flex items-center gap-3 mb-4">
-                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                    <span className={`px-3 py-1 rounded text-xs font-medium ${
                       test.isMandatory
-                        ? "bg-violet-100 text-violet-700"
-                        : "bg-gray-100 text-gray-600"
+                        ? "bg-[#ede0f8] text-[#40086d]"
+                        : "bg-[#f6f6f6] text-gray-600"
                     }`}>
                       {test.isMandatory ? t("testSelection.mandatory") : t("testSelection.optional")}
                     </span>
@@ -200,7 +200,7 @@ export default function TestSelectionPage() {
                       </div>
                       <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-gradient-to-r from-violet-500 via-indigo-500 to-cyan-400 transition-all duration-500"
+                          className="h-full bg-[#40086d] transition-all duration-500"
                           style={{ width: `${progress}%` }}
                         />
                       </div>
@@ -210,10 +210,10 @@ export default function TestSelectionPage() {
                   {/* Action Button */}
                   <button
                     onClick={() => handleSelectTest(test.testType)}
-                    className={`w-full py-3 px-6 rounded-xl font-semibold text-sm transition-all duration-300 ${
+                    className={`w-full py-3 px-6 rounded font-medium text-sm transition ${
                       test.isMandatory
-                        ? "bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 text-white hover:from-violet-700 hover:via-indigo-700 hover:to-cyan-600 shadow-lg shadow-violet-500/25"
-                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                        ? "bg-[#1e1e1e] text-white hover:bg-[#dccaf4] hover:text-[#1a0530]"
+                        : "bg-[#f6f6f6] text-gray-700 border border-[rgba(30,30,30,0.1)] hover:bg-[#ede0f8]"
                     }`}
                   >
                     {isStarted ? (
@@ -232,9 +232,9 @@ export default function TestSelectionPage() {
 
         {/* Info Footer */}
         <div className="mt-12 text-center">
-          <div className="inline-flex items-center gap-2 bg-violet-50 px-6 py-3 rounded-full border border-violet-200">
+          <div className="inline-flex items-center gap-2 bg-[#ede0f8] px-6 py-3 rounded border border-[#dccaf4]">
             <span className="text-2xl">💡</span>
-            <p className="text-sm text-violet-700">
+            <p className="text-sm text-[#40086d]">
               {t("testSelection.footer")}
             </p>
           </div>

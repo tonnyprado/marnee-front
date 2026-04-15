@@ -1,4 +1,11 @@
 import API from '../config';
+import { MOCK_MODE, mockApi, seedMockLocalStorage } from '../mocks';
+
+// Auto-seed localStorage when mock mode is active
+if (MOCK_MODE) {
+  seedMockLocalStorage();
+}
+
 const AUTH_STORAGE_KEY = 'marnee_auth';
 
 export function getAuthSession() {
@@ -108,7 +115,12 @@ async function request(endpoint, options = {}) {
   return response.json();
 }
 
-export const api = {
+// When MOCK_MODE is active, export mock implementations directly
+if (MOCK_MODE) {
+  // We re-export mockApi as `api` below via the merged object approach
+}
+
+const realApi = {
   // POST /auth/register - Register user
   register: ({ name, email, password }) =>
     request('/auth/register', {
@@ -364,3 +376,6 @@ export const api = {
   getBusinessTestByFounder: (founderId) =>
     request(`/business-test/founder/${founderId}`),
 };
+
+// Export real or mock API based on MOCK_MODE flag
+export const api = MOCK_MODE ? mockApi : realApi;

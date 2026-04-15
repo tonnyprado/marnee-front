@@ -10,10 +10,7 @@ export default function BrandTestIntro() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-gray-900 flex flex-col items-center justify-center px-6 relative overflow-hidden">
-      {/* Decorative blobs */}
-      <div className="pointer-events-none absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-violet-200 via-indigo-200 to-cyan-200 rounded-full blur-3xl opacity-40" />
-      <div className="pointer-events-none absolute bottom-0 left-0 w-72 h-72 bg-gradient-to-br from-indigo-200 to-cyan-200 rounded-full blur-3xl opacity-30" />
+    <div className="min-h-screen bg-[#f6f6f6] text-[#1e1e1e] flex flex-col items-center justify-center px-6 relative overflow-hidden">
 
       {/* Logo */}
       <div className="absolute top-6 left-8">
@@ -22,15 +19,15 @@ export default function BrandTestIntro() {
 
       {/* Step badge */}
       <div className="mb-6">
-        <span className="bg-cyan-50 text-cyan-700 px-4 py-2 rounded-full text-sm font-medium">
+        <span className="bg-[#ede0f8] text-[#40086d] px-4 py-2 rounded text-sm font-medium">
           {t("brandingIntro.stepBadge")}
         </span>
       </div>
 
       {/* Title */}
-      <h1 className="text-4xl md:text-6xl font-bold text-center mb-6 leading-tight">
+      <h1 className="text-4xl md:text-6xl font-light text-center mb-6 leading-tight" style={{ fontFamily: "var(--font-display)" }}>
         {t("brandingIntro.titlePrefix")}{" "}
-        <span className="bg-gradient-to-r from-violet-600 via-indigo-500 to-cyan-500 bg-clip-text text-transparent">
+        <span className="text-[#40086d]">
           {t("brandingIntro.titleHighlight")}
         </span>
       </h1>
@@ -43,7 +40,7 @@ export default function BrandTestIntro() {
       {/* CTA Button */}
       <button
         onClick={handleStart}
-        className="bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 hover:from-violet-700 hover:via-indigo-700 hover:to-cyan-600 text-white font-medium px-8 py-4 rounded-full transition shadow-lg shadow-violet-500/25"
+        className="bg-[#1e1e1e] hover:bg-[#dccaf4] hover:text-[#1a0530] text-white font-medium px-8 py-4 rounded transition"
       >
         {t("brandingIntro.cta")}
       </button>
@@ -51,7 +48,7 @@ export default function BrandTestIntro() {
       {/* Progress Bar */}
       <div className="absolute bottom-8 w-2/3 max-w-md">
         <div className="h-1.5 bg-gray-100 rounded-full">
-          <div className="h-1.5 bg-gradient-to-r from-violet-500 via-indigo-500 to-cyan-400 rounded-full w-[0%]"></div>
+          <div className="h-1.5 bg-[#40086d] rounded-full w-[0%]"></div>
         </div>
         <p className="text-xs text-gray-400 mt-2 text-right">0%</p>
       </div>

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import LanguageSwitcher from "../../Component/LanguageSwitcher";
 import BrandProfileSection from "./MyDashboardSections/BrandProfileSection";
 import CampaignsSection from "./MyDashboardSections/CampaignsSection";
 import CurrentTrendsSection from "./MyDashboardSections/CurrentTrendsSection";
@@ -8,11 +9,10 @@ export default function MyDashboard() {
   const [activeTab, setActiveTab] = useState("campaigns");
 
   return (
-    <div className="flex min-h-screen bg-gray-50 text-gray-900">
-      {/* Main */}
-      <div className="flex-1 flex flex-col">
-        {/* Top tabs */}
-        <div className="border-b border-gray-100 h-14 flex items-center px-6 gap-6 bg-white">
+    <div className="h-full flex flex-col bg-[#f6f6f6] text-[#1e1e1e]">
+      {/* Top tabs — sticky */}
+      <div className="flex-none border-b border-[rgba(30,30,30,0.1)] flex items-center justify-between px-6 bg-white h-14">
+        <div className="flex items-center gap-6 h-full">
           {[
             "Brand Profile",
             "Current Trends",
@@ -25,10 +25,10 @@ export default function MyDashboard() {
               <button
                 key={key}
                 onClick={() => setActiveTab(key)}
-                className={`pb-3 text-sm font-medium ${
+                className={`h-full pb-0 text-sm font-medium border-b-2 transition ${
                   activeTab === key
-                    ? "text-purple-600 border-b-2 border-purple-500"
-                    : "text-gray-500 hover:text-gray-900"
+                    ? "text-[#40086d] border-[#40086d]"
+                    : "text-gray-500 border-transparent hover:text-[#1e1e1e]"
                 }`}
               >
                 {tab}
@@ -36,22 +36,23 @@ export default function MyDashboard() {
             );
           })}
         </div>
+        <LanguageSwitcher />
+      </div>
 
-        {/* Content */}
-        <div className="flex-1 p-6 space-y-6">
-          {activeTab === "brand-profile" && <BrandProfileSection />}
-          {activeTab === "current-trends" && <CurrentTrendsSection />}
-          {activeTab === "campaigns" && <CampaignsSection />}
-          {activeTab === "strategy" && <StrategySection />}
-          {activeTab !== "brand-profile" && activeTab !== "campaigns" && (
-            <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
-              <h2 className="text-lg font-semibold text-gray-900">Section coming soon</h2>
-              <p className="text-sm text-gray-500 mt-1">
-                This area will be added in the next iteration.
-              </p>
-            </div>
-          )}
-        </div>
+      {/* Scrollable content */}
+      <div className="flex-1 overflow-y-auto p-6 space-y-6">
+        {activeTab === "brand-profile" && <BrandProfileSection />}
+        {activeTab === "current-trends" && <CurrentTrendsSection />}
+        {activeTab === "campaigns" && <CampaignsSection />}
+        {activeTab === "strategy" && <StrategySection />}
+        {activeTab !== "brand-profile" && activeTab !== "campaigns" && (
+          <div className="bg-white border border-[rgba(30,30,30,0.1)] rounded p-6 shadow-sm">
+            <h2 className="text-lg font-semibold text-gray-900">Section coming soon</h2>
+            <p className="text-sm text-gray-500 mt-1">
+              This area will be added in the next iteration.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

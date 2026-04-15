@@ -1,6 +1,6 @@
 // src/App.js
 import React from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 
 import { MarneeProvider } from "./context/MarneeContext";
 import { LanguageProvider, useLanguage } from "./context/LanguageContext";
@@ -39,6 +39,8 @@ function App() {
 function AppContent() {
   const [globalError, setGlobalError] = React.useState("");
   const { t } = useLanguage();
+  const location = useLocation();
+  const isAppRoute = location.pathname.startsWith("/app");
 
   React.useEffect(() => {
     let timer;
@@ -57,7 +59,7 @@ function AppContent() {
 
   return (
     <MarneeProvider>
-      <LanguageSwitcher className="fixed right-4 top-4 z-[60]" />
+      {!isAppRoute && <LanguageSwitcher className="fixed right-4 top-4 z-[60]" />}
       <Routes>
         {/* públicas */}
         <Route path="/" element={<LandingPage />} />
