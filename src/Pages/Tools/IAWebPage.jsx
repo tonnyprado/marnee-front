@@ -277,10 +277,15 @@ export default function IAWebPage() {
         updateStep(response.currentStep);
       }
 
+      // If the response is about calendar generation, show a brief message instead of the full calendar text
+      const messageText = shouldOpenCalendar
+        ? "¡Perfecto! Tu calendario de contenido está listo. Haz clic en el botón de abajo para verlo y empezar a planificar tus posts."
+        : response.reply;
+
       addMessage({
         id: generateUniqueId(),
         from: "ai",
-        text: response.reply,
+        text: messageText,
         step: response.currentStep,
         stepName: response.stepName,
         primaryAction: response.primaryAction || null,
@@ -288,9 +293,8 @@ export default function IAWebPage() {
         needsApproval: false,
       });
 
-      if (shouldOpenCalendar) {
-        navigate("/app/calendar");
-      }
+      // Don't auto-navigate to calendar, let user click the button instead
+      // The button will show automatically via the primaryAction in the message
     } catch (err) {
       let errorMessage = "I couldn't send that message right now. Please try again in a moment.";
 
