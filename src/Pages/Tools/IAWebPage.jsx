@@ -94,6 +94,7 @@ export default function IAWebPage() {
   const [error, setError] = useState(null);
   const [showCalendarButton, setShowCalendarButton] = useState(false);
   const messagesEndRef = useRef(null);
+  const hasLoadedConversationRef = useRef(false);
   const navigate = useNavigate();
 
   // Generate unique ID for messages
@@ -186,15 +187,22 @@ export default function IAWebPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Load conversation from localStorage on mount
+  // Reset the conversation loaded flag when component mounts
+  useEffect(() => {
+    hasLoadedConversationRef.current = false;
+  }, []);
+
+  // Load conversation from localStorage on mount or when conversationId changes
   useEffect(() => {
     const loadExistingConversation = async () => {
-      if (conversationId && messages.length === 0 && !isLoadingSession) {
+      if (conversationId && messages.length === 0 && !isLoadingSession && !hasLoadedConversationRef.current) {
         try {
           const conversation = await api.getConversation(conversationId);
           await loadConversation(conversation);
+          hasLoadedConversationRef.current = true;
         } catch (error) {
           console.error("Failed to load conversation:", error);
+          hasLoadedConversationRef.current = true; // Mark as attempted
           if (welcomeMessage) {
             addMessage({
               id: generateUniqueId(),
@@ -209,7 +217,7 @@ export default function IAWebPage() {
     };
     loadExistingConversation();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [conversationId, isLoadingSession]);
+  }, [conversationId, isLoadingSession, messages.length]);
 
   // Show welcome message on first load (only if no conversation loaded)
   useEffect(() => {
