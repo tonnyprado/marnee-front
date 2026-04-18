@@ -228,7 +228,9 @@ export function MarneeProvider({ children }) {
 
   const value = {
     founderId,
+    setFounderId,
     sessionId,
+    setSessionId,
     conversationId,
     calendarId,
     calendar,
