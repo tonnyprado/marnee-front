@@ -3,6 +3,7 @@ import ReactMarkdown from 'react-markdown';
 import { api } from '../../services/api';
 import { Send, Loader2, MessageCircle, Search, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import PageTransition from '../../Component/PageTransition';
 
 // Markdown components for AI messages (formatted text)
 // eslint-disable-next-line jsx-a11y/heading-has-content
@@ -309,7 +310,7 @@ export default function TestChatPage() {
   }
 
   return (
-    <div className="h-screen bg-[#f6f6f6]">
+    <PageTransition className="h-screen bg-[#f6f6f6]">
       {/* Main chat area */}
       <div className="flex flex-col h-full">
         {/* Header */}
@@ -486,6 +487,6 @@ export default function TestChatPage() {
           </motion.button>
         </div>
       </div>
-    </div>
+    </PageTransition>
   );
 }

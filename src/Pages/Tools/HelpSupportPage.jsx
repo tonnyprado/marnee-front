@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PageTransition from "../../Component/PageTransition";
 import {
   HelpCircle,
   BookOpen,
@@ -90,7 +91,7 @@ export default function HelpSupportPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <PageTransition className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-6xl mx-auto">
         {/* Page Header */}
         <div className="mb-8 text-center">
@@ -307,6 +308,6 @@ export default function HelpSupportPage() {
           </div>
         </div>
       </div>
-    </div>
+    </PageTransition>
   );
 }

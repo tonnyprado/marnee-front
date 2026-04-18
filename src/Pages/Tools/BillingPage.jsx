@@ -1,5 +1,6 @@
 import React from "react";
 import { CreditCard, ArrowRight, CheckCircle, Edit3 } from "lucide-react";
+import PageTransition from "../../Component/PageTransition";
 
 export default function BillingPage() {
 
@@ -31,7 +32,7 @@ export default function BillingPage() {
   const progressPercentage = (planData.usersUsed / planData.usersTotal) * 100;
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <PageTransition className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-7xl mx-auto">
         {/* Page Header */}
         <div className="mb-8">
@@ -186,6 +187,6 @@ export default function BillingPage() {
           </div>
         </div>
       </div>
-    </div>
+    </PageTransition>
   );
 }

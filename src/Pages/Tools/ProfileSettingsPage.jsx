@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { User, Lock, Bell, Globe, Trash2, Save, Camera } from "lucide-react";
 import { getAuthSession } from "../../services/api";
+import PageTransition from "../../Component/PageTransition";
 
 export default function ProfileSettingsPage() {
   const session = getAuthSession();
@@ -55,7 +56,7 @@ export default function ProfileSettingsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <PageTransition className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-5xl mx-auto">
         {/* Page Header */}
         <div className="mb-8">
@@ -299,6 +300,6 @@ export default function ProfileSettingsPage() {
           </div>
         </div>
       </div>
-    </div>
+    </PageTransition>
   );
 }

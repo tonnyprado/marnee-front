@@ -1,5 +1,6 @@
 // src/Layout/AppLayout.jsx
 import { Outlet, useLocation } from "react-router-dom";
+import { AnimatePresence } from "framer-motion";
 import Navbar from "../Component/Navbar";
 // import TestChatLink from "../Component/TestChatLink"; // No longer needed - TestChat is now main chat
 
@@ -16,7 +17,9 @@ export default function AppLayout() {
     <div className="flex h-screen overflow-hidden">
       <Navbar active={active} />
       <div className="flex-1 bg-gray-50 overflow-y-auto max-lg:pt-16">
-        <Outlet />
+        <AnimatePresence mode="wait">
+          <Outlet key={location.pathname} />
+        </AnimatePresence>
       </div>
     </div>
   );

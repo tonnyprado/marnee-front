@@ -52,6 +52,10 @@ function App() {
 function AppContent() {
   const [globalError, setGlobalError] = React.useState("");
   const { t } = useLanguage();
+  const location = window.location;
+
+  // Show language switcher only on public pages (not in /app or /admin)
+  const isPublicPage = !location.pathname.startsWith('/app') && !location.pathname.startsWith('/admin');
 
   React.useEffect(() => {
     let timer;
@@ -70,7 +74,7 @@ function AppContent() {
 
   return (
     <MarneeProvider>
-      <LanguageSwitcher className="fixed right-4 top-4 z-[60]" />
+      {isPublicPage && <LanguageSwitcher className="fixed right-4 top-4 z-[60]" />}
       <Routes>
         {/* públicas */}
         <Route path="/" element={<LandingPage />} />

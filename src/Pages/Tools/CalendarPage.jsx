@@ -6,6 +6,7 @@ import CalendarListView from "./Calendar/CalendarListView";
 import CampaignForm from "./Calendar/CampaignForm";
 import BrainstormingSection from "./Calendar/BrainstormingSection";
 import LanguageSwitcher from "../../Component/LanguageSwitcher";
+import PageTransition from "../../Component/PageTransition";
 
 export default function CalendarPage() {
   const {
@@ -374,7 +375,7 @@ export default function CalendarPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f6f6f6] text-gray-900 flex flex-col">
+    <PageTransition className="min-h-screen bg-[#f6f6f6] text-gray-900 flex flex-col">
       {/* Header - Sticky */}
       <div className="sticky top-0 z-10 bg-white border-b border-[rgba(30,30,30,0.1)] shadow-sm">
         <div className="px-6 py-4">
@@ -505,6 +506,6 @@ export default function CalendarPage() {
           <BrainstormingSection calendarId={calendarId} />
         )}
       </div>
-    </div>
+    </PageTransition>
   );
 }
