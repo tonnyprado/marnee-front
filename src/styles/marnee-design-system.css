@@ -101,8 +101,8 @@ h3 {
 /* ── FADE-UP (scroll reveal) ─────────────────────────────── */
 .mn-fade-up {
   opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  transform: translateY(32px);
+  transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .mn-fade-up.visible {
   opacity: 1;
@@ -113,7 +113,8 @@ h3 {
 .mn-section-wrap {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 0 var(--space-lg);
+  padding: 0 24px;
+  box-sizing: border-box;
 }
 
 /* ── NAVIGATION ──────────────────────────────────────────── */
@@ -214,9 +215,10 @@ h3 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 100px 48px 80px;
+  padding: 100px 24px 80px;
   position: relative;
   border-bottom: 1px solid var(--border);
+  overflow: hidden;
 }
 
 .mn-hero::before {
@@ -231,12 +233,13 @@ h3 {
 .mn-hero-inner {
   position: relative;
   z-index: 1;
-  max-width: 900px;
+  max-width: 1000px;
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
+  padding: 0 20px;
 }
 
 .mn-hero-tag {
@@ -264,7 +267,7 @@ h3 {
 
 .mn-hero-title {
   font-family: var(--font-display);
-  font-size: clamp(44px, 6vw, 82px);
+  font-size: clamp(36px, 5vw, 64px);
   font-weight: 300;
   letter-spacing: -2px;
   line-height: 1.15;
@@ -319,7 +322,7 @@ h3 {
   display: grid;
   grid-template-columns: 1fr 1px 1fr;
   width: 100%;
-  max-width: 700px;
+  max-width: 650px;
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   margin-bottom: 52px;
@@ -331,7 +334,7 @@ h3 {
 }
 
 .mn-stat-t {
-  padding: 40px 48px;
+  padding: 32px 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -350,7 +353,7 @@ h3 {
 
 .mn-stat-t-num {
   font-family: var(--font-display);
-  font-size: clamp(64px, 8vw, 100px);
+  font-size: clamp(48px, 7vw, 80px);
   font-weight: 300;
   letter-spacing: -4px;
   line-height: 1;
@@ -1087,7 +1090,7 @@ h3 {
 
 /* ── CTA SECTION ─────────────────────────────────────────── */
 .mn-cta-section {
-  padding: 120px 48px;
+  padding: 120px 24px;
   background: var(--night);
   text-align: center;
   position: relative;
