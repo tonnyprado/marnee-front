@@ -441,7 +441,7 @@ export default function BusinessTestPage() {
     } finally {
       setLoading(false);
     }
-  }, []); // navigate is stable and doesn't need to be in deps
+  }, [setContextFounderId]); // setContextFounderId from context is stable
 
   useEffect(() => {
     loadExistingData();
