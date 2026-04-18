@@ -9,36 +9,36 @@ import marneeMascot from "../../assets/mascot/marnee12.png";
 // eslint-disable-next-line jsx-a11y/heading-has-content
 const aiMarkdownComponents = {
   // eslint-disable-next-line jsx-a11y/heading-has-content
-  h1: ({ node, ...props }) => <h1 className="text-base font-semibold mb-2 mt-4 text-gray-900 tracking-tight" {...props} />,
+  h1: ({ node, ...props }) => <h1 className="text-base font-bold mb-2 mt-4 text-gray-900" {...props} />,
   // eslint-disable-next-line jsx-a11y/heading-has-content
-  h2: ({ node, ...props }) => <h2 className="text-sm font-semibold mb-2 mt-3 text-gray-900 tracking-tight" {...props} />,
+  h2: ({ node, ...props }) => <h2 className="text-base font-bold mb-2 mt-4 text-gray-900" {...props} />,
   // eslint-disable-next-line jsx-a11y/heading-has-content
-  h3: ({ node, ...props }) => <h3 className="text-sm font-medium mb-1 mt-3 text-gray-800" {...props} />,
+  h3: ({ node, ...props }) => <h3 className="text-base font-semibold mb-1 mt-3 text-gray-800" {...props} />,
   // eslint-disable-next-line jsx-a11y/heading-has-content
-  h4: ({ node, ...props }) => <h4 className="text-xs font-semibold mb-1 mt-2 text-gray-700 uppercase tracking-wide" {...props} />,
-  p: ({ node, ...props }) => <p className="mb-2 text-sm leading-relaxed text-gray-700" {...props} />,
-  ul: ({ node, ...props }) => <ul className="mb-2 space-y-1 ml-1" {...props} />,
-  ol: ({ node, ...props }) => <ol className="list-decimal list-inside mb-2 space-y-1 ml-1 text-sm text-gray-700" {...props} />,
+  h4: ({ node, ...props }) => <h4 className="text-base font-semibold mb-1 mt-2 text-gray-700" {...props} />,
+  p: ({ node, ...props }) => <p className="mb-3 text-[15px] leading-relaxed text-gray-700" {...props} />,
+  ul: ({ node, ...props }) => <ul className="mb-3 space-y-1.5 ml-1" {...props} />,
+  ol: ({ node, ...props }) => <ol className="list-decimal list-inside mb-3 space-y-1.5 ml-1 text-[15px] text-gray-700" {...props} />,
   li: ({ node, ...props }) => (
-    <li className="text-sm text-gray-700 flex gap-2 leading-snug">
-      <span className="text-[#40086d] mt-0.5 flex-shrink-0">—</span>
+    <li className="text-[15px] text-gray-700 flex gap-2 leading-relaxed">
+      <span className="text-[#40086d] flex-shrink-0">—</span>
       <span {...props} />
     </li>
   ),
-  strong: ({ node, ...props }) => <strong className="font-semibold text-gray-900" {...props} />,
+  strong: ({ node, ...props }) => <strong className="font-bold text-gray-900" {...props} />,
   em: ({ node, ...props }) => <em className="italic text-gray-600" {...props} />,
   a: ({ node, ...props }) => (
     // eslint-disable-next-line jsx-a11y/anchor-has-content
-    <a className="text-[#40086d] hover:text-[#1a0530] underline font-medium text-sm" {...props} />
+    <a className="text-[#40086d] hover:text-[#1a0530] underline font-medium" {...props} />
   ),
   code: ({ node, inline, ...props }) =>
     inline ? (
-      <code className="bg-gray-100 px-1 py-0.5 rounded text-xs font-mono text-gray-700" {...props} />
+      <code className="bg-gray-100 px-1.5 py-0.5 rounded text-sm font-mono text-gray-700" {...props} />
     ) : (
-      <code className="block bg-gray-100 p-2.5 rounded text-xs font-mono overflow-x-auto mb-2 text-gray-700" {...props} />
+      <code className="block bg-gray-100 p-3 rounded text-sm font-mono overflow-x-auto mb-3 text-gray-700" {...props} />
     ),
   blockquote: ({ node, ...props }) => (
-    <blockquote className="border-l-2 border-[#dccaf4] pl-3 italic my-2 text-xs text-gray-500" {...props} />
+    <blockquote className="border-l-2 border-[#dccaf4] pl-4 italic my-3 text-[15px] text-gray-500" {...props} />
   ),
   hr: ({ node, ...props }) => <hr className="my-3 border-gray-100" {...props} />,
 };

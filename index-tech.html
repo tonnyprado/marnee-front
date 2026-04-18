@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Marnee — Your AI CMO</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #f6f6f6;
+      color: #1e1e1e;
+      overflow-x: hidden;
+    }
+
+    :root {
+      --ice:    #f6f6f6;
+      --black:  #1e1e1e;
+      --purple: #40086d;
+      --lilac:  #dccaf4;
+      --night:  #1a0530;
+      --muted:  rgba(30,30,30,0.45);
+      --border: rgba(30,30,30,0.1);
+    }
+
+    /* ── FADE-UP ── */
+    .fade-up { opacity: 0; transform: translateY(24px); transition: opacity .6s ease, transform .6s ease; }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    /* ───────────────────────────────── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(246,246,246,0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: 1100px; margin: 0 auto; padding: 0 48px;
+      height: 64px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo {
+      display: flex; align-items: center; gap: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 16px; font-weight: 500; letter-spacing: -0.3px;
+      color: var(--black); text-decoration: none;
+    }
+    .logo-mark {
+      width: 28px; height: 28px;
+      background: var(--purple);
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .logo-mark svg { width: 16px; height: 16px; fill: #f6f6f6; }
+    .nav-links { display: flex; gap: 32px; }
+    .nav-links a {
+      font-size: 13px; color: var(--muted); font-weight: 400;
+      text-decoration: none; transition: color .15s; letter-spacing: 0.1px;
+    }
+    .nav-links a:hover { color: var(--black); }
+    .nav-pill {
+      padding: 9px 22px; border-radius: 4px;
+      background: var(--purple);
+      color: #f6f6f6;
+      font-size: 13px; font-weight: 400; font-family: 'DM Sans', sans-serif;
+      text-decoration: none; letter-spacing: 0.2px;
+      transition: background .2s;
+    }
+    .nav-pill:hover { background: #330858; }
+
+    /* ───────────────────────────────── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 100px 48px 80px;
+      position: relative;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* subtle dot grid */
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: radial-gradient(circle, rgba(64,8,109,0.08) 1px, transparent 1px);
+      background-size: 28px 28px;
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      position: relative; z-index: 1;
+      max-width: 900px; width: 100%;
+      display: flex; flex-direction: column;
+      align-items: center; text-align: center;
+    }
+
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px; font-weight: 400; letter-spacing: 2px;
+      color: var(--purple); text-transform: uppercase;
+      border: 1px solid rgba(64,8,109,0.2);
+      padding: 6px 14px; border-radius: 2px;
+      margin-bottom: 40px;
+    }
+    .hero-tag-dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--purple);
+      animation: blink 2s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    .hero-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(44px, 6vw, 82px);
+      font-weight: 300; letter-spacing: -2px; line-height: 1.0;
+      color: var(--black);
+      margin-bottom: 48px;
+      display: inline-block;
+      transform-origin: center center;
+      transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1);
+      cursor: default;
+      min-height: 2.2em;
+    }
+    .hero-title em {
+      font-style: italic; color: var(--purple);
+    }
+    .hero-title.title-done {
+      transform: scale(1.04);
+    }
+    .hero-title.title-done:hover {
+      transform: scale(1.10);
+    }
+
+    /* typewriter cursor */
+    .type-cursor {
+      display: inline-block;
+      color: var(--purple);
+      font-weight: 300;
+      margin-left: 2px;
+      animation: cur-blink .65s ease-in-out infinite;
+      transform-origin: bottom center;
+    }
+    @keyframes cur-blink { 0%,100%{opacity:1} 50%{opacity:0} }
+    .type-cursor.cur-click {
+      animation: cur-pulse .35s cubic-bezier(0.34,1.56,0.64,1) forwards;
+    }
+    @keyframes cur-pulse {
+      0%   { transform: scaleY(1);   opacity: 1; }
+      40%  { transform: scaleY(1.7); opacity: 1; }
+      100% { transform: scaleY(0);   opacity: 0; }
+    }
+
+    /* stat cards */
+    .hero-stats {
+      display: grid; grid-template-columns: 1fr 1px 1fr;
+      width: 100%; max-width: 700px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      margin-bottom: 52px;
+      overflow: hidden;
+    }
+    .stat-divider { background: var(--border); }
+    .stat-t {
+      padding: 40px 48px;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 10px;
+    }
+    .stat-t-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(64px, 8vw, 100px);
+      font-weight: 300; letter-spacing: -4px; line-height: 1;
+      color: var(--purple);
+    }
+    .stat-t-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px; letter-spacing: 1px; color: var(--muted);
+      text-transform: uppercase; line-height: 1.6;
+    }
+
+    .hero-body {
+      font-size: 15px; line-height: 1.7;
+      color: var(--muted); max-width: 440px;
+      margin-bottom: 36px;
+    }
+
+    .hero-cta {
+      display: flex; align-items: center; gap: 16px;
+      margin-bottom: 40px;
+    }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 13px 28px; border-radius: 4px;
+      background: var(--black); color: #f6f6f6;
+      font-size: 14px; font-weight: 400;
+      text-decoration: none; transition: background .2s;
+    }
+    .btn-primary:hover { background: var(--purple); }
+    .btn-primary svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2.5; }
+    .btn-ghost {
+      font-size: 13px; color: var(--muted);
+      text-decoration: none; transition: color .15s;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1px;
+    }
+    .btn-ghost:hover { color: var(--black); border-color: var(--black); }
+
+    .hero-proof {
+      display: flex; align-items: center; gap: 12px;
+      font-size: 12px; color: var(--muted);
+    }
+    .proof-avs { display: flex; }
+    .proof-av {
+      width: 26px; height: 26px; border-radius: 50%;
+      background: var(--lilac); border: 2px solid var(--ice);
+      font-size: 10px; font-weight: 500; color: var(--purple);
+      display: flex; align-items: center; justify-content: center;
+      margin-left: -8px;
+    }
+    .proof-av:first-child { margin-left: 0; }
+    .hero-proof strong { color: var(--black); font-weight: 500; }
+
+    /* ───────────────────────────── TICKER ── */
+    .ticker {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      overflow: hidden; padding: 12px 0;
+      background: var(--ice);
+    }
+    .ticker-track {
+      display: flex; gap: 64px;
+      animation: ticker 20s linear infinite;
+      width: max-content;
+    }
+    @keyframes ticker { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+    .ticker-item {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--muted); white-space: nowrap;
+      display: flex; align-items: center; gap: 24px;
+    }
+    .ticker-item::after { content: '·'; color: var(--lilac); }
+
+    /* ─────────────────────────────── SECTIONS ── */
+    .section-wrap { max-width: 1100px; margin: 0 auto; padding: 0 48px; }
+
+    .section-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--purple); margin-bottom: 20px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .section-tag::before {
+      content: ''; display: block;
+      width: 24px; height: 1px; background: var(--purple);
+    }
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(32px, 4vw, 52px);
+      font-weight: 300; letter-spacing: -1px; line-height: 1.1;
+      color: var(--black);
+    }
+    .section-sub {
+      font-size: 15px; color: var(--muted); line-height: 1.7;
+      max-width: 520px;
+    }
+
+    /* ─────────────────────────── PROBLEM ── */
+    .problem { padding: 100px 0; border-bottom: 1px solid var(--border); }
+    .problem-head { margin-bottom: 56px; }
+
+    .pain-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1px; background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 4px; overflow: hidden;
+      margin-bottom: 1px;
+    }
+    .pain-card {
+      background: var(--ice); padding: 36px 32px;
+    }
+    .pain-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px; color: var(--purple); letter-spacing: 1px;
+      margin-bottom: 16px;
+    }
+    .pain-title { font-size: 16px; font-weight: 500; margin-bottom: 12px; color: var(--black); }
+    .pain-body { font-size: 14px; color: var(--muted); line-height: 1.65; }
+
+    .stat-row {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 1px; background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 4px; overflow: hidden;
+      margin-top: 1px;
+    }
+    .stat-box {
+      background: var(--ice); padding: 32px 28px;
+    }
+    .stat-box-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 44px; font-weight: 300; letter-spacing: -2px;
+      color: var(--purple); margin-bottom: 8px; line-height: 1;
+    }
+    .stat-box-txt { font-size: 13px; color: var(--muted); line-height: 1.55; }
+
+    /* ─────────────────────────── SOLUTION ── */
+    .solution { padding: 100px 0; border-bottom: 1px solid var(--border); }
+
+    .sol-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1px; background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 4px; overflow: hidden;
+      margin-top: 48px;
+    }
+    .sol-card { background: var(--ice); padding: 40px 32px; }
+    .sol-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px; color: var(--purple); letter-spacing: 2px;
+      margin-bottom: 20px;
+    }
+    .sol-title { font-size: 17px; font-weight: 500; margin-bottom: 12px; }
+    .sol-body { font-size: 14px; color: var(--muted); line-height: 1.65; }
+
+    /* ─────────────────────────── HOW ── */
+    .how { padding: 100px 0; border-bottom: 1px solid var(--border); }
+
+    .steps {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 48px; margin-top: 56px; margin-bottom: 64px;
+    }
+    .step { position: relative; }
+    .step::before {
+      content: attr(data-n);
+      font-family: 'DM Mono', monospace;
+      font-size: 11px; letter-spacing: 2px; color: var(--purple);
+      display: block; margin-bottom: 16px;
+    }
+    .step-title { font-size: 17px; font-weight: 500; margin-bottom: 12px; }
+    .step-body { font-size: 14px; color: var(--muted); line-height: 1.65; }
+    .step-line {
+      position: absolute; top: 6px; left: 60px; right: -48px;
+      height: 1px; background: var(--border);
+    }
+    .steps .step:last-child .step-line { display: none; }
+
+    .detail-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 1px; background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 4px; overflow: hidden;
+    }
+    .detail-card { background: var(--ice); padding: 28px 24px; }
+    .detail-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--purple); margin-bottom: 16px;
+    }
+    .detail-tag.gray { color: var(--muted); }
+    .detail-title { font-size: 15px; font-weight: 500; margin-bottom: 10px; }
+    .detail-title.dim { color: rgba(30,30,30,0.3); }
+    .detail-body { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+    /* ─────────────────────────── FEATURES ── */
+    .features { padding: 100px 0; border-bottom: 1px solid var(--border); }
+
+    .feat-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1px; background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 4px; overflow: hidden;
+      margin-top: 56px;
+    }
+    .feat-card { background: var(--ice); padding: 36px 32px; }
+    .feat-icon { font-size: 20px; margin-bottom: 16px; }
+    .feat-title { font-size: 16px; font-weight: 500; margin-bottom: 10px; }
+    .feat-body { font-size: 14px; color: var(--muted); line-height: 1.65; }
+
+    /* ─────────────────────────── MARNEE SECTION ── */
+    .marnee-section {
+      padding: 100px 0; border-bottom: 1px solid var(--border);
+      background: var(--ice);
+    }
+    .marnee-inner {
+      max-width: 1100px; margin: 0 auto; padding: 0 48px;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 80px; align-items: center;
+    }
+    .marnee-role {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--purple); margin: 20px 0 16px;
+    }
+    .marnee-desc { font-size: 15px; color: var(--muted); line-height: 1.7; margin-bottom: 28px; }
+    .marnee-asks { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+    .marnee-ask {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 13px; color: var(--muted); font-style: italic;
+    }
+    .ask-dot {
+      width: 4px; height: 4px; border-radius: 50%;
+      background: var(--purple); flex-shrink: 0;
+    }
+    .marnee-quote {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px; font-weight: 300; font-style: italic;
+      color: var(--purple); line-height: 1.4;
+      border-left: 2px solid var(--purple); padding-left: 20px;
+    }
+
+    /* chat */
+    .chat-wrap {
+      border: 1px solid var(--border);
+      border-radius: 4px; overflow: hidden;
+    }
+    .chat-header {
+      display: flex; align-items: center; gap: 12px;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      background: var(--ice);
+    }
+    .chat-av {
+      width: 36px; height: 36px; border-radius: 4px;
+      background: var(--purple);
+      color: #f6f6f6; font-size: 14px; font-weight: 500;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .chat-name { font-size: 14px; font-weight: 500; }
+    .chat-status { font-size: 12px; color: var(--muted); margin-top: 1px; }
+    .chat-online {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #22c55e; margin-left: auto;
+    }
+    .chat-body { padding: 20px; display: flex; flex-direction: column; gap: 14px; background: #fafafa; }
+    .msg-row { display: flex; gap: 10px; align-items: flex-start; }
+    .msg-av {
+      width: 28px; height: 28px; border-radius: 4px;
+      background: var(--purple); color: #f6f6f6;
+      font-size: 11px; font-weight: 500; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .bubble-ai {
+      background: var(--ice); border: 1px solid var(--border);
+      border-radius: 0 6px 6px 6px;
+      padding: 12px 16px; font-size: 13px; line-height: 1.6; color: var(--black);
+    }
+    .bubble-user {
+      background: var(--purple); border-radius: 6px 0 6px 6px;
+      padding: 12px 16px; font-size: 13px; color: #f6f6f6; line-height: 1.6;
+    }
+    .typing-row { display: flex; gap: 10px; align-items: center; }
+    .typing-dots {
+      display: flex; gap: 4px; padding: 12px 16px;
+      background: var(--ice); border: 1px solid var(--border);
+      border-radius: 0 6px 6px 6px;
+    }
+    .typing-dots span {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--muted);
+      animation: type 1.2s ease-in-out infinite;
+    }
+    .typing-dots span:nth-child(2) { animation-delay: .2s; }
+    .typing-dots span:nth-child(3) { animation-delay: .4s; }
+    @keyframes type { 0%,60%,100%{opacity:.2;transform:scale(1)} 30%{opacity:1;transform:scale(1.2)} }
+
+    /* ─────────────────────────── WHO ── */
+    .who { padding: 100px 0; border-bottom: 1px solid var(--border); }
+
+    .who-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1px; background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 4px; overflow: hidden;
+      margin-top: 56px;
+    }
+    .who-card { background: var(--ice); padding: 32px 28px; }
+    .who-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px; color: var(--purple); letter-spacing: 2px;
+      margin-bottom: 14px;
+    }
+    .who-title { font-size: 16px; font-weight: 500; margin-bottom: 8px; }
+    .who-body { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+    /* ─────────────────────────── CTA ── */
+    .cta-section {
+      padding: 120px 48px;
+      background: var(--night);
+      text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .cta-section::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: radial-gradient(circle, rgba(220,202,244,0.06) 1px, transparent 1px);
+      background-size: 28px 28px;
+    }
+    .cta-inner { position: relative; z-index: 1; max-width: 560px; margin: 0 auto; }
+    .cta-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--lilac); margin-bottom: 24px;
+      display: flex; align-items: center; justify-content: center; gap: 12px;
+    }
+    .cta-tag::before, .cta-tag::after {
+      content: ''; display: block; flex: 1; max-width: 32px;
+      height: 1px; background: rgba(220,202,244,0.3);
+    }
+    .cta-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(36px, 5vw, 58px);
+      font-weight: 300; letter-spacing: -1.5px; line-height: 1.1;
+      color: #f6f6f6; margin-bottom: 20px;
+    }
+    .cta-title em { font-style: italic; color: var(--lilac); }
+    .cta-sub {
+      font-size: 15px; color: rgba(246,246,246,0.5);
+      line-height: 1.7; margin-bottom: 40px;
+    }
+    .cta-form {
+      display: flex; gap: 0; border: 1px solid rgba(220,202,244,0.2);
+      border-radius: 4px; overflow: hidden; margin-bottom: 16px;
+    }
+    .cta-input {
+      flex: 1; padding: 14px 20px; background: rgba(246,246,246,0.06);
+      border: none; outline: none; color: #f6f6f6; font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .cta-input::placeholder { color: rgba(246,246,246,0.3); }
+    .cta-btn {
+      padding: 14px 28px; background: var(--lilac); border: none;
+      color: var(--night); font-size: 14px; font-weight: 500;
+      font-family: 'DM Sans', sans-serif; cursor: pointer;
+      transition: background .2s;
+    }
+    .cta-btn:hover { background: #f0e3ff; }
+    .cta-note { font-size: 12px; color: rgba(246,246,246,0.3); }
+    .cta-success { display: none; color: var(--lilac); font-size: 14px; margin-bottom: 16px; }
+
+    /* ─────────────────────────── FOOTER ── */
+    footer {
+      background: var(--black);
+      padding: 64px 0 32px;
+    }
+    .footer-inner { max-width: 1100px; margin: 0 auto; padding: 0 48px; }
+    .footer-top {
+      display: grid; grid-template-columns: 2fr 1fr 1fr;
+      gap: 48px; margin-bottom: 48px;
+      padding-bottom: 48px;
+      border-bottom: 1px solid rgba(246,246,246,0.08);
+    }
+    .footer-brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px; font-style: italic; color: #f6f6f6;
+      margin-bottom: 12px;
+    }
+    .footer-desc { font-size: 13px; color: rgba(246,246,246,0.4); line-height: 1.65; max-width: 260px; }
+    .footer-col-title {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+      color: rgba(246,246,246,0.3); margin-bottom: 16px;
+    }
+    .footer-links { display: flex; flex-direction: column; gap: 10px; }
+    .footer-links a, .footer-links span {
+      font-size: 13px; color: rgba(246,246,246,0.5);
+      text-decoration: none; transition: color .15s; cursor: pointer;
+    }
+    .footer-links a:hover { color: #f6f6f6; }
+    .footer-bottom {
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .footer-copy { font-size: 12px; color: rgba(246,246,246,0.25); }
+    .footer-legal { display: flex; gap: 24px; }
+    .footer-legal a { font-size: 12px; color: rgba(246,246,246,0.3); text-decoration: none; }
+    .footer-legal a:hover { color: rgba(246,246,246,0.6); }
+
+    /* ─────────────────────────── DEMO ── */
+    .demo { padding: 100px 0; border-bottom: 1px solid var(--border); }
+    .demo-frame {
+      border: 1px solid var(--border); border-radius: 4px;
+      overflow: hidden; margin-top: 40px;
+    }
+    .demo-bar {
+      display: flex; align-items: center; gap: 8px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      background: var(--ice);
+    }
+    .demo-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .demo-dot.r { background: #ff5f57; }
+    .demo-dot.y { background: #febc2e; }
+    .demo-dot.g { background: #28c840; }
+    .demo-url {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px; color: var(--muted); margin-left: 12px;
+    }
+    .demo-body {
+      height: 300px; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 16px;
+      background: #fafafa;
+    }
+    .play-btn {
+      width: 52px; height: 52px; border-radius: 50%;
+      background: var(--purple); display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: background .2s;
+    }
+    .play-btn:hover { background: var(--night); }
+    .play-btn svg { width: 22px; height: 22px; fill: #f6f6f6; margin-left: 3px; }
+    .demo-label { font-size: 13px; color: var(--muted); }
+
+    /* ─────────────────────────── MOTION & 3D ── */
+
+    /* — Buttons: hover → lilac — */
+    .nav-pill {
+      transition: background .2s, color .2s, box-shadow .2s;
+    }
+    .nav-pill:hover {
+      background: #dccaf4 !important;
+      color: var(--night) !important;
+      box-shadow: 0 4px 16px rgba(220,202,244,0.5);
+    }
+    .btn-primary {
+      transition: background .2s, color .2s, box-shadow .2s, transform .2s;
+    }
+    .btn-primary:hover {
+      background: #dccaf4 !important;
+      color: var(--night) !important;
+      box-shadow: 0 6px 20px rgba(220,202,244,0.5);
+      transform: translateY(-1px);
+    }
+    .cta-btn {
+      transition: background .2s, color .2s, box-shadow .2s;
+    }
+    .cta-btn:hover {
+      background: #ede0f8 !important;
+      box-shadow: 0 4px 16px rgba(220,202,244,0.4);
+    }
+
+    /* — Cards: base 3D shadow — */
+    .pain-card, .sol-card, .feat-card, .who-card,
+    .stat-box, .stat-t, .detail-card {
+      transition: transform .25s cubic-bezier(0.4,0,0.2,1),
+                  background .25s ease,
+                  box-shadow .25s ease;
+      box-shadow:
+        0 1px 0 rgba(64,8,109,0.06),
+        0 2px 8px rgba(64,8,109,0.04);
+    }
+
+    /* — Cards hover: scale + lilac tint + lift — */
+    .pain-card:hover, .sol-card:hover, .feat-card:hover, .who-card:hover,
+    .stat-box:hover, .stat-t:hover, .detail-card:hover {
+      background: #ede0f8;
+      transform: scale(1.025) translateY(-3px);
+      box-shadow:
+        0 2px 0 rgba(64,8,109,0.08),
+        0 12px 32px rgba(64,8,109,0.10),
+        0 24px 48px rgba(64,8,109,0.06);
+      z-index: 2;
+      position: relative;
+    }
+
+    /* — Hero stat cards (have divider, handle separately) — */
+    .hero-stats { overflow: visible; }
+    .stat-t {
+      transition: transform .25s cubic-bezier(0.4,0,0.2,1),
+                  background .25s ease,
+                  box-shadow .25s ease;
+    }
+    .stat-t:hover {
+      background: #ede0f8;
+      transform: scale(1.03) translateY(-4px);
+      box-shadow: 0 16px 40px rgba(64,8,109,0.12);
+      z-index: 2; position: relative;
+    }
+
+    /* ─────────────────────────── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .pain-grid, .sol-grid, .feat-grid { grid-template-columns: 1fr; }
+      .stat-row, .detail-grid { grid-template-columns: 1fr 1fr; }
+      .who-grid { grid-template-columns: 1fr 1fr; }
+      .steps { grid-template-columns: 1fr; gap: 36px; }
+      .step-line { display: none; }
+      .marnee-inner { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr; }
+      .hero-stats { grid-template-columns: 1fr; }
+      .stat-divider { height: 1px; width: 100%; }
+    }
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+      .hero { padding: 100px 24px 60px; }
+      .section-wrap { padding: 0 24px; }
+      .stat-row { grid-template-columns: 1fr 1fr; }
+      .detail-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-inner">
+      <a href="#" class="logo">
+        <div class="logo-mark">
+          <svg viewBox="0 0 16 16"><path d="M8 2C5.8 2 4 3.8 4 6c0 1.5.8 2.8 2 3.5V11h4V9.5C11.2 8.8 12 7.5 12 6c0-2.2-1.8-4-4-4z"/><rect x="5" y="11" width="6" height="1.5" rx="0.75"/><rect x="6" y="12.5" width="4" height="1.5" rx="0.75"/></svg>
+        </div>
+        Marnee
+      </a>
+      <div class="nav-links">
+        <a href="#how">How it works</a>
+        <a href="#features">Features</a>
+        <a href="#waitlist">Pricing</a>
+      </div>
+      <a href="https://tally.so/r/D4NkGl" target="_blank" class="nav-pill">Join the waitlist</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-inner">
+
+      <div class="hero-tag fade-up">
+        <span class="hero-tag-dot"></span>
+        Your AI CMO
+      </div>
+
+      <h1 class="hero-title" id="hero-title"></h1>
+
+      <div class="hero-stats fade-up" style="transition-delay:.2s">
+        <div class="stat-t">
+          <div class="stat-t-num">20x</div>
+          <div class="stat-t-label">faster than any agency<br/>or manual strategy</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-t">
+          <div class="stat-t-num">40x</div>
+          <div class="stat-t-label">cheaper than any CMO<br/>or marketing agency</div>
+        </div>
+      </div>
+
+      <p class="hero-body fade-up" style="transition-delay:.3s">
+        She builds your strategy, spots trends,<br/>and guides every decision.
+      </p>
+
+      <div class="hero-cta fade-up" style="transition-delay:.4s">
+        <a href="https://tally.so/r/D4NkGl" target="_blank" class="btn-primary">
+          Join the waitlist
+          <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#how" class="btn-ghost">See how it works</a>
+      </div>
+
+      <div class="hero-proof fade-up" style="transition-delay:.5s">
+        <div class="proof-avs">
+          <div class="proof-av">A</div>
+          <div class="proof-av">S</div>
+          <div class="proof-av">J</div>
+          <div class="proof-av">M</div>
+        </div>
+        <span><strong>20+ founders</strong> already on the waitlist</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- TICKER -->
+  <div class="ticker">
+    <div class="ticker-track">
+      <div class="ticker-item">AI-Powered Strategy</div>
+      <div class="ticker-item">Trend Detection</div>
+      <div class="ticker-item">Brand Intelligence</div>
+      <div class="ticker-item">Content Calendar</div>
+      <div class="ticker-item">20x Faster</div>
+      <div class="ticker-item">40x Cheaper</div>
+      <div class="ticker-item">Global Growth</div>
+      <div class="ticker-item">AI-Powered Strategy</div>
+      <div class="ticker-item">Trend Detection</div>
+      <div class="ticker-item">Brand Intelligence</div>
+      <div class="ticker-item">Content Calendar</div>
+      <div class="ticker-item">20x Faster</div>
+      <div class="ticker-item">40x Cheaper</div>
+      <div class="ticker-item">Global Growth</div>
+    </div>
+  </div>
+
+  <!-- PROBLEM -->
+  <section class="problem">
+    <div class="section-wrap">
+      <div class="problem-head fade-up">
+        <div class="section-tag">The Problem</div>
+        <h2 class="section-title">Marketing shouldn't feel like<br/>throwing darts in the dark</h2>
+      </div>
+      <div class="pain-grid">
+        <div class="pain-card fade-up">
+          <div class="pain-num">01</div>
+          <div class="pain-title">No clarity on what to post</div>
+          <div class="pain-body">You're constantly guessing what content will resonate with your audience. It costs you time and engagement.</div>
+        </div>
+        <div class="pain-card fade-up" style="transition-delay:.1s">
+          <div class="pain-num">02</div>
+          <div class="pain-title">Trends move too fast</div>
+          <div class="pain-body">By the time you spot a trend, it's already old news. You're always one step behind your competitors.</div>
+        </div>
+        <div class="pain-card fade-up" style="transition-delay:.2s">
+          <div class="pain-num">03</div>
+          <div class="pain-title">Strategy is expensive</div>
+          <div class="pain-body">Building a content strategy from scratch takes time you don't have. Expertise that costs thousands per month.</div>
+        </div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-box fade-up">
+          <div class="stat-box-num">73%</div>
+          <div class="stat-box-txt">of founders struggle with content strategy</div>
+        </div>
+        <div class="stat-box fade-up" style="transition-delay:.1s">
+          <div class="stat-box-num">15h</div>
+          <div class="stat-box-txt">average weekly time spent on content planning</div>
+        </div>
+        <div class="stat-box fade-up" style="transition-delay:.2s">
+          <div class="stat-box-num">60%</div>
+          <div class="stat-box-txt">of social posts underperform expectations</div>
+        </div>
+        <div class="stat-box fade-up" style="transition-delay:.3s">
+          <div class="stat-box-num">₩3M</div>
+          <div class="stat-box-txt">average monthly cost of a marketing agency in Korea</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOLUTION -->
+  <section class="solution">
+    <div class="section-wrap">
+      <div class="fade-up">
+        <div class="section-tag">The Solution</div>
+        <h2 class="section-title">Marnee gives you clarity,<br/>not complexity</h2>
+        <p class="section-sub" style="margin-top:16px">She analyzes what's working in your niche and turns it into a personalized strategy you can actually execute.</p>
+      </div>
+      <div class="sol-grid">
+        <div class="sol-card fade-up">
+          <div class="sol-num">01</div>
+          <div class="sol-title">AI-Powered Research</div>
+          <div class="sol-body">Marnee scans thousands of posts in your niche to find what's actually working right now. No guessing.</div>
+        </div>
+        <div class="sol-card fade-up" style="transition-delay:.1s">
+          <div class="sol-num">02</div>
+          <div class="sol-title">Brand-First Strategy</div>
+          <div class="sol-body">Every suggestion is tailored to your unique tone, audience, and positioning. No copy-paste templates, ever.</div>
+        </div>
+        <div class="sol-card fade-up" style="transition-delay:.2s">
+          <div class="sol-num">03</div>
+          <div class="sol-title">Ready-to-Execute Plans</div>
+          <div class="sol-body">Get complete content briefs with hooks, angles, and visual direction. Ready for UGC, AI or talking head production.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how" id="how">
+    <div class="section-wrap">
+      <div class="fade-up">
+        <div class="section-tag">How it works</div>
+        <h2 class="section-title">Three steps to marketing clarity</h2>
+        <p class="section-sub" style="margin-top:16px">From brand definition to a complete content strategy, in minutes. Not months.</p>
+      </div>
+      <div class="steps">
+        <div class="step fade-up" data-n="01">
+          <div class="step-line"></div>
+          <div class="step-title">Define your brand</div>
+          <div class="step-body">Complete our branding questionnaire. Marnee matches your answers with real-time social research from your niche.</div>
+        </div>
+        <div class="step fade-up" data-n="02" style="transition-delay:.15s">
+          <div class="step-line"></div>
+          <div class="step-title">Marnee builds your strategy</div>
+          <div class="step-body">She suggests angles, formats, hooks and explains why. You approve, tweak or discard. You stay in control.</div>
+        </div>
+        <div class="step fade-up" data-n="03" style="transition-delay:.3s">
+          <div class="step-title">Execute from your dashboard</div>
+          <div class="step-body">All decisions in your dashboard. Calendar and kanban view. One clear overview. No chaos, no guesswork.</div>
+        </div>
+      </div>
+      <div class="detail-grid">
+        <div class="detail-card fade-up">
+          <div class="detail-tag">Step 1 — Brand Discovery</div>
+          <div class="detail-title">Brand Discovery</div>
+          <div class="detail-body">Start with a quick questionnaire. Marnee learns about your brand, goals, audience, and tone to create a personalized strategy tailored just for you.</div>
+        </div>
+        <div class="detail-card fade-up" style="transition-delay:.1s">
+          <div class="detail-tag">Step 2 — AI Strategy</div>
+          <div class="detail-title">Chat with Marnee</div>
+          <div class="detail-body">Marnee asks questions, understands your brand, and builds your complete campaign strategy, thinking, planning, and explaining every recommendation.</div>
+        </div>
+        <div class="detail-card fade-up" style="transition-delay:.15s">
+          <div class="detail-tag">Step 3 — Content Calendar</div>
+          <div class="detail-title">Content Calendar</div>
+          <div class="detail-body">Marnee generates a complete publication calendar with dates, content ideas, and detailed instructions for each post. See your entire month at a glance.</div>
+        </div>
+        <div class="detail-card fade-up" style="transition-delay:.2s">
+          <div class="detail-tag gray">Coming Soon</div>
+          <div class="detail-title dim">Campaign Dashboard</div>
+          <div class="detail-body" style="color:rgba(30,30,30,0.3)">View all active campaigns, track your task list, and monitor progress from a single command center.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DEMO -->
+  <section class="demo">
+    <div class="section-wrap">
+      <div class="fade-up">
+        <div class="section-tag">Product Demo</div>
+        <h2 class="section-title">See Marnee in action</h2>
+      </div>
+      <div class="demo-frame fade-up" style="transition-delay:.1s">
+        <div class="demo-bar">
+          <div class="demo-dot r"></div>
+          <div class="demo-dot y"></div>
+          <div class="demo-dot g"></div>
+          <div class="demo-url">app.marnee.ai — Campaign Manager</div>
+        </div>
+        <div class="demo-body">
+          <div class="play-btn">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+          <div class="demo-label">Product demo coming soon</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features" id="features">
+    <div class="section-wrap">
+      <div class="fade-up">
+        <div class="section-tag">Features</div>
+        <h2 class="section-title">Built for speed, clarity<br/>and consistency</h2>
+      </div>
+      <div class="feat-grid">
+        <div class="feat-card fade-up">
+          <div class="feat-icon">📡</div>
+          <div class="feat-title">Trend Detection</div>
+          <div class="feat-body">Identify what's working right now in your niche with real-time social analysis across Instagram, TikTok, and more.</div>
+        </div>
+        <div class="feat-card fade-up" style="transition-delay:.1s">
+          <div class="feat-icon">🧠</div>
+          <div class="feat-title">Brand Intelligence</div>
+          <div class="feat-body">Your strategy adapts to your unique tone, audience and market positioning. The more you use Marnee, the smarter she gets.</div>
+        </div>
+        <div class="feat-card fade-up" style="transition-delay:.2s">
+          <div class="feat-icon">✨</div>
+          <div class="feat-title">AI Strategy Guidance</div>
+          <div class="feat-body">Marnee explains, suggests and helps you decide. Not just generate. Strategy with context. Decisions with confidence.</div>
+        </div>
+        <div class="feat-card fade-up" style="transition-delay:.1s">
+          <div class="feat-icon">📊</div>
+          <div class="feat-title">Strategy Dashboard</div>
+          <div class="feat-body">All decisions in one place. Calendar and kanban views to keep you organized and your team aligned.</div>
+        </div>
+        <div class="feat-card fade-up" style="transition-delay:.2s">
+          <div class="feat-icon">🎬</div>
+          <div class="feat-title">Content-Ready Outputs</div>
+          <div class="feat-body">Hooks, copy and visual direction. Ready for UGC, AI or talking head production. No creative block.</div>
+        </div>
+        <div class="feat-card fade-up" style="transition-delay:.3s">
+          <div class="feat-icon">⚡</div>
+          <div class="feat-title">Save Hours Weekly</div>
+          <div class="feat-body">Reduce content planning from 15+ hours to under 2 hours per week. More time building, less time guessing.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MARNEE CHAT -->
+  <section class="marnee-section">
+    <div class="marnee-inner">
+      <div class="fade-up">
+        <div class="section-tag">Your AI Partner</div>
+        <h2 class="section-title">Meet<br/><em>Marnee.</em></h2>
+        <div class="marnee-role">AI Marketing Partner</div>
+        <p class="marnee-desc">Marnee helps you think, not just post. She explains the reasoning behind every suggestion, so you understand what works and why. You stay in control.</p>
+        <div class="marnee-asks">
+          <div class="marnee-ask"><div class="ask-dot"></div>"What content should we test next week?"</div>
+          <div class="marnee-ask"><div class="ask-dot"></div>"Rewrite this in a confident but warm tone."</div>
+          <div class="marnee-ask"><div class="ask-dot"></div>"Why is this format performing better?"</div>
+        </div>
+        <div class="marnee-quote">"Strategy with context.<br/>Decisions with confidence."</div>
+      </div>
+      <div class="fade-up" style="transition-delay:.15s">
+        <div class="chat-wrap">
+          <div class="chat-header">
+            <div class="chat-av">M</div>
+            <div>
+              <div class="chat-name">Marnee</div>
+              <div class="chat-status">AI Marketing Partner · Online</div>
+            </div>
+            <div class="chat-online"></div>
+          </div>
+          <div class="chat-body">
+            <div class="msg-row">
+              <div class="msg-av">M</div>
+              <div class="bubble-ai">Based on your brand positioning and what's trending in your niche, I recommend testing short-form educational content this week. Here's why...</div>
+            </div>
+            <div class="msg-row">
+              <div class="msg-av">M</div>
+              <div class="bubble-ai">Your competitors are seeing <strong>40% higher engagement</strong> with myth-busting hooks. Want me to generate 5 variations for your brand?</div>
+            </div>
+            <div style="display:flex;justify-content:flex-end">
+              <div class="bubble-user">Yes, let's try that approach!</div>
+            </div>
+            <div class="typing-row">
+              <div class="msg-av">M</div>
+              <div class="typing-dots"><span></span><span></span><span></span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHO IT'S FOR -->
+  <section class="who">
+    <div class="section-wrap">
+      <div class="fade-up">
+        <div class="section-tag">Who it's for</div>
+        <h2 class="section-title">Built for those who need clarity,<br/>not complexity</h2>
+      </div>
+      <div class="who-grid">
+        <div class="who-card fade-up">
+          <div class="who-num">01</div>
+          <div class="who-title">Early-stage startups</div>
+          <div class="who-body">Get your marketing foundation right from day one</div>
+        </div>
+        <div class="who-card fade-up" style="transition-delay:.08s">
+          <div class="who-num">02</div>
+          <div class="who-title">Founders who need clarity</div>
+          <div class="who-body">Stop second-guessing every content decision</div>
+        </div>
+        <div class="who-card fade-up" style="transition-delay:.16s">
+          <div class="who-num">03</div>
+          <div class="who-title">Social media managers</div>
+          <div class="who-body">Streamline your workflow with AI-powered insights</div>
+        </div>
+        <div class="who-card fade-up" style="transition-delay:.08s">
+          <div class="who-num">04</div>
+          <div class="who-title">Small teams</div>
+          <div class="who-body">No marketing department? No problem.</div>
+        </div>
+        <div class="who-card fade-up" style="transition-delay:.16s">
+          <div class="who-num">05</div>
+          <div class="who-title">Multi-brand businesses</div>
+          <div class="who-body">Manage multiple brand strategies in one place</div>
+        </div>
+        <div class="who-card fade-up" style="transition-delay:.24s">
+          <div class="who-num">06</div>
+          <div class="who-title">Agencies &amp; consultants</div>
+          <div class="who-body">Deliver structured strategies at scale</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA WAITLIST -->
+  <section class="cta-section" id="waitlist">
+    <div class="cta-inner">
+      <div class="cta-tag fade-up">Ready to start?</div>
+      <h2 class="cta-title fade-up" style="transition-delay:.1s">
+        Build your marketing<br/>strategy with <em>Marnee.</em>
+      </h2>
+      <p class="cta-sub fade-up" style="transition-delay:.2s">From zero clarity to a structured marketing plan, guided by AI. Be among the first to experience Marnee.</p>
+      <a href="https://tally.so/r/D4NkGl" target="_blank" class="cta-btn fade-up" style="transition-delay:.3s; display:inline-block; text-decoration:none; padding:16px 40px; font-size:15px; border-radius:4px; margin-bottom:16px;">Join the waitlist</a>
+      <div class="cta-note fade-up" style="transition-delay:.4s">No spam, ever. Unsubscribe anytime.</div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div>
+          <div class="footer-brand">Marnee</div>
+          <p class="footer-desc">Your AI CMO. Turning social signals into marketing decisions tailored to your brand and goals.</p>
+        </div>
+        <div>
+          <div class="footer-col-title">Product</div>
+          <div class="footer-links">
+            <a href="#features">Features</a>
+            <a href="#how">How it works</a>
+            <span>Roadmap</span>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-title">Company</div>
+          <div class="footer-links">
+            <span>About</span>
+            <span>Blog</span>
+            <span>Contact</span>
+            <span>Privacy</span>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div class="footer-copy">© 2026 Marnee. All rights reserved.</div>
+        <div class="footer-legal">
+          <a href="#">Terms</a>
+          <a href="#">Privacy</a>
+          <a href="#">Cookies</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ── TYPEWRITER HERO TITLE ──────────────────────────────────────────
+    (async () => {
+      const titleEl = document.getElementById('hero-title');
+
+      const delay = ms => new Promise(r => setTimeout(r, ms));
+
+      // Create cursor
+      const cursor = document.createElement('span');
+      cursor.className = 'type-cursor';
+      cursor.textContent = '|';
+      titleEl.appendChild(cursor);
+
+      // Lines: [text, isItalic]
+      const lines = [
+        ['Marketing intelligence', false],
+        ['for global growth.', true]
+      ];
+
+      // Wait a beat before starting
+      await delay(320);
+
+      for (let i = 0; i < lines.length; i++) {
+        const [text, italic] = lines[i];
+
+        // Line break between lines
+        if (i > 0) {
+          const br = document.createElement('br');
+          titleEl.insertBefore(br, cursor);
+          await delay(180); // brief pause at line break
+        }
+
+        const el = document.createElement(italic ? 'em' : 'span');
+        if (!italic) el.style.cssText = 'font-style:normal; color:inherit;';
+        titleEl.insertBefore(el, cursor);
+
+        for (const char of text) {
+          el.textContent += char;
+          // Slight randomness makes it feel human
+          await delay(48 + Math.random() * 32);
+        }
+
+        // Pause at end of line 1
+        if (i === 0) await delay(220);
+      }
+
+      // Blink a couple times after finishing
+      await delay(500);
+
+      // CLICK — cursor pulses then disappears
+      cursor.classList.remove('type-cursor'); // stop blink
+      cursor.classList.add('cur-click');
+
+      // Title scales up with slight spring
+      await delay(120);
+      titleEl.classList.add('title-done');
+
+      // Remove cursor after animation
+      await delay(380);
+      cursor.remove();
+    })();
+
+    // ── FADE-UP ──
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+    // ── WAITLIST ──
+    function handleWaitlist(e) {
+      e.preventDefault();
+      document.getElementById('success-msg').style.display = 'block';
+      e.target.style.display = 'none';
+    }
+  </script>
+</body>
+</html>
