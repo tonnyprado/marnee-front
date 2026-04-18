@@ -4,27 +4,41 @@ import Logo from "./Logo";
 import { getAuthSession, setAuthSession } from "../services/api";
 import { useLanguage } from "../context/LanguageContext";
 
-// Simple icon components
+// Lordicon animated icons
 const icons = {
   sparkles: (
-    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-    </svg>
+    <lord-icon
+      src="https://cdn.lordicon.com/gpgeihgx.json"
+      trigger="hover"
+      colors="primary:#1b1091,secondary:#e5d1fa,tertiary:#7166ee,quaternary:#ee66aa"
+      style={{ width: '28px', height: '28px' }}
+    />
   ),
   brain: (
-    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-    </svg>
+    <lord-icon
+      src="https://cdn.lordicon.com/gqlpvzkp.json"
+      trigger="hover"
+      colors="primary:#a39cf4,secondary:#ebe6ef"
+      style={{ width: '28px', height: '28px' }}
+    />
   ),
   calendar: (
-    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-    </svg>
+    <lord-icon
+      src="https://cdn.lordicon.com/xhgjylsr.json"
+      trigger="hover"
+      state="hover-flutter"
+      colors="primary:#3a3347,secondary:#e5d1fa,tertiary:#a39cf4,quaternary:#f9c9c0"
+      style={{ width: '28px', height: '28px' }}
+    />
   ),
   folder: (
-    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
-    </svg>
+    <lord-icon
+      src="https://cdn.lordicon.com/wdztjihe.json"
+      trigger="loop"
+      state="loop-all"
+      colors="primary:#121331,secondary:#a39cf4,tertiary:#7166ee,quaternary:#fad1e6"
+      style={{ width: '28px', height: '28px' }}
+    />
   ),
 };
 
