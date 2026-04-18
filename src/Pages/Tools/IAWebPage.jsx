@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { api } from "../../services/api";
 import { useMarnee } from "../../context/MarneeContext";
 import marneeMascot from "../../assets/mascot/marnee12.png";
+import ChatDebugger from "../../Component/ChatDebugger";
 
 // Custom markdown components with Tailwind styles for AI messages
 // eslint-disable-next-line jsx-a11y/heading-has-content
@@ -586,6 +587,9 @@ export default function IAWebPage() {
           />
         </div>
       </div>
+
+      {/* Debug Component - Remove in production */}
+      {process.env.NODE_ENV === 'development' && <ChatDebugger />}
     </div>
   );
 }
