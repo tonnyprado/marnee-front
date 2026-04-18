@@ -19,6 +19,7 @@ const aiMarkdownComponents = {
   li: ({ node, ...props }) => <li className="leading-relaxed" {...props} />,
   strong: ({ node, ...props }) => <strong className="font-bold text-gray-900" {...props} />,
   em: ({ node, ...props }) => <em className="italic" {...props} />,
+  // eslint-disable-next-line jsx-a11y/anchor-has-content
   a: ({ node, ...props }) => <a className="text-violet-600 hover:text-violet-700 underline font-medium" {...props} />,
   code: ({ node, inline, ...props }) =>
     inline ? (
@@ -33,9 +34,13 @@ const aiMarkdownComponents = {
 
 // Markdown components for user messages (white text on gradient)
 const userMarkdownComponents = {
+  // eslint-disable-next-line jsx-a11y/heading-has-content
   h1: ({ node, ...props }) => <h1 className="text-2xl font-bold mb-3 mt-4 text-white" {...props} />,
+  // eslint-disable-next-line jsx-a11y/heading-has-content
   h2: ({ node, ...props }) => <h2 className="text-xl font-bold mb-2 mt-3 text-white" {...props} />,
+  // eslint-disable-next-line jsx-a11y/heading-has-content
   h3: ({ node, ...props }) => <h3 className="text-lg font-bold mb-2 mt-3 text-white" {...props} />,
+  // eslint-disable-next-line jsx-a11y/heading-has-content
   h4: ({ node, ...props }) => <h4 className="text-base font-semibold mb-2 mt-2 text-white" {...props} />,
   p: ({ node, ...props }) => <p className="mb-3 leading-relaxed text-white" {...props} />,
   ul: ({ node, ...props }) => <ul className="list-disc list-inside mb-3 space-y-1 ml-2 text-white" {...props} />,
@@ -43,6 +48,7 @@ const userMarkdownComponents = {
   li: ({ node, ...props }) => <li className="leading-relaxed text-white" {...props} />,
   strong: ({ node, ...props }) => <strong className="font-bold text-white" {...props} />,
   em: ({ node, ...props }) => <em className="italic text-white" {...props} />,
+  // eslint-disable-next-line jsx-a11y/anchor-has-content
   a: ({ node, ...props }) => <a className="text-white underline hover:text-gray-100 font-medium" {...props} />,
   code: ({ node, inline, ...props }) =>
     inline ? (
