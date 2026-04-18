@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import CommentsSection from "./CommentsSection";
+import ImageGeneratorButton from "../../../Component/ImageGenerator/ImageGeneratorButton";
+import { useMarnee } from "../../../context/MarneeContext";
 
 const STATUS_OPTIONS = [
   { value: "todo", label: "To Do", color: "gray" },
@@ -59,6 +61,7 @@ export default function CampaignForm({
   onClose,
   onSave,
 }) {
+  const { founderId } = useMarnee();
   const [form, setForm] = useState({
     // Basic Information
     title: "",
@@ -470,6 +473,25 @@ export default function CampaignForm({
                   <span className="text-gray-400 text-sm">No assets specified</span>
                 )}
               </div>
+            </div>
+          </div>
+
+          {/* === VISUAL CONTENT === */}
+          <div className="border-t border-[rgba(30,30,30,0.1)] pt-6">
+            <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
+              Visual Content
+            </h3>
+
+            <div className="space-y-3">
+              <p className="text-sm text-gray-600">
+                Generate a branded image for this post using your brand colors and style.
+              </p>
+
+              <ImageGeneratorButton post={form} founderId={founderId} />
+
+              <p className="text-xs text-gray-500">
+                The image will be generated using data from your Brand Profile, Current Trends, and Strategy.
+              </p>
             </div>
           </div>
 
