@@ -380,6 +380,18 @@ export default function BusinessTestPage() {
     try {
       // Get founder ID
       const founder = await api.getMeFounder();
+
+      // CRITICAL: Validate that founder exists and has an ID
+      if (!founder || !founder.id) {
+        setError("Founder profile not found. Please complete the Personal Test first.");
+        setLoading(false);
+        // Redirect to test selection after 2 seconds
+        setTimeout(() => {
+          navigate('/test-selection');
+        }, 2000);
+        return;
+      }
+
       setFounderId(founder.id);
 
       // Try to load existing business test
@@ -415,7 +427,12 @@ export default function BusinessTestPage() {
       }
     } catch (error) {
       console.error("Error loading data:", error);
-      setError("Failed to load existing data");
+      setError("Failed to load founder data. Please ensure you've completed the Personal Test first.");
+      setLoading(false);
+      // Redirect to test selection after 2 seconds
+      setTimeout(() => {
+        navigate('/test-selection');
+      }, 2000);
     } finally {
       setLoading(false);
     }
@@ -466,6 +483,11 @@ export default function BusinessTestPage() {
 
   // Build payload for API
   const buildPayload = () => {
+    // CRITICAL: Validate that founderId is not null before building payload
+    if (!founderId) {
+      throw new Error("Founder ID is missing. Please complete the Personal Test first.");
+    }
+
     const payload = { founderId };
 
     STEPS.forEach((s) => {
@@ -510,7 +532,23 @@ export default function BusinessTestPage() {
       // For now, let's just navigate to the app
       navigate('/app');
     } catch (err) {
-      setError(err.message || 'Failed to submit business test');
+      console.error("Error submitting business test:", err);
+
+      // Provide detailed error message
+      let errorMessage = 'Failed to submit business test';
+      if (err.message) {
+        errorMessage = err.message;
+      } else if (err.body && err.body.detail) {
+        // Handle FastAPI validation errors
+        if (Array.isArray(err.body.detail)) {
+          const fieldErrors = err.body.detail.map(e => `${e.loc.join(' > ')}: ${e.msg}`).join('; ');
+          errorMessage = `Validation error: ${fieldErrors}`;
+        } else {
+          errorMessage = err.body.detail;
+        }
+      }
+
+      setError(errorMessage);
       setIsSubmitting(false);
     }
   };
@@ -635,9 +673,14 @@ export default function BusinessTestPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-center">
+        <div className="text-center max-w-md px-6">
           <div className="w-16 h-16 border-4 border-violet-200 border-t-violet-600 rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading your business test...</p>
+          <p className="text-gray-600 mb-2">Loading your business test...</p>
+          {error && (
+            <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm">
+              {error}
+            </div>
+          )}
         </div>
       </div>
     );
