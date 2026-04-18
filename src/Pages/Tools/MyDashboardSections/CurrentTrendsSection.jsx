@@ -1,4 +1,5 @@
 import React from "react";
+import { useTrends } from "../../../hooks/useTrends";
 
 function StatPill({ label, value }) {
   return (
@@ -98,7 +99,77 @@ function TrendCard({ title, category, score, description, stats, tags, actions }
   );
 }
 
-export default function CurrentTrendsSection() {
+export default function CurrentTrendsSection({ founderId, sessionId }) {
+  const {
+    trends,
+    loading,
+    error,
+    generating,
+    regeneratingSection,
+    generateTrends,
+    regenerateSection,
+  } = useTrends(founderId, sessionId);
+
+  const handleGenerateTrends = async () => {
+    try {
+      await generateTrends();
+    } catch (err) {
+      console.error("Failed to generate trends:", err);
+    }
+  };
+
+  const handleRegenerateSection = async (section) => {
+    try {
+      await regenerateSection(section);
+    } catch (err) {
+      console.error(`Failed to regenerate ${section}:`, err);
+    }
+  };
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-gray-500">Loading trends...</p>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="bg-red-50 border border-red-200 rounded p-4">
+        <p className="text-red-600 text-sm">{error}</p>
+      </div>
+    );
+  }
+
+  // Empty state
+  if (!trends) {
+    return (
+      <div className="text-center py-12 bg-white border border-[rgba(30,30,30,0.1)] rounded">
+        <div className="mb-4">
+          <div className="h-16 w-16 mx-auto rounded-full bg-purple-50 flex items-center justify-center text-2xl text-purple-600">
+            📊
+          </div>
+        </div>
+        <p className="text-gray-700 font-semibold mb-2">No Trends Yet</p>
+        <p className="text-gray-500 mb-4">
+          Generate trends analysis using AI based on your brand and market data.
+        </p>
+        {founderId && (
+          <button
+            onClick={handleGenerateTrends}
+            disabled={generating}
+            className="px-4 py-2 rounded-lg bg-purple-600 text-white text-sm font-medium hover:bg-purple-700 transition disabled:opacity-50"
+          >
+            {generating ? "Generating..." : "Generate Trends with AI"}
+          </button>
+        )}
+      </div>
+    );
+  }
+
   return (
     <>
       <div>
@@ -115,10 +186,10 @@ export default function CurrentTrendsSection() {
           </span>
           <div>
             <p className="text-sm font-semibold text-gray-900">
-              AI-Powered Creative Tools &amp; Design Automation
+              {trends.brandNiche?.name || "Your Brand Niche"}
             </p>
             <p className="text-xs text-gray-500">
-              Targeting creative professionals, designers, and content creators seeking innovative workflow solutions
+              {trends.brandNiche?.targetAudience || "Your target audience description"}
             </p>
           </div>
         </div>
@@ -128,10 +199,25 @@ export default function CurrentTrendsSection() {
         <h2 className="text-lg font-semibold text-gray-900">SEO Keywords Performance</h2>
         <p className="text-xs text-gray-500">Top performing keywords in your niche this week</p>
         <div className="grid grid-cols-4 gap-3 mt-3">
-          <KeywordCard rank="1" title="AI design tools" searches="45K" competition="Low" growth="+234%" />
-          <KeywordCard rank="2" title="automated creative workflow" searches="32K" competition="Medium" growth="+189%" />
-          <KeywordCard rank="3" title="no-code design platform" searches="28K" competition="Low" growth="+156%" />
-          <KeywordCard rank="4" title="creative automation software" searches="21K" competition="High" growth="+98%" />
+          {trends.seoKeywords && trends.seoKeywords.length > 0 ? (
+            trends.seoKeywords.map((keyword, index) => (
+              <KeywordCard
+                key={index}
+                rank={keyword.rank}
+                title={keyword.title}
+                searches={keyword.searches}
+                competition={keyword.competition}
+                growth={keyword.growth}
+              />
+            ))
+          ) : (
+            <>
+              <KeywordCard rank="1" title="AI design tools" searches="45K" competition="Low" growth="+234%" />
+              <KeywordCard rank="2" title="automated creative workflow" searches="32K" competition="Medium" growth="+189%" />
+              <KeywordCard rank="3" title="no-code design platform" searches="28K" competition="Low" growth="+156%" />
+              <KeywordCard rank="4" title="creative automation software" searches="21K" competition="High" growth="+98%" />
+            </>
+          )}
         </div>
       </div>
 
@@ -139,43 +225,62 @@ export default function CurrentTrendsSection() {
         <h2 className="text-lg font-semibold text-gray-900">Viral Topics in Your Niche</h2>
         <p className="text-xs text-gray-500">Topics gaining massive traction and relevance</p>
         <div className="grid grid-cols-3 gap-3 mt-3">
-          <ViralCard
-            title="AI replacing designers debate"
-            mentions="1.2M"
-            engagement="89%"
-            relevance="95%"
-            score="98"
-            sources={["Twitter", "LinkedIn", "Reddit"]}
-          />
-          <ViralCard
-            title="Midjourney vs human creativity"
-            mentions="890K"
-            engagement="76%"
-            relevance="92%"
-            score="94"
-            sources={["Instagram", "TikTok", "YouTube"]}
-          />
-          <ViralCard
-            title="No-code revolution impact"
-            mentions="654K"
-            engagement="82%"
-            relevance="88%"
-            score="91"
-            sources={["LinkedIn", "Medium", "Hacker News"]}
-          />
+          {trends.viralTopics && trends.viralTopics.length > 0 ? (
+            trends.viralTopics.map((topic, index) => (
+              <ViralCard
+                key={index}
+                title={topic.title}
+                mentions={topic.mentions}
+                engagement={topic.engagement}
+                relevance={topic.relevance}
+                score={topic.score}
+                sources={topic.sources}
+              />
+            ))
+          ) : (
+            <>
+              <ViralCard
+                title="AI replacing designers debate"
+                mentions="1.2M"
+                engagement="89%"
+                relevance="95%"
+                score="98"
+                sources={["Twitter", "LinkedIn", "Reddit"]}
+              />
+              <ViralCard
+                title="Midjourney vs human creativity"
+                mentions="890K"
+                engagement="76%"
+                relevance="92%"
+                score="94"
+                sources={["Instagram", "TikTok", "YouTube"]}
+              />
+              <ViralCard
+                title="No-code revolution impact"
+                mentions="654K"
+                engagement="82%"
+                relevance="88%"
+                score="91"
+                sources={["LinkedIn", "Medium", "Hacker News"]}
+              />
+            </>
+          )}
         </div>
       </div>
 
       <div className="grid grid-cols-4 gap-3">
-        <StatPill label="Trending Topics" value="126" />
-        <StatPill label="AI Relevance Score" value="88%" />
-        <StatPill label="Opportunities" value="34" />
-        <StatPill label="Total Mentions" value="0.0M" />
+        <StatPill label="Trending Topics" value={trends.stats?.trendingTopics || "126"} />
+        <StatPill label="AI Relevance Score" value={trends.stats?.aiRelevanceScore || "88%"} />
+        <StatPill label="Opportunities" value={trends.stats?.opportunities || "34"} />
+        <StatPill label="Total Mentions" value={trends.stats?.totalMentions || "2.7M"} />
       </div>
 
       <div className="flex items-center justify-between gap-4">
         <div className="flex gap-2">
-          {["All Trends", "AI & Technology", "Marketing", "Creative Tools", "Industry Insights"].map((t) => (
+          {(trends.categories && trends.categories.length > 0
+            ? trends.categories
+            : ["All Trends", "AI & Technology", "Marketing", "Creative Tools", "Industry Insights"]
+          ).map((t) => (
             <button
               key={t}
               className="px-3 py-1.5 rounded-lg text-xs font-semibold border border-[rgba(30,30,30,0.1)] text-gray-600 hover:bg-[#f6f6f6]"
@@ -197,66 +302,86 @@ export default function CurrentTrendsSection() {
 
       <div className="grid grid-cols-[2fr_1fr] gap-4">
         <div className="space-y-4">
-          <TrendCard
-            title="Leverage AI Automation Trend"
-            category="CONTENT STRATEGY"
-            score="94"
-            description="Based on your brand's innovative positioning, create content showcasing how AI automation enhances creativity rather than replacing it."
-            stats={[
-              { label: "Match Score", value: "85%" },
-              { label: "Potential Reach", value: "2.3M" },
-              { label: "Priority", value: "High" },
-              { label: "Days Active", value: "23" },
-            ]}
-            tags={["AI Automation", "Creative Tools", "Workflow", "Productivity"]}
-            actions={["Create Campaign", "Learn More"]}
-          />
-          <TrendCard
-            title="Community-Driven Brand Building"
-            category="MARKETING"
-            score="91"
-            description="Brands are shifting towards community-first approaches, with 78% higher engagement rates."
-            stats={[
-              { label: "Higher Engagement", value: "78%" },
-              { label: "Discussions", value: "890K" },
-              { label: "Brand Trust", value: "92%" },
-              { label: "Days Trending", value: "15" },
-            ]}
-            tags={["Community Building", "Brand Loyalty", "UGC", "Authenticity"]}
-            actions={["Explore Strategy", "Track Trend"]}
-          />
-          <TrendCard
-            title="No-Code Creative Platforms"
-            category="CREATIVE TOOLS"
-            score="88"
-            description="No-code solutions are democratizing creative work, with 250% growth in adoption."
-            stats={[
-              { label: "Adoption Growth", value: "250%" },
-              { label: "New Users", value: "654K" },
-              { label: "Satisfaction", value: "85%" },
-              { label: "Days Active", value: "19" },
-            ]}
-            tags={["No-Code", "Accessibility", "Democratization", "Ease of Use"]}
-            actions={["Analyze Impact", "Monitor"]}
-          />
+          {trends.mainTrends && trends.mainTrends.length > 0 ? (
+            trends.mainTrends.map((trend, index) => (
+              <TrendCard
+                key={index}
+                title={trend.title}
+                category={trend.category}
+                score={trend.score}
+                description={trend.description}
+                stats={trend.stats}
+                tags={trend.tags}
+                actions={trend.actions}
+              />
+            ))
+          ) : (
+            <>
+              <TrendCard
+                title="Leverage AI Automation Trend"
+                category="CONTENT STRATEGY"
+                score="94"
+                description="Based on your brand's innovative positioning, create content showcasing how AI automation enhances creativity rather than replacing it."
+                stats={[
+                  { label: "Match Score", value: "85%" },
+                  { label: "Potential Reach", value: "2.3M" },
+                  { label: "Priority", value: "High" },
+                  { label: "Days Active", value: "23" },
+                ]}
+                tags={["AI Automation", "Creative Tools", "Workflow", "Productivity"]}
+                actions={["Create Campaign", "Learn More"]}
+              />
+              <TrendCard
+                title="Community-Driven Brand Building"
+                category="MARKETING"
+                score="91"
+                description="Brands are shifting towards community-first approaches, with 78% higher engagement rates."
+                stats={[
+                  { label: "Higher Engagement", value: "78%" },
+                  { label: "Discussions", value: "890K" },
+                  { label: "Brand Trust", value: "92%" },
+                  { label: "Days Trending", value: "15" },
+                ]}
+                tags={["Community Building", "Brand Loyalty", "UGC", "Authenticity"]}
+                actions={["Explore Strategy", "Track Trend"]}
+              />
+              <TrendCard
+                title="No-Code Creative Platforms"
+                category="CREATIVE TOOLS"
+                score="88"
+                description="No-code solutions are democratizing creative work, with 250% growth in adoption."
+                stats={[
+                  { label: "Adoption Growth", value: "250%" },
+                  { label: "New Users", value: "654K" },
+                  { label: "Satisfaction", value: "85%" },
+                  { label: "Days Active", value: "19" },
+                ]}
+                tags={["No-Code", "Accessibility", "Democratization", "Ease of Use"]}
+                actions={["Analyze Impact", "Monitor"]}
+              />
+            </>
+          )}
         </div>
 
         <div className="space-y-4">
           <div className="bg-white border border-[rgba(30,30,30,0.1)] rounded p-4 shadow-sm">
             <h3 className="text-sm font-semibold text-gray-900">Trending Keywords</h3>
             <div className="mt-3 flex flex-wrap gap-2">
-              {[
-                "#AICreativity",
-                "#NoCodeDesign",
-                "#CommunityFirst",
-                "#CreativeAutomation",
-                "#DigitalTransformation",
-                "#UserExperience",
-                "#BrandAuthenticity",
-                "#CreativeTools",
-                "#Innovation",
-                "#DesignThinking",
-              ].map((k) => (
+              {(trends.trendingKeywords && trends.trendingKeywords.length > 0
+                ? trends.trendingKeywords
+                : [
+                    "#AICreativity",
+                    "#NoCodeDesign",
+                    "#CommunityFirst",
+                    "#CreativeAutomation",
+                    "#DigitalTransformation",
+                    "#UserExperience",
+                    "#BrandAuthenticity",
+                    "#CreativeTools",
+                    "#Innovation",
+                    "#DesignThinking",
+                  ]
+              ).map((k) => (
                 <span key={k} className="text-[10px] px-2 py-1 rounded-full bg-gray-100 text-gray-600">
                   {k}
                 </span>
@@ -267,33 +392,47 @@ export default function CurrentTrendsSection() {
           <div className="bg-white border border-[rgba(30,30,30,0.1)] rounded p-4 shadow-sm">
             <h3 className="text-sm font-semibold text-gray-900">Market Insights</h3>
             <div className="mt-3 space-y-3 text-sm text-gray-600">
-              <div>
-                <p className="font-semibold text-gray-800">Creative Software Market</p>
-                <p className="text-xs text-green-600">$8.2B projected growth</p>
-              </div>
-              <div>
-                <p className="font-semibold text-gray-800">AI Tools Adoption</p>
-                <p className="text-xs text-green-600">73% of creatives using AI</p>
-              </div>
-              <div>
-                <p className="font-semibold text-gray-800">Remote Creative Work</p>
-                <p className="text-xs text-green-600">+45% permanent shift</p>
-              </div>
+              {trends.marketInsights && trends.marketInsights.length > 0 ? (
+                trends.marketInsights.map((insight, index) => (
+                  <div key={index}>
+                    <p className="font-semibold text-gray-800">{insight.title}</p>
+                    <p className="text-xs text-green-600">{insight.stat}</p>
+                  </div>
+                ))
+              ) : (
+                <>
+                  <div>
+                    <p className="font-semibold text-gray-800">Creative Software Market</p>
+                    <p className="text-xs text-green-600">$8.2B projected growth</p>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-800">AI Tools Adoption</p>
+                    <p className="text-xs text-green-600">73% of creatives using AI</p>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-800">Remote Creative Work</p>
+                    <p className="text-xs text-green-600">+45% permanent shift</p>
+                  </div>
+                </>
+              )}
             </div>
           </div>
 
           <div className="bg-white border border-[rgba(30,30,30,0.1)] rounded p-4 shadow-sm">
             <h3 className="text-sm font-semibold text-gray-900">Quick Trends</h3>
             <div className="mt-3 space-y-3 text-sm text-gray-700">
-              {[
-                "AI Content Generation",
-                "Mobile-First Design",
-                "Interactive Storytelling",
-                "Cross-Platform Integration",
-              ].map((t) => (
-                <div key={t} className="flex items-center justify-between">
-                  <span>{t}</span>
-                  <span className="text-xs text-green-600">+120%</span>
+              {(trends.quickTrends && trends.quickTrends.length > 0
+                ? trends.quickTrends
+                : [
+                    { name: "AI Content Generation", growth: "+120%" },
+                    { name: "Mobile-First Design", growth: "+95%" },
+                    { name: "Interactive Storytelling", growth: "+87%" },
+                    { name: "Cross-Platform Integration", growth: "+76%" },
+                  ]
+              ).map((t, index) => (
+                <div key={index} className="flex items-center justify-between">
+                  <span>{t.name}</span>
+                  <span className="text-xs text-green-600">{t.growth}</span>
                 </div>
               ))}
             </div>
