@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../services/api";
 
@@ -372,11 +372,7 @@ export default function BusinessTestPage() {
   const [loading, setLoading] = useState(true);
   const [founderId, setFounderId] = useState(null);
 
-  useEffect(() => {
-    loadExistingData();
-  }, []);
-
-  const loadExistingData = async () => {
+  const loadExistingData = useCallback(async () => {
     try {
       // Get founder ID
       const founder = await api.getMeFounder();
@@ -436,7 +432,11 @@ export default function BusinessTestPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [navigate]);
+
+  useEffect(() => {
+    loadExistingData();
+  }, [loadExistingData]);
 
   const step = STEPS[currentStep];
   const progress = Math.round(((currentStep + 1) / STEPS.length) * 100);
