@@ -217,9 +217,9 @@ export default function TestChatPage() {
     <div className="flex h-screen bg-gray-50">
       {/* Sidebar with debug info */}
       <div className="w-80 bg-gray-900 text-white p-6 overflow-y-auto">
-        <h2 className="text-xl font-bold mb-4 text-green-400">🧪 Test Chat</h2>
+        <h2 className="text-xl font-bold mb-4 text-violet-400">💬 Marnee Chat</h2>
         <p className="text-sm text-gray-400 mb-6">
-          Clean architecture prototype. If this works, we migrate to main chat.
+          All messages are saved and persist between sessions.
         </p>
 
         <div className="space-y-4">
@@ -305,9 +305,9 @@ export default function TestChatPage() {
       <div className="flex-1 flex flex-col">
         {/* Header */}
         <div className="bg-white border-b border-gray-200 px-6 py-4">
-          <h1 className="text-xl font-bold text-gray-900">Test Chat with Marnee</h1>
+          <h1 className="text-xl font-bold text-gray-900">Chat with Marnee</h1>
           <p className="text-sm text-gray-600">
-            All messages are saved to database and persist between sessions
+            Your AI content strategist - all messages are saved and persist
           </p>
         </div>
 

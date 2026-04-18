@@ -16,9 +16,9 @@ import TestSelectionPage from "./Pages/TestSelectionPage";
 import BusinessTestPage from "./Pages/BusinessTestPage";
 
 import AppLayout from "./Layout/Layout";
-import IAWebPage from "./Pages/Tools/IAWebPage";
+import IAWebPage from "./Pages/Tools/IAWebPage"; // Old chat - kept as backup
 import CalendarPage from "./Pages/Tools/CalendarPage";
-import TestChatPage from "./Pages/Tools/TestChatPage";
+import TestChatPage from "./Pages/Tools/TestChatPage"; // New working chat
 // import MyDashboard from "./Pages/Tools/MyDashboard"; // Disabled for MVP Beta
 
 function RequireAuth({ children }) {
@@ -69,12 +69,12 @@ function AppContent() {
         <Route path="/business-test/questions" element={<BusinessTestPage />} />
         <Route path="/brand-test/questions" element={<BrandTestPage />} />
 
-        {/* TEST CHAT - PROTOTIPO SEPARADO SOLO PARA PRUEBAS */}
+        {/* CHAT VIEJO - BACKUP (por si acaso) */}
         <Route
-          path="/testeando-chat"
+          path="/chat-viejo"
           element={
             <RequireAuth>
-              <TestChatPage />
+              <IAWebPage />
             </RequireAuth>
           }
         />
@@ -88,8 +88,8 @@ function AppContent() {
             </RequireAuth>
           }
         >
-          {/* /app → chat */}
-          <Route index element={<IAWebPage />} />
+          {/* /app → NUEVO CHAT QUE SÍ FUNCIONA */}
+          <Route index element={<TestChatPage />} />
           {/* /app/calendar */}
           <Route path="calendar" element={<CalendarPage />} />
           {/* /app/dashboard - Disabled for MVP Beta */}

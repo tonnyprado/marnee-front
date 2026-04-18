@@ -2,7 +2,7 @@
 import React from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import Navbar from "../Component/Navbar";
-import TestChatLink from "../Component/TestChatLink";
+// import TestChatLink from "../Component/TestChatLink"; // No longer needed - TestChat is now main chat
 
 export default function AppLayout() {
   const location = useLocation();
@@ -19,8 +19,6 @@ export default function AppLayout() {
       <div className="flex-1 bg-gray-50 min-h-screen">
         <Outlet />
       </div>
-      {/* Botón flotante para acceder al Test Chat */}
-      <TestChatLink />
     </div>
   );
 }
