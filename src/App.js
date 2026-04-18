@@ -69,9 +69,9 @@ function AppContent() {
         <Route path="/business-test/questions" element={<BusinessTestPage />} />
         <Route path="/brand-test/questions" element={<BrandTestPage />} />
 
-        {/* TEST CHAT - Standalone, no layout */}
+        {/* TEST CHAT - PROTOTIPO SEPARADO SOLO PARA PRUEBAS */}
         <Route
-          path="/test-chat"
+          path="/testeando-chat"
           element={
             <RequireAuth>
               <TestChatPage />
