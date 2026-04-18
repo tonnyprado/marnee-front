@@ -24,6 +24,15 @@ import ProfileSettingsPage from "./Pages/Tools/ProfileSettingsPage";
 import HelpSupportPage from "./Pages/Tools/HelpSupportPage";
 // import MyDashboard from "./Pages/Tools/MyDashboard"; // Disabled for MVP Beta
 
+// Admin pages
+import RequireAdmin from "./guards/RequireAdmin";
+import AdminLayout from "./admin/AdminLayout";
+import AdminDashboard from "./admin/pages/AdminDashboard";
+import UserManagement from "./admin/pages/UserManagement";
+import SubscriptionPlans from "./admin/pages/SubscriptionPlans";
+import SeoManagement from "./admin/pages/SeoManagement";
+import AnalyticsDashboard from "./admin/pages/AnalyticsDashboard";
+
 function RequireAuth({ children }) {
   const session = getAuthSession();
   if (!session || !session.token) {
@@ -103,6 +112,24 @@ function AppContent() {
           <Route path="help-support" element={<HelpSupportPage />} />
           {/* /app/dashboard - Disabled for MVP Beta */}
           {/* <Route path="dashboard" element={<MyDashboard />} /> */}
+        </Route>
+
+        {/* Admin panel - Only for ADMIN role */}
+        <Route
+          path="/admin"
+          element={
+            <RequireAuth>
+              <RequireAdmin>
+                <AdminLayout />
+              </RequireAdmin>
+            </RequireAuth>
+          }
+        >
+          <Route index element={<AdminDashboard />} />
+          <Route path="users" element={<UserManagement />} />
+          <Route path="subscriptions" element={<SubscriptionPlans />} />
+          <Route path="seo" element={<SeoManagement />} />
+          <Route path="analytics" element={<AnalyticsDashboard />} />
         </Route>
 
         {/* fallback */}
