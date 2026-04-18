@@ -81,7 +81,7 @@ export default function CalendarPage() {
     });
 
     if (!canAccessCalendar) {
-      console.log('[CalendarPage] No access to calendar - user needs to complete brand test');
+      console.log('[CalendarPage] No access to calendar - user needs to complete business test');
       setIsLoading(false);
       setHasCheckedHistory(true);
       return;
@@ -276,7 +276,7 @@ export default function CalendarPage() {
       : calendar.posts.filter((p) => p.status === statusFilter)
     : [];
 
-  // Show message if no session
+  // Show message if no business test completed
   if (!canAccessCalendar) {
     return (
       <div className="min-h-screen bg-[#f6f6f6] text-gray-900 flex items-center justify-center">
@@ -286,15 +286,15 @@ export default function CalendarPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
           </div>
-          <h2 className="text-2xl font-bold mb-4">Complete Your Brand Test First</h2>
+          <h2 className="text-2xl font-bold mb-4">Complete Your Business Test First</h2>
           <p className="text-gray-500 mb-6">
-            To access the content calendar, you need to complete the brand personality test.
+            To access the content calendar, you need to complete the business test. This helps Marnee understand your business and create personalized content strategies.
           </p>
           <a
-            href="/brand-test/questions"
+            href="/business-test/questions"
             className="px-6 py-3 rounded bg-[#1e1e1e] text-white font-medium hover:bg-[#dccaf4] hover:text-[#1a0530] transition inline-block shadow-sm"
           >
-            Start Brand Test
+            Start Business Test
           </a>
         </div>
       </div>
