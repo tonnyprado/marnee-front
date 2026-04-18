@@ -76,9 +76,9 @@ export default function CalendarView({
   };
 
   return (
-    <div className="bg-white rounded shadow-sm border border-[rgba(30,30,30,0.1)]">
-      {/* Top controls */}
-      <div className="flex items-center justify-between mb-4 p-4 border-b border-[rgba(30,30,30,0.1)]">
+    <div className="bg-white rounded shadow-sm border border-[rgba(30,30,30,0.1)] flex flex-col overflow-hidden">
+      {/* Top controls - Fixed */}
+      <div className="bg-white flex items-center justify-between p-4 border-b border-[rgba(30,30,30,0.1)]">
         <div className="flex items-center gap-3">
           <button
             onClick={goToPrevMonth}
@@ -113,21 +113,21 @@ export default function CalendarView({
         </div>
       </div>
 
-      {/* Calendar grid */}
-      <div className="bg-white border-t border-[rgba(30,30,30,0.1)] overflow-hidden">
-        {/* Headers */}
-        <div className="grid grid-cols-7 border-b border-[rgba(30,30,30,0.1)] bg-[#f6f6f6]">
-          {DAYS.map((d) => (
-            <div
-              key={d}
-              className="text-center py-3 text-sm text-gray-600 font-medium"
-            >
-              {d}
-            </div>
-          ))}
-        </div>
+      {/* Day headers - Fixed */}
+      <div className="grid grid-cols-7 border-b border-[rgba(30,30,30,0.1)] bg-[#f6f6f6]">
+        {DAYS.map((d) => (
+          <div
+            key={d}
+            className="text-center py-3 text-sm text-gray-600 font-medium"
+          >
+            {d}
+          </div>
+        ))}
+      </div>
 
-        {/* Days */}
+      {/* Calendar grid container with scroll */}
+      <div className="flex-1 overflow-y-auto">
+        {/* Days - Scrollable */}
         <div className="grid grid-cols-7">
           {cells.map((dateStr, idx) => {
             const dayNum = dateStr ? Number(dateStr.split("-")[2]) : null;
@@ -198,7 +198,7 @@ export default function CalendarView({
       </div>
 
       {/* Legend */}
-      <div className="mt-4 px-4 pb-4 flex flex-wrap items-center gap-4 text-xs text-gray-600">
+      <div className="px-4 py-4 border-t border-[rgba(30,30,30,0.1)] flex flex-wrap items-center gap-4 text-xs text-gray-600">
         <div className="flex items-center gap-4">
           <span className="font-medium">Status:</span>
           <span className="flex items-center gap-1.5">

@@ -411,36 +411,36 @@ export default function IAWebPage() {
   return (
     <div className="flex h-screen bg-[#f6f6f6] flex-col relative overflow-hidden">
 
-      <header className="border-b border-[rgba(30,30,30,0.1)] px-6 py-5 text-gray-900 bg-white flex-shrink-0 relative">
-        <div className="flex items-center gap-4">
+      <header className="border-b border-[rgba(30,30,30,0.1)] px-4 py-3 text-gray-900 bg-white flex-shrink-0 relative">
+        <div className="flex items-center gap-3">
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.3 }}
-            className="relative flex h-14 w-14 items-center justify-center rounded bg-[#ede0f8] border border-[rgba(64,8,109,0.15)]"
+            className="relative flex h-10 w-10 items-center justify-center rounded-full bg-[#40086d]"
           >
             <img
               src={marneeMascot}
               alt="Marnee mascot"
-              className={`${mascotClassName} h-11 w-11 object-contain`}
+              className={`${mascotClassName} h-7 w-7 object-contain`}
             />
           </motion.div>
           <div>
-            <h1 className="text-xl font-semibold text-[#1e1e1e]">Marnee Chat</h1>
-            <p className="text-sm text-gray-500">
-              Your AI content and brand strategist
+            <h1 className="text-lg font-semibold text-[#1e1e1e]">Marnee Chat</h1>
+            <p className="text-xs text-gray-500">
+              Your AI content strategist
             </p>
           </div>
         </div>
 
-        <div className="mt-4 relative">
+        <div className="mt-3 relative">
           <input
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-[#f6f6f6] border border-[rgba(30,30,30,0.1)] rounded pl-12 pr-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#40086d] focus:border-transparent"
-            placeholder="Search a word in your conversation history..."
+            className="w-full bg-[#f6f6f6] border border-[rgba(30,30,30,0.1)] rounded-full pl-10 pr-4 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#40086d] focus:border-transparent"
+            placeholder="Search conversation..."
           />
-          <Search className="w-5 h-5 text-[#40086d] absolute left-4 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-[#40086d] absolute left-3 top-1/2 -translate-y-1/2" />
         </div>
 
         {normalizedSearchTerm && (
@@ -452,7 +452,7 @@ export default function IAWebPage() {
         )}
       </header>
 
-      <div className="flex-1 overflow-y-auto p-6 space-y-4 flex-shrink-1 relative">
+      <div className="flex-1 overflow-y-auto p-4 space-y-3 flex-shrink-1 relative">
         <AnimatePresence>
           {visibleMessages.map((msg) => (
             <motion.div
@@ -463,10 +463,10 @@ export default function IAWebPage() {
               transition={{ duration: 0.3 }}
             >
               <div
-                className={`max-w-3xl rounded px-5 py-4 transition ${
+                className={`max-w-2xl rounded-3xl px-4 py-3 transition ${
                   msg.from === "ai"
                     ? "bg-white border border-[rgba(30,30,30,0.1)] text-gray-800"
-                    : "ml-auto bg-[#1e1e1e] text-white"
+                    : "ml-auto bg-[#40086d] text-white"
                 } ${
                   normalizedSearchTerm && msg.text.toLowerCase().includes(normalizedSearchTerm)
                     ? "ring-2 ring-[#40086d] ring-offset-2 ring-offset-transparent"
@@ -487,9 +487,9 @@ export default function IAWebPage() {
                       whileTap={{ scale: 0.98 }}
                       type="button"
                       onClick={() => navigate("/app/calendar")}
-                      className="mt-4 inline-flex items-center gap-2 rounded bg-[#40086d] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#1a0530]"
+                      className="mt-3 inline-flex items-center gap-2 rounded-full bg-[#1e1e1e] px-4 py-2 text-xs font-medium text-white transition hover:bg-[#dccaf4] hover:text-[#1a0530]"
                     >
-                      <Calendar className="w-4 h-4" />
+                      <Calendar className="w-3 h-3" />
                       Open Calendar
                     </motion.button>
                   )}
@@ -502,7 +502,7 @@ export default function IAWebPage() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="max-w-2xl rounded border border-dashed border-[rgba(30,30,30,0.1)] bg-white px-5 py-6 text-sm text-gray-500"
+            className="max-w-2xl rounded-2xl border border-dashed border-[rgba(30,30,30,0.1)] bg-white px-4 py-4 text-xs text-gray-500"
           >
             Try another word or clear the search to see the full conversation again.
           </motion.div>
@@ -512,7 +512,7 @@ export default function IAWebPage() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="max-w-3xl rounded px-5 py-4 bg-white border border-[rgba(30,30,30,0.1)]"
+            className="max-w-2xl rounded-3xl px-4 py-3 bg-white border border-[rgba(30,30,30,0.1)]"
           >
             <div className="flex items-center gap-2">
               <motion.div
@@ -554,36 +554,36 @@ export default function IAWebPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="px-6 py-4 bg-[#ede0f8] border-t border-[rgba(64,8,109,0.15)] flex-shrink-0 relative"
+          className="px-4 py-3 bg-[#ede0f8] border-t border-[rgba(64,8,109,0.15)] flex-shrink-0 relative"
         >
-          <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center justify-between gap-3">
             <div className="flex-1">
-              <p className="text-sm font-semibold text-[#1e1e1e] mb-1">
+              <p className="text-xs font-semibold text-[#1e1e1e] mb-0.5">
                 Ready to create your content calendar?
               </p>
-              <p className="text-xs text-gray-600">
-                Marnee will generate a personalized calendar with all the ideas we discussed.
+              <p className="text-[10px] text-gray-600">
+                Generate your personalized calendar
               </p>
             </div>
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => navigate("/app/calendar")}
-              className="px-6 py-3 rounded bg-[#40086d] text-white font-semibold text-sm hover:bg-[#1a0530] transition flex items-center gap-2 whitespace-nowrap"
+              className="px-4 py-2 rounded-full bg-[#40086d] text-white font-semibold text-xs hover:bg-[#1a0530] transition flex items-center gap-2 whitespace-nowrap"
             >
-              <Calendar className="w-5 h-5" />
+              <Calendar className="w-4 h-4" />
               Go to Calendar
             </motion.button>
           </div>
         </motion.div>
       )}
 
-      <div className="border-t border-[rgba(30,30,30,0.1)] flex items-center px-6 py-4 gap-3 bg-white flex-shrink-0 relative">
+      <div className="border-t border-[rgba(30,30,30,0.1)] flex items-center px-4 py-3 gap-2 bg-white flex-shrink-0 relative">
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          className="flex-1 bg-[#f6f6f6] border border-[rgba(30,30,30,0.1)] rounded px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#40086d] focus:border-transparent"
-          placeholder="Type your message here..."
+          className="flex-1 bg-[#f6f6f6] border border-[rgba(30,30,30,0.1)] rounded-full px-4 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#40086d] focus:border-transparent"
+          placeholder="Type your message..."
           onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && handleSend()}
           disabled={isLoading}
         />
@@ -593,12 +593,12 @@ export default function IAWebPage() {
           id="send-btn"
           onClick={handleSend}
           disabled={isLoading || !input.trim()}
-          className="w-12 h-12 rounded bg-[#40086d] flex items-center justify-center text-white hover:bg-[#1a0530] transition disabled:opacity-50"
+          className="w-10 h-10 rounded-full bg-[#40086d] flex items-center justify-center text-white hover:bg-[#1a0530] transition disabled:opacity-50"
         >
           {isLoading ? (
-            <Loader2 className="w-5 h-5 animate-spin" />
+            <Loader2 className="w-4 h-4 animate-spin" />
           ) : (
-            <Send className="w-5 h-5" />
+            <Send className="w-4 h-4" />
           )}
         </motion.button>
       </div>
@@ -607,16 +607,16 @@ export default function IAWebPage() {
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.5 }}
-        className="pointer-events-none absolute bottom-24 right-6 hidden md:block"
+        className="pointer-events-none absolute bottom-20 right-4 hidden md:block"
       >
-        <div className="relative rounded bg-white border border-[rgba(30,30,30,0.1)] px-4 py-3">
-          <p className="text-xs text-gray-500 mb-2">
-            {isLoading ? "Marnee is thinking..." : "Marnee is here"}
+        <div className="relative rounded-2xl bg-white border border-[rgba(30,30,30,0.1)] px-3 py-2">
+          <p className="text-[10px] text-gray-500 mb-1">
+            {isLoading ? "Thinking..." : "Marnee"}
           </p>
           <img
             src={marneeMascot}
             alt="Animated Marnee assistant"
-            className={`${mascotClassName} h-20 w-20 object-contain`}
+            className={`${mascotClassName} h-14 w-14 object-contain`}
           />
         </div>
       </motion.div>

@@ -243,24 +243,24 @@ export default function TestChatPage() {
       {/* Main chat area */}
       <div className="flex flex-col h-full">
         {/* Header */}
-        <div className="bg-white border-b border-[rgba(30,30,30,0.1)] px-6 py-4">
-          <h1 className="text-xl font-bold text-gray-900">Chat with Marnee</h1>
-          <p className="text-sm text-gray-600">
-            Your AI content strategist - all messages are saved and persist
+        <div className="bg-white border-b border-[rgba(30,30,30,0.1)] px-4 py-3">
+          <h1 className="text-lg font-bold text-gray-900">Chat with Marnee</h1>
+          <p className="text-xs text-gray-600">
+            Your AI content strategist
           </p>
         </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-4">
+        <div className="flex-1 overflow-y-auto p-3 space-y-2">
           {messages.length === 0 && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-center text-gray-400 py-12"
+              className="text-center text-gray-400 py-8"
             >
-              <MessageCircle className="w-16 h-16 mx-auto mb-4 text-[#40086d] opacity-40" />
-              <p className="text-lg mb-2">No messages yet</p>
-              <p className="text-sm">Send a message to start chatting with Marnee</p>
+              <MessageCircle className="w-12 h-12 mx-auto mb-3 text-[#40086d] opacity-40" />
+              <p className="text-sm mb-1">No messages yet</p>
+              <p className="text-xs">Start chatting with Marnee</p>
             </motion.div>
           )}
 
@@ -275,13 +275,13 @@ export default function TestChatPage() {
                 className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 <div
-                  className={`max-w-2xl rounded px-5 py-3 ${
+                  className={`max-w-md rounded-3xl px-3 py-2 ${
                     msg.role === 'user'
-                      ? 'bg-[#1e1e1e] text-white'
+                      ? 'bg-[#40086d] text-white'
                       : 'bg-white border border-[rgba(30,30,30,0.1)] text-gray-900'
                   }`}
                 >
-                  <div className="text-xs opacity-70 mb-1">
+                  <div className="text-[9px] opacity-60 mb-0.5">
                     {msg.role === 'user' ? 'You' : 'Marnee'}
                   </div>
                   <ReactMarkdown
@@ -300,7 +300,7 @@ export default function TestChatPage() {
               animate={{ opacity: 1 }}
               className="flex justify-start"
             >
-              <div className="bg-white border border-[rgba(30,30,30,0.1)] rounded px-5 py-3">
+              <div className="bg-white border border-[rgba(30,30,30,0.1)] rounded-3xl px-3 py-2">
                 <div className="flex items-center gap-2">
                   <motion.div
                     className="w-2 h-2 bg-[#40086d] rounded-full"
@@ -326,26 +326,26 @@ export default function TestChatPage() {
         </div>
 
         {/* Input */}
-        <div className="bg-white border-t border-[rgba(30,30,30,0.1)] px-6 py-4 flex items-center gap-3">
+        <div className="bg-white border-t border-[rgba(30,30,30,0.1)] px-3 py-2 flex items-center gap-2">
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSend()}
             disabled={isLoading}
             placeholder="Type your message..."
-            className="flex-1 bg-[#f6f6f6] border border-[rgba(30,30,30,0.1)] rounded px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#40086d] focus:border-transparent"
+            className="flex-1 bg-[#f6f6f6] border border-[rgba(30,30,30,0.1)] rounded-full px-3 py-1.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#40086d] focus:border-transparent"
           />
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={handleSend}
             disabled={isLoading || !input.trim()}
-            className="w-12 h-12 rounded bg-[#40086d] flex items-center justify-center text-white hover:bg-[#1a0530] transition disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-9 h-9 rounded-full bg-[#40086d] flex items-center justify-center text-white hover:bg-[#1a0530] transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isLoading ? (
-              <Loader2 className="w-5 h-5 animate-spin" />
+              <Loader2 className="w-4 h-4 animate-spin" />
             ) : (
-              <Send className="w-5 h-5" />
+              <Send className="w-4 h-4" />
             )}
           </motion.button>
         </div>

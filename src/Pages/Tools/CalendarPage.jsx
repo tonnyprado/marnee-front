@@ -5,6 +5,7 @@ import CalendarView from "./Calendar/CalendarView";
 import CalendarListView from "./Calendar/CalendarListView";
 import CampaignForm from "./Calendar/CampaignForm";
 import BrainstormingSection from "./Calendar/BrainstormingSection";
+import LanguageSwitcher from "../../Component/LanguageSwitcher";
 
 export default function CalendarPage() {
   const { founderId, sessionId, calendarId, currentStep, setCalendarId, hasSession } = useMarnee();
@@ -283,92 +284,101 @@ export default function CalendarPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f6f6f6] text-gray-900 p-6">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-bold">Content Calendar</h1>
-          {calendar && (
-            <p className="text-sm text-gray-500">
-              {calendar.totalPosts} posts from {calendar.startDate} to {calendar.endDate}
-            </p>
-          )}
-        </div>
-
-        <div className="flex items-center gap-4">
-          {/* Regenerate button - only show on calendar tab */}
-          {mainTab === "calendar" && calendar && (
-            <button
-              onClick={() => handleGenerateCalendar(4)}
-              disabled={isGenerating}
-              className="px-4 py-2 rounded-lg border border-[rgba(30,30,30,0.1)] text-sm hover:bg-gray-100 transition disabled:opacity-50"
-            >
-              {isGenerating ? 'Generating...' : 'Regenerate'}
-            </button>
-          )}
-
-          {/* View toggle - only show on calendar tab */}
-          {mainTab === "calendar" && calendar && (
-            <div className="flex bg-gray-100 rounded-full overflow-hidden p-1">
-              <button
-                onClick={() => setView("calendar")}
-                className={`px-4 py-2 text-sm rounded-full transition ${
-                  view === "calendar" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"
-                }`}
-              >
-                Calendar
-              </button>
-              <button
-                onClick={() => setView("list")}
-                className={`px-4 py-2 text-sm rounded-full transition ${
-                  view === "list" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"
-                }`}
-              >
-                List
-              </button>
+    <div className="min-h-screen bg-[#f6f6f6] text-gray-900 flex flex-col">
+      {/* Header - Sticky */}
+      <div className="sticky top-0 z-10 bg-white border-b border-[rgba(30,30,30,0.1)] shadow-sm">
+        <div className="px-6 py-4">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h1 className="text-2xl font-bold">Content Calendar</h1>
+              {calendar && (
+                <p className="text-sm text-gray-500">
+                  {calendar.totalPosts} posts from {calendar.startDate} to {calendar.endDate}
+                </p>
+              )}
             </div>
-          )}
+
+            <div className="flex items-center gap-3">
+              {/* Language Switcher */}
+              <LanguageSwitcher className="border-[rgba(30,30,30,0.1)] bg-white shadow-sm" />
+
+              {/* Regenerate button - only show on calendar tab */}
+              {mainTab === "calendar" && calendar && (
+                <button
+                  onClick={() => handleGenerateCalendar(4)}
+                  disabled={isGenerating}
+                  className="px-4 py-2 rounded border border-[rgba(30,30,30,0.1)] text-sm hover:bg-[#f6f6f6] transition disabled:opacity-50"
+                >
+                  {isGenerating ? 'Generating...' : 'Regenerate'}
+                </button>
+              )}
+
+              {/* View toggle - only show on calendar tab */}
+              {mainTab === "calendar" && calendar && (
+                <div className="flex bg-[#f6f6f6] rounded-full overflow-hidden p-1">
+                  <button
+                    onClick={() => setView("calendar")}
+                    className={`px-4 py-2 text-sm rounded-full transition ${
+                      view === "calendar" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"
+                    }`}
+                  >
+                    Calendar
+                  </button>
+                  <button
+                    onClick={() => setView("list")}
+                    className={`px-4 py-2 text-sm rounded-full transition ${
+                      view === "list" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"
+                    }`}
+                  >
+                    List
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Main Tabs */}
+          <div className="flex items-center gap-2 border-b border-[rgba(30,30,30,0.1)] -mb-[1px]">
+            <button
+              onClick={() => setMainTab("calendar")}
+              className={`px-4 py-3 text-sm font-medium border-b-2 transition ${
+                mainTab === "calendar"
+                  ? "border-[#40086d] text-[#40086d]"
+                  : "border-transparent text-gray-500 hover:text-gray-700"
+              }`}
+            >
+              Calendar
+            </button>
+            <button
+              onClick={() => setMainTab("brainstorming")}
+              className={`px-4 py-3 text-sm font-medium border-b-2 transition ${
+                mainTab === "brainstorming"
+                  ? "border-[#40086d] text-[#40086d]"
+                  : "border-transparent text-gray-500 hover:text-gray-700"
+              }`}
+            >
+              Brainstorming
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Main Tabs */}
-      <div className="flex items-center gap-2 mb-6 border-b border-[rgba(30,30,30,0.1)]">
-        <button
-          onClick={() => setMainTab("calendar")}
-          className={`px-4 py-3 text-sm font-medium border-b-2 transition ${
-            mainTab === "calendar"
-              ? "border-violet-500 text-[#40086d]"
-              : "border-transparent text-gray-500 hover:text-gray-700"
-          }`}
-        >
-          Calendar
-        </button>
-        <button
-          onClick={() => setMainTab("brainstorming")}
-          className={`px-4 py-3 text-sm font-medium border-b-2 transition ${
-            mainTab === "brainstorming"
-              ? "border-violet-500 text-[#40086d]"
-              : "border-transparent text-gray-500 hover:text-gray-700"
-          }`}
-        >
-          Brainstorming
-        </button>
-      </div>
+      {/* Main content container with padding */}
+      <div className="flex-1 overflow-y-auto p-6">
+        {/* Error message */}
+        {error && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded text-red-600 text-sm">
+            {error}
+            <button onClick={() => setError(null)} className="ml-2 underline">
+              Dismiss
+            </button>
+          </div>
+        )}
 
-      {/* Error message */}
-      {error && (
-        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded text-red-600 text-sm">
-          {error}
-          <button onClick={() => setError(null)} className="ml-2 underline">
-            Dismiss
-          </button>
-        </div>
-      )}
-
-      {/* Main content */}
-      {mainTab === "calendar" ? (
-        <div className="relative flex gap-4">
-          <div className={`flex-1 ${isFormOpen ? "mr-96" : ""}`}>
+        {/* Main content */}
+        {mainTab === "calendar" ? (
+          <div className="relative flex gap-4">
+            <div className={`flex-1 ${isFormOpen ? "mr-96" : ""}`}>
             {view === "calendar" ? (
               <CalendarView
                 posts={filteredPosts}
@@ -401,9 +411,11 @@ export default function CalendarPage() {
             />
           )}
         </div>
-      ) : (
-        <BrainstormingSection calendarId={calendarId} />
-      )}
+          ) : (
+            <BrainstormingSection calendarId={calendarId} />
+          )}
+        </div>
+      </div>
     </div>
   );
 }
