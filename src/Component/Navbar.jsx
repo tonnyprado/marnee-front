@@ -47,9 +47,9 @@ export default function Navbar({ active = "ai-content" }) {
   ];
 
   return (
-    <aside className="w-72 bg-white text-gray-900 flex flex-col h-screen border-r border-gray-100">
+    <aside className="w-72 bg-white text-gray-900 flex flex-col h-screen border-r border-[rgba(30,30,30,0.1)] shrink-0">
       {/* Logo */}
-      <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
+      <div className="flex items-center justify-between px-6 py-5 border-b border-[rgba(30,30,30,0.1)]">
         <div
           onClick={() => navigate("/")}
           className="cursor-pointer hover:opacity-80 transition"
@@ -71,13 +71,13 @@ export default function Navbar({ active = "ai-content" }) {
             <button
               key={item.id}
               onClick={() => navigate(item.path)}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left transition ${
+              className={`w-full flex items-center gap-3 px-3 py-3 rounded text-left transition ${
                 isActive
-                  ? "bg-violet-50 text-violet-700 border border-violet-100"
-                  : "text-gray-600 hover:bg-gray-50"
+                  ? "bg-[#ede0f8] text-[#40086d] border border-[#dccaf4]"
+                  : "text-gray-600 hover:bg-[#f6f6f6]"
               }`}
             >
-              <span className={isActive ? "text-violet-500" : "text-gray-400"}>
+              <span className={`shrink-0 ${isActive ? "text-[#40086d]" : "text-gray-400"}`}>
                 {icons[item.icon]}
               </span>
               <span className="text-sm font-medium">{item.label}</span>
@@ -87,22 +87,22 @@ export default function Navbar({ active = "ai-content" }) {
       </nav>
 
       {/* User box */}
-      <div className="mt-auto border-t border-gray-100 px-5 py-4">
+      <div className="mt-auto border-t border-[rgba(30,30,30,0.1)] px-5 py-4">
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-500 via-indigo-500 to-cyan-500 text-white flex items-center justify-center text-sm font-semibold">
+          <div className="w-10 h-10 rounded bg-[#40086d] text-[#dccaf4] flex items-center justify-center text-sm font-medium">
             {initials || t("common.userFallback").slice(0, 1).toUpperCase()}
           </div>
           <div>
-            <p className="text-sm font-semibold text-gray-900">{displayName}</p>
+            <p className="text-sm font-medium text-gray-900">{displayName}</p>
             <p className="text-xs text-gray-500">{session?.email || t("common.freePlan")}</p>
           </div>
         </div>
 
         <div className="space-y-2 text-sm text-gray-500">
-          <button className="block hover:text-violet-600 transition">{t("navbar.profileSettings")}</button>
-          <button className="block hover:text-violet-600 transition">{t("navbar.billingPlans")}</button>
-          <button className="block hover:text-violet-600 transition">{t("navbar.notifications")}</button>
-          <button className="block hover:text-violet-600 transition">{t("navbar.helpSupport")}</button>
+          <button className="block hover:text-[#40086d] transition">{t("navbar.profileSettings")}</button>
+          <button className="block hover:text-[#40086d] transition">{t("navbar.billingPlans")}</button>
+          <button className="block hover:text-[#40086d] transition">{t("navbar.notifications")}</button>
+          <button className="block hover:text-[#40086d] transition">{t("navbar.helpSupport")}</button>
         </div>
 
         <button

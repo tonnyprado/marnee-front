@@ -11,23 +11,23 @@ const STEPS = [
 
 export default function StepIndicator({ currentStep = 1 }) {
   return (
-    <div className="flex items-center justify-center gap-2 py-4 px-6 bg-white/5 border-b border-white/10">
+    <div className="flex items-center justify-center gap-2 py-4 px-6 bg-[#f6f6f6] border-b border-[rgba(30,30,30,0.1)]">
       {STEPS.map((s, idx) => {
         const isCompleted = currentStep > s.step;
-        const isActive = currentStep === s.step;
-        const isLast = idx === STEPS.length - 1;
+        const isActive    = currentStep === s.step;
+        const isLast      = idx === STEPS.length - 1;
 
         return (
           <React.Fragment key={s.step}>
             {/* Step circle */}
             <div className="flex flex-col items-center">
               <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-all ${
+                className={`w-8 h-8 rounded flex items-center justify-center text-sm font-medium transition-all ${
                   isCompleted
-                    ? "bg-green-500 text-white"
+                    ? "bg-[#40086d] text-[#dccaf4]"
                     : isActive
-                    ? "bg-blue-500 text-white ring-2 ring-blue-400 ring-offset-2 ring-offset-black"
-                    : "bg-white/10 text-gray-500"
+                    ? "bg-[#40086d] text-white ring-2 ring-[#dccaf4] ring-offset-2 ring-offset-[#f6f6f6]"
+                    : "bg-[rgba(30,30,30,0.06)] text-gray-400"
                 }`}
               >
                 {isCompleted ? (
@@ -40,7 +40,9 @@ export default function StepIndicator({ currentStep = 1 }) {
               </div>
               <span
                 className={`text-xs mt-1 whitespace-nowrap ${
-                  isActive ? "text-blue-400" : isCompleted ? "text-green-400" : "text-gray-500"
+                  isActive    ? "text-[#40086d]"  :
+                  isCompleted ? "text-[#40086d]"  :
+                                "text-gray-400"
                 }`}
               >
                 {s.name}
@@ -50,8 +52,8 @@ export default function StepIndicator({ currentStep = 1 }) {
             {/* Connector line */}
             {!isLast && (
               <div
-                className={`flex-1 h-0.5 max-w-[60px] ${
-                  isCompleted ? "bg-green-500" : "bg-white/10"
+                className={`flex-1 h-px max-w-[60px] ${
+                  isCompleted ? "bg-[#40086d]" : "bg-[rgba(30,30,30,0.1)]"
                 }`}
               />
             )}
