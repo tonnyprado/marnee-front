@@ -3,12 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import marneeLogo from '../assets/marnee-logo.png';
 import demoVideo from '../assets/videos/0207.mp4';
 import LanguageSwitcher from '../Component/LanguageSwitcher';
+import { useLanguage } from '../context/LanguageContext';
 
 const WAITLIST_URL = 'https://tally.so/r/D4NkGl';
 
 /* ── SUB-COMPONENTS ──────────────────────────────────────── */
 
 function LandingNav({ onLoginClick }) {
+  const { t } = useLanguage();
+
   return (
     <nav className="mn-nav">
       <div className="mn-nav-inner">
@@ -18,9 +21,9 @@ function LandingNav({ onLoginClick }) {
         </button>
 
         <div className="mn-nav-links">
-          <a href="#how">How it works</a>
-          <a href="#features">Features</a>
-          <a href="#waitlist">Pricing</a>
+          <a href="#how">{t('presentation.nav.how')}</a>
+          <a href="#features">{t('presentation.nav.features')}</a>
+          <a href="#waitlist">{t('presentation.nav.pricing')}</a>
         </div>
 
         <div className="mn-nav-actions">
@@ -32,7 +35,7 @@ function LandingNav({ onLoginClick }) {
             rel="noopener noreferrer"
             className="mn-nav-pill"
           >
-            Join the waitlist
+            {t('presentation.nav.waitlist')}
           </a>
         </div>
       </div>
@@ -41,42 +44,42 @@ function LandingNav({ onLoginClick }) {
 }
 
 function HeroSection({ titleRef }) {
+  const { t } = useLanguage();
+
   return (
     <section className="mn-hero">
       <div className="mn-hero-inner">
 
         <div className="mn-hero-tag mn-fade-up">
           <span className="mn-hero-tag-dot" />
-          Your AI CMO, starting first as a social media strategist
+          {t('presentation.hero.badge')}
         </div>
 
         {/* eslint-disable-next-line jsx-a11y/heading-has-content */}
-        <h1 className="mn-hero-title" ref={titleRef} id="hero-title" aria-label="Marketing intelligence for global growth." />
+        <h1 className="mn-hero-title" ref={titleRef} id="hero-title" aria-label={`${t('presentation.hero.line1')} ${t('presentation.hero.line2')}${t('presentation.hero.line3')}`} />
 
         <div className="mn-hero-stats mn-fade-up" style={{ transitionDelay: '.2s' }}>
           <div className="mn-stat-t">
-            <div className="mn-stat-t-num">20x</div>
-            <div className="mn-stat-t-label">faster than any agency<br />or manual strategy</div>
+            <div className="mn-stat-t-num">{t('presentation.hero.stat1Num')}</div>
+            <div className="mn-stat-t-label" dangerouslySetInnerHTML={{ __html: t('presentation.hero.stat1Label').replace(/\n/g, '<br />') }} />
           </div>
           <div className="mn-stat-divider" />
           <div className="mn-stat-t">
-            <div className="mn-stat-t-num">40x</div>
-            <div className="mn-stat-t-label">cheaper than any CMO<br />or marketing agency</div>
+            <div className="mn-stat-t-num">{t('presentation.hero.stat2Num')}</div>
+            <div className="mn-stat-t-label" dangerouslySetInnerHTML={{ __html: t('presentation.hero.stat2Label').replace(/\n/g, '<br />') }} />
           </div>
         </div>
 
-        <p className="mn-hero-body mn-fade-up" style={{ transitionDelay: '.3s' }}>
-          She builds your strategy, spots trends,<br />and guides every decision.
-        </p>
+        <p className="mn-hero-body mn-fade-up" style={{ transitionDelay: '.3s' }} dangerouslySetInnerHTML={{ __html: t('presentation.hero.body').replace(/\n/g, '<br />') }} />
 
         <div className="mn-hero-cta mn-fade-up" style={{ transitionDelay: '.4s' }}>
           <a href={WAITLIST_URL} target="_blank" rel="noopener noreferrer" className="mn-btn-primary">
-            Join the waitlist
+            {t('presentation.hero.primaryCta')}
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M5 12h14M12 5l7 7-7 7" />
             </svg>
           </a>
-          <a href="#how" className="mn-btn-ghost">See how it works</a>
+          <a href="#how" className="mn-btn-ghost">{t('presentation.hero.secondaryCta')}</a>
         </div>
 
         <div className="mn-hero-proof mn-fade-up" style={{ transitionDelay: '.5s' }}>
@@ -86,7 +89,7 @@ function HeroSection({ titleRef }) {
             <div className="mn-proof-av">J</div>
             <div className="mn-proof-av">M</div>
           </div>
-          <span><strong>20+ founders</strong> already on the waitlist</span>
+          <span dangerouslySetInnerHTML={{ __html: t('presentation.hero.proofText').replace('20+', '<strong>20+</strong>') }} />
         </div>
 
       </div>
@@ -95,10 +98,8 @@ function HeroSection({ titleRef }) {
 }
 
 function Ticker() {
-  const items = [
-    'AI-Powered Strategy', 'Trend Detection', 'Brand Intelligence',
-    'Content Calendar', '20x Faster', '40x Cheaper', 'Global Growth',
-  ];
+  const { t } = useLanguage();
+  const items = t('presentation.ticker.items');
   // Duplicate for seamless loop
   const all = [...items, ...items];
 
@@ -114,32 +115,32 @@ function Ticker() {
 }
 
 function ProblemSection() {
+  const { t } = useLanguage();
+
   return (
     <section className="mn-problem">
       <div className="mn-section-wrap">
         <div className="mn-problem-head mn-fade-up">
-          <div className="mn-section-tag">The Problem</div>
-          <h2 className="mn-section-title">
-            Marketing shouldn't feel like<br />throwing darts in the dark
-          </h2>
+          <div className="mn-section-tag">{t('presentation.problem.tag')}</div>
+          <h2 className="mn-section-title" dangerouslySetInnerHTML={{ __html: t('presentation.problem.title').replace(/\n/g, '<br />') }} />
         </div>
 
         <div className="mn-grid-3" style={{ marginBottom: 1 }}>
           {[
             {
               n: '01',
-              title: 'No clarity on what to post',
-              body: "You're constantly guessing what content will resonate with your audience. It costs you time and engagement.",
+              title: t('presentation.problem.pain1Title'),
+              body: t('presentation.problem.pain1Body'),
             },
             {
               n: '02',
-              title: 'Trends move too fast',
-              body: "By the time you spot a trend, it's already old news. You're always one step behind your competitors.",
+              title: t('presentation.problem.pain2Title'),
+              body: t('presentation.problem.pain2Body'),
             },
             {
               n: '03',
-              title: 'Strategy is expensive',
-              body: "Building a content strategy from scratch takes time you don't have. Expertise that costs thousands per month.",
+              title: t('presentation.problem.pain3Title'),
+              body: t('presentation.problem.pain3Body'),
               delay: '.2s',
             },
           ].map(({ n, title, body, delay }, i) => (
@@ -157,10 +158,10 @@ function ProblemSection() {
 
         <div className="mn-stat-row">
           {[
-            { num: '73%', txt: 'of founders struggle with content strategy', delay: '0s' },
-            { num: '15h', txt: 'average weekly time spent on content planning', delay: '.1s' },
-            { num: '60%', txt: 'of social posts underperform expectations', delay: '.2s' },
-            { num: '₩3M', txt: 'average monthly cost of a marketing agency in Korea', delay: '.3s' },
+            { num: t('presentation.problem.stat1'), txt: t('presentation.problem.stat1Text'), delay: '0s' },
+            { num: t('presentation.problem.stat2'), txt: t('presentation.problem.stat2Text'), delay: '.1s' },
+            { num: t('presentation.problem.stat3'), txt: t('presentation.problem.stat3Text'), delay: '.2s' },
+            { num: t('presentation.problem.stat4'), txt: t('presentation.problem.stat4Text'), delay: '.3s' },
           ].map(({ num, txt, delay }) => (
             <div className="mn-stat-box mn-card-base mn-fade-up" key={num} style={{ transitionDelay: delay }}>
               <div className="mn-stat-box-num">{num}</div>
@@ -174,34 +175,34 @@ function ProblemSection() {
 }
 
 function SolutionSection() {
+  const { t } = useLanguage();
+
   return (
     <section className="mn-solution">
       <div className="mn-section-wrap">
         <div className="mn-fade-up">
-          <div className="mn-section-tag">The Solution</div>
-          <h2 className="mn-section-title">Marnee gives you clarity,<br />not complexity</h2>
-          <p className="mn-section-sub">
-            She analyzes what's working in your niche and turns it into a personalized strategy you can actually execute.
-          </p>
+          <div className="mn-section-tag">{t('presentation.solution.tag')}</div>
+          <h2 className="mn-section-title" dangerouslySetInnerHTML={{ __html: t('presentation.solution.title').replace(/\n/g, '<br />') }} />
+          <p className="mn-section-sub">{t('presentation.solution.subtitle')}</p>
         </div>
 
         <div className="mn-grid-3" style={{ marginTop: 48 }}>
           {[
             {
               n: '01',
-              title: 'AI-Powered Research',
-              body: "Marnee scans thousands of posts in your niche to find what's actually working right now. No guessing.",
+              title: t('presentation.solution.card1Title'),
+              body: t('presentation.solution.card1Body'),
             },
             {
               n: '02',
-              title: 'Brand-First Strategy',
-              body: 'Every suggestion is tailored to your unique tone, audience, and positioning. No copy-paste templates, ever.',
+              title: t('presentation.solution.card2Title'),
+              body: t('presentation.solution.card2Body'),
               delay: '.1s',
             },
             {
               n: '03',
-              title: 'Ready-to-Execute Plans',
-              body: 'Get complete content briefs with hooks, angles, and visual direction. Ready for UGC, AI or talking head production.',
+              title: t('presentation.solution.card3Title'),
+              body: t('presentation.solution.card3Body'),
               delay: '.2s',
             },
           ].map(({ n, title, body, delay }) => (
@@ -303,12 +304,14 @@ function HowSection() {
 }
 
 function DemoSection() {
+  const { t } = useLanguage();
+
   return (
     <section className="mn-demo">
       <div className="mn-section-wrap">
         <div className="mn-fade-up">
-          <div className="mn-section-tag">Product Demo</div>
-          <h2 className="mn-section-title">See Marnee in action</h2>
+          <div className="mn-section-tag">{t('presentation.demo.tag')}</div>
+          <h2 className="mn-section-title">{t('presentation.demo.title')}</h2>
         </div>
 
         <div className="mn-demo-frame mn-fade-up" style={{ transitionDelay: '.1s' }}>
@@ -316,7 +319,7 @@ function DemoSection() {
             <div className="mn-demo-dot r" />
             <div className="mn-demo-dot y" />
             <div className="mn-demo-dot g" />
-            <div className="mn-demo-url">app.marnee.ai — Campaign Manager</div>
+            <div className="mn-demo-url">{t('presentation.demo.url')}</div>
           </div>
           <div className="mn-demo-body" style={{ position: 'relative', padding: 0, height: '500px' }}>
             <video
@@ -604,10 +607,10 @@ function LandingFooter({ onLoginClick }) {
 }
 
 /* ── TYPEWRITER HOOK ─────────────────────────────────────── */
-function useTypewriter(titleRef) {
+function useTypewriter(titleRef, lines) {
   useEffect(() => {
     const titleEl = titleRef.current;
-    if (!titleEl) return;
+    if (!titleEl || !lines || lines.length === 0) return;
 
     // Clear any leftover DOM from React Strict Mode double-invoke
     titleEl.innerHTML = '';
@@ -620,12 +623,6 @@ function useTypewriter(titleRef) {
       cursor.className = 'type-cursor';
       cursor.textContent = '|';
       titleEl.appendChild(cursor);
-
-      const lines = [
-        ['Social media marketing', false, false],
-        ['intelligence for ', false, false],
-        ['global growth.', true, true],
-      ];
 
       await delay(320);
 
@@ -669,7 +666,7 @@ function useTypewriter(titleRef) {
       cancelled = true;
       if (titleEl) titleEl.innerHTML = '';
     };
-  }, [titleRef]);
+  }, [titleRef, lines]);
 }
 
 /* ── FADE-UP OBSERVER HOOK ───────────────────────────────── */
@@ -696,9 +693,16 @@ function useFadeUpObserver() {
 /* ── PAGE ────────────────────────────────────────────────── */
 export default function LandingPage() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const titleRef = useRef(null);
 
-  useTypewriter(titleRef);
+  const typewriterLines = [
+    [t('presentation.hero.line1'), false, false],
+    [t('presentation.hero.line2'), false, false],
+    [t('presentation.hero.line3'), true, true],
+  ];
+
+  useTypewriter(titleRef, typewriterLines);
   useFadeUpObserver();
 
   const handleLoginClick = () => navigate('/auth');

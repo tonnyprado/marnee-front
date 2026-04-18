@@ -1,0 +1,16 @@
+Las siguientes secciones necesitan actualización para usar traducciones:
+
+✓ LandingNav - DONE
+✓ HeroSection - DONE  
+✓ Ticker - DONE
+✓ ProblemSection - DONE
+
+Pendientes:
+- SolutionSection (línea 177)
+- HowSection (línea 225)
+- DemoSection (línea 306)
+- FeaturesSection (línea 384)
+- MarneeSection (línea 420)
+- WhoSection (línea 497)
+- CtaSection (línea 535)
+- LandingFooter (después de línea 535)
