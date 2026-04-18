@@ -18,6 +18,7 @@ import BusinessTestPage from "./Pages/BusinessTestPage";
 import AppLayout from "./Layout/Layout";
 import IAWebPage from "./Pages/Tools/IAWebPage";
 import CalendarPage from "./Pages/Tools/CalendarPage";
+import TestChatPage from "./Pages/Tools/TestChatPage";
 // import MyDashboard from "./Pages/Tools/MyDashboard"; // Disabled for MVP Beta
 
 function RequireAuth({ children }) {
@@ -67,6 +68,16 @@ function AppContent() {
         <Route path="/test-selection" element={<TestSelectionPage />} />
         <Route path="/business-test/questions" element={<BusinessTestPage />} />
         <Route path="/brand-test/questions" element={<BrandTestPage />} />
+
+        {/* TEST CHAT - Standalone, no layout */}
+        <Route
+          path="/test-chat"
+          element={
+            <RequireAuth>
+              <TestChatPage />
+            </RequireAuth>
+          }
+        />
 
         {/* privadas / con navbar */}
         <Route
