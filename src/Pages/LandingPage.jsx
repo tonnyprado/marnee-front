@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import marneeLogo from '../assets/marnee-logo.png';
 
 const WAITLIST_URL = 'https://tally.so/r/D4NkGl';
 
@@ -10,13 +11,7 @@ function LandingNav({ onLoginClick }) {
     <nav className="mn-nav">
       <div className="mn-nav-inner">
         <button className="mn-logo" onClick={onLoginClick} aria-label="Marnee home">
-          <div className="mn-logo-mark">
-            <svg viewBox="0 0 16 16" aria-hidden="true">
-              <path d="M8 2C5.8 2 4 3.8 4 6c0 1.5.8 2.8 2 3.5V11h4V9.5C11.2 8.8 12 7.5 12 6c0-2.2-1.8-4-4-4z" />
-              <rect x="5" y="11" width="6" height="1.5" rx="0.75" />
-              <rect x="6" y="12.5" width="4" height="1.5" rx="0.75" />
-            </svg>
-          </div>
+          <img src={marneeLogo} alt="Marnee" style={{ width: 32, height: 32, borderRadius: 8, objectFit: 'cover' }} />
           Marnee
         </button>
 
@@ -46,7 +41,7 @@ function HeroSection({ titleRef }) {
 
         <div className="mn-hero-tag mn-fade-up">
           <span className="mn-hero-tag-dot" />
-          Your AI CMO
+          Your AI CMO, starting first as a social media strategist
         </div>
 
         {/* eslint-disable-next-line jsx-a11y/heading-has-content */}
@@ -331,14 +326,55 @@ function DemoSection() {
   );
 }
 
+const FeatureIcons = {
+  TrendDetection: () => (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+    </svg>
+  ),
+  BrandIntelligence: () => (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="10" />
+      <path d="M12 16v-4M12 8h.01" />
+    </svg>
+  ),
+  AIStrategy: () => (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M12 2a7 7 0 0 1 7 7c0 3-1.8 5.4-4.5 6.5V17h-5v-1.5C6.8 14.4 5 12 5 9a7 7 0 0 1 7-7z" />
+      <rect x="9" y="17" width="6" height="2" rx="1" />
+      <rect x="10" y="19" width="4" height="2" rx="1" />
+    </svg>
+  ),
+  Dashboard: () => (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <rect x="3" y="3" width="7" height="7" rx="1" />
+      <rect x="14" y="3" width="7" height="7" rx="1" />
+      <rect x="3" y="14" width="7" height="7" rx="1" />
+      <rect x="14" y="14" width="7" height="7" rx="1" />
+    </svg>
+  ),
+  ContentReady: () => (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <polygon points="23 7 16 12 23 17 23 7" />
+      <rect x="1" y="5" width="15" height="14" rx="2" />
+    </svg>
+  ),
+  SaveTime: () => (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="10" />
+      <polyline points="12 6 12 12 16 14" />
+    </svg>
+  ),
+};
+
 function FeaturesSection() {
   const features = [
-    { icon: '📡', title: 'Trend Detection', body: 'Identify what\'s working right now in your niche with real-time social analysis across Instagram, TikTok, and more.' },
-    { icon: '🧠', title: 'Brand Intelligence', body: 'Your strategy adapts to your unique tone, audience and market positioning. The more you use Marnee, the smarter she gets.', delay: '.1s' },
-    { icon: '✨', title: 'AI Strategy Guidance', body: 'Marnee explains, suggests and helps you decide. Not just generate. Strategy with context. Decisions with confidence.', delay: '.2s' },
-    { icon: '📊', title: 'Strategy Dashboard', body: 'All decisions in one place. Calendar and kanban views to keep you organized and your team aligned.', delay: '.1s' },
-    { icon: '🎬', title: 'Content-Ready Outputs', body: 'Hooks, copy and visual direction. Ready for UGC, AI or talking head production. No creative block.', delay: '.2s' },
-    { icon: '⚡', title: 'Save Hours Weekly', body: 'Reduce content planning from 15+ hours to under 2 hours per week. More time building, less time guessing.', delay: '.3s' },
+    { Icon: FeatureIcons.TrendDetection, title: 'Trend Detection', body: 'Identify what\'s working right now in your niche with real-time social analysis across Instagram, TikTok, and more.' },
+    { Icon: FeatureIcons.BrandIntelligence, title: 'Brand Intelligence', body: 'Your strategy adapts to your unique tone, audience and market positioning. The more you use Marnee, the smarter she gets.', delay: '.1s' },
+    { Icon: FeatureIcons.AIStrategy, title: 'AI Strategy Guidance', body: 'Marnee explains, suggests and helps you decide. Not just generate. Strategy with context. Decisions with confidence.', delay: '.2s' },
+    { Icon: FeatureIcons.Dashboard, title: 'Strategy Dashboard', body: 'All decisions in one place. Calendar and kanban views to keep you organized and your team aligned.', delay: '.1s' },
+    { Icon: FeatureIcons.ContentReady, title: 'Content-Ready Outputs', body: 'Hooks, copy and visual direction. Ready for UGC, AI or talking head production. No creative block.', delay: '.2s' },
+    { Icon: FeatureIcons.SaveTime, title: 'Save Hours Weekly', body: 'Reduce content planning from 15+ hours to under 2 hours per week. More time building, less time guessing.', delay: '.3s' },
   ];
 
   return (
@@ -350,13 +386,13 @@ function FeaturesSection() {
         </div>
 
         <div className="mn-grid-3" style={{ marginTop: 56 }}>
-          {features.map(({ icon, title, body, delay }) => (
+          {features.map(({ Icon, title, body, delay }) => (
             <div
               className="mn-feat-card mn-card-base mn-fade-up"
               key={title}
               style={delay ? { transitionDelay: delay } : undefined}
             >
-              <div className="mn-feat-icon">{icon}</div>
+              <div className="mn-feat-icon"><Icon /></div>
               <div className="mn-feat-title">{title}</div>
               <div className="mn-feat-body">{body}</div>
             </div>
@@ -573,17 +609,18 @@ function useTypewriter(titleRef) {
       titleEl.appendChild(cursor);
 
       const lines = [
-        ['Marketing intelligence', false],
-        ['for global growth.', true],
+        ['Social media marketing', false, false],
+        ['intelligence for ', false, false],
+        ['global growth.', true, true],
       ];
 
       await delay(320);
 
       for (let i = 0; i < lines.length; i++) {
         if (cancelled) return;
-        const [text, italic] = lines[i];
+        const [text, italic, noBreak] = lines[i];
 
-        if (i > 0) {
+        if (i > 0 && !noBreak) {
           const br = document.createElement('br');
           titleEl.insertBefore(br, cursor);
           await delay(180);

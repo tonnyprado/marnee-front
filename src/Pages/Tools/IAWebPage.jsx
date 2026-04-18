@@ -9,63 +9,69 @@ import marneeMascot from "../../assets/mascot/marnee12.png";
 // eslint-disable-next-line jsx-a11y/heading-has-content
 const aiMarkdownComponents = {
   // eslint-disable-next-line jsx-a11y/heading-has-content
-  h1: ({ node, ...props }) => <h1 className="text-3xl font-bold mb-4 mt-6 text-gray-900" {...props} />,
+  h1: ({ node, ...props }) => <h1 className="text-base font-semibold mb-2 mt-4 text-gray-900 tracking-tight" {...props} />,
   // eslint-disable-next-line jsx-a11y/heading-has-content
-  h2: ({ node, ...props }) => <h2 className="text-2xl font-bold mb-3 mt-5 text-gray-900" {...props} />,
+  h2: ({ node, ...props }) => <h2 className="text-sm font-semibold mb-2 mt-3 text-gray-900 tracking-tight" {...props} />,
   // eslint-disable-next-line jsx-a11y/heading-has-content
-  h3: ({ node, ...props }) => <h3 className="text-xl font-bold mb-2 mt-4 text-gray-900" {...props} />,
+  h3: ({ node, ...props }) => <h3 className="text-sm font-medium mb-1 mt-3 text-gray-800" {...props} />,
   // eslint-disable-next-line jsx-a11y/heading-has-content
-  h4: ({ node, ...props }) => <h4 className="text-lg font-semibold mb-2 mt-3 text-gray-800" {...props} />,
-  p: ({ node, ...props }) => <p className="mb-3 leading-relaxed" {...props} />,
-  ul: ({ node, ...props }) => <ul className="list-disc list-inside mb-3 space-y-1 ml-2" {...props} />,
-  ol: ({ node, ...props }) => <ol className="list-decimal list-inside mb-3 space-y-1 ml-2" {...props} />,
-  li: ({ node, ...props }) => <li className="leading-relaxed" {...props} />,
-  strong: ({ node, ...props }) => <strong className="font-bold text-gray-900" {...props} />,
-  em: ({ node, ...props }) => <em className="italic" {...props} />,
+  h4: ({ node, ...props }) => <h4 className="text-xs font-semibold mb-1 mt-2 text-gray-700 uppercase tracking-wide" {...props} />,
+  p: ({ node, ...props }) => <p className="mb-2 text-sm leading-relaxed text-gray-700" {...props} />,
+  ul: ({ node, ...props }) => <ul className="mb-2 space-y-1 ml-1" {...props} />,
+  ol: ({ node, ...props }) => <ol className="list-decimal list-inside mb-2 space-y-1 ml-1 text-sm text-gray-700" {...props} />,
+  li: ({ node, ...props }) => (
+    <li className="text-sm text-gray-700 flex gap-2 leading-snug">
+      <span className="text-[#40086d] mt-0.5 flex-shrink-0">—</span>
+      <span {...props} />
+    </li>
+  ),
+  strong: ({ node, ...props }) => <strong className="font-semibold text-gray-900" {...props} />,
+  em: ({ node, ...props }) => <em className="italic text-gray-600" {...props} />,
   a: ({ node, ...props }) => (
     // eslint-disable-next-line jsx-a11y/anchor-has-content
-    <a className="text-[#40086d] hover:text-[#1a0530] underline font-medium" {...props} />
+    <a className="text-[#40086d] hover:text-[#1a0530] underline font-medium text-sm" {...props} />
   ),
   code: ({ node, inline, ...props }) =>
     inline ? (
-      <code className="bg-gray-100 px-1.5 py-0.5 rounded text-sm font-mono text-gray-800" {...props} />
+      <code className="bg-gray-100 px-1 py-0.5 rounded text-xs font-mono text-gray-700" {...props} />
     ) : (
-      <code className="block bg-gray-100 p-3 rounded-lg text-sm font-mono overflow-x-auto mb-3 text-gray-800" {...props} />
+      <code className="block bg-gray-100 p-2.5 rounded text-xs font-mono overflow-x-auto mb-2 text-gray-700" {...props} />
     ),
   blockquote: ({ node, ...props }) => (
-    <blockquote className="border-l-4 border-[#dccaf4] pl-4 italic my-3 text-gray-700" {...props} />
+    <blockquote className="border-l-2 border-[#dccaf4] pl-3 italic my-2 text-xs text-gray-500" {...props} />
   ),
+  hr: ({ node, ...props }) => <hr className="my-3 border-gray-100" {...props} />,
 };
 
 // Custom markdown components for user messages (white text on gradient background)
 // eslint-disable-next-line jsx-a11y/heading-has-content
 const userMarkdownComponents = {
   // eslint-disable-next-line jsx-a11y/heading-has-content
-  h1: ({ node, ...props }) => <h1 className="text-3xl font-bold mb-4 mt-6 text-white" {...props} />,
+  h1: ({ node, ...props }) => <h1 className="text-sm font-semibold mb-1 text-white" {...props} />,
   // eslint-disable-next-line jsx-a11y/heading-has-content
-  h2: ({ node, ...props }) => <h2 className="text-2xl font-bold mb-3 mt-5 text-white" {...props} />,
+  h2: ({ node, ...props }) => <h2 className="text-sm font-semibold mb-1 text-white" {...props} />,
   // eslint-disable-next-line jsx-a11y/heading-has-content
-  h3: ({ node, ...props }) => <h3 className="text-xl font-bold mb-2 mt-4 text-white" {...props} />,
+  h3: ({ node, ...props }) => <h3 className="text-xs font-medium mb-1 text-white" {...props} />,
   // eslint-disable-next-line jsx-a11y/heading-has-content
-  h4: ({ node, ...props }) => <h4 className="text-lg font-semibold mb-2 mt-3 text-white" {...props} />,
-  p: ({ node, ...props }) => <p className="mb-3 leading-relaxed text-white" {...props} />,
-  ul: ({ node, ...props }) => <ul className="list-disc list-inside mb-3 space-y-1 ml-2 text-white" {...props} />,
-  ol: ({ node, ...props }) => <ol className="list-decimal list-inside mb-3 space-y-1 ml-2 text-white" {...props} />,
-  li: ({ node, ...props }) => <li className="leading-relaxed text-white" {...props} />,
-  strong: ({ node, ...props }) => <strong className="font-bold text-white" {...props} />,
-  em: ({ node, ...props }) => <em className="italic text-white" {...props} />,
+  h4: ({ node, ...props }) => <h4 className="text-xs font-medium mb-1 text-white" {...props} />,
+  p: ({ node, ...props }) => <p className="text-sm leading-relaxed text-white" {...props} />,
+  ul: ({ node, ...props }) => <ul className="space-y-0.5 text-white" {...props} />,
+  ol: ({ node, ...props }) => <ol className="list-decimal list-inside space-y-0.5 text-sm text-white" {...props} />,
+  li: ({ node, ...props }) => <li className="text-sm text-white leading-snug" {...props} />,
+  strong: ({ node, ...props }) => <strong className="font-semibold text-white" {...props} />,
+  em: ({ node, ...props }) => <em className="italic text-white/90" {...props} />,
   a: ({ node, ...props }) => (
     // eslint-disable-next-line jsx-a11y/anchor-has-content
-    <a className="text-white underline hover:text-gray-100 font-medium" {...props} />
+    <a className="text-white underline hover:text-white/80 text-sm" {...props} />
   ),
   code: ({ node, inline, ...props }) =>
     inline ? (
-      <code className="bg-white/20 px-1.5 py-0.5 rounded text-sm font-mono text-white" {...props} />
+      <code className="bg-white/20 px-1 py-0.5 rounded text-xs font-mono text-white" {...props} />
     ) : (
-      <code className="block bg-white/20 p-3 rounded-lg text-sm font-mono overflow-x-auto mb-3 text-white" {...props} />
+      <code className="block bg-white/20 p-2 rounded text-xs font-mono overflow-x-auto text-white" {...props} />
     ),
   blockquote: ({ node, ...props }) => (
-    <blockquote className="border-l-4 border-white/50 pl-4 italic my-3 text-white" {...props} />
+    <blockquote className="border-l-2 border-white/40 pl-2 italic text-sm text-white/80" {...props} />
   ),
 };
 
@@ -322,7 +328,7 @@ export default function IAWebPage() {
   }
 
   return (
-    <div className="flex h-screen bg-[#f6f6f6] flex-col relative overflow-hidden">
+    <div className="flex h-screen bg-[#f6f6f6] flex-col relative overflow-hidden" style={{ fontFamily: "'Poppins', sans-serif" }}>
       <header className="border-b border-[rgba(30,30,30,0.1)] px-6 py-5 text-[#1e1e1e] bg-white flex-shrink-0 relative">
         <div className="flex items-center gap-4">
           <div className="relative flex h-14 w-14 items-center justify-center rounded bg-[#ede0f8]">
@@ -333,8 +339,8 @@ export default function IAWebPage() {
             />
           </div>
           <div>
-            <h1 className="text-xl font-semibold">Marnee Chat</h1>
-            <p className="text-sm text-gray-500">
+            <h1 className="text-sm font-semibold text-gray-900">Marnee Chat</h1>
+            <p className="text-xs text-gray-400">
               Your AI content and brand strategist, now in chat-only mode.
             </p>
           </div>
@@ -344,7 +350,7 @@ export default function IAWebPage() {
           <input
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-[#f6f6f6] border border-[rgba(30,30,30,0.1)] rounded pl-12 pr-4 py-3 text-[#1e1e1e] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#40086d] focus:border-transparent"
+            className="w-full bg-[#f6f6f6] border border-[rgba(30,30,30,0.08)] rounded pl-10 pr-4 py-2 text-xs text-[#1e1e1e] placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#40086d] focus:border-transparent"
             placeholder="Search a word in your conversation history..."
           />
           <svg
@@ -370,10 +376,10 @@ export default function IAWebPage() {
         {visibleMessages.map((msg) => (
           <div key={msg.id}>
             <div
-              className={`max-w-3xl rounded px-5 py-4 transition ${
+              className={`rounded-2xl transition ${
                 msg.from === "ai"
-                  ? "bg-white border border-[rgba(30,30,30,0.1)] text-[#1e1e1e] shadow-sm"
-                  : "ml-auto bg-[#40086d] text-white"
+                  ? "max-w-2xl bg-white border border-[rgba(30,30,30,0.08)] text-[#1e1e1e] shadow-sm px-4 py-3"
+                  : "ml-auto max-w-sm bg-[#40086d] text-white px-4 py-2"
               } ${
                 normalizedSearchTerm && msg.text.toLowerCase().includes(normalizedSearchTerm)
                   ? "ring-2 ring-[#dccaf4] ring-offset-2 ring-offset-transparent"
@@ -408,7 +414,7 @@ export default function IAWebPage() {
         )}
 
         {isLoading && (
-          <div className="max-w-3xl rounded px-5 py-4 bg-white border border-[rgba(30,30,30,0.1)] shadow-sm">
+          <div className="max-w-2xl rounded-2xl px-4 py-3 bg-white border border-[rgba(30,30,30,0.08)] shadow-sm">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-[#40086d] rounded-full animate-bounce" />
               <div
@@ -424,7 +430,7 @@ export default function IAWebPage() {
         )}
 
         {error && (
-          <div className="max-w-3xl p-4 bg-red-50 border border-red-200 rounded text-red-600 text-sm">
+          <div className="max-w-2xl p-3 bg-red-50 border border-red-200 rounded-2xl text-red-600 text-xs">
             {error}
             <button
               onClick={() => setError(null)}
@@ -467,7 +473,7 @@ export default function IAWebPage() {
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          className="flex-1 bg-[#f6f6f6] border border-[rgba(30,30,30,0.1)] rounded px-4 py-3 text-[#1e1e1e] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#40086d] focus:border-transparent"
+          className="flex-1 bg-[#f6f6f6] border border-[rgba(30,30,30,0.08)] rounded px-4 py-2.5 text-sm text-[#1e1e1e] placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#40086d] focus:border-transparent"
           placeholder="Type your message here..."
           onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && handleSend()}
           disabled={isLoading}

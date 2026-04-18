@@ -69,6 +69,12 @@ h3 {
   50%       { opacity: 0.3; }
 }
 
+@keyframes mn-glow-sweep {
+  0%   { background-position: 180% center; filter: drop-shadow(0 0 0px rgba(124,58,237,0)); }
+  45%  { filter: drop-shadow(0 0 28px rgba(124,58,237,0.55)); }
+  100% { background-position: -30% center; filter: drop-shadow(0 0 16px rgba(124,58,237,0.2)); }
+}
+
 @keyframes mn-cur-blink {
   0%, 100% { opacity: 1; }
   50%       { opacity: 0; }
@@ -236,13 +242,13 @@ h3 {
   align-items: center;
   gap: 8px;
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 9px;
   font-weight: 400;
-  letter-spacing: 2px;
+  letter-spacing: 1.5px;
   color: var(--purple);
   text-transform: uppercase;
   border: 1px solid rgba(64, 8, 109, 0.2);
-  padding: 6px 14px;
+  padding: 5px 12px;
   border-radius: var(--radius-sm);
   margin-bottom: 40px;
 }
@@ -259,7 +265,7 @@ h3 {
   font-size: clamp(44px, 6vw, 82px);
   font-weight: 300;
   letter-spacing: -2px;
-  line-height: 1.0;
+  line-height: 1.15;
   color: var(--black);
   margin-bottom: 48px;
   display: inline-block;
@@ -267,11 +273,28 @@ h3 {
   transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
   cursor: default;
   min-height: 2.2em;
+  overflow: visible;
+  padding-bottom: 0.15em;
 }
 
 .mn-hero-title em {
   font-style: italic;
-  color: var(--purple);
+  font-weight: 700;
+  background: linear-gradient(90deg, #1a0530, #40086d, #7c3aed, #c084fc, #dccaf4, #9333ea, #40086d, #1a0530);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: inline-block;
+  padding-bottom: 0.5em;
+  margin-bottom: -0.5em;
+  vertical-align: top;
+  animation: mn-glow-sweep 2.2s cubic-bezier(0.4, 0, 0.2, 1) 1 forwards;
+  cursor: default;
+}
+
+.mn-hero-title em:hover {
+  animation: mn-glow-sweep 1.6s cubic-bezier(0.4, 0, 0.2, 1) 1 forwards;
 }
 
 .mn-hero-title.title-done {
