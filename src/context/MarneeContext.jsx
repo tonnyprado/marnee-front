@@ -7,6 +7,7 @@ const STORAGE_KEYS = {
   SESSION_ID: 'marnee_sessionId',
   CALENDAR_ID: 'marnee_calendarId',
   CONVERSATION_ID: 'marnee_conversationId',
+  MESSAGES_BACKUP: 'marnee_messages_backup', // NEW: Backup messages in localStorage
 };
 
 const STEP_NAMES = {
@@ -30,7 +31,20 @@ export function MarneeProvider({ children }) {
   );
   const [currentStep, setCurrentStep] = useState(1);
   const [stepName, setStepName] = useState(STEP_NAMES[1]);
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState(() => {
+    // Try to load messages from localStorage backup on init
+    try {
+      const backup = localStorage.getItem(STORAGE_KEYS.MESSAGES_BACKUP);
+      if (backup) {
+        const parsed = JSON.parse(backup);
+        console.log('[MarneeContext] Restored', parsed.length, 'messages from localStorage backup');
+        return parsed;
+      }
+    } catch (error) {
+      console.error('[MarneeContext] Failed to restore messages from localStorage:', error);
+    }
+    return [];
+  });
   const [welcomeMessage, setWelcomeMessage] = useState(null);
   const [calendarId, setCalendarId] = useState(() =>
     localStorage.getItem(STORAGE_KEYS.CALENDAR_ID)
@@ -60,6 +74,18 @@ export function MarneeProvider({ children }) {
       localStorage.setItem(STORAGE_KEYS.CONVERSATION_ID, conversationId);
     }
   }, [conversationId]);
+
+  // NEW: Persist messages to localStorage as backup
+  useEffect(() => {
+    if (messages.length > 0) {
+      try {
+        localStorage.setItem(STORAGE_KEYS.MESSAGES_BACKUP, JSON.stringify(messages));
+        console.log('[MarneeContext] Backed up', messages.length, 'messages to localStorage');
+      } catch (error) {
+        console.error('[MarneeContext] Failed to backup messages to localStorage:', error);
+      }
+    }
+  }, [messages]);
 
   // Initialize session after questionnaire
   const initSession = ({ founderId: fId, sessionId: sId, welcomeMessage: wMsg, conversationId: cId, clearMessages = true }) => {
@@ -93,6 +119,9 @@ export function MarneeProvider({ children }) {
 
   // Load conversation from backend
   const loadConversation = async (conversation) => {
+    console.log('[MarneeContext] Loading conversation:', conversation.id);
+    console.log('[MarneeContext] Conversation has', conversation.messages?.length || 0, 'messages');
+
     setConversationId(conversation.id);
     setFounderId(conversation.founderId);
     setSessionId(conversation.sessionId);
@@ -109,15 +138,26 @@ export function MarneeProvider({ children }) {
       needsApproval: false,
     }));
 
-    setMessages(uiMessages);
+    console.log('[MarneeContext] Converted', uiMessages.length, 'messages to UI format');
+
+    // CRITICAL: Only update messages if we actually have messages to load
+    // This prevents accidentally clearing messages if the API returns empty
+    if (uiMessages.length > 0) {
+      setMessages(uiMessages);
+      console.log('[MarneeContext] Messages updated successfully');
+    } else {
+      console.warn('[MarneeContext] WARNING: Conversation has no messages, keeping existing messages');
+    }
   };
 
   // Clear session
   const clearSession = () => {
+    console.log('[MarneeContext] Clearing session and all data');
     localStorage.removeItem(STORAGE_KEYS.FOUNDER_ID);
     localStorage.removeItem(STORAGE_KEYS.SESSION_ID);
     localStorage.removeItem(STORAGE_KEYS.CALENDAR_ID);
     localStorage.removeItem(STORAGE_KEYS.CONVERSATION_ID);
+    localStorage.removeItem(STORAGE_KEYS.MESSAGES_BACKUP); // Also clear messages backup
     setFounderId(null);
     setSessionId(null);
     setCalendarId(null);

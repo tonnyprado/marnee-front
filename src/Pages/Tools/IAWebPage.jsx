@@ -137,9 +137,11 @@ export default function IAWebPage() {
   useEffect(() => {
     const loadSessionFromDB = async () => {
       try {
+        console.log("[IAWebPage] Loading session from DB...");
         const founder = await api.getMeFounder();
 
         if (founder && founder.id) {
+          console.log("[IAWebPage] Founder found:", founder.id);
           const sessions = await api.getMeSessions();
           let latestSession = null;
           let hasConversation = false;
@@ -147,32 +149,46 @@ export default function IAWebPage() {
           // First, check if there's a conversation to load
           try {
             const conversations = await api.getConversations();
+            console.log("[IAWebPage] Found", conversations?.length || 0, "conversations");
+
             if (conversations && conversations.length > 0) {
               const latestConversation = conversations[0];
+              console.log("[IAWebPage] Loading latest conversation:", latestConversation.id);
+
               const conversationData = await api.getConversation(latestConversation.id);
-              hasConversation = true;
 
-              // Initialize session WITHOUT clearing messages since we're loading a conversation
-              if (sessions && sessions.length > 0) {
-                latestSession = sessions[0];
-                initSession({
-                  founderId: founder.id,
-                  sessionId: latestSession.id,
-                  welcomeMessage: latestSession.welcomeMessage || "Welcome back! How can I help you today?",
-                  clearMessages: false, // DON'T clear messages
-                });
+              // CRITICAL: Verify conversation has messages before marking as loaded
+              if (conversationData && conversationData.messages && conversationData.messages.length > 0) {
+                hasConversation = true;
+                console.log("[IAWebPage] Conversation has", conversationData.messages.length, "messages");
+
+                // Initialize session WITHOUT clearing messages since we're loading a conversation
+                if (sessions && sessions.length > 0) {
+                  latestSession = sessions[0];
+                  initSession({
+                    founderId: founder.id,
+                    sessionId: latestSession.id,
+                    welcomeMessage: latestSession.welcomeMessage || "Welcome back! How can I help you today?",
+                    clearMessages: false, // DON'T clear messages
+                  });
+                }
+
+                // Load the conversation AFTER initializing session
+                await loadConversation(conversationData);
+                hasLoadedConversationRef.current = true;
+                console.log("[IAWebPage] Conversation loaded successfully");
+              } else {
+                console.warn("[IAWebPage] WARNING: Conversation exists but has no messages");
               }
-
-              // Load the conversation AFTER initializing session
-              await loadConversation(conversationData);
-              hasLoadedConversationRef.current = true;
             }
           } catch (convError) {
-            console.log("No existing conversations found:", convError.message);
+            console.log("[IAWebPage] No existing conversations found:", convError.message);
           }
 
           // If no conversation was found, initialize session normally (clear messages)
           if (!hasConversation) {
+            console.log("[IAWebPage] No conversation loaded, initializing fresh session");
+
             if (sessions && sessions.length > 0) {
               latestSession = sessions[0];
               initSession({
@@ -194,7 +210,7 @@ export default function IAWebPage() {
           }
         }
       } catch (error) {
-        console.log("No existing founder or session found in DB:", error.message);
+        console.log("[IAWebPage] No existing founder or session found in DB:", error.message);
         // Don't show error to user - this is normal for new users
       } finally {
         setIsLoadingSession(false);
@@ -220,21 +236,38 @@ export default function IAWebPage() {
   // This handles the case when user goes: Chat -> Calendar -> Chat
   useEffect(() => {
     const loadExistingConversation = async () => {
-      // Only load if:
-      // 1. We have a conversationId
-      // 2. Messages are empty (component just mounted or remounted)
-      // 3. Not currently loading session
-      // 4. Haven't already loaded this conversation
+      // CRITICAL: Only load if messages are truly empty AND we haven't loaded yet
+      // Do NOT load if we're just remounting with existing messages in context
       if (conversationId && messages.length === 0 && !isLoadingSession && !hasLoadedConversationRef.current) {
         try {
-          console.log("Loading conversation on remount:", conversationId);
+          console.log("[IAWebPage] Attempting to load conversation on remount:", conversationId);
           const conversation = await api.getConversation(conversationId);
-          await loadConversation(conversation);
-          hasLoadedConversationRef.current = true;
+
+          // CRITICAL: Verify the conversation has messages before loading
+          if (conversation && conversation.messages && conversation.messages.length > 0) {
+            console.log("[IAWebPage] Loading conversation with", conversation.messages.length, "messages");
+            await loadConversation(conversation);
+            hasLoadedConversationRef.current = true;
+          } else {
+            console.warn("[IAWebPage] WARNING: Conversation exists but has no messages");
+            hasLoadedConversationRef.current = true;
+            // Add welcome message as fallback
+            if (welcomeMessage && messages.length === 0) {
+              addMessage({
+                id: generateUniqueId(),
+                from: "ai",
+                text: welcomeMessage,
+                step: 1,
+                needsApproval: false,
+              });
+            }
+          }
         } catch (error) {
-          console.error("Failed to load conversation:", error);
+          console.error("[IAWebPage] Failed to load conversation:", error);
           hasLoadedConversationRef.current = true; // Mark as attempted to prevent retry loop
-          if (welcomeMessage) {
+
+          // Only add welcome message if we truly have no messages
+          if (welcomeMessage && messages.length === 0) {
             addMessage({
               id: generateUniqueId(),
               from: "ai",
@@ -244,6 +277,10 @@ export default function IAWebPage() {
             });
           }
         }
+      } else if (messages.length > 0) {
+        // We already have messages in context, don't reload
+        console.log("[IAWebPage] Messages already exist in context, skipping conversation load");
+        hasLoadedConversationRef.current = true;
       }
     };
 
