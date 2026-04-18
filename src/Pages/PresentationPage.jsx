@@ -1,17 +1,14 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import marneeLogo from '../assets/marnee-logo.png';
 import demoVideo from '../assets/videos/0207.mp4';
-import { useLanguage } from '../context/LanguageContext';
+import LanguageSwitcher from '../Component/LanguageSwitcher';
 
 const WAITLIST_URL = 'https://tally.so/r/D4NkGl';
 
 /* ── SUB-COMPONENTS ──────────────────────────────────────── */
 
 function LandingNav({ onLoginClick }) {
-  const { language, setLanguage } = useLanguage();
-  const [isLangOpen, setIsLangOpen] = useState(false);
-
   return (
     <nav className="mn-nav">
       <div className="mn-nav-inner">
@@ -26,85 +23,8 @@ function LandingNav({ onLoginClick }) {
           <a href="#waitlist">Pricing</a>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          {/* Language Switcher */}
-          <div style={{ position: 'relative' }}>
-            <button
-              onClick={() => setIsLangOpen(!isLangOpen)}
-              style={{
-                padding: '6px 12px',
-                borderRadius: '8px',
-                border: '1px solid rgba(30,30,30,0.1)',
-                background: 'white',
-                cursor: 'pointer',
-                fontSize: '14px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                transition: 'all 0.2s ease'
-              }}
-            >
-              <span>{language === 'en' ? '🇺🇸' : '🇪🇸'}</span>
-              <span>{language === 'en' ? 'EN' : 'ES'}</span>
-            </button>
-            {isLangOpen && (
-              <div style={{
-                position: 'absolute',
-                top: '100%',
-                right: 0,
-                marginTop: '4px',
-                background: 'white',
-                border: '1px solid rgba(30,30,30,0.1)',
-                borderRadius: '8px',
-                boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                overflow: 'hidden',
-                zIndex: 1000
-              }}>
-                <button
-                  onClick={() => {
-                    setLanguage('en');
-                    setIsLangOpen(false);
-                  }}
-                  style={{
-                    width: '100%',
-                    padding: '8px 16px',
-                    border: 'none',
-                    background: language === 'en' ? '#f6f6f6' : 'white',
-                    cursor: 'pointer',
-                    fontSize: '14px',
-                    textAlign: 'left',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px'
-                  }}
-                >
-                  <span>🇺🇸</span>
-                  <span>English</span>
-                </button>
-                <button
-                  onClick={() => {
-                    setLanguage('es');
-                    setIsLangOpen(false);
-                  }}
-                  style={{
-                    width: '100%',
-                    padding: '8px 16px',
-                    border: 'none',
-                    background: language === 'es' ? '#f6f6f6' : 'white',
-                    cursor: 'pointer',
-                    fontSize: '14px',
-                    textAlign: 'left',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px'
-                  }}
-                >
-                  <span>🇪🇸</span>
-                  <span>Español</span>
-                </button>
-              </div>
-            )}
-          </div>
+        <div className="mn-nav-actions">
+          <LanguageSwitcher className="border-[rgba(30,30,30,0.1)] bg-white shadow-sm" />
 
           <a
             href={WAITLIST_URL}
@@ -383,21 +303,6 @@ function HowSection() {
 }
 
 function DemoSection() {
-  const videoRef = useRef(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-
-  const handlePlayPause = () => {
-    if (videoRef.current) {
-      if (isPlaying) {
-        videoRef.current.pause();
-        setIsPlaying(false);
-      } else {
-        videoRef.current.play();
-        setIsPlaying(true);
-      }
-    }
-  };
-
   return (
     <section className="mn-demo">
       <div className="mn-section-wrap">
@@ -413,40 +318,20 @@ function DemoSection() {
             <div className="mn-demo-dot g" />
             <div className="mn-demo-url">app.marnee.ai — Campaign Manager</div>
           </div>
-          <div className="mn-demo-body" style={{ position: 'relative', padding: 0 }}>
+          <div className="mn-demo-body" style={{ position: 'relative', padding: 0, height: '500px' }}>
             <video
-              ref={videoRef}
               src={demoVideo}
+              autoPlay
+              muted
+              loop
+              playsInline
               style={{
                 width: '100%',
                 height: '100%',
                 objectFit: 'cover',
                 borderRadius: '0 0 12px 12px'
               }}
-              onClick={handlePlayPause}
-              onPlay={() => setIsPlaying(true)}
-              onPause={() => setIsPlaying(false)}
-              onEnded={() => setIsPlaying(false)}
-              controls={false}
             />
-            {!isPlaying && (
-              <button
-                className="mn-play-btn"
-                aria-label="Play demo"
-                onClick={handlePlayPause}
-                style={{
-                  position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  transform: 'translate(-50%, -50%)',
-                  zIndex: 10
-                }}
-              >
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M8 5v14l11-7z" />
-                </svg>
-              </button>
-            )}
           </div>
         </div>
       </div>
