@@ -19,6 +19,7 @@ import AppLayout from "./Layout/Layout";
 import IAWebPage from "./Pages/Tools/IAWebPage"; // Old chat - kept as backup
 import CalendarPage from "./Pages/Tools/CalendarPage";
 import TestChatPage from "./Pages/Tools/TestChatPage"; // New working chat
+import BillingPage from "./Pages/Tools/BillingPage";
 // import MyDashboard from "./Pages/Tools/MyDashboard"; // Disabled for MVP Beta
 
 function RequireAuth({ children }) {
@@ -92,6 +93,8 @@ function AppContent() {
           <Route index element={<TestChatPage />} />
           {/* /app/calendar */}
           <Route path="calendar" element={<CalendarPage />} />
+          {/* /app/billing */}
+          <Route path="billing" element={<BillingPage />} />
           {/* /app/dashboard - Disabled for MVP Beta */}
           {/* <Route path="dashboard" element={<MyDashboard />} /> */}
         </Route>
