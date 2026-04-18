@@ -60,7 +60,10 @@ export default function MyDashboard() {
                 exit="exit"
                 transition={{ duration: 0.3 }}
               >
-                <BrandProfileSection />
+                <BrandProfileSection
+                  founderId={founderId}
+                  sessionId={sessionId}
+                />
               </motion.div>
             )}
             {activeTab === "current-trends" && (
