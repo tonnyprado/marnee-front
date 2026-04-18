@@ -99,10 +99,10 @@ export default function Navbar({ active = "ai-content" }) {
         </div>
 
         <div className="space-y-2 text-sm text-gray-500">
-          <button className="block hover:text-[#40086d] transition">{t("navbar.profileSettings")}</button>
+          <button onClick={() => navigate("/app/profile-settings")} className="block hover:text-[#40086d] transition">{t("navbar.profileSettings")}</button>
           <button onClick={() => navigate("/app/billing")} className="block hover:text-[#40086d] transition">{t("navbar.billingPlans")}</button>
           <button className="block hover:text-[#40086d] transition">{t("navbar.notifications")}</button>
-          <button className="block hover:text-[#40086d] transition">{t("navbar.helpSupport")}</button>
+          <button onClick={() => navigate("/app/help-support")} className="block hover:text-[#40086d] transition">{t("navbar.helpSupport")}</button>
         </div>
 
         <button
