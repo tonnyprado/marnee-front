@@ -28,7 +28,6 @@ export default function MyDashboard() {
             "Brand Profile",
             "Current Trends",
             "Campaigns",
-            "Pending Tasks",
             "Strategy",
           ].map((tab) => {
             const key = tab.toLowerCase().replace(/\s+/g, "-");
@@ -103,24 +102,10 @@ export default function MyDashboard() {
                 exit="exit"
                 transition={{ duration: 0.3 }}
               >
-                <StrategySection />
-              </motion.div>
-            )}
-            {activeTab === "pending-tasks" && (
-              <motion.div
-                key="pending-tasks"
-                variants={tabContentVariants}
-                initial="hidden"
-                animate="visible"
-                exit="exit"
-                transition={{ duration: 0.3 }}
-              >
-                <div className="bg-white border border-[rgba(30,30,30,0.1)] rounded p-6 shadow-sm">
-                  <h2 className="text-lg font-semibold text-gray-900">Section coming soon</h2>
-                  <p className="text-sm text-gray-500 mt-1">
-                    This area will be added in the next iteration.
-                  </p>
-                </div>
+                <StrategySection
+                  founderId={founderId}
+                  sessionId={sessionId}
+                />
               </motion.div>
             )}
           </AnimatePresence>
