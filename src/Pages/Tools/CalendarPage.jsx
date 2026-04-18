@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { api } from "../../services/api";
 import { useMarnee } from "../../context/MarneeContext";
 import CalendarView from "./Calendar/CalendarView";
@@ -36,10 +36,10 @@ export default function CalendarPage() {
   const [isFormOpen, setIsFormOpen] = useState(false);
 
   // Helper to update both local state and cached calendar in context
-  const updateCalendar = (newCalendar) => {
+  const updateCalendar = useCallback((newCalendar) => {
     setCalendar(newCalendar);
     setCachedCalendar(newCalendar);
-  };
+  }, [setCachedCalendar]);
 
   const handleGenerateCalendar = async (weeks = 4) => {
     setIsGenerating(true);
@@ -195,8 +195,7 @@ export default function CalendarPage() {
     };
 
     loadCalendar();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [calendarId, canAccessCalendar, founderId, sessionId, setCalendarId]);
+  }, [calendarId, canAccessCalendar, founderId, sessionId, setCalendarId, updateCalendar, cachedCalendar, hasSession]);
 
   // If the conversation is already in the calendar phase but no calendar exists yet,
   // generate it directly in the calendar workspace instead of leaving the user in chat text.
@@ -238,7 +237,7 @@ export default function CalendarPage() {
     };
 
     autoGenerateCalendar();
-  }, [calendar, calendarId, canAccessCalendar, currentStep, founderId, hasCheckedHistory, isGenerating, isLoading, sessionId, setCalendarId]);
+  }, [calendar, calendarId, canAccessCalendar, currentStep, founderId, hasCheckedHistory, isGenerating, isLoading, sessionId, setCalendarId, updateCalendar]);
 
   // Handle post click
   const handlePostClick = (post, index) => {

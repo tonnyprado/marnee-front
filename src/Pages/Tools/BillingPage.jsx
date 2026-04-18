@@ -1,9 +1,7 @@
 import React from "react";
 import { CreditCard, ArrowRight, CheckCircle, Edit3 } from "lucide-react";
-import { useLanguage } from "../../context/LanguageContext";
 
 export default function BillingPage() {
-  const { t } = useLanguage();
 
   // Hardcoded data - will be replaced with real data later
   const planData = {
