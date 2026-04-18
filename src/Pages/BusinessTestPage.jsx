@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../services/api";
+import { useMarnee } from "../context/MarneeContext";
 
 // Question types: radio, textarea, url, multiSelect (tags), select
 const STEPS = [
@@ -364,13 +365,14 @@ const SECTIONS = [...new Set(STEPS.map(s => s.section))];
 
 export default function BusinessTestPage() {
   const navigate = useNavigate();
+  const { founderId: contextFounderId, setFounderId: setContextFounderId } = useMarnee();
 
   const [currentStep, setCurrentStep] = useState(0);
   const [answers, setAnswers] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [founderId, setFounderId] = useState(null);
+  const [founderId, setFounderId] = useState(contextFounderId || null);
 
   const loadExistingData = useCallback(async () => {
     try {
@@ -400,6 +402,7 @@ export default function BusinessTestPage() {
       }
 
       setFounderId(founder.id);
+      setContextFounderId(founder.id); // Save to MarneeContext
 
       // Try to load existing business test
       try {
@@ -534,6 +537,7 @@ export default function BusinessTestPage() {
 
       const newFounderId = response.founderId;
       setFounderId(newFounderId);
+      setContextFounderId(newFounderId); // Save to MarneeContext
       console.log("Created founder profile with ID:", newFounderId);
       return newFounderId;
     } catch (error) {
@@ -564,8 +568,16 @@ export default function BusinessTestPage() {
     try {
       await saveProgress();
 
-      // Check if we should initialize a session or just navigate
-      // For now, let's just navigate to the app
+      // Ensure founderId is saved in context before navigating
+      // (saveProgress already creates/updates the founderId)
+      if (founderId) {
+        console.log('[BusinessTest] Saving founderId to context before navigation:', founderId);
+        setContextFounderId(founderId);
+      } else {
+        console.warn('[BusinessTest] No founderId available after saveProgress');
+      }
+
+      // Navigate to app where user can start chatting with Marnee or generate calendars
       navigate('/app');
     } catch (err) {
       console.error("Error submitting business test:", err);
