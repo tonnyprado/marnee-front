@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { api } from '../../services/api';
-import { Send, Loader2, MessageCircle } from 'lucide-react';
+import { Send, Loader2, MessageCircle, Search, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // Markdown components for AI messages (formatted text)
@@ -77,8 +77,12 @@ export default function TestChatPage() {
   const [founderId, setFounderId] = useState(null);
   const [sessionId, setSessionId] = useState(null);
   const [isInitializing, setIsInitializing] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [currentResultIndex, setCurrentResultIndex] = useState(0);
 
   const messagesEndRef = useRef(null);
+  const searchResultRefs = useRef([]);
 
   // Scroll to bottom
   const scrollToBottom = () => {
@@ -88,6 +92,72 @@ export default function TestChatPage() {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  // Search functionality
+  useEffect(() => {
+    if (!searchTerm.trim()) {
+      setSearchResults([]);
+      setCurrentResultIndex(0);
+      return;
+    }
+
+    const term = searchTerm.toLowerCase();
+    const results = messages
+      .map((msg, index) => ({
+        messageIndex: index,
+        messageId: msg.id,
+        matches: msg.content.toLowerCase().includes(term),
+      }))
+      .filter(result => result.matches);
+
+    setSearchResults(results);
+    setCurrentResultIndex(0);
+
+    // Scroll to first result
+    if (results.length > 0) {
+      setTimeout(() => {
+        const firstResultElement = searchResultRefs.current[0];
+        if (firstResultElement) {
+          firstResultElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 100);
+    }
+  }, [searchTerm, messages]);
+
+  // Navigate between search results
+  const goToNextResult = () => {
+    if (searchResults.length === 0) return;
+    const nextIndex = (currentResultIndex + 1) % searchResults.length;
+    setCurrentResultIndex(nextIndex);
+
+    const resultElement = searchResultRefs.current[nextIndex];
+    if (resultElement) {
+      resultElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  };
+
+  const goToPrevResult = () => {
+    if (searchResults.length === 0) return;
+    const prevIndex = (currentResultIndex - 1 + searchResults.length) % searchResults.length;
+    setCurrentResultIndex(prevIndex);
+
+    const resultElement = searchResultRefs.current[prevIndex];
+    if (resultElement) {
+      resultElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  };
+
+  // Highlight text function
+  const highlightText = (text, searchTerm) => {
+    if (!searchTerm.trim()) return text;
+
+    const parts = text.split(new RegExp(`(${searchTerm})`, 'gi'));
+    return parts.map((part, index) =>
+      part.toLowerCase() === searchTerm.toLowerCase()
+        ? `**${part}**`
+        : part
+    ).join('');
+  };
 
   // Initialize: Load founder, conversation, and messages
   useEffect(() => {
@@ -244,10 +314,63 @@ export default function TestChatPage() {
       <div className="flex flex-col h-full">
         {/* Header */}
         <div className="bg-white border-b border-[rgba(30,30,30,0.1)] px-4 py-3">
-          <h1 className="text-lg font-bold text-gray-900">Chat with Marnee</h1>
-          <p className="text-xs text-gray-600">
-            Your AI content strategist
-          </p>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="flex-1">
+              <h1 className="text-lg font-bold text-gray-900">Chat with Marnee</h1>
+              <p className="text-xs text-gray-600">
+                Your AI content strategist
+              </p>
+            </div>
+
+            {/* Search box */}
+            <div className="flex items-center gap-2">
+              <div className="relative flex-1 sm:flex-initial">
+                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <input
+                  type="text"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder="Search in chat..."
+                  className="w-full sm:w-48 pl-8 pr-8 py-1.5 text-sm bg-gray-50 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-[#40086d] focus:border-transparent transition"
+                />
+                {searchTerm && (
+                  <button
+                    onClick={() => setSearchTerm('')}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                )}
+              </div>
+
+              {/* Search navigation */}
+              {searchResults.length > 0 && (
+                <div className="flex items-center gap-1">
+                  <span className="text-xs text-gray-500 mr-1">
+                    {currentResultIndex + 1}/{searchResults.length}
+                  </span>
+                  <button
+                    onClick={goToPrevResult}
+                    className="p-1 hover:bg-gray-100 rounded transition"
+                    title="Previous result"
+                  >
+                    <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                    </svg>
+                  </button>
+                  <button
+                    onClick={goToNextResult}
+                    className="p-1 hover:bg-gray-100 rounded transition"
+                    title="Next result"
+                  >
+                    <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
 
         {/* Messages */}
@@ -265,33 +388,46 @@ export default function TestChatPage() {
           )}
 
           <AnimatePresence>
-            {messages.map((msg) => (
-              <motion.div
-                key={msg.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3 }}
-                className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-              >
-                <div
-                  className={`max-w-md rounded-3xl px-3 py-2 ${
-                    msg.role === 'user'
-                      ? 'bg-[#40086d] text-white'
-                      : 'bg-white border border-[rgba(30,30,30,0.1)] text-gray-900'
-                  }`}
+            {messages.map((msg, index) => {
+              const isSearchResult = searchResults.some(result => result.messageIndex === index);
+              const resultIndex = searchResults.findIndex(result => result.messageIndex === index);
+              const isCurrentResult = resultIndex === currentResultIndex;
+
+              return (
+                <motion.div
+                  key={msg.id}
+                  ref={isSearchResult ? (el) => { searchResultRefs.current[resultIndex] = el; } : null}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.3 }}
+                  className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
-                  <div className="text-[9px] opacity-60 mb-0.5">
-                    {msg.role === 'user' ? 'You' : 'Marnee'}
-                  </div>
-                  <ReactMarkdown
-                    components={msg.role === 'user' ? userMarkdownComponents : aiMarkdownComponents}
+                  <div
+                    className={`max-w-md rounded-3xl px-3 py-2 transition-all ${
+                      msg.role === 'user'
+                        ? 'bg-[#40086d] text-white'
+                        : 'bg-white border border-[rgba(30,30,30,0.1)] text-gray-900'
+                    } ${
+                      isSearchResult
+                        ? isCurrentResult
+                          ? 'ring-2 ring-yellow-400 shadow-lg'
+                          : 'ring-1 ring-yellow-200'
+                        : ''
+                    }`}
                   >
-                    {msg.content}
-                  </ReactMarkdown>
-                </div>
-              </motion.div>
-            ))}
+                    <div className="text-[9px] opacity-60 mb-0.5">
+                      {msg.role === 'user' ? 'You' : 'Marnee'}
+                    </div>
+                    <ReactMarkdown
+                      components={msg.role === 'user' ? userMarkdownComponents : aiMarkdownComponents}
+                    >
+                      {isSearchResult ? highlightText(msg.content, searchTerm) : msg.content}
+                    </ReactMarkdown>
+                  </div>
+                </motion.div>
+              );
+            })}
           </AnimatePresence>
 
           {isLoading && (
