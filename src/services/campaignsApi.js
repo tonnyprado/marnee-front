@@ -2,25 +2,36 @@
  * Campaigns API Service
  * All campaign-related API endpoints
  */
+import API from '../config';
+
+const AUTH_STORAGE_KEY = 'marnee_auth';
 
 /**
  * Helper to get auth header from localStorage
  */
-const getAuthHeader = () => {
-  const token = localStorage.getItem('token');
-  return token ? { 'Authorization': `Bearer ${token}` } : {};
-};
+function getAuthHeader() {
+  try {
+    const raw = localStorage.getItem(AUTH_STORAGE_KEY);
+    if (!raw) return {};
+    const session = JSON.parse(raw);
+    if (!session || !session.token) return {};
+    const type = session.type || 'Bearer';
+    return { Authorization: `${type} ${session.token}` };
+  } catch (error) {
+    return {};
+  }
+}
 
 /**
  * Helper to make API requests with proper error handling
  */
 const request = async (endpoint, options = {}) => {
-  const baseUrl = process.env.REACT_APP_API_MARNEE || 'http://127.0.0.1:8000';
-  const url = `${baseUrl}${endpoint}`;
+  const url = `${API.MARNEE}${endpoint}`;
+  const authHeader = getAuthHeader();
 
   const defaultHeaders = {
     'Content-Type': 'application/json',
-    ...getAuthHeader(),
+    ...authHeader,
   };
 
   const config = {
