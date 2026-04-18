@@ -5,6 +5,7 @@ import CampaignsSection from "./MyDashboardSections/CampaignsSection";
 import CurrentTrendsSection from "./MyDashboardSections/CurrentTrendsSection";
 import StrategySection from "./MyDashboardSections/StrategySection";
 import PageTransition from "../../Component/PageTransition";
+import { useMarnee } from "../../context/MarneeContext";
 
 // Tab content animation variants
 const tabContentVariants = {
@@ -15,6 +16,7 @@ const tabContentVariants = {
 
 export default function MyDashboard() {
   const [activeTab, setActiveTab] = useState("campaigns");
+  const { founderId, sessionId, calendarId } = useMarnee();
 
   return (
     <PageTransition className="flex min-h-screen bg-[#f6f6f6] text-gray-900">
@@ -82,7 +84,11 @@ export default function MyDashboard() {
                 exit="exit"
                 transition={{ duration: 0.3 }}
               >
-                <CampaignsSection />
+                <CampaignsSection
+                  calendarId={calendarId}
+                  founderId={founderId}
+                  sessionId={sessionId}
+                />
               </motion.div>
             )}
             {activeTab === "strategy" && (

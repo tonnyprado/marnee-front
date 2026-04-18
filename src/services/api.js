@@ -363,4 +363,102 @@ export const api = {
   // GET /business-test/founder/{founderId} - Get business test by founder ID
   getBusinessTestByFounder: (founderId) =>
     request(`/business-test/founder/${founderId}`),
+
+  // =====================
+  // CAMPAIGNS ENDPOINTS
+  // =====================
+
+  // POST /campaigns - Create campaign manually
+  createCampaign: (data) =>
+    request('/campaigns', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+
+  // POST /campaigns/generate - Generate campaigns with AI
+  generateCampaigns: ({ founderId, sessionId, calendarId, count = 3 }) =>
+    request('/campaigns/generate', {
+      method: 'POST',
+      body: JSON.stringify({
+        founderId,
+        sessionId,
+        calendarId,
+        count,
+      }),
+    }),
+
+  // GET /campaigns/calendar/{calendarId} - Get all campaigns for a calendar
+  getCampaignsByCalendar: (calendarId) =>
+    request(`/campaigns/calendar/${calendarId}`),
+
+  // GET /campaigns/{campaignId} - Get single campaign with tasks/scripts
+  getCampaign: (campaignId) =>
+    request(`/campaigns/${campaignId}`),
+
+  // PUT /campaigns/{campaignId} - Update campaign
+  updateCampaign: (campaignId, data) =>
+    request(`/campaigns/${campaignId}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }),
+
+  // DELETE /campaigns/{campaignId} - Delete campaign
+  deleteCampaign: (campaignId) =>
+    request(`/campaigns/${campaignId}`, {
+      method: 'DELETE',
+    }),
+
+  // POST /campaigns/{campaignId}/regenerate-suggestions - Regenerate AI suggestions
+  regenerateCampaignSuggestions: (campaignId) =>
+    request(`/campaigns/${campaignId}/regenerate-suggestions`, {
+      method: 'POST',
+    }),
+
+  // =====================
+  // CAMPAIGN TASKS
+  // =====================
+
+  // POST /campaigns/{campaignId}/tasks - Create task
+  createCampaignTask: (campaignId, data) =>
+    request(`/campaigns/${campaignId}/tasks`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+
+  // PUT /campaigns/tasks/{taskId} - Update task
+  updateCampaignTask: (taskId, data) =>
+    request(`/campaigns/tasks/${taskId}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }),
+
+  // DELETE /campaigns/tasks/{taskId} - Delete task
+  deleteCampaignTask: (taskId) =>
+    request(`/campaigns/tasks/${taskId}`, {
+      method: 'DELETE',
+    }),
+
+  // =====================
+  // CAMPAIGN SCRIPTS
+  // =====================
+
+  // POST /campaigns/{campaignId}/scripts - Create script
+  createCampaignScript: (campaignId, data) =>
+    request(`/campaigns/${campaignId}/scripts`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+
+  // PUT /campaigns/scripts/{scriptId} - Update script
+  updateCampaignScript: (scriptId, data) =>
+    request(`/campaigns/scripts/${scriptId}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }),
+
+  // DELETE /campaigns/scripts/{scriptId} - Delete script
+  deleteCampaignScript: (scriptId) =>
+    request(`/campaigns/scripts/${scriptId}`, {
+      method: 'DELETE',
+    }),
 };
