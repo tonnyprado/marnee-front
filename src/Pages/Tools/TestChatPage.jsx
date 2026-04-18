@@ -1,11 +1,64 @@
 import React, { useState, useEffect, useRef } from 'react';
+import ReactMarkdown from 'react-markdown';
 import { api } from '../../services/api';
 
+// Markdown components for AI messages (formatted text)
+// eslint-disable-next-line jsx-a11y/heading-has-content
+const aiMarkdownComponents = {
+  // eslint-disable-next-line jsx-a11y/heading-has-content
+  h1: ({ node, ...props }) => <h1 className="text-2xl font-bold mb-3 mt-4 text-gray-900" {...props} />,
+  // eslint-disable-next-line jsx-a11y/heading-has-content
+  h2: ({ node, ...props }) => <h2 className="text-xl font-bold mb-2 mt-3 text-gray-900" {...props} />,
+  // eslint-disable-next-line jsx-a11y/heading-has-content
+  h3: ({ node, ...props }) => <h3 className="text-lg font-bold mb-2 mt-3 text-gray-900" {...props} />,
+  // eslint-disable-next-line jsx-a11y/heading-has-content
+  h4: ({ node, ...props }) => <h4 className="text-base font-semibold mb-2 mt-2 text-gray-800" {...props} />,
+  p: ({ node, ...props }) => <p className="mb-3 leading-relaxed" {...props} />,
+  ul: ({ node, ...props }) => <ul className="list-disc list-inside mb-3 space-y-1 ml-2" {...props} />,
+  ol: ({ node, ...props }) => <ol className="list-decimal list-inside mb-3 space-y-1 ml-2" {...props} />,
+  li: ({ node, ...props }) => <li className="leading-relaxed" {...props} />,
+  strong: ({ node, ...props }) => <strong className="font-bold text-gray-900" {...props} />,
+  em: ({ node, ...props }) => <em className="italic" {...props} />,
+  a: ({ node, ...props }) => <a className="text-violet-600 hover:text-violet-700 underline font-medium" {...props} />,
+  code: ({ node, inline, ...props }) =>
+    inline ? (
+      <code className="bg-gray-100 px-1.5 py-0.5 rounded text-sm font-mono text-gray-800" {...props} />
+    ) : (
+      <code className="block bg-gray-100 p-3 rounded-lg text-sm font-mono overflow-x-auto mb-3 text-gray-800" {...props} />
+    ),
+  blockquote: ({ node, ...props }) => (
+    <blockquote className="border-l-4 border-violet-300 pl-4 italic my-3 text-gray-700" {...props} />
+  ),
+};
+
+// Markdown components for user messages (white text on gradient)
+const userMarkdownComponents = {
+  h1: ({ node, ...props }) => <h1 className="text-2xl font-bold mb-3 mt-4 text-white" {...props} />,
+  h2: ({ node, ...props }) => <h2 className="text-xl font-bold mb-2 mt-3 text-white" {...props} />,
+  h3: ({ node, ...props }) => <h3 className="text-lg font-bold mb-2 mt-3 text-white" {...props} />,
+  h4: ({ node, ...props }) => <h4 className="text-base font-semibold mb-2 mt-2 text-white" {...props} />,
+  p: ({ node, ...props }) => <p className="mb-3 leading-relaxed text-white" {...props} />,
+  ul: ({ node, ...props }) => <ul className="list-disc list-inside mb-3 space-y-1 ml-2 text-white" {...props} />,
+  ol: ({ node, ...props }) => <ol className="list-decimal list-inside mb-3 space-y-1 ml-2 text-white" {...props} />,
+  li: ({ node, ...props }) => <li className="leading-relaxed text-white" {...props} />,
+  strong: ({ node, ...props }) => <strong className="font-bold text-white" {...props} />,
+  em: ({ node, ...props }) => <em className="italic text-white" {...props} />,
+  a: ({ node, ...props }) => <a className="text-white underline hover:text-gray-100 font-medium" {...props} />,
+  code: ({ node, inline, ...props }) =>
+    inline ? (
+      <code className="bg-white/20 px-1.5 py-0.5 rounded text-sm font-mono text-white" {...props} />
+    ) : (
+      <code className="block bg-white/20 p-3 rounded-lg text-sm font-mono overflow-x-auto mb-3 text-white" {...props} />
+    ),
+  blockquote: ({ node, ...props }) => (
+    <blockquote className="border-l-4 border-white/50 pl-4 italic my-3 text-white" {...props} />
+  ),
+};
+
 /**
- * TestChatPage - Chat prototype with clean architecture
+ * TestChatPage - Chat with clean architecture
  *
- * Simple chat that ACTUALLY saves messages to database and persists between sessions.
- * If this works, we'll migrate this architecture to the main chat.
+ * Simple chat that saves messages to database and persists between sessions.
  */
 export default function TestChatPage() {
   // State
@@ -280,17 +333,6 @@ export default function TestChatPage() {
             </div>
           </div>
 
-          {/* Instructions */}
-          <div className="border-t border-gray-700 pt-4 mt-4">
-            <h3 className="text-xs font-semibold text-gray-400 uppercase mb-2">Test Instructions</h3>
-            <ol className="text-xs space-y-2 text-gray-300">
-              <li>1. Send a few messages</li>
-              <li>2. Click "Reload from DB" to verify they're saved</li>
-              <li>3. Refresh the page (F5) - messages should persist</li>
-              <li>4. Close browser, reopen - messages should still be there</li>
-            </ol>
-          </div>
-
           {/* Error Display */}
           {error && (
             <div className="border-t border-red-700 pt-4 mt-4">
@@ -335,7 +377,11 @@ export default function TestChatPage() {
                 <div className="text-xs opacity-70 mb-1">
                   {msg.role === 'user' ? 'You' : 'Marnee'}
                 </div>
-                <div className="whitespace-pre-wrap">{msg.content}</div>
+                <ReactMarkdown
+                  components={msg.role === 'user' ? userMarkdownComponents : aiMarkdownComponents}
+                >
+                  {msg.content}
+                </ReactMarkdown>
               </div>
             </div>
           ))}
