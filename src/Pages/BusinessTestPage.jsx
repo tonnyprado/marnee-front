@@ -374,17 +374,28 @@ export default function BusinessTestPage() {
 
   const loadExistingData = useCallback(async () => {
     try {
-      // Get founder ID
-      const founder = await api.getMeFounder();
+      // Try to get founder ID
+      let founder = null;
+      try {
+        founder = await api.getMeFounder();
+      } catch (error) {
+        if (error.status === 404) {
+          // No founder profile exists yet - this is OK!
+          // The Business Test can be taken before the Personal Test
+          // We'll create an empty founder profile when submitting
+          console.log("No founder profile found - will create one during business test submission");
+          setFounderId(null); // Will be created on submit
+          setLoading(false);
+          return;
+        }
+        throw error; // Re-throw other errors
+      }
 
-      // CRITICAL: Validate that founder exists and has an ID
+      // Founder exists - validate it has an ID
       if (!founder || !founder.id) {
-        setError("Founder profile not found. Please complete the Personal Test first.");
+        console.error("Founder profile exists but has no ID:", founder);
+        setError("Invalid founder profile. Please contact support.");
         setLoading(false);
-        // Redirect to test selection after 2 seconds
-        setTimeout(() => {
-          navigate('/test-selection');
-        }, 2000);
         return;
       }
 
@@ -423,12 +434,7 @@ export default function BusinessTestPage() {
       }
     } catch (error) {
       console.error("Error loading data:", error);
-      setError("Failed to load founder data. Please ensure you've completed the Personal Test first.");
-      setLoading(false);
-      // Redirect to test selection after 2 seconds
-      setTimeout(() => {
-        navigate('/test-selection');
-      }, 2000);
+      setError("Failed to load data. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -482,13 +488,9 @@ export default function BusinessTestPage() {
   };
 
   // Build payload for API
-  const buildPayload = () => {
-    // CRITICAL: Validate that founderId is not null before building payload
-    if (!founderId) {
-      throw new Error("Founder ID is missing. Please complete the Personal Test first.");
-    }
-
-    const payload = { founderId };
+  const buildPayload = (currentFounderId) => {
+    // founderId will be provided after ensuring it exists
+    const payload = { founderId: currentFounderId };
 
     STEPS.forEach((s) => {
       const value = answers[s.field];
@@ -509,10 +511,44 @@ export default function BusinessTestPage() {
     return payload;
   };
 
+  // Ensure founder profile exists, create if necessary
+  const ensureFounderExists = async () => {
+    if (founderId) {
+      return founderId; // Already exists
+    }
+
+    console.log("Creating empty founder profile for business test...");
+
+    try {
+      // Create minimal founder profile with empty data
+      // The questionnaire endpoint requires at least an empty object
+      const response = await api.submitQuestionnaire({
+        teamDescriptionWords: [],
+        personalValues: [],
+        publicSpeakingComfort: 5, // Default value
+      });
+
+      if (!response || !response.founderId) {
+        throw new Error("Failed to create founder profile - no ID returned");
+      }
+
+      const newFounderId = response.founderId;
+      setFounderId(newFounderId);
+      console.log("Created founder profile with ID:", newFounderId);
+      return newFounderId;
+    } catch (error) {
+      console.error("Error creating founder profile:", error);
+      throw new Error("Failed to create founder profile. Please try again.");
+    }
+  };
+
   // Save progress (can be called after each section or at the end)
   const saveProgress = async () => {
     try {
-      const payload = buildPayload();
+      // Ensure founder profile exists before submitting business test
+      const currentFounderId = await ensureFounderExists();
+
+      const payload = buildPayload(currentFounderId);
       await api.submitBusinessTest(payload);
     } catch (error) {
       console.error("Error saving progress:", error);
@@ -674,11 +710,16 @@ export default function BusinessTestPage() {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center max-w-md px-6">
-          <div className="w-16 h-16 border-4 border-violet-200 border-t-violet-600 rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600 mb-2">Loading your business test...</p>
+          {!error && (
+            <>
+              <div className="w-16 h-16 border-4 border-violet-200 border-t-violet-600 rounded-full animate-spin mx-auto mb-4"></div>
+              <p className="text-gray-600 mb-2">Loading your business test...</p>
+            </>
+          )}
           {error && (
             <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm">
-              {error}
+              <p className="font-semibold mb-2">Error loading test</p>
+              <p>{error}</p>
             </div>
           )}
         </div>
