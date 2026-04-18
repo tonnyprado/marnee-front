@@ -252,11 +252,22 @@ export default function StrategySection({ founderId, sessionId }) {
       </div>
 
       <div>
-        <h2 className="text-xl font-semibold text-center">SMART Goals &amp; KPIs</h2>
-        <p className="text-xs text-center text-gray-500">
-          Measurable objectives for community building and engagement
-        </p>
-        <div className="grid grid-cols-3 gap-4 mt-4">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex-1">
+            <h2 className="text-xl font-semibold text-center">SMART Goals &amp; KPIs</h2>
+            <p className="text-xs text-center text-gray-500">
+              Measurable objectives for community building and engagement
+            </p>
+          </div>
+          <button
+            onClick={() => handleRegenerateSection('goals')}
+            disabled={regeneratingSection === 'goals'}
+            className="px-4 py-2 rounded-lg bg-[#ede0f8] text-[#40086d] text-xs font-semibold hover:bg-[#dcc9ed] transition disabled:opacity-50"
+          >
+            {regeneratingSection === 'goals' ? 'Regenerating...' : 'Redo Goals with AI'}
+          </button>
+        </div>
+        <div className="grid grid-cols-3 gap-4">
           {strategy.smartGoals && strategy.smartGoals.length > 0 ? (
             strategy.smartGoals.map((goal, index) => (
               <ProgressCard

@@ -105,7 +105,9 @@ export default function CurrentTrendsSection({ founderId, sessionId }) {
     loading,
     error,
     generating,
+    regeneratingSection,
     generateTrends,
+    regenerateSection,
   } = useTrends(founderId, sessionId);
 
   const handleGenerateTrends = async () => {
@@ -113,6 +115,14 @@ export default function CurrentTrendsSection({ founderId, sessionId }) {
       await generateTrends();
     } catch (err) {
       console.error("Failed to generate trends:", err);
+    }
+  };
+
+  const handleRegenerateSection = async (section) => {
+    try {
+      await regenerateSection(section);
+    } catch (err) {
+      console.error(`Failed to regenerate ${section}:`, err);
     }
   };
 
@@ -186,9 +196,20 @@ export default function CurrentTrendsSection({ founderId, sessionId }) {
       </div>
 
       <div>
-        <h2 className="text-lg font-semibold text-gray-900">SEO Keywords Performance</h2>
-        <p className="text-xs text-gray-500">Top performing keywords in your niche this week</p>
-        <div className="grid grid-cols-4 gap-3 mt-3">
+        <div className="flex items-center justify-between mb-3">
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900">SEO Keywords Performance</h2>
+            <p className="text-xs text-gray-500">Top performing keywords in your niche this week</p>
+          </div>
+          <button
+            onClick={() => handleRegenerateSection('keywords')}
+            disabled={regeneratingSection === 'keywords'}
+            className="px-3 py-1.5 rounded-lg bg-purple-50 text-purple-600 text-xs font-semibold hover:bg-purple-100 transition disabled:opacity-50"
+          >
+            {regeneratingSection === 'keywords' ? 'Regenerating...' : 'Regenerate Keywords'}
+          </button>
+        </div>
+        <div className="grid grid-cols-4 gap-3">
           {trends.seoKeywords && trends.seoKeywords.length > 0 ? (
             trends.seoKeywords.map((keyword, index) => (
               <KeywordCard
@@ -212,9 +233,20 @@ export default function CurrentTrendsSection({ founderId, sessionId }) {
       </div>
 
       <div>
-        <h2 className="text-lg font-semibold text-gray-900">Viral Topics in Your Niche</h2>
-        <p className="text-xs text-gray-500">Topics gaining massive traction and relevance</p>
-        <div className="grid grid-cols-3 gap-3 mt-3">
+        <div className="flex items-center justify-between mb-3">
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900">Viral Topics in Your Niche</h2>
+            <p className="text-xs text-gray-500">Topics gaining massive traction and relevance</p>
+          </div>
+          <button
+            onClick={() => handleRegenerateSection('viral_topics')}
+            disabled={regeneratingSection === 'viral_topics'}
+            className="px-3 py-1.5 rounded-lg bg-purple-50 text-purple-600 text-xs font-semibold hover:bg-purple-100 transition disabled:opacity-50"
+          >
+            {regeneratingSection === 'viral_topics' ? 'Regenerating...' : 'Regenerate Topics'}
+          </button>
+        </div>
+        <div className="grid grid-cols-3 gap-3">
           {trends.viralTopics && trends.viralTopics.length > 0 ? (
             trends.viralTopics.map((topic, index) => (
               <ViralCard
@@ -286,6 +318,22 @@ export default function CurrentTrendsSection({ founderId, sessionId }) {
           </button>
           <button className="px-3 py-1.5 rounded-lg border border-[rgba(30,30,30,0.1)] text-gray-600">
             This Month
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900">Main Trends &amp; Opportunities</h2>
+            <p className="text-xs text-gray-500">Actionable trends personalized for your brand</p>
+          </div>
+          <button
+            onClick={() => handleRegenerateSection('main_trends')}
+            disabled={regeneratingSection === 'main_trends'}
+            className="px-3 py-1.5 rounded-lg bg-purple-50 text-purple-600 text-xs font-semibold hover:bg-purple-100 transition disabled:opacity-50"
+          >
+            {regeneratingSection === 'main_trends' ? 'Regenerating...' : 'Regenerate Trends'}
           </button>
         </div>
       </div>
@@ -380,7 +428,16 @@ export default function CurrentTrendsSection({ founderId, sessionId }) {
           </div>
 
           <div className="bg-white border border-[rgba(30,30,30,0.1)] rounded p-4 shadow-sm">
-            <h3 className="text-sm font-semibold text-gray-900">Market Insights</h3>
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-semibold text-gray-900">Market Insights</h3>
+              <button
+                onClick={() => handleRegenerateSection('market_insights')}
+                disabled={regeneratingSection === 'market_insights'}
+                className="px-2 py-1 rounded text-[10px] font-semibold bg-purple-50 text-purple-600 hover:bg-purple-100 transition disabled:opacity-50"
+              >
+                {regeneratingSection === 'market_insights' ? 'Regenerating...' : 'Regenerate'}
+              </button>
+            </div>
             <div className="mt-3 space-y-3 text-sm text-gray-600">
               {trends.marketInsights && trends.marketInsights.length > 0 ? (
                 trends.marketInsights.map((insight, index) => (
