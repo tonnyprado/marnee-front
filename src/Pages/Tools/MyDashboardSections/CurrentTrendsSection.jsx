@@ -105,9 +105,7 @@ export default function CurrentTrendsSection({ founderId, sessionId }) {
     loading,
     error,
     generating,
-    regeneratingSection,
     generateTrends,
-    regenerateSection,
   } = useTrends(founderId, sessionId);
 
   const handleGenerateTrends = async () => {
@@ -115,14 +113,6 @@ export default function CurrentTrendsSection({ founderId, sessionId }) {
       await generateTrends();
     } catch (err) {
       console.error("Failed to generate trends:", err);
-    }
-  };
-
-  const handleRegenerateSection = async (section) => {
-    try {
-      await regenerateSection(section);
-    } catch (err) {
-      console.error(`Failed to regenerate ${section}:`, err);
     }
   };
 
