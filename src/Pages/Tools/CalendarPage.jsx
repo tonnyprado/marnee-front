@@ -379,42 +379,41 @@ export default function CalendarPage() {
         {mainTab === "calendar" ? (
           <div className="relative flex gap-4">
             <div className={`flex-1 ${isFormOpen ? "mr-96" : ""}`}>
-            {view === "calendar" ? (
-              <CalendarView
-                posts={filteredPosts}
-                calendar={calendar}
-                statusFilter={statusFilter}
-                setStatusFilter={setStatusFilter}
-                onPostClick={handlePostClick}
-              />
-            ) : (
-              <CalendarListView
-                posts={filteredPosts}
-                statusFilter={statusFilter}
-                setStatusFilter={setStatusFilter}
-                onPostClick={handlePostClick}
+              {view === "calendar" ? (
+                <CalendarView
+                  posts={filteredPosts}
+                  calendar={calendar}
+                  statusFilter={statusFilter}
+                  setStatusFilter={setStatusFilter}
+                  onPostClick={handlePostClick}
+                />
+              ) : (
+                <CalendarListView
+                  posts={filteredPosts}
+                  statusFilter={statusFilter}
+                  setStatusFilter={setStatusFilter}
+                  onPostClick={handlePostClick}
+                />
+              )}
+            </div>
+
+            {/* Side panel */}
+            {isFormOpen && selectedPost && (
+              <CampaignForm
+                post={selectedPost}
+                postIndex={selectedPostIndex}
+                onClose={() => {
+                  setIsFormOpen(false);
+                  setSelectedPost(null);
+                  setSelectedPostIndex(null);
+                }}
+                onSave={handleSavePost}
               />
             )}
           </div>
-
-          {/* Side panel */}
-          {isFormOpen && selectedPost && (
-            <CampaignForm
-              post={selectedPost}
-              postIndex={selectedPostIndex}
-              onClose={() => {
-                setIsFormOpen(false);
-                setSelectedPost(null);
-                setSelectedPostIndex(null);
-              }}
-              onSave={handleSavePost}
-            />
-          )}
-        </div>
-          ) : (
-            <BrainstormingSection calendarId={calendarId} />
-          )}
-        </div>
+        ) : (
+          <BrainstormingSection calendarId={calendarId} />
+        )}
       </div>
     </div>
   );
