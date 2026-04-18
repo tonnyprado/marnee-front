@@ -8,13 +8,22 @@ import BrainstormingSection from "./Calendar/BrainstormingSection";
 import LanguageSwitcher from "../../Component/LanguageSwitcher";
 
 export default function CalendarPage() {
-  const { founderId, sessionId, calendarId, currentStep, setCalendarId, hasSession } = useMarnee();
+  const {
+    founderId,
+    sessionId,
+    calendarId,
+    calendar: cachedCalendar,
+    currentStep,
+    setCalendarId,
+    setCalendar: setCachedCalendar,
+    hasSession
+  } = useMarnee();
   const canAccessCalendar = Boolean(calendarId || founderId || hasSession);
 
   const [mainTab, setMainTab] = useState("calendar"); // calendar | brainstorming
   const [view, setView] = useState("calendar");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [calendar, setCalendar] = useState(null);
+  const [calendar, setCalendar] = useState(cachedCalendar); // Initialize from cached calendar
   const [isLoading, setIsLoading] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
   const [hasCheckedHistory, setHasCheckedHistory] = useState(false);
@@ -26,20 +35,35 @@ export default function CalendarPage() {
   const [selectedPostIndex, setSelectedPostIndex] = useState(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
 
+  // Helper to update both local state and cached calendar in context
+  const updateCalendar = (newCalendar) => {
+    setCalendar(newCalendar);
+    setCachedCalendar(newCalendar);
+  };
+
   const handleGenerateCalendar = async (weeks = 4) => {
     setIsGenerating(true);
     setError(null);
 
     try {
+      console.log('[CalendarPage] Generating calendar with:', { founderId, sessionId, weeks });
       const response = await api.generateCalendar({
         founderId,
         sessionId,
         weeks,
       });
 
+      console.log('[CalendarPage] Calendar generated successfully:', {
+        calendarId: response.calendarId,
+        postsCount: response.calendar?.posts?.length || 0,
+        startDate: response.calendar?.startDate,
+        endDate: response.calendar?.endDate,
+      });
+
       setCalendarId(response.calendarId);
-      setCalendar(response.calendar);
+      updateCalendar(response.calendar);
     } catch (err) {
+      console.error('[CalendarPage] Failed to generate calendar:', err);
       setError(err.message || 'Failed to generate calendar');
     } finally {
       setIsGenerating(false);
@@ -48,7 +72,16 @@ export default function CalendarPage() {
 
   // Load existing calendar when backend already created one
   useEffect(() => {
+    console.log('[CalendarPage] useEffect triggered - checking calendar access:', {
+      canAccessCalendar,
+      calendarId,
+      founderId,
+      sessionId,
+      hasSession,
+    });
+
     if (!canAccessCalendar) {
+      console.log('[CalendarPage] No access to calendar - user needs to complete brand test');
       setIsLoading(false);
       setHasCheckedHistory(true);
       return;
@@ -63,42 +96,98 @@ export default function CalendarPage() {
     };
 
     const loadCalendar = async () => {
+      console.log('[CalendarPage] Loading calendar with context:', {
+        calendarId,
+        founderId,
+        sessionId,
+        hasCalendarId: !!calendarId,
+        hasFounderId: !!founderId,
+        hasSessionId: !!sessionId,
+        hasCachedCalendar: !!cachedCalendar,
+      });
+
+      // If we have a cached calendar and it matches the current calendarId, use it immediately
+      if (cachedCalendar && cachedCalendar.posts && cachedCalendar.posts.length > 0) {
+        console.log('[CalendarPage] Using cached calendar from localStorage:', {
+          postsCount: cachedCalendar.posts.length,
+          startDate: cachedCalendar.startDate,
+          endDate: cachedCalendar.endDate,
+        });
+        setCalendar(cachedCalendar);
+        setIsLoading(false);
+        setHasCheckedHistory(true);
+
+        // Still fetch from backend in background to ensure we have latest data
+        if (calendarId) {
+          console.log('[CalendarPage] Fetching latest calendar from backend in background...');
+          try {
+            const data = await api.getCalendar(calendarId);
+            const freshCalendar = data.calendar || data;
+            console.log('[CalendarPage] Background refresh complete:', {
+              postsCount: freshCalendar?.posts?.length || 0,
+            });
+            updateCalendar(freshCalendar);
+          } catch (bgErr) {
+            console.warn('[CalendarPage] Background refresh failed, using cached version:', bgErr.message);
+          }
+        }
+        return;
+      }
+
       setIsLoading(true);
       setError(null);
 
       try {
         if (calendarId) {
+          console.log('[CalendarPage] Fetching calendar by ID:', calendarId);
           const data = await api.getCalendar(calendarId);
-          setCalendar(data.calendar || data);
+          console.log('[CalendarPage] Calendar loaded by ID:', {
+            hasCalendar: !!data,
+            postsCount: data?.posts?.length || data?.calendar?.posts?.length || 0,
+          });
+          updateCalendar(data.calendar || data);
           return;
         }
 
+        console.log('[CalendarPage] No calendarId in context, fetching latest calendar...');
         let latestCalendar = null;
 
         try {
+          console.log('[CalendarPage] Trying api.getMyLatestCalendar...');
           latestCalendar = await api.getMyLatestCalendar({
             founderId,
             sessionId,
           });
+          console.log('[CalendarPage] getMyLatestCalendar response:', latestCalendar);
         } catch (latestError) {
+          console.warn('[CalendarPage] getMyLatestCalendar failed:', latestError.message);
           if (founderId) {
+            console.log('[CalendarPage] Trying api.getLatestCalendarByFounder...');
             latestCalendar = await api.getLatestCalendarByFounder(founderId, sessionId);
+            console.log('[CalendarPage] getLatestCalendarByFounder response:', latestCalendar);
           }
         }
 
         const latestCalendarId = getCalendarIdFromResponse(latestCalendar);
+        console.log('[CalendarPage] Latest calendar ID extracted:', latestCalendarId);
+
         if (latestCalendarId) {
           setCalendarId(latestCalendarId);
           const hydratedCalendar = getCalendarFromResponse(latestCalendar);
+          console.log('[CalendarPage] Calendar extracted from response:', {
+            hasCalendar: !!hydratedCalendar,
+            postsCount: hydratedCalendar?.posts?.length || 0,
+          });
           if (hydratedCalendar) {
-            setCalendar(hydratedCalendar);
+            updateCalendar(hydratedCalendar);
           }
         } else {
-          setCalendar(null);
+          console.log('[CalendarPage] No calendar found, showing generate button');
+          updateCalendar(null);
         }
       } catch (err) {
-        console.log("No existing calendar found");
-        setCalendar(null);
+        console.error('[CalendarPage] Error loading calendar:', err);
+        updateCalendar(null);
       } finally {
         setIsLoading(false);
         setHasCheckedHistory(true);
@@ -106,6 +195,7 @@ export default function CalendarPage() {
     };
 
     loadCalendar();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [calendarId, canAccessCalendar, founderId, sessionId, setCalendarId]);
 
   // If the conversation is already in the calendar phase but no calendar exists yet,
@@ -139,7 +229,7 @@ export default function CalendarPage() {
         });
 
         setCalendarId(response.calendarId);
-        setCalendar(response.calendar);
+        updateCalendar(response.calendar);
       } catch (err) {
         setError(err.message || "Failed to generate calendar");
       } finally {
@@ -164,12 +254,13 @@ export default function CalendarPage() {
     try {
       await api.updatePost(calendarId, selectedPostIndex, updatedData);
 
-      setCalendar((prev) => ({
-        ...prev,
-        posts: prev.posts.map((p, idx) =>
+      const updatedCalendar = {
+        ...calendar,
+        posts: calendar.posts.map((p, idx) =>
           idx === selectedPostIndex ? { ...p, ...updatedData } : p
         ),
-      }));
+      };
+      updateCalendar(updatedCalendar);
 
       setIsFormOpen(false);
       setSelectedPost(null);

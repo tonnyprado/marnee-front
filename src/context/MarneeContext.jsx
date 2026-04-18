@@ -7,7 +7,8 @@ const STORAGE_KEYS = {
   SESSION_ID: 'marnee_sessionId',
   CALENDAR_ID: 'marnee_calendarId',
   CONVERSATION_ID: 'marnee_conversationId',
-  MESSAGES_BACKUP: 'marnee_messages_backup', // NEW: Backup messages in localStorage
+  MESSAGES_BACKUP: 'marnee_messages_backup', // Backup messages in localStorage
+  CALENDAR_BACKUP: 'marnee_calendar_backup', // Backup calendar in localStorage
 };
 
 const STEP_NAMES = {
@@ -46,9 +47,29 @@ export function MarneeProvider({ children }) {
     return [];
   });
   const [welcomeMessage, setWelcomeMessage] = useState(null);
-  const [calendarId, setCalendarId] = useState(() =>
-    localStorage.getItem(STORAGE_KEYS.CALENDAR_ID)
-  );
+  const [calendarId, setCalendarId] = useState(() => {
+    const storedId = localStorage.getItem(STORAGE_KEYS.CALENDAR_ID);
+    console.log('[MarneeContext] Initial calendarId from localStorage:', storedId);
+    return storedId;
+  });
+  const [calendar, setCalendar] = useState(() => {
+    // Try to load calendar from localStorage backup on init
+    try {
+      const backup = localStorage.getItem(STORAGE_KEYS.CALENDAR_BACKUP);
+      if (backup) {
+        const parsed = JSON.parse(backup);
+        console.log('[MarneeContext] Restored calendar from localStorage backup:', {
+          postsCount: parsed?.posts?.length || 0,
+          startDate: parsed?.startDate,
+          endDate: parsed?.endDate,
+        });
+        return parsed;
+      }
+    } catch (error) {
+      console.error('[MarneeContext] Failed to restore calendar from localStorage:', error);
+    }
+    return null;
+  });
 
   // Persist to localStorage
   useEffect(() => {
@@ -65,7 +86,10 @@ export function MarneeProvider({ children }) {
 
   useEffect(() => {
     if (calendarId) {
+      console.log('[MarneeContext] Saving calendarId to localStorage:', calendarId);
       localStorage.setItem(STORAGE_KEYS.CALENDAR_ID, calendarId);
+    } else {
+      console.log('[MarneeContext] calendarId is null/undefined, not saving to localStorage');
     }
   }, [calendarId]);
 
@@ -75,7 +99,7 @@ export function MarneeProvider({ children }) {
     }
   }, [conversationId]);
 
-  // NEW: Persist messages to localStorage as backup
+  // Persist messages to localStorage as backup
   useEffect(() => {
     if (messages.length > 0) {
       try {
@@ -86,6 +110,22 @@ export function MarneeProvider({ children }) {
       }
     }
   }, [messages]);
+
+  // Persist calendar to localStorage as backup
+  useEffect(() => {
+    if (calendar && calendar.posts && calendar.posts.length > 0) {
+      try {
+        localStorage.setItem(STORAGE_KEYS.CALENDAR_BACKUP, JSON.stringify(calendar));
+        console.log('[MarneeContext] Backed up calendar to localStorage:', {
+          postsCount: calendar.posts.length,
+          startDate: calendar.startDate,
+          endDate: calendar.endDate,
+        });
+      } catch (error) {
+        console.error('[MarneeContext] Failed to backup calendar to localStorage:', error);
+      }
+    }
+  }, [calendar]);
 
   // Initialize session after questionnaire
   const initSession = ({ founderId: fId, sessionId: sId, welcomeMessage: wMsg, conversationId: cId, clearMessages = true }) => {
@@ -157,7 +197,8 @@ export function MarneeProvider({ children }) {
     localStorage.removeItem(STORAGE_KEYS.SESSION_ID);
     localStorage.removeItem(STORAGE_KEYS.CALENDAR_ID);
     localStorage.removeItem(STORAGE_KEYS.CONVERSATION_ID);
-    localStorage.removeItem(STORAGE_KEYS.MESSAGES_BACKUP); // Also clear messages backup
+    localStorage.removeItem(STORAGE_KEYS.MESSAGES_BACKUP);
+    localStorage.removeItem(STORAGE_KEYS.CALENDAR_BACKUP);
     setFounderId(null);
     setSessionId(null);
     setCalendarId(null);
@@ -166,6 +207,7 @@ export function MarneeProvider({ children }) {
     setStepName(STEP_NAMES[1]);
     setMessages([]);
     setWelcomeMessage(null);
+    setCalendar(null);
   };
 
   useEffect(() => {
@@ -189,6 +231,7 @@ export function MarneeProvider({ children }) {
     sessionId,
     conversationId,
     calendarId,
+    calendar,
     currentStep,
     stepName,
     messages,
@@ -198,6 +241,7 @@ export function MarneeProvider({ children }) {
     setMessages,
     updateStep,
     setCalendarId,
+    setCalendar,
     setConversationId,
     loadConversation,
     clearSession,
