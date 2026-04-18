@@ -74,7 +74,6 @@ export default function TestChatPage() {
   const [conversationId, setConversationId] = useState(null);
   const [founderId, setFounderId] = useState(null);
   const [sessionId, setSessionId] = useState(null);
-  const [error, setError] = useState(null);
   const [isInitializing, setIsInitializing] = useState(true);
 
   const messagesEndRef = useRef(null);
@@ -143,7 +142,6 @@ export default function TestChatPage() {
 
       } catch (error) {
         console.error('[TestChat] Initialization error:', error);
-        setError(`Init error: ${error.message}`);
       } finally {
         setIsInitializing(false);
       }
@@ -159,7 +157,6 @@ export default function TestChatPage() {
 
     const userMessage = input.trim();
     setInput('');
-    setError(null);
 
     // Optimistic UI update
     const tempUserMsg = {
@@ -220,42 +217,9 @@ export default function TestChatPage() {
 
     } catch (error) {
       console.error('[TestChat] Send error:', error);
-      setError(`Send failed: ${error.message}`);
 
       // Remove temp message on error
       setMessages(prev => prev.filter(m => m.id !== tempUserMsg.id));
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Reload messages from DB
-  const handleReload = async () => {
-    if (!conversationId) {
-      setError('No conversation to reload');
-      return;
-    }
-
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      console.log('[TestChat] Reloading from DB...');
-      const conversationData = await api.getConversation(conversationId);
-
-      const loadedMessages = conversationData.messages.map(msg => ({
-        id: msg.id,
-        role: msg.role,
-        content: msg.content,
-        timestamp: msg.createdAt,
-      }));
-
-      setMessages(loadedMessages);
-      console.log('[TestChat] Reloaded', loadedMessages.length, 'messages');
-
-    } catch (error) {
-      console.error('[TestChat] Reload error:', error);
-      setError(`Reload failed: ${error.message}`);
     } finally {
       setIsLoading(false);
     }
@@ -273,84 +237,9 @@ export default function TestChatPage() {
   }
 
   return (
-    <div className="flex h-screen bg-gray-50">
-      {/* Sidebar with debug info */}
-      <div className="w-80 bg-gray-900 text-white p-6 overflow-y-auto">
-        <h2 className="text-xl font-bold mb-4 text-violet-400">💬 Marnee Chat</h2>
-        <p className="text-sm text-gray-400 mb-6">
-          All messages are saved and persist between sessions.
-        </p>
-
-        <div className="space-y-4">
-          {/* Status */}
-          <div>
-            <h3 className="text-xs font-semibold text-gray-400 uppercase mb-2">Status</h3>
-            <div className="space-y-1 text-sm">
-              <div className="flex justify-between">
-                <span>Messages in State:</span>
-                <span className="text-cyan-400 font-mono">{messages.length}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Conversation ID:</span>
-                <span className="text-cyan-400 font-mono text-xs">
-                  {conversationId ? conversationId.substring(0, 8) + '...' : 'null'}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span>Founder ID:</span>
-                <span className="text-cyan-400 font-mono text-xs">
-                  {founderId ? founderId.substring(0, 8) + '...' : 'null'}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span>Session ID:</span>
-                <span className="text-cyan-400 font-mono text-xs">
-                  {sessionId ? sessionId.substring(0, 8) + '...' : 'null'}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Actions */}
-          <div>
-            <h3 className="text-xs font-semibold text-gray-400 uppercase mb-2">Actions</h3>
-            <div className="space-y-2">
-              <button
-                onClick={handleReload}
-                disabled={!conversationId || isLoading}
-                className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-700 disabled:cursor-not-allowed text-white px-4 py-2 rounded text-sm"
-              >
-                🔄 Reload from DB
-              </button>
-              <button
-                onClick={() => {
-                  console.group('🐛 Debug Info');
-                  console.log('messages:', messages);
-                  console.log('conversationId:', conversationId);
-                  console.log('founderId:', founderId);
-                  console.log('sessionId:', sessionId);
-                  console.groupEnd();
-                  alert('Check console for debug info');
-                }}
-                className="w-full bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded text-sm"
-              >
-                📋 Log to Console
-              </button>
-            </div>
-          </div>
-
-          {/* Error Display */}
-          {error && (
-            <div className="border-t border-red-700 pt-4 mt-4">
-              <h3 className="text-xs font-semibold text-red-400 uppercase mb-2">Error</h3>
-              <p className="text-xs text-red-300 font-mono">{error}</p>
-            </div>
-          )}
-        </div>
-      </div>
-
+    <div className="h-screen bg-gray-50">
       {/* Main chat area */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex flex-col h-full">
         {/* Header */}
         <div className="bg-white border-b border-gray-200 px-6 py-4">
           <h1 className="text-xl font-bold text-gray-900">Chat with Marnee</h1>
