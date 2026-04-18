@@ -438,7 +438,7 @@ export default function BusinessTestPage() {
     } finally {
       setLoading(false);
     }
-  }, [navigate]);
+  }, []); // navigate is stable and doesn't need to be in deps
 
   useEffect(() => {
     loadExistingData();
