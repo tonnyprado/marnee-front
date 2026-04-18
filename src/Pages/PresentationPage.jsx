@@ -24,7 +24,7 @@ function LandingNav({ onLoginClick }) {
         </div>
 
         <div className="mn-nav-actions">
-          <LanguageSwitcher className="border-[rgba(30,30,30,0.1)] bg-white shadow-sm" />
+          <LanguageSwitcher className="border-[rgba(30,30,30,0.1)] bg-white/90 backdrop-blur shadow-sm" />
 
           <a
             href={WAITLIST_URL}

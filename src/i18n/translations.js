@@ -1,7 +1,7 @@
 export const SUPPORTED_LANGUAGES = [
-  { code: "en", label: "English", shortLabel: "EN" },
-  { code: "es", label: "Español", shortLabel: "ES" },
-  { code: "ko", label: "한국어", shortLabel: "KO" },
+  { code: "en", label: "English", shortLabel: "EN", flag: "🇺🇸" },
+  { code: "es", label: "Español", shortLabel: "ES", flag: "🇪🇸" },
+  { code: "ko", label: "한국어", shortLabel: "KO", flag: "🇰🇷" },
 ];
 
 export const DEFAULT_LANGUAGE = "en";
