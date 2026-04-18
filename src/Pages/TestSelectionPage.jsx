@@ -130,7 +130,22 @@ export default function TestSelectionPage() {
   const sortedTests = [...testTypes].sort((a, b) => (a.priority || 0) - (b.priority || 0));
 
   return (
-    <div className="min-h-screen bg-[#f6f6f6]">
+    <div className="min-h-screen bg-[#f6f6f6] relative">
+      {/* Back Button */}
+      <button
+        onClick={() => navigate('/app')}
+        className="absolute top-8 left-8 flex items-center gap-2 text-gray-600 hover:text-[#40086d] transition-colors group z-10"
+      >
+        <lord-icon
+          src="https://cdn.lordicon.com/zmkotitn.json"
+          trigger="hover"
+          colors="primary:#40086d,secondary:#ede0f8"
+          style={{width:'32px',height:'32px'}}
+        >
+        </lord-icon>
+        <span className="text-sm font-medium">Back</span>
+      </button>
+
       <div className="max-w-4xl mx-auto px-6 py-16">
         {/* Header */}
         <div className="text-center mb-12">
@@ -166,10 +181,32 @@ export default function TestSelectionPage() {
                 )}
 
                 <div className="p-8">
-                  <div className="flex items-start justify-between mb-4">
+                  <div className="flex items-start gap-4 mb-4">
+                    {/* Icon */}
+                    <div className="flex-shrink-0">
+                      {test.testType === "business" ? (
+                        <lord-icon
+                          src="https://cdn.lordicon.com/abhwievu.json"
+                          trigger="hover"
+                          state="hover-conversation-alt"
+                          colors="primary:#a39cf4,secondary:#f49cc8,tertiary:#4030e8,quaternary:#d4d1fa"
+                          style={{width:'80px',height:'80px'}}
+                        >
+                        </lord-icon>
+                      ) : (
+                        <lord-icon
+                          src="https://cdn.lordicon.com/kdduutaw.json"
+                          trigger="hover"
+                          state="hover-looking-around"
+                          colors="primary:#1b1091,secondary:#a866ee"
+                          style={{width:'80px',height:'80px'}}
+                        >
+                        </lord-icon>
+                      )}
+                    </div>
                     <div className="flex-1">
                       <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                        {test.testType === "business" ? "🎯" : "👤"} {test.name}
+                        {test.name}
                       </h2>
                       <p className="text-gray-600 leading-relaxed">
                         {test.description}
@@ -238,6 +275,13 @@ export default function TestSelectionPage() {
               {t("testSelection.footer")}
             </p>
           </div>
+        </div>
+
+        {/* Lordicon Credits */}
+        <div className="mt-8 text-center text-xs text-gray-400">
+          <a href="https://lordicon.com/" target="_blank" rel="noopener noreferrer" className="hover:text-[#40086d] transition-colors">
+            Icons by Lordicon.com
+          </a>
         </div>
       </div>
     </div>

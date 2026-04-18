@@ -594,7 +594,9 @@ function LandingFooter({ onLoginClick }) {
           </div>
         </div>
         <div className="mn-footer-bottom">
-          <div className="mn-footer-copy">© 2026 Marnee. All rights reserved.</div>
+          <div className="mn-footer-copy">
+            © 2026 Marnee. All rights reserved. · <a href="https://lordicon.com/" target="_blank" rel="noopener noreferrer" className="hover:underline">Icons by Lordicon.com</a>
+          </div>
           <div className="mn-footer-legal">
             <span>Terms</span>
             <span>Privacy</span>

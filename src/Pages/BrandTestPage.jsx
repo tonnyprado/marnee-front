@@ -530,6 +530,21 @@ export default function BrandTestPage() {
     <div className="min-h-screen bg-white text-gray-900 flex">
       {/* Sidebar */}
       <aside className="w-72 bg-[#f6f6f6] border-r border-[rgba(30,30,30,0.1)] p-6 flex flex-col">
+        {/* Back Button */}
+        <button
+          onClick={() => navigate('/test-selection')}
+          className="flex items-center gap-2 text-gray-600 hover:text-[#40086d] transition-colors mb-4"
+        >
+          <lord-icon
+            src="https://cdn.lordicon.com/zmkotitn.json"
+            trigger="hover"
+            colors="primary:#40086d,secondary:#ede0f8"
+            style={{width:'24px',height:'24px'}}
+          >
+          </lord-icon>
+          <span className="text-sm font-medium">Back</span>
+        </button>
+
         <h2 className="text-lg font-semibold mb-1 text-gray-900">Personal Brand Test</h2>
         <p className="text-xs text-gray-500 mb-6">
           Complete all sections to unlock your AI brand strategist.

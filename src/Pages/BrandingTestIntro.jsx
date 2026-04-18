@@ -16,6 +16,21 @@ export default function BrandTestIntro() {
         <Logo dark={true} />
       </div>
 
+      {/* Back Button */}
+      <button
+        onClick={() => (window.location.href = "/app")}
+        className="absolute top-6 right-8 flex items-center gap-2 text-gray-600 hover:text-[#40086d] transition-colors group"
+      >
+        <lord-icon
+          src="https://cdn.lordicon.com/zmkotitn.json"
+          trigger="hover"
+          colors="primary:#40086d,secondary:#ede0f8"
+          style={{width:'32px',height:'32px'}}
+        >
+        </lord-icon>
+        <span className="text-sm font-medium">Back</span>
+      </button>
+
       {/* Step badge */}
       <div className="mb-6">
         <span className="bg-[#ede0f8] text-[#40086d] px-4 py-2 rounded text-sm font-medium border border-[rgba(64,8,109,0.15)]">
