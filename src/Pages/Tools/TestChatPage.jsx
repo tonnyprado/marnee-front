@@ -18,14 +18,6 @@ export default function TestChatPage() {
   const [error, setError] = useState(null);
   const [isInitializing, setIsInitializing] = useState(true);
 
-  // Debugging info
-  const [debugInfo, setDebugInfo] = useState({
-    messagesInState: 0,
-    messagesInDb: 0,
-    conversationIdStatus: 'unknown',
-    founderIdStatus: 'unknown',
-  });
-
   const messagesEndRef = useRef(null);
 
   // Scroll to bottom
@@ -89,14 +81,6 @@ export default function TestChatPage() {
         } else {
           console.log('[TestChat] No existing conversations found');
         }
-
-        // Update debug info
-        setDebugInfo({
-          messagesInState: messages.length,
-          messagesInDb: conversationData?.messages?.length || 0,
-          conversationIdStatus: conversationId ? 'exists' : 'will be created',
-          founderIdStatus: founder.id ? 'exists' : 'missing',
-        });
 
       } catch (error) {
         console.error('[TestChat] Initialization error:', error);
@@ -175,13 +159,6 @@ export default function TestChatPage() {
 
       console.log('[TestChat] Messages updated successfully');
 
-      // Update debug info
-      setDebugInfo(prev => ({
-        ...prev,
-        messagesInState: messages.length + 2,
-        conversationIdStatus: response.conversationId ? 'exists' : 'missing',
-      }));
-
     } catch (error) {
       console.error('[TestChat] Send error:', error);
       setError(`Send failed: ${error.message}`);
@@ -216,12 +193,6 @@ export default function TestChatPage() {
 
       setMessages(loadedMessages);
       console.log('[TestChat] Reloaded', loadedMessages.length, 'messages');
-
-      setDebugInfo(prev => ({
-        ...prev,
-        messagesInState: loadedMessages.length,
-        messagesInDb: loadedMessages.length,
-      }));
 
     } catch (error) {
       console.error('[TestChat] Reload error:', error);
