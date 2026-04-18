@@ -43,7 +43,7 @@ export default function Navbar({ active = "ai-content" }) {
     { id: "branding-test", label: t("navbar.brandingTest"), icon: "sparkles", path: "/brand-test/intro" },
     { id: "ai-content", label: t("navbar.aiContent"), icon: "brain", path: "/app" },
     { id: "calendar", label: t("navbar.calendar"), icon: "calendar", path: "/app/calendar" },
-    // { id: "dashboard", label: t("navbar.dashboard"), icon: "folder", path: "/app/dashboard" }, // Disabled for MVP Beta
+    { id: "dashboard", label: t("navbar.dashboard"), icon: "folder", path: "/app/dashboard" },
   ];
 
   return (
