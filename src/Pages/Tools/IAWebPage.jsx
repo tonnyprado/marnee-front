@@ -142,37 +142,55 @@ export default function IAWebPage() {
         if (founder && founder.id) {
           const sessions = await api.getMeSessions();
           let latestSession = null;
+          let hasConversation = false;
 
-          if (sessions && sessions.length > 0) {
-            latestSession = sessions[0];
-
-            initSession({
-              founderId: founder.id,
-              sessionId: latestSession.id,
-              welcomeMessage: latestSession.welcomeMessage || "Welcome back! How can I help you today?",
-            });
-          } else {
-            initSession({
-              founderId: founder.id,
-              sessionId: null,
-              welcomeMessage:
-                "Hi, I'm Marnee. Ask me anything about your brand, content ideas, positioning, or messaging and we'll work through it together.",
-            });
-          }
-
-          // Always try to load the latest conversation
+          // First, check if there's a conversation to load
           try {
             const conversations = await api.getConversations();
             if (conversations && conversations.length > 0) {
               const latestConversation = conversations[0];
               const conversationData = await api.getConversation(latestConversation.id);
+              hasConversation = true;
+
+              // Initialize session WITHOUT clearing messages since we're loading a conversation
+              if (sessions && sessions.length > 0) {
+                latestSession = sessions[0];
+                initSession({
+                  founderId: founder.id,
+                  sessionId: latestSession.id,
+                  welcomeMessage: latestSession.welcomeMessage || "Welcome back! How can I help you today?",
+                  clearMessages: false, // DON'T clear messages
+                });
+              }
+
+              // Load the conversation AFTER initializing session
               await loadConversation(conversationData);
-            } else if (!latestSession) {
-              setConversationId(null);
+              hasLoadedConversationRef.current = true;
             }
           } catch (convError) {
             console.log("No existing conversations found:", convError.message);
-            // Don't show error to user - this is normal for new users
+          }
+
+          // If no conversation was found, initialize session normally (clear messages)
+          if (!hasConversation) {
+            if (sessions && sessions.length > 0) {
+              latestSession = sessions[0];
+              initSession({
+                founderId: founder.id,
+                sessionId: latestSession.id,
+                welcomeMessage: latestSession.welcomeMessage || "Welcome back! How can I help you today?",
+                clearMessages: true,
+              });
+            } else {
+              initSession({
+                founderId: founder.id,
+                sessionId: null,
+                welcomeMessage:
+                  "Hi, I'm Marnee. Ask me anything about your brand, content ideas, positioning, or messaging and we'll work through it together.",
+                clearMessages: true,
+              });
+            }
+            setConversationId(null);
           }
         }
       } catch (error) {
@@ -187,22 +205,35 @@ export default function IAWebPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Reset the conversation loaded flag when component mounts
+  // Reset flag when component mounts or unmounts
   useEffect(() => {
+    // Reset on mount
     hasLoadedConversationRef.current = false;
+
+    // Cleanup: reset on unmount so it loads fresh next time
+    return () => {
+      hasLoadedConversationRef.current = false;
+    };
   }, []);
 
-  // Load conversation from localStorage on mount or when conversationId changes
+  // Load conversation when navigating back to chat (if not already loaded)
+  // This handles the case when user goes: Chat -> Calendar -> Chat
   useEffect(() => {
     const loadExistingConversation = async () => {
+      // Only load if:
+      // 1. We have a conversationId
+      // 2. Messages are empty (component just mounted or remounted)
+      // 3. Not currently loading session
+      // 4. Haven't already loaded this conversation
       if (conversationId && messages.length === 0 && !isLoadingSession && !hasLoadedConversationRef.current) {
         try {
+          console.log("Loading conversation on remount:", conversationId);
           const conversation = await api.getConversation(conversationId);
           await loadConversation(conversation);
           hasLoadedConversationRef.current = true;
         } catch (error) {
           console.error("Failed to load conversation:", error);
-          hasLoadedConversationRef.current = true; // Mark as attempted
+          hasLoadedConversationRef.current = true; // Mark as attempted to prevent retry loop
           if (welcomeMessage) {
             addMessage({
               id: generateUniqueId(),
@@ -215,7 +246,11 @@ export default function IAWebPage() {
         }
       }
     };
-    loadExistingConversation();
+
+    // Only run this effect after initial session load is complete
+    if (!isLoadingSession) {
+      loadExistingConversation();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [conversationId, isLoadingSession, messages.length]);
 

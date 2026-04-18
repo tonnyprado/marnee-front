@@ -62,14 +62,17 @@ export function MarneeProvider({ children }) {
   }, [conversationId]);
 
   // Initialize session after questionnaire
-  const initSession = ({ founderId: fId, sessionId: sId, welcomeMessage: wMsg, conversationId: cId }) => {
+  const initSession = ({ founderId: fId, sessionId: sId, welcomeMessage: wMsg, conversationId: cId, clearMessages = true }) => {
     setFounderId(fId);
     setSessionId(sId);
     setConversationId(cId || null);
     setWelcomeMessage(wMsg);
     setCurrentStep(1);
     setStepName(STEP_NAMES[1]);
-    setMessages([]);
+    // Only clear messages if explicitly requested (default true for backward compatibility)
+    if (clearMessages) {
+      setMessages([]);
+    }
   };
 
   // Generate unique ID for messages
