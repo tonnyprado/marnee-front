@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Search, Edit, Trash2, Key, Shield, Plus } from 'lucide-react';
+import { Search, Edit, Trash2, Key, Shield } from 'lucide-react';
 import {
   getUsers,
   searchUsers,
@@ -25,6 +25,7 @@ export default function UserManagement() {
 
   useEffect(() => {
     loadUsers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
   const loadUsers = async () => {

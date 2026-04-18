@@ -197,7 +197,7 @@ export const getUserConversations = async (userId) => {
   return aiRequest(`/admin/users/${userId}/conversations`);
 };
 
-export default {
+const adminApiService = {
   // Users
   getUsers,
   getUserById,
@@ -237,3 +237,5 @@ export default {
   getUserCalendars,
   getUserConversations,
 };
+
+export default adminApiService;

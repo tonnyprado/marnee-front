@@ -18,6 +18,7 @@ export default function AnalyticsDashboard() {
 
   useEffect(() => {
     loadAnalytics();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [days]);
 
   const loadAnalytics = async () => {
