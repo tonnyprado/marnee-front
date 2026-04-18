@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { api } from '../../services/api';
+import { Send, Loader2, MessageCircle } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 // Markdown components for AI messages (formatted text)
 // eslint-disable-next-line jsx-a11y/heading-has-content
@@ -229,8 +231,8 @@ export default function TestChatPage() {
     return (
       <div className="flex h-screen items-center justify-center bg-[#f6f6f6]">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-violet-200 border-t-violet-600 rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Initializing Test Chat...</p>
+          <Loader2 className="w-16 h-16 text-[#40086d] animate-spin mx-auto mb-4" />
+          <p className="text-gray-600">Initializing Chat...</p>
         </div>
       </div>
     );
@@ -251,46 +253,73 @@ export default function TestChatPage() {
         {/* Messages */}
         <div className="flex-1 overflow-y-auto p-6 space-y-4">
           {messages.length === 0 && (
-            <div className="text-center text-gray-400 py-12">
-              <p className="text-lg mb-2">👋 No messages yet</p>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center text-gray-400 py-12"
+            >
+              <MessageCircle className="w-16 h-16 mx-auto mb-4 text-[#40086d] opacity-40" />
+              <p className="text-lg mb-2">No messages yet</p>
               <p className="text-sm">Send a message to start chatting with Marnee</p>
-            </div>
+            </motion.div>
           )}
 
-          {messages.map((msg) => (
-            <div
-              key={msg.id}
-              className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-            >
-              <div
-                className={`max-w-2xl rounded px-5 py-3 ${
-                  msg.role === 'user'
-                    ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white'
-                    : 'bg-white border border-[rgba(30,30,30,0.1)] text-gray-900'
-                }`}
+          <AnimatePresence>
+            {messages.map((msg) => (
+              <motion.div
+                key={msg.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+                className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
               >
-                <div className="text-xs opacity-70 mb-1">
-                  {msg.role === 'user' ? 'You' : 'Marnee'}
-                </div>
-                <ReactMarkdown
-                  components={msg.role === 'user' ? userMarkdownComponents : aiMarkdownComponents}
+                <div
+                  className={`max-w-2xl rounded px-5 py-3 ${
+                    msg.role === 'user'
+                      ? 'bg-[#1e1e1e] text-white'
+                      : 'bg-white border border-[rgba(30,30,30,0.1)] text-gray-900'
+                  }`}
                 >
-                  {msg.content}
-                </ReactMarkdown>
-              </div>
-            </div>
-          ))}
+                  <div className="text-xs opacity-70 mb-1">
+                    {msg.role === 'user' ? 'You' : 'Marnee'}
+                  </div>
+                  <ReactMarkdown
+                    components={msg.role === 'user' ? userMarkdownComponents : aiMarkdownComponents}
+                  >
+                    {msg.content}
+                  </ReactMarkdown>
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
 
           {isLoading && (
-            <div className="flex justify-start">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="flex justify-start"
+            >
               <div className="bg-white border border-[rgba(30,30,30,0.1)] rounded px-5 py-3">
                 <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-violet-400 rounded-full animate-bounce" />
-                  <div className="w-2 h-2 bg-violet-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }} />
-                  <div className="w-2 h-2 bg-violet-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
+                  <motion.div
+                    className="w-2 h-2 bg-[#40086d] rounded-full"
+                    animate={{ y: [0, -8, 0] }}
+                    transition={{ duration: 0.6, repeat: Infinity, ease: "easeInOut" }}
+                  />
+                  <motion.div
+                    className="w-2 h-2 bg-[#40086d] rounded-full"
+                    animate={{ y: [0, -8, 0] }}
+                    transition={{ duration: 0.6, repeat: Infinity, ease: "easeInOut", delay: 0.1 }}
+                  />
+                  <motion.div
+                    className="w-2 h-2 bg-[#40086d] rounded-full"
+                    animate={{ y: [0, -8, 0] }}
+                    transition={{ duration: 0.6, repeat: Infinity, ease: "easeInOut", delay: 0.2 }}
+                  />
                 </div>
               </div>
-            </div>
+            </motion.div>
           )}
 
           <div ref={messagesEndRef} />
@@ -304,21 +333,21 @@ export default function TestChatPage() {
             onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSend()}
             disabled={isLoading}
             placeholder="Type your message..."
-            className="flex-1 bg-[#f6f6f6] border border-[rgba(30,30,30,0.1)] rounded px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#dccaf4] focus:border-transparent"
+            className="flex-1 bg-[#f6f6f6] border border-[rgba(30,30,30,0.1)] rounded px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#40086d] focus:border-transparent"
           />
-          <button
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             onClick={handleSend}
             disabled={isLoading || !input.trim()}
-            className="w-12 h-12 rounded bg-gradient-to-r from-violet-600 to-indigo-600 flex items-center justify-center text-white hover:from-violet-700 hover:to-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-12 h-12 rounded bg-[#40086d] flex items-center justify-center text-white hover:bg-[#1a0530] transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isLoading ? (
-              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              <Loader2 className="w-5 h-5 animate-spin" />
             ) : (
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-              </svg>
+              <Send className="w-5 h-5" />
             )}
-          </button>
+          </motion.button>
         </div>
       </div>
     </div>

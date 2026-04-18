@@ -5,6 +5,8 @@ import { api } from "../../services/api";
 import { useMarnee } from "../../context/MarneeContext";
 import marneeMascot from "../../assets/mascot/marnee12.png";
 import ChatDebugger from "../../Component/ChatDebugger";
+import { Search, Send, Calendar, Loader2 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 // Custom markdown components with Tailwind styles for AI messages
 // eslint-disable-next-line jsx-a11y/heading-has-content
@@ -407,22 +409,26 @@ export default function IAWebPage() {
   }
 
   return (
-    <div className="flex h-screen bg-[#f8f6ff] flex-col relative overflow-hidden">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(139,92,246,0.12),_transparent_32%),radial-gradient(circle_at_top_right,_rgba(6,182,212,0.12),_transparent_28%)]" />
+    <div className="flex h-screen bg-[#f6f6f6] flex-col relative overflow-hidden">
 
-      <header className="border-b border-white/70 px-6 py-5 text-gray-900 bg-white/80 backdrop-blur-md flex-shrink-0 relative">
+      <header className="border-b border-[rgba(30,30,30,0.1)] px-6 py-5 text-gray-900 bg-white flex-shrink-0 relative">
         <div className="flex items-center gap-4">
-          <div className="relative flex h-14 w-14 items-center justify-center rounded bg-gradient-to-br from-violet-100 via-white to-cyan-100 shadow-sm">
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.3 }}
+            className="relative flex h-14 w-14 items-center justify-center rounded bg-[#ede0f8] border border-[rgba(64,8,109,0.15)]"
+          >
             <img
               src={marneeMascot}
               alt="Marnee mascot"
               className={`${mascotClassName} h-11 w-11 object-contain`}
             />
-          </div>
+          </motion.div>
           <div>
-            <h1 className="text-xl font-semibold">Marnee Chat</h1>
+            <h1 className="text-xl font-semibold text-[#1e1e1e]">Marnee Chat</h1>
             <p className="text-sm text-gray-500">
-              Your AI content and brand strategist, now in chat-only mode.
+              Your AI content and brand strategist
             </p>
           </div>
         </div>
@@ -431,17 +437,10 @@ export default function IAWebPage() {
           <input
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-white border border-[#dccaf4] rounded pl-12 pr-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#dccaf4] focus:border-transparent shadow-sm"
+            className="w-full bg-[#f6f6f6] border border-[rgba(30,30,30,0.1)] rounded pl-12 pr-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#40086d] focus:border-transparent"
             placeholder="Search a word in your conversation history..."
           />
-          <svg
-            className="w-5 h-5 text-violet-400 absolute left-4 top-1/2 -translate-y-1/2"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m21 21-4.35-4.35m1.85-5.15a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" />
-          </svg>
+          <Search className="w-5 h-5 text-[#40086d] absolute left-4 top-1/2 -translate-y-1/2" />
         </div>
 
         {normalizedSearchTerm && (
@@ -454,60 +453,85 @@ export default function IAWebPage() {
       </header>
 
       <div className="flex-1 overflow-y-auto p-6 space-y-4 flex-shrink-1 relative">
-        {visibleMessages.map((msg) => (
-          <div key={msg.id}>
-            <div
-              className={`max-w-3xl rounded px-5 py-4 transition ${
-                msg.from === "ai"
-                  ? "bg-white border border-[rgba(30,30,30,0.1)] text-gray-800 shadow-sm"
-                  : "ml-auto bg-[#1e1e1e] text-white shadow-sm shadow-violet-500/20"
-              } ${
-                normalizedSearchTerm && msg.text.toLowerCase().includes(normalizedSearchTerm)
-                  ? "ring-2 ring-cyan-300 ring-offset-2 ring-offset-transparent"
-                  : ""
-              }`}
+        <AnimatePresence>
+          {visibleMessages.map((msg) => (
+            <motion.div
+              key={msg.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
             >
-              <ReactMarkdown
-                components={msg.from === "ai" ? aiMarkdownComponents : userMarkdownComponents}
+              <div
+                className={`max-w-3xl rounded px-5 py-4 transition ${
+                  msg.from === "ai"
+                    ? "bg-white border border-[rgba(30,30,30,0.1)] text-gray-800"
+                    : "ml-auto bg-[#1e1e1e] text-white"
+                } ${
+                  normalizedSearchTerm && msg.text.toLowerCase().includes(normalizedSearchTerm)
+                    ? "ring-2 ring-[#40086d] ring-offset-2 ring-offset-transparent"
+                    : ""
+                }`}
               >
-                {msg.text}
-              </ReactMarkdown>
+                <ReactMarkdown
+                  components={msg.from === "ai" ? aiMarkdownComponents : userMarkdownComponents}
+                >
+                  {msg.text}
+                </ReactMarkdown>
 
-              {msg.from === "ai" &&
-                msg.primaryAction?.type === "navigate" &&
-                msg.primaryAction?.target === "calendar" && (
-                  <button
-                    type="button"
-                    onClick={() => navigate("/app/calendar")}
-                    className="mt-4 inline-flex items-center rounded bg-[#1e1e1e] px-4 py-2.5 text-sm font-medium text-white shadow-sm shadow-violet-500/20 transition hover:bg-[#dccaf4] hover:text-[#1a0530]"
-                  >
-                    Open Calendar
-                  </button>
-                )}
-            </div>
-          </div>
-        ))}
+                {msg.from === "ai" &&
+                  msg.primaryAction?.type === "navigate" &&
+                  msg.primaryAction?.target === "calendar" && (
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      type="button"
+                      onClick={() => navigate("/app/calendar")}
+                      className="mt-4 inline-flex items-center gap-2 rounded bg-[#40086d] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#1a0530]"
+                    >
+                      <Calendar className="w-4 h-4" />
+                      Open Calendar
+                    </motion.button>
+                  )}
+              </div>
+            </motion.div>
+          ))}
+        </AnimatePresence>
 
         {normalizedSearchTerm && visibleMessages.length === 0 && (
-          <div className="max-w-2xl rounded border border-dashed border-violet-200 bg-white/80 px-5 py-6 text-sm text-gray-500">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="max-w-2xl rounded border border-dashed border-[rgba(30,30,30,0.1)] bg-white px-5 py-6 text-sm text-gray-500"
+          >
             Try another word or clear the search to see the full conversation again.
-          </div>
+          </motion.div>
         )}
 
         {isLoading && (
-          <div className="max-w-3xl rounded px-5 py-4 bg-white border border-[rgba(30,30,30,0.1)] shadow-sm">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="max-w-3xl rounded px-5 py-4 bg-white border border-[rgba(30,30,30,0.1)]"
+          >
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-violet-400 rounded-full animate-bounce" />
-              <div
-                className="w-2 h-2 bg-violet-400 rounded-full animate-bounce"
-                style={{ animationDelay: "0.1s" }}
+              <motion.div
+                className="w-2 h-2 bg-[#40086d] rounded-full"
+                animate={{ y: [0, -8, 0] }}
+                transition={{ duration: 0.6, repeat: Infinity, ease: "easeInOut" }}
               />
-              <div
-                className="w-2 h-2 bg-violet-400 rounded-full animate-bounce"
-                style={{ animationDelay: "0.2s" }}
+              <motion.div
+                className="w-2 h-2 bg-[#40086d] rounded-full"
+                animate={{ y: [0, -8, 0] }}
+                transition={{ duration: 0.6, repeat: Infinity, ease: "easeInOut", delay: 0.1 }}
+              />
+              <motion.div
+                className="w-2 h-2 bg-[#40086d] rounded-full"
+                animate={{ y: [0, -8, 0] }}
+                transition={{ duration: 0.6, repeat: Infinity, ease: "easeInOut", delay: 0.2 }}
               />
             </div>
-          </div>
+          </motion.div>
         )}
 
         {error && (
@@ -527,56 +551,65 @@ export default function IAWebPage() {
 
       {/* Prominent Calendar Button */}
       {showCalendarButton && (
-        <div className="px-6 py-4 bg-gradient-to-r from-violet-50 via-indigo-50 to-cyan-50 border-t border-violet-200 flex-shrink-0 relative">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="px-6 py-4 bg-[#ede0f8] border-t border-[rgba(64,8,109,0.15)] flex-shrink-0 relative"
+        >
           <div className="flex items-center justify-between gap-4">
             <div className="flex-1">
-              <p className="text-sm font-semibold text-gray-900 mb-1">
+              <p className="text-sm font-semibold text-[#1e1e1e] mb-1">
                 Ready to create your content calendar?
               </p>
               <p className="text-xs text-gray-600">
                 Marnee will generate a personalized calendar with all the ideas we discussed.
               </p>
             </div>
-            <button
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               onClick={() => navigate("/app/calendar")}
-              className="px-6 py-3 rounded bg-[#1e1e1e] text-white font-semibold text-sm hover:bg-[#dccaf4] hover:text-[#1a0530] transition shadow-sm flex items-center gap-2 whitespace-nowrap"
+              className="px-6 py-3 rounded bg-[#40086d] text-white font-semibold text-sm hover:bg-[#1a0530] transition flex items-center gap-2 whitespace-nowrap"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
+              <Calendar className="w-5 h-5" />
               Go to Calendar
-            </button>
+            </motion.button>
           </div>
-        </div>
+        </motion.div>
       )}
 
-      <div className="border-t border-white/70 flex items-center px-6 py-4 gap-3 bg-white/85 backdrop-blur-md flex-shrink-0 relative">
+      <div className="border-t border-[rgba(30,30,30,0.1)] flex items-center px-6 py-4 gap-3 bg-white flex-shrink-0 relative">
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          className="flex-1 bg-[#f6f6f6] border border-[rgba(30,30,30,0.1)] rounded px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#dccaf4] focus:border-transparent"
+          className="flex-1 bg-[#f6f6f6] border border-[rgba(30,30,30,0.1)] rounded px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#40086d] focus:border-transparent"
           placeholder="Type your message here..."
           onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && handleSend()}
           disabled={isLoading}
         />
-        <button
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
           id="send-btn"
           onClick={handleSend}
           disabled={isLoading || !input.trim()}
-          className="w-12 h-12 rounded bg-[#1e1e1e] flex items-center justify-center text-white hover:bg-[#dccaf4] hover:text-[#1a0530] transition disabled:opacity-50 shadow-sm"
+          className="w-12 h-12 rounded bg-[#40086d] flex items-center justify-center text-white hover:bg-[#1a0530] transition disabled:opacity-50"
         >
           {isLoading ? (
-            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            <Loader2 className="w-5 h-5 animate-spin" />
           ) : (
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-            </svg>
+            <Send className="w-5 h-5" />
           )}
-        </button>
+        </motion.button>
       </div>
 
-      <div className="pointer-events-none absolute bottom-24 right-6 hidden md:block">
-        <div className="relative rounded-[28px] bg-white/90 border border-[#dccaf4] shadow-sm px-4 py-3 backdrop-blur-sm">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.5 }}
+        className="pointer-events-none absolute bottom-24 right-6 hidden md:block"
+      >
+        <div className="relative rounded bg-white border border-[rgba(30,30,30,0.1)] px-4 py-3">
           <p className="text-xs text-gray-500 mb-2">
             {isLoading ? "Marnee is thinking..." : "Marnee is here"}
           </p>
@@ -586,7 +619,7 @@ export default function IAWebPage() {
             className={`${mascotClassName} h-20 w-20 object-contain`}
           />
         </div>
-      </div>
+      </motion.div>
 
       {/* Debug Component - Remove in production */}
       {process.env.NODE_ENV === 'development' && <ChatDebugger />}
