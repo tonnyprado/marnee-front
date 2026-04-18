@@ -20,7 +20,7 @@ const aiMarkdownComponents = {
   strong: ({ node, ...props }) => <strong className="font-bold text-gray-900" {...props} />,
   em: ({ node, ...props }) => <em className="italic" {...props} />,
   // eslint-disable-next-line jsx-a11y/anchor-has-content
-  a: ({ node, ...props }) => <a className="text-violet-600 hover:text-violet-700 underline font-medium" {...props} />,
+  a: ({ node, ...props }) => <a className="text-[#40086d] hover:text-[#40086d] underline font-medium" {...props} />,
   code: ({ node, inline, ...props }) =>
     inline ? (
       <code className="bg-gray-100 px-1.5 py-0.5 rounded text-sm font-mono text-gray-800" {...props} />
@@ -227,7 +227,7 @@ export default function TestChatPage() {
 
   if (isInitializing) {
     return (
-      <div className="flex h-screen items-center justify-center bg-gray-50">
+      <div className="flex h-screen items-center justify-center bg-[#f6f6f6]">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-violet-200 border-t-violet-600 rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-gray-600">Initializing Test Chat...</p>
@@ -237,11 +237,11 @@ export default function TestChatPage() {
   }
 
   return (
-    <div className="h-screen bg-gray-50">
+    <div className="h-screen bg-[#f6f6f6]">
       {/* Main chat area */}
       <div className="flex flex-col h-full">
         {/* Header */}
-        <div className="bg-white border-b border-gray-200 px-6 py-4">
+        <div className="bg-white border-b border-[rgba(30,30,30,0.1)] px-6 py-4">
           <h1 className="text-xl font-bold text-gray-900">Chat with Marnee</h1>
           <p className="text-sm text-gray-600">
             Your AI content strategist - all messages are saved and persist
@@ -263,10 +263,10 @@ export default function TestChatPage() {
               className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
             >
               <div
-                className={`max-w-2xl rounded-2xl px-5 py-3 ${
+                className={`max-w-2xl rounded px-5 py-3 ${
                   msg.role === 'user'
                     ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white'
-                    : 'bg-white border border-gray-200 text-gray-900'
+                    : 'bg-white border border-[rgba(30,30,30,0.1)] text-gray-900'
                 }`}
               >
                 <div className="text-xs opacity-70 mb-1">
@@ -283,7 +283,7 @@ export default function TestChatPage() {
 
           {isLoading && (
             <div className="flex justify-start">
-              <div className="bg-white border border-gray-200 rounded-2xl px-5 py-3">
+              <div className="bg-white border border-[rgba(30,30,30,0.1)] rounded px-5 py-3">
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 bg-violet-400 rounded-full animate-bounce" />
                   <div className="w-2 h-2 bg-violet-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }} />
@@ -297,19 +297,19 @@ export default function TestChatPage() {
         </div>
 
         {/* Input */}
-        <div className="bg-white border-t border-gray-200 px-6 py-4 flex items-center gap-3">
+        <div className="bg-white border-t border-[rgba(30,30,30,0.1)] px-6 py-4 flex items-center gap-3">
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSend()}
             disabled={isLoading}
             placeholder="Type your message..."
-            className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent"
+            className="flex-1 bg-[#f6f6f6] border border-[rgba(30,30,30,0.1)] rounded px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#dccaf4] focus:border-transparent"
           />
           <button
             onClick={handleSend}
             disabled={isLoading || !input.trim()}
-            className="w-12 h-12 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 flex items-center justify-center text-white hover:from-violet-700 hover:to-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-12 h-12 rounded bg-gradient-to-r from-violet-600 to-indigo-600 flex items-center justify-center text-white hover:from-violet-700 hover:to-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isLoading ? (
               <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />

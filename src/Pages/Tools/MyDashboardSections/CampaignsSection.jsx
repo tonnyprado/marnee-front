@@ -56,8 +56,8 @@ export default function CampaignsSection() {
   ];
 
   const statusStyles = {
-    "In Progress": "bg-violet-50 text-violet-600",
-    Idea: "bg-violet-50 text-violet-600",
+    "In Progress": "bg-[#ede0f8] text-[#40086d]",
+    Idea: "bg-[#ede0f8] text-[#40086d]",
     Scheduled: "bg-cyan-50 text-cyan-600",
     Published: "bg-green-50 text-green-600",
   };
@@ -85,8 +85,8 @@ export default function CampaignsSection() {
             onClick={() => setFilter(f.id)}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
               filter === f.id
-                ? "bg-violet-100 text-violet-700 border border-violet-200"
-                : "bg-white border border-gray-200 text-gray-600 hover:bg-gray-50"
+                ? "bg-[#ede0f8] text-[#40086d] border border-violet-200"
+                : "bg-white border border-[rgba(30,30,30,0.1)] text-gray-600 hover:bg-[#f6f6f6]"
             }`}
           >
             {f.label}
@@ -95,8 +95,8 @@ export default function CampaignsSection() {
       </div>
 
       {/* Table */}
-      <div className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm">
-        <div className="grid grid-cols-9 gap-4 px-6 py-3 text-xs uppercase text-gray-500 tracking-wide bg-gray-50 border-b border-gray-100">
+      <div className="bg-white border border-[rgba(30,30,30,0.1)] rounded overflow-hidden shadow-sm">
+        <div className="grid grid-cols-9 gap-4 px-6 py-3 text-xs uppercase text-gray-500 tracking-wide bg-[#f6f6f6] border-b border-[rgba(30,30,30,0.1)]">
           <div className="col-span-2">Campaign Name</div>
           <div>Platform</div>
           <div>Inspiration</div>
@@ -117,7 +117,7 @@ export default function CampaignsSection() {
               <div key={c.id}>
                 <div
                   className={`grid grid-cols-9 gap-4 px-6 py-4 items-center cursor-pointer transition ${
-                    selectedCampaign === c.id ? "bg-violet-50" : "hover:bg-gray-50"
+                    selectedCampaign === c.id ? "bg-[#ede0f8]" : "hover:bg-[#f6f6f6]"
                   }`}
                   onClick={() => setSelectedCampaign(c.id)}
                 >
@@ -131,7 +131,7 @@ export default function CampaignsSection() {
                   </div>
                   <div>
                     {c.inspirationLabel ? (
-                      <button className="text-xs text-violet-600 hover:underline">
+                      <button className="text-xs text-[#40086d] hover:underline">
                         {c.inspirationLabel}
                       </button>
                     ) : (
@@ -158,17 +158,17 @@ export default function CampaignsSection() {
                   <div className="text-sm text-gray-700">{c.scripts}</div>
                   <div className="text-sm text-gray-700">{c.clips}</div>
                   <div>
-                    <button className="px-4 py-1.5 rounded-lg bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 text-white text-xs font-medium hover:from-violet-700 hover:via-indigo-700 hover:to-cyan-600 transition">
+                    <button className="px-4 py-1.5 rounded-lg bg-[#1e1e1e] text-white text-xs font-medium hover:bg-[#dccaf4] hover:text-[#1a0530] transition">
                       Open Campaign
                     </button>
                   </div>
                 </div>
 
                 {selectedCampaign === c.id && (
-                  <div className="px-6 pb-6 pt-2 bg-violet-50/30">
+                  <div className="px-6 pb-6 pt-2 bg-[#ede0f8]/30">
                     <div className="grid grid-cols-2 gap-4">
                       {/* Task Progress */}
-                      <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+                      <div className="bg-white border border-[rgba(30,30,30,0.1)] rounded p-5 shadow-sm">
                         <h2 className="text-lg font-semibold mb-3 text-gray-900">
                           Task Progress
                         </h2>
@@ -177,7 +177,7 @@ export default function CampaignsSection() {
                             <input
                               type="checkbox"
                               defaultChecked
-                              className="accent-violet-500 rounded"
+                              className="accent-[#40086d] rounded"
                             />
                             <span className="line-through text-gray-400">
                               Create campaign idea
@@ -187,35 +187,35 @@ export default function CampaignsSection() {
                             <input
                               type="checkbox"
                               defaultChecked
-                              className="accent-violet-500 rounded"
+                              className="accent-[#40086d] rounded"
                             />
                             <span className="line-through text-gray-400">
                               Write script drafts
                             </span>
                           </label>
                           <label className="flex items-center gap-2">
-                            <input type="checkbox" className="accent-violet-500 rounded" />
+                            <input type="checkbox" className="accent-[#40086d] rounded" />
                             <span className="text-gray-700">Upload video clips</span>
                           </label>
                           <label className="flex items-center gap-2">
-                            <input type="checkbox" className="accent-violet-500 rounded" />
+                            <input type="checkbox" className="accent-[#40086d] rounded" />
                             <span className="text-gray-700">Schedule posts</span>
                           </label>
                           <label className="flex items-center gap-2">
-                            <input type="checkbox" className="accent-violet-500 rounded" />
+                            <input type="checkbox" className="accent-[#40086d] rounded" />
                             <span className="text-gray-700">Publish campaign</span>
                           </label>
                         </div>
                       </div>
 
                       {/* AI Suggestions */}
-                      <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+                      <div className="bg-white border border-[rgba(30,30,30,0.1)] rounded p-5 shadow-sm">
                         <h2 className="text-lg font-semibold mb-3 text-gray-900">
                           AI Suggestions
                         </h2>
                         <div className="space-y-3 text-sm">
-                          <div className="bg-violet-50 rounded-xl p-3">
-                            <p className="text-xs text-violet-500 mb-1 font-medium">
+                          <div className="bg-[#ede0f8] rounded p-3">
+                            <p className="text-xs text-[#40086d] mb-1 font-medium">
                               SUGGESTED HOOK
                             </p>
                             <p className="text-gray-700">
@@ -223,7 +223,7 @@ export default function CampaignsSection() {
                               entire wardrobe?"
                             </p>
                           </div>
-                          <div className="bg-cyan-50 rounded-xl p-3">
+                          <div className="bg-cyan-50 rounded p-3">
                             <p className="text-xs text-cyan-500 mb-1 font-medium">
                               TRENDING FORMAT
                             </p>
@@ -232,7 +232,7 @@ export default function CampaignsSection() {
                               this week.
                             </p>
                           </div>
-                          <div className="bg-blue-50 rounded-xl p-3">
+                          <div className="bg-blue-50 rounded p-3">
                             <p className="text-xs text-blue-500 mb-1 font-medium">
                               OPTIMAL TIMING
                             </p>
@@ -246,7 +246,7 @@ export default function CampaignsSection() {
 
                     {/* Upload area */}
                     <div className="mt-4">
-                      <div className="border-2 border-dashed border-gray-200 rounded-2xl bg-white py-8 text-center">
+                      <div className="border-2 border-dashed border-[rgba(30,30,30,0.1)] rounded bg-white py-8 text-center">
                         <div className="mx-auto mb-2 h-8 w-8 rounded-lg bg-gray-100 flex items-center justify-center text-gray-500 text-xs font-semibold">
                           UP
                         </div>
@@ -265,7 +265,7 @@ export default function CampaignsSection() {
                         Campaign Notes
                       </h3>
                       <textarea
-                        className="w-full min-h-[90px] rounded-xl border border-gray-200 bg-white p-3 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-violet-200"
+                        className="w-full min-h-[90px] rounded border border-[rgba(30,30,30,0.1)] bg-white p-3 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-violet-200"
                         defaultValue="Focus on authentic storytelling and user-generated content. Consider partnering with micro-influencers for better engagement rates."
                       />
                     </div>

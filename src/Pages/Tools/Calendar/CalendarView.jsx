@@ -3,7 +3,7 @@ import React, { useState } from "react";
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 const PILLAR_COLORS = {
-  Authority: "bg-violet-100 text-violet-700 border-violet-300",
+  Authority: "bg-[#ede0f8] text-[#40086d] border-violet-300",
   "Behind the scenes": "bg-blue-100 text-blue-700 border-blue-300",
   Tips: "bg-green-100 text-green-700 border-green-300",
   Story: "bg-orange-100 text-orange-700 border-orange-300",
@@ -76,20 +76,20 @@ export default function CalendarView({
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100">
+    <div className="bg-white rounded shadow-sm border border-[rgba(30,30,30,0.1)]">
       {/* Top controls */}
-      <div className="flex items-center justify-between mb-4 p-4 border-b border-gray-100">
+      <div className="flex items-center justify-between mb-4 p-4 border-b border-[rgba(30,30,30,0.1)]">
         <div className="flex items-center gap-3">
           <button
             onClick={goToPrevMonth}
-            className="px-4 py-2 rounded-lg border border-gray-200 text-gray-700 text-sm hover:bg-gray-50 transition"
+            className="px-4 py-2 rounded-lg border border-[rgba(30,30,30,0.1)] text-gray-700 text-sm hover:bg-[#f6f6f6] transition"
           >
             Previous
           </button>
           <h2 className="text-lg font-semibold min-w-[180px] text-center text-gray-900">{monthName}</h2>
           <button
             onClick={goToNextMonth}
-            className="px-4 py-2 rounded-lg border border-gray-200 text-gray-700 text-sm hover:bg-gray-50 transition"
+            className="px-4 py-2 rounded-lg border border-[rgba(30,30,30,0.1)] text-gray-700 text-sm hover:bg-[#f6f6f6] transition"
           >
             Next
           </button>
@@ -99,7 +99,7 @@ export default function CalendarView({
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 text-gray-700"
+            className="bg-white border border-[rgba(30,30,30,0.1)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#40086d] text-gray-700"
           >
             <option value="all">All Status</option>
             <option value="todo">To Do</option>
@@ -114,9 +114,9 @@ export default function CalendarView({
       </div>
 
       {/* Calendar grid */}
-      <div className="bg-white border-t border-gray-100 overflow-hidden">
+      <div className="bg-white border-t border-[rgba(30,30,30,0.1)] overflow-hidden">
         {/* Headers */}
-        <div className="grid grid-cols-7 border-b border-gray-200 bg-gray-50">
+        <div className="grid grid-cols-7 border-b border-[rgba(30,30,30,0.1)] bg-[#f6f6f6]">
           {DAYS.map((d) => (
             <div
               key={d}
@@ -141,8 +141,8 @@ export default function CalendarView({
             return (
               <div
                 key={idx}
-                className={`min-h-[120px] border-r border-b border-gray-100 last:border-r-0 relative ${
-                  isToday ? "bg-violet-50" : ""
+                className={`min-h-[120px] border-r border-b border-[rgba(30,30,30,0.1)] last:border-r-0 relative ${
+                  isToday ? "bg-[#ede0f8]" : ""
                 }`}
               >
                 <div className="p-2">
@@ -150,7 +150,7 @@ export default function CalendarView({
                     <div
                       className={`text-sm font-semibold mb-1 ${
                         isToday
-                          ? "w-7 h-7 rounded-full bg-violet-500 text-white flex items-center justify-center"
+                          ? "w-7 h-7 rounded-full bg-[#ede0f8]0 text-white flex items-center justify-center"
                           : "text-gray-700"
                       }`}
                     >

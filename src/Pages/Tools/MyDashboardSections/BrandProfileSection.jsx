@@ -19,9 +19,9 @@ function ProgressBar({ label, value }) {
 
 function PillarCard({ title, description, percent }) {
   return (
-    <div className="border border-gray-100 rounded-xl p-4 bg-white shadow-sm">
+    <div className="border border-[rgba(30,30,30,0.1)] rounded p-4 bg-white shadow-sm">
       <div className="flex items-center justify-between mb-2">
-        <div className="h-8 w-8 rounded-lg bg-violet-50 flex items-center justify-center text-xs font-semibold text-violet-600">
+        <div className="h-8 w-8 rounded-lg bg-[#ede0f8] flex items-center justify-center text-xs font-semibold text-[#40086d]">
           CP
         </div>
         <span className="text-xs font-semibold text-gray-500">{percent}%</span>
@@ -44,7 +44,7 @@ export default function BrandProfileSection() {
       </div>
 
       {/* Assessment */}
-      <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
+      <div className="bg-white border border-[rgba(30,30,30,0.1)] rounded p-6 shadow-sm">
         <div className="flex items-start gap-6">
           <div className="h-24 w-24 rounded-full bg-[conic-gradient(#7c3aed_0deg,_#4f46e5_120deg,_#06b6d4_210deg,_#e5e7eb_0deg)] p-2">
             <div className="h-full w-full rounded-full bg-white flex items-center justify-center text-center">
@@ -73,17 +73,17 @@ export default function BrandProfileSection() {
 
       {/* Purpose + Personality */}
       <div className="grid grid-cols-2 gap-4">
-        <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+        <div className="bg-white border border-[rgba(30,30,30,0.1)] rounded p-5 shadow-sm">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="h-8 w-8 rounded-lg bg-violet-50 flex items-center justify-center text-xs font-semibold text-violet-600">
+              <div className="h-8 w-8 rounded-lg bg-[#ede0f8] flex items-center justify-center text-xs font-semibold text-[#40086d]">
                 BP
               </div>
               <h3 className="text-sm font-semibold text-gray-900">
                 Brand Purpose &amp; Position
               </h3>
             </div>
-            <span className="text-[10px] px-2 py-1 rounded-full bg-violet-50 text-violet-600">
+            <span className="text-[10px] px-2 py-1 rounded-full bg-[#ede0f8] text-[#40086d]">
               AI GENERATED
             </span>
           </div>
@@ -110,17 +110,17 @@ export default function BrandProfileSection() {
           </div>
         </div>
 
-        <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+        <div className="bg-white border border-[rgba(30,30,30,0.1)] rounded p-5 shadow-sm">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="h-8 w-8 rounded-lg bg-violet-50 flex items-center justify-center text-xs font-semibold text-violet-600">
+              <div className="h-8 w-8 rounded-lg bg-[#ede0f8] flex items-center justify-center text-xs font-semibold text-[#40086d]">
                 BV
               </div>
               <h3 className="text-sm font-semibold text-gray-900">
                 Personality &amp; Brand Voice
               </h3>
             </div>
-            <span className="text-[10px] px-2 py-1 rounded-full bg-violet-50 text-violet-600">
+            <span className="text-[10px] px-2 py-1 rounded-full bg-[#ede0f8] text-[#40086d]">
               AI GENERATED
             </span>
           </div>
@@ -144,15 +144,15 @@ export default function BrandProfileSection() {
             </svg>
             <div className="text-sm text-gray-600 space-y-2">
               <div className="flex gap-2">
-                <span className="text-violet-600 font-semibold">Tone:</span>
+                <span className="text-[#40086d] font-semibold">Tone:</span>
                 <span>Confident yet approachable</span>
               </div>
               <div className="flex gap-2">
-                <span className="text-violet-600 font-semibold">Style:</span>
+                <span className="text-[#40086d] font-semibold">Style:</span>
                 <span>Clear, inspiring, solution-focused</span>
               </div>
               <div className="flex gap-2">
-                <span className="text-violet-600 font-semibold">Personality:</span>
+                <span className="text-[#40086d] font-semibold">Personality:</span>
                 <span>Innovative mentor and creative catalyst</span>
               </div>
             </div>
@@ -161,15 +161,15 @@ export default function BrandProfileSection() {
       </div>
 
       {/* Brand Story */}
-      <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+      <div className="bg-white border border-[rgba(30,30,30,0.1)] rounded p-5 shadow-sm">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-lg bg-violet-50 flex items-center justify-center text-xs font-semibold text-violet-600">
+            <div className="h-8 w-8 rounded-lg bg-[#ede0f8] flex items-center justify-center text-xs font-semibold text-[#40086d]">
               BS
             </div>
             <h3 className="text-sm font-semibold text-gray-900">Brand Story</h3>
           </div>
-          <span className="text-[10px] px-2 py-1 rounded-full bg-violet-50 text-violet-600">
+          <span className="text-[10px] px-2 py-1 rounded-full bg-[#ede0f8] text-[#40086d]">
             AI GENERATED
           </span>
         </div>
@@ -213,15 +213,15 @@ export default function BrandProfileSection() {
 
       {/* Content Pillars + Upload */}
       <div className="grid grid-cols-2 gap-4">
-        <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+        <div className="bg-white border border-[rgba(30,30,30,0.1)] rounded p-5 shadow-sm">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="h-8 w-8 rounded-lg bg-violet-50 flex items-center justify-center text-xs font-semibold text-violet-600">
+              <div className="h-8 w-8 rounded-lg bg-[#ede0f8] flex items-center justify-center text-xs font-semibold text-[#40086d]">
                 CP
               </div>
               <h3 className="text-sm font-semibold text-gray-900">Content Pillars</h3>
             </div>
-            <span className="text-[10px] px-2 py-1 rounded-full bg-violet-50 text-violet-600">
+            <span className="text-[10px] px-2 py-1 rounded-full bg-[#ede0f8] text-[#40086d]">
               AI GENERATED
             </span>
           </div>
@@ -249,17 +249,17 @@ export default function BrandProfileSection() {
           </div>
         </div>
 
-        <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+        <div className="bg-white border border-[rgba(30,30,30,0.1)] rounded p-5 shadow-sm">
           <div className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-lg bg-violet-50 flex items-center justify-center text-xs font-semibold text-violet-600">
+            <div className="h-8 w-8 rounded-lg bg-[#ede0f8] flex items-center justify-center text-xs font-semibold text-[#40086d]">
               UG
             </div>
             <h3 className="text-sm font-semibold text-gray-900">
               Upload Brand Guidelines
             </h3>
           </div>
-          <div className="mt-4 border-2 border-dashed border-gray-200 rounded-2xl bg-gray-50 py-10 text-center">
-            <div className="mx-auto mb-2 h-10 w-10 rounded-lg bg-white border border-gray-200 flex items-center justify-center text-gray-400 text-xs font-semibold">
+          <div className="mt-4 border-2 border-dashed border-[rgba(30,30,30,0.1)] rounded bg-[#f6f6f6] py-10 text-center">
+            <div className="mx-auto mb-2 h-10 w-10 rounded-lg bg-white border border-[rgba(30,30,30,0.1)] flex items-center justify-center text-gray-400 text-xs font-semibold">
               UP
             </div>
             <p className="text-sm font-medium text-gray-700">
@@ -267,7 +267,7 @@ export default function BrandProfileSection() {
             </p>
             <p className="text-xs text-gray-400">PDF, DOC, or image files accepted</p>
           </div>
-          <div className="mt-4 border border-gray-100 rounded-xl px-4 py-3 flex items-center justify-between bg-white">
+          <div className="mt-4 border border-[rgba(30,30,30,0.1)] rounded px-4 py-3 flex items-center justify-between bg-white">
             <div>
               <p className="text-sm font-medium text-gray-700">Brand_Guidelines_v2.pdf</p>
               <p className="text-xs text-gray-400">2.4 MB</p>
@@ -280,17 +280,17 @@ export default function BrandProfileSection() {
       </div>
 
       {/* Recommendations */}
-      <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+      <div className="bg-white border border-[rgba(30,30,30,0.1)] rounded p-5 shadow-sm">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-lg bg-violet-50 flex items-center justify-center text-xs font-semibold text-violet-600">
+            <div className="h-8 w-8 rounded-lg bg-[#ede0f8] flex items-center justify-center text-xs font-semibold text-[#40086d]">
               BR
             </div>
             <h3 className="text-sm font-semibold text-gray-900">
               Brand Guidelines Recommendations
             </h3>
           </div>
-          <span className="text-[10px] px-2 py-1 rounded-full bg-violet-50 text-violet-600">
+          <span className="text-[10px] px-2 py-1 rounded-full bg-[#ede0f8] text-[#40086d]">
             AI GENERATED
           </span>
         </div>
@@ -303,7 +303,7 @@ export default function BrandProfileSection() {
               {["#9AA7FF", "#D6B4FF", "#FF4DB8"].map((c) => (
                 <span
                   key={c}
-                  className="h-7 w-7 rounded-md border border-gray-200"
+                  className="h-7 w-7 rounded-md border border-[rgba(30,30,30,0.1)]"
                   style={{ backgroundColor: c }}
                 />
               ))}
@@ -313,7 +313,7 @@ export default function BrandProfileSection() {
               {["#FFFFFF", "#E5E7EB", "#111827"].map((c) => (
                 <span
                   key={c}
-                  className="h-7 w-7 rounded-md border border-gray-200"
+                  className="h-7 w-7 rounded-md border border-[rgba(30,30,30,0.1)]"
                   style={{ backgroundColor: c }}
                 />
               ))}
@@ -324,15 +324,15 @@ export default function BrandProfileSection() {
             <p className="text-sm font-semibold text-gray-800 mb-2">Typography</p>
             <div className="space-y-2 text-sm text-gray-600">
               <div>
-                <p className="text-xs text-violet-600 font-semibold">SORA BOLD</p>
+                <p className="text-xs text-[#40086d] font-semibold">SORA BOLD</p>
                 <p>Headlines &amp; Titles</p>
               </div>
               <div>
-                <p className="text-xs text-violet-600 font-semibold">INTER REGULAR</p>
+                <p className="text-xs text-[#40086d] font-semibold">INTER REGULAR</p>
                 <p>Body text and descriptions</p>
               </div>
               <div>
-                <p className="text-xs text-violet-600 font-semibold">INTER SEMIBOLD</p>
+                <p className="text-xs text-[#40086d] font-semibold">INTER SEMIBOLD</p>
                 <p>Buttons and CTAs</p>
               </div>
             </div>
@@ -342,19 +342,19 @@ export default function BrandProfileSection() {
             <p className="text-sm font-semibold text-gray-800 mb-2">Visual Style</p>
             <div className="space-y-2 text-sm text-gray-600">
               <p>
-                <span className="text-violet-600 font-semibold">Border Radius:</span>{" "}
+                <span className="text-[#40086d] font-semibold">Border Radius:</span>{" "}
                 8px - 12px (Modern, friendly)
               </p>
               <p>
-                <span className="text-violet-600 font-semibold">Shadows:</span> Subtle,
+                <span className="text-[#40086d] font-semibold">Shadows:</span> Subtle,
                 soft shadows for depth
               </p>
               <p>
-                <span className="text-violet-600 font-semibold">Gradients:</span> Linear
+                <span className="text-[#40086d] font-semibold">Gradients:</span> Linear
                 gradients with brand colors
               </p>
               <p>
-                <span className="text-violet-600 font-semibold">Icons:</span> Outlined
+                <span className="text-[#40086d] font-semibold">Icons:</span> Outlined
                 style, consistent stroke width
               </p>
             </div>
@@ -369,10 +369,10 @@ export default function BrandProfileSection() {
             {["A", "B", "C"].map((key, index) => (
               <div
                 key={key}
-                className={`h-14 w-14 rounded-xl flex items-center justify-center border ${
+                className={`h-14 w-14 rounded flex items-center justify-center border ${
                   index === 2
                     ? "bg-gradient-to-br from-violet-500 via-indigo-500 to-cyan-500 text-white border-transparent"
-                    : "bg-white border-gray-200 text-gray-700"
+                    : "bg-white border-[rgba(30,30,30,0.1)] text-gray-700"
                 }`}
               >
                 DN

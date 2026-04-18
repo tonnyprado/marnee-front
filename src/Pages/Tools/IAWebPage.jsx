@@ -25,7 +25,7 @@ const aiMarkdownComponents = {
   em: ({ node, ...props }) => <em className="italic" {...props} />,
   a: ({ node, ...props }) => (
     // eslint-disable-next-line jsx-a11y/anchor-has-content
-    <a className="text-violet-600 hover:text-violet-700 underline font-medium" {...props} />
+    <a className="text-[#40086d] hover:text-[#40086d] underline font-medium" {...props} />
   ),
   code: ({ node, inline, ...props }) =>
     inline ? (
@@ -397,7 +397,7 @@ export default function IAWebPage() {
 
   if (isLoadingSession) {
     return (
-      <div className="flex h-screen bg-gray-50 items-center justify-center">
+      <div className="flex h-screen bg-[#f6f6f6] items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-violet-200 border-t-violet-600 rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-gray-600">Loading your session...</p>
@@ -412,7 +412,7 @@ export default function IAWebPage() {
 
       <header className="border-b border-white/70 px-6 py-5 text-gray-900 bg-white/80 backdrop-blur-md flex-shrink-0 relative">
         <div className="flex items-center gap-4">
-          <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-100 via-white to-cyan-100 shadow-sm">
+          <div className="relative flex h-14 w-14 items-center justify-center rounded bg-gradient-to-br from-violet-100 via-white to-cyan-100 shadow-sm">
             <img
               src={marneeMascot}
               alt="Marnee mascot"
@@ -431,7 +431,7 @@ export default function IAWebPage() {
           <input
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-white border border-violet-100 rounded-2xl pl-12 pr-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent shadow-sm"
+            className="w-full bg-white border border-[#dccaf4] rounded pl-12 pr-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#dccaf4] focus:border-transparent shadow-sm"
             placeholder="Search a word in your conversation history..."
           />
           <svg
@@ -457,10 +457,10 @@ export default function IAWebPage() {
         {visibleMessages.map((msg) => (
           <div key={msg.id}>
             <div
-              className={`max-w-3xl rounded-2xl px-5 py-4 transition ${
+              className={`max-w-3xl rounded px-5 py-4 transition ${
                 msg.from === "ai"
-                  ? "bg-white border border-gray-100 text-gray-800 shadow-sm"
-                  : "ml-auto bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 text-white shadow-lg shadow-violet-500/20"
+                  ? "bg-white border border-[rgba(30,30,30,0.1)] text-gray-800 shadow-sm"
+                  : "ml-auto bg-[#1e1e1e] text-white shadow-sm shadow-violet-500/20"
               } ${
                 normalizedSearchTerm && msg.text.toLowerCase().includes(normalizedSearchTerm)
                   ? "ring-2 ring-cyan-300 ring-offset-2 ring-offset-transparent"
@@ -479,7 +479,7 @@ export default function IAWebPage() {
                   <button
                     type="button"
                     onClick={() => navigate("/app/calendar")}
-                    className="mt-4 inline-flex items-center rounded-xl bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 px-4 py-2.5 text-sm font-medium text-white shadow-lg shadow-violet-500/20 transition hover:from-violet-700 hover:via-indigo-700 hover:to-cyan-600"
+                    className="mt-4 inline-flex items-center rounded bg-[#1e1e1e] px-4 py-2.5 text-sm font-medium text-white shadow-sm shadow-violet-500/20 transition hover:bg-[#dccaf4] hover:text-[#1a0530]"
                   >
                     Open Calendar
                   </button>
@@ -489,13 +489,13 @@ export default function IAWebPage() {
         ))}
 
         {normalizedSearchTerm && visibleMessages.length === 0 && (
-          <div className="max-w-2xl rounded-2xl border border-dashed border-violet-200 bg-white/80 px-5 py-6 text-sm text-gray-500">
+          <div className="max-w-2xl rounded border border-dashed border-violet-200 bg-white/80 px-5 py-6 text-sm text-gray-500">
             Try another word or clear the search to see the full conversation again.
           </div>
         )}
 
         {isLoading && (
-          <div className="max-w-3xl rounded-2xl px-5 py-4 bg-white border border-gray-100 shadow-sm">
+          <div className="max-w-3xl rounded px-5 py-4 bg-white border border-[rgba(30,30,30,0.1)] shadow-sm">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-violet-400 rounded-full animate-bounce" />
               <div
@@ -511,7 +511,7 @@ export default function IAWebPage() {
         )}
 
         {error && (
-          <div className="max-w-3xl p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm">
+          <div className="max-w-3xl p-4 bg-red-50 border border-red-200 rounded text-red-600 text-sm">
             {error}
             <button
               onClick={() => setError(null)}
@@ -539,7 +539,7 @@ export default function IAWebPage() {
             </div>
             <button
               onClick={() => navigate("/app/calendar")}
-              className="px-6 py-3 rounded-xl bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 text-white font-semibold text-sm hover:from-violet-700 hover:via-indigo-700 hover:to-cyan-600 transition shadow-lg shadow-violet-500/25 flex items-center gap-2 whitespace-nowrap"
+              className="px-6 py-3 rounded bg-[#1e1e1e] text-white font-semibold text-sm hover:bg-[#dccaf4] hover:text-[#1a0530] transition shadow-sm flex items-center gap-2 whitespace-nowrap"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -554,7 +554,7 @@ export default function IAWebPage() {
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent"
+          className="flex-1 bg-[#f6f6f6] border border-[rgba(30,30,30,0.1)] rounded px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#dccaf4] focus:border-transparent"
           placeholder="Type your message here..."
           onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && handleSend()}
           disabled={isLoading}
@@ -563,7 +563,7 @@ export default function IAWebPage() {
           id="send-btn"
           onClick={handleSend}
           disabled={isLoading || !input.trim()}
-          className="w-12 h-12 rounded-xl bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 flex items-center justify-center text-white hover:from-violet-700 hover:via-indigo-700 hover:to-cyan-600 transition disabled:opacity-50 shadow-lg shadow-violet-500/25"
+          className="w-12 h-12 rounded bg-[#1e1e1e] flex items-center justify-center text-white hover:bg-[#dccaf4] hover:text-[#1a0530] transition disabled:opacity-50 shadow-sm"
         >
           {isLoading ? (
             <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -576,7 +576,7 @@ export default function IAWebPage() {
       </div>
 
       <div className="pointer-events-none absolute bottom-24 right-6 hidden md:block">
-        <div className="relative rounded-[28px] bg-white/90 border border-violet-100 shadow-xl px-4 py-3 backdrop-blur-sm">
+        <div className="relative rounded-[28px] bg-white/90 border border-[#dccaf4] shadow-sm px-4 py-3 backdrop-blur-sm">
           <p className="text-xs text-gray-500 mb-2">
             {isLoading ? "Marnee is thinking..." : "Marnee is here"}
           </p>

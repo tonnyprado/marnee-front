@@ -18,7 +18,7 @@ export default function LandingPage() {
 
       {/* Step badge */}
       <div className="mb-6">
-        <span className="bg-violet-50 text-violet-700 px-4 py-2 rounded-full text-sm font-medium">
+        <span className="bg-[#ede0f8] text-[#40086d] px-4 py-2 rounded-full text-sm font-medium">
           {t("landing.stepBadge")}
         </span>
       </div>
@@ -40,13 +40,13 @@ export default function LandingPage() {
       <div className="flex flex-col sm:flex-row gap-4">
         <button
           onClick={() => (window.location.href = "/auth")}
-          className="bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 hover:from-violet-700 hover:via-indigo-700 hover:to-cyan-600 text-white font-medium px-8 py-4 rounded-full transition shadow-lg shadow-violet-500/25"
+          className="bg-[#1e1e1e] hover:bg-[#dccaf4] hover:text-[#1a0530] text-white font-medium px-8 py-4 rounded-full transition shadow-sm"
         >
           {t("landing.primaryCta")}
         </button>
         <button
           onClick={() => (window.location.href = "/presentation")}
-          className="border-2 border-violet-500 text-violet-600 hover:bg-violet-50 font-medium px-8 py-4 rounded-full transition"
+          className="border-2 border-violet-500 text-[#40086d] hover:bg-[#ede0f8] font-medium px-8 py-4 rounded-full transition"
         >
           {t("landing.secondaryCta")}
         </button>

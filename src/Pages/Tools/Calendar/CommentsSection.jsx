@@ -120,14 +120,14 @@ export default function CommentsSection({ postId }) {
           comments.map((comment) => (
             <div
               key={comment.id}
-              className="bg-gray-50 border border-gray-200 rounded-lg p-4"
+              className="bg-[#f6f6f6] border border-[rgba(30,30,30,0.1)] rounded-lg p-4"
             >
               {editingId === comment.id ? (
                 <div>
                   <textarea
                     value={editContent}
                     onChange={(e) => setEditContent(e.target.value)}
-                    className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 resize-none"
+                    className="w-full bg-white border border-[rgba(30,30,30,0.1)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#40086d] resize-none"
                     rows={3}
                     autoFocus
                   />
@@ -143,7 +143,7 @@ export default function CommentsSection({ postId }) {
                         setEditingId(null);
                         setEditContent("");
                       }}
-                      className="px-3 py-1 rounded-lg border border-gray-200 text-gray-600 text-xs hover:bg-gray-100 transition"
+                      className="px-3 py-1 rounded-lg border border-[rgba(30,30,30,0.1)] text-gray-600 text-xs hover:bg-gray-100 transition"
                     >
                       Cancel
                     </button>
@@ -219,7 +219,7 @@ export default function CommentsSection({ postId }) {
       {/* Add comment form */}
       <form
         onSubmit={handleAddComment}
-        className="p-6 border-t border-gray-200 bg-gray-50"
+        className="p-6 border-t border-[rgba(30,30,30,0.1)] bg-[#f6f6f6]"
       >
         <div className="mb-3">
           <textarea
@@ -227,13 +227,13 @@ export default function CommentsSection({ postId }) {
             onChange={(e) => setNewComment(e.target.value)}
             placeholder="Add a comment..."
             rows={3}
-            className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 resize-none"
+            className="w-full bg-white border border-[rgba(30,30,30,0.1)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#40086d] resize-none"
           />
         </div>
         <button
           type="submit"
           disabled={isSending || !newComment.trim()}
-          className="w-full py-2.5 rounded-lg bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 text-white font-semibold text-sm hover:from-violet-700 hover:via-indigo-700 hover:to-cyan-600 transition disabled:opacity-50 shadow-lg shadow-violet-500/25"
+          className="w-full py-2.5 rounded-lg bg-[#1e1e1e] text-white font-semibold text-sm hover:bg-[#dccaf4] hover:text-[#1a0530] transition disabled:opacity-50 shadow-sm"
         >
           {isSending ? "Sending..." : "Add Comment"}
         </button>

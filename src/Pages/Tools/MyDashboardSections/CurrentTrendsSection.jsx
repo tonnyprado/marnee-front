@@ -2,7 +2,7 @@ import React from "react";
 
 function StatPill({ label, value }) {
   return (
-    <div className="bg-white border border-gray-100 rounded-xl px-4 py-3 shadow-sm">
+    <div className="bg-white border border-[rgba(30,30,30,0.1)] rounded px-4 py-3 shadow-sm">
       <p className="text-xs text-gray-500">{label}</p>
       <p className="text-lg font-semibold text-gray-900">{value}</p>
     </div>
@@ -11,7 +11,7 @@ function StatPill({ label, value }) {
 
 function KeywordCard({ rank, title, searches, competition, growth }) {
   return (
-    <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">
+    <div className="bg-white border border-[rgba(30,30,30,0.1)] rounded p-4 shadow-sm">
       <div className="flex items-center gap-2">
         <span className="h-7 w-7 rounded-full bg-purple-50 text-purple-600 text-xs font-semibold flex items-center justify-center">
           #{rank}
@@ -31,7 +31,7 @@ function KeywordCard({ rank, title, searches, competition, growth }) {
 
 function ViralCard({ title, mentions, engagement, relevance, sources, score }) {
   return (
-    <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">
+    <div className="bg-white border border-[rgba(30,30,30,0.1)] rounded p-4 shadow-sm">
       <div className="flex items-center justify-between">
         <p className="text-sm font-semibold text-gray-800">{title}</p>
         <span className="text-xs text-orange-500 font-semibold">{score}</span>
@@ -58,7 +58,7 @@ function ViralCard({ title, mentions, engagement, relevance, sources, score }) {
 
 function TrendCard({ title, category, score, description, stats, tags, actions }) {
   return (
-    <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+    <div className="bg-white border border-[rgba(30,30,30,0.1)] rounded p-5 shadow-sm">
       <div className="flex items-center justify-between">
         <div>
           <p className="text-xs text-purple-500 font-semibold">{category}</p>
@@ -71,7 +71,7 @@ function TrendCard({ title, category, score, description, stats, tags, actions }
       <p className="text-sm text-gray-600 mt-2">{description}</p>
       <div className="mt-3 grid grid-cols-4 gap-2">
         {stats.map((s) => (
-          <div key={s.label} className="bg-gray-50 rounded-lg p-2 text-center">
+          <div key={s.label} className="bg-[#f6f6f6] rounded-lg p-2 text-center">
             <p className="text-sm font-semibold text-gray-800">{s.value}</p>
             <p className="text-[10px] text-gray-500">{s.label}</p>
           </div>
@@ -108,7 +108,7 @@ export default function CurrentTrendsSection() {
         </p>
       </div>
 
-      <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">
+      <div className="bg-white border border-[rgba(30,30,30,0.1)] rounded p-4 shadow-sm">
         <div className="flex items-center gap-3">
           <span className="text-xs px-3 py-1 rounded-full bg-purple-100 text-purple-700 font-semibold">
             YOUR BRAND NICHE
@@ -178,7 +178,7 @@ export default function CurrentTrendsSection() {
           {["All Trends", "AI & Technology", "Marketing", "Creative Tools", "Industry Insights"].map((t) => (
             <button
               key={t}
-              className="px-3 py-1.5 rounded-lg text-xs font-semibold border border-gray-200 text-gray-600 hover:bg-gray-50"
+              className="px-3 py-1.5 rounded-lg text-xs font-semibold border border-[rgba(30,30,30,0.1)] text-gray-600 hover:bg-[#f6f6f6]"
             >
               {t}
             </button>
@@ -189,7 +189,7 @@ export default function CurrentTrendsSection() {
           <button className="px-3 py-1.5 rounded-lg bg-purple-100 text-purple-700 font-semibold">
             This Week
           </button>
-          <button className="px-3 py-1.5 rounded-lg border border-gray-200 text-gray-600">
+          <button className="px-3 py-1.5 rounded-lg border border-[rgba(30,30,30,0.1)] text-gray-600">
             This Month
           </button>
         </div>
@@ -242,7 +242,7 @@ export default function CurrentTrendsSection() {
         </div>
 
         <div className="space-y-4">
-          <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">
+          <div className="bg-white border border-[rgba(30,30,30,0.1)] rounded p-4 shadow-sm">
             <h3 className="text-sm font-semibold text-gray-900">Trending Keywords</h3>
             <div className="mt-3 flex flex-wrap gap-2">
               {[
@@ -264,7 +264,7 @@ export default function CurrentTrendsSection() {
             </div>
           </div>
 
-          <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">
+          <div className="bg-white border border-[rgba(30,30,30,0.1)] rounded p-4 shadow-sm">
             <h3 className="text-sm font-semibold text-gray-900">Market Insights</h3>
             <div className="mt-3 space-y-3 text-sm text-gray-600">
               <div>
@@ -282,7 +282,7 @@ export default function CurrentTrendsSection() {
             </div>
           </div>
 
-          <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">
+          <div className="bg-white border border-[rgba(30,30,30,0.1)] rounded p-4 shadow-sm">
             <h3 className="text-sm font-semibold text-gray-900">Quick Trends</h3>
             <div className="mt-3 space-y-3 text-sm text-gray-700">
               {[

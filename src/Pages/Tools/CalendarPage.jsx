@@ -188,10 +188,10 @@ export default function CalendarPage() {
   // Show message if no session
   if (!canAccessCalendar) {
     return (
-      <div className="min-h-screen bg-gray-50 text-gray-900 flex items-center justify-center">
-        <div className="text-center p-8 bg-white rounded-2xl shadow-sm border border-gray-100 max-w-md">
-          <div className="w-16 h-16 bg-violet-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg className="w-8 h-8 text-violet-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div className="min-h-screen bg-[#f6f6f6] text-gray-900 flex items-center justify-center">
+        <div className="text-center p-8 bg-white rounded shadow-sm border border-[rgba(30,30,30,0.1)] max-w-md">
+          <div className="w-16 h-16 bg-[#ede0f8] rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg className="w-8 h-8 text-[#40086d]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
           </div>
@@ -201,7 +201,7 @@ export default function CalendarPage() {
           </p>
           <a
             href="/brand-test/questions"
-            className="px-6 py-3 rounded-xl bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 text-white font-medium hover:from-violet-700 hover:via-indigo-700 hover:to-cyan-600 transition inline-block shadow-lg shadow-violet-500/25"
+            className="px-6 py-3 rounded bg-[#1e1e1e] text-white font-medium hover:bg-[#dccaf4] hover:text-[#1a0530] transition inline-block shadow-sm"
           >
             Start Brand Test
           </a>
@@ -213,7 +213,7 @@ export default function CalendarPage() {
   // Loading state
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 text-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-[#f6f6f6] text-gray-900 flex items-center justify-center">
         <div className="text-center">
           <div className="w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
           <p className="text-gray-500">Loading calendar...</p>
@@ -225,10 +225,10 @@ export default function CalendarPage() {
   // No calendar yet - show generate button
   if (!calendar) {
     return (
-      <div className="min-h-screen bg-gray-50 text-gray-900 p-6">
+      <div className="min-h-screen bg-[#f6f6f6] text-gray-900 p-6">
         <div className="max-w-2xl mx-auto text-center py-20">
-          <div className="w-20 h-20 bg-violet-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg className="w-10 h-10 text-violet-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="w-20 h-20 bg-[#ede0f8] rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg className="w-10 h-10 text-[#40086d]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
           </div>
@@ -239,7 +239,7 @@ export default function CalendarPage() {
           </p>
 
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm max-w-md mx-auto">
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded text-red-600 text-sm max-w-md mx-auto">
               {error}
             </div>
           )}
@@ -248,7 +248,7 @@ export default function CalendarPage() {
             <button
               onClick={() => handleGenerateCalendar(4)}
               disabled={isGenerating}
-              className="px-8 py-4 rounded-xl bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 text-white font-medium text-lg hover:from-violet-700 hover:via-indigo-700 hover:to-cyan-600 transition disabled:opacity-50 shadow-lg shadow-violet-500/25"
+              className="px-8 py-4 rounded bg-[#1e1e1e] text-white font-medium text-lg hover:bg-[#dccaf4] hover:text-[#1a0530] transition disabled:opacity-50 shadow-sm"
             >
               {isGenerating ? (
                 <span className="flex items-center gap-2">
@@ -264,14 +264,14 @@ export default function CalendarPage() {
               <button
                 onClick={() => handleGenerateCalendar(2)}
                 disabled={isGenerating}
-                className="px-4 py-2 rounded-lg border border-gray-200 hover:bg-gray-100 transition"
+                className="px-4 py-2 rounded-lg border border-[rgba(30,30,30,0.1)] hover:bg-gray-100 transition"
               >
                 2 weeks
               </button>
               <button
                 onClick={() => handleGenerateCalendar(8)}
                 disabled={isGenerating}
-                className="px-4 py-2 rounded-lg border border-gray-200 hover:bg-gray-100 transition"
+                className="px-4 py-2 rounded-lg border border-[rgba(30,30,30,0.1)] hover:bg-gray-100 transition"
               >
                 8 weeks
               </button>
@@ -283,7 +283,7 @@ export default function CalendarPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900 p-6">
+    <div className="min-h-screen bg-[#f6f6f6] text-gray-900 p-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
@@ -301,7 +301,7 @@ export default function CalendarPage() {
             <button
               onClick={() => handleGenerateCalendar(4)}
               disabled={isGenerating}
-              className="px-4 py-2 rounded-lg border border-gray-200 text-sm hover:bg-gray-100 transition disabled:opacity-50"
+              className="px-4 py-2 rounded-lg border border-[rgba(30,30,30,0.1)] text-sm hover:bg-gray-100 transition disabled:opacity-50"
             >
               {isGenerating ? 'Generating...' : 'Regenerate'}
             </button>
@@ -332,12 +332,12 @@ export default function CalendarPage() {
       </div>
 
       {/* Main Tabs */}
-      <div className="flex items-center gap-2 mb-6 border-b border-gray-200">
+      <div className="flex items-center gap-2 mb-6 border-b border-[rgba(30,30,30,0.1)]">
         <button
           onClick={() => setMainTab("calendar")}
           className={`px-4 py-3 text-sm font-medium border-b-2 transition ${
             mainTab === "calendar"
-              ? "border-violet-500 text-violet-600"
+              ? "border-violet-500 text-[#40086d]"
               : "border-transparent text-gray-500 hover:text-gray-700"
           }`}
         >
@@ -347,7 +347,7 @@ export default function CalendarPage() {
           onClick={() => setMainTab("brainstorming")}
           className={`px-4 py-3 text-sm font-medium border-b-2 transition ${
             mainTab === "brainstorming"
-              ? "border-violet-500 text-violet-600"
+              ? "border-violet-500 text-[#40086d]"
               : "border-transparent text-gray-500 hover:text-gray-700"
           }`}
         >
@@ -357,7 +357,7 @@ export default function CalendarPage() {
 
       {/* Error message */}
       {error && (
-        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm">
+        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded text-red-600 text-sm">
           {error}
           <button onClick={() => setError(null)} className="ml-2 underline">
             Dismiss

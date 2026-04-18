@@ -8,11 +8,11 @@ export default function MyDashboard() {
   const [activeTab, setActiveTab] = useState("campaigns");
 
   return (
-    <div className="flex min-h-screen bg-gray-50 text-gray-900">
+    <div className="flex min-h-screen bg-[#f6f6f6] text-gray-900">
       {/* Main */}
       <div className="flex-1 flex flex-col">
         {/* Top tabs */}
-        <div className="border-b border-gray-100 h-14 flex items-center px-6 gap-6 bg-white">
+        <div className="border-b border-[rgba(30,30,30,0.1)] h-14 flex items-center px-6 gap-6 bg-white">
           {[
             "Brand Profile",
             "Current Trends",
@@ -44,7 +44,7 @@ export default function MyDashboard() {
           {activeTab === "campaigns" && <CampaignsSection />}
           {activeTab === "strategy" && <StrategySection />}
           {activeTab !== "brand-profile" && activeTab !== "campaigns" && (
-            <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
+            <div className="bg-white border border-[rgba(30,30,30,0.1)] rounded p-6 shadow-sm">
               <h2 className="text-lg font-semibold text-gray-900">Section coming soon</h2>
               <p className="text-sm text-gray-500 mt-1">
                 This area will be added in the next iteration.

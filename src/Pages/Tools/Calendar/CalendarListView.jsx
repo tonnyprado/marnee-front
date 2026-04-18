@@ -1,18 +1,18 @@
 import React from "react";
 
 const PILLAR_COLORS = {
-  Authority: "bg-violet-500/20 text-violet-300",
-  "Behind the scenes": "bg-blue-500/20 text-blue-300",
-  Tips: "bg-green-500/20 text-green-300",
+  Authority: "bg-[#ede0f8]0/20 text-violet-300",
+  "Behind the scenes": "bg-[#40086d]/20 text-blue-300",
+  Tips: "bg-[#40086d]/20 text-green-300",
   Story: "bg-orange-500/20 text-orange-300",
   Engagement: "bg-cyan-500/20 text-cyan-300",
-  default: "bg-gray-500/20 text-gray-300",
+  default: "bg-[#f6f6f6]0/20 text-gray-300",
 };
 
 const STATUS_BADGES = {
   draft: "bg-yellow-500/20 text-yellow-300",
-  scheduled: "bg-blue-500/20 text-blue-300",
-  published: "bg-green-500/20 text-green-300",
+  scheduled: "bg-[#40086d]/20 text-blue-300",
+  published: "bg-[#40086d]/20 text-green-300",
 };
 
 export default function CalendarListView({
@@ -71,7 +71,7 @@ export default function CalendarListView({
                   <div
                     key={`${post.date}-${post.hook}`}
                     onClick={() => onPostClick(post, post.originalIndex)}
-                    className="bg-black/20 border border-white/5 rounded-xl p-4 cursor-pointer hover:bg-white/5 transition"
+                    className="bg-black/20 border border-white/5 rounded p-4 cursor-pointer hover:bg-white/5 transition"
                   >
                     <div className="flex items-start justify-between gap-4">
                       {/* Left side: Date and content */}
@@ -108,7 +108,7 @@ export default function CalendarListView({
                       {post.cta && (
                         <div className="flex-shrink-0 text-right">
                           <span className="text-xs text-gray-500 block mb-1">CTA</span>
-                          <span className="text-xs text-violet-300 bg-violet-500/10 px-2 py-1 rounded">
+                          <span className="text-xs text-violet-300 bg-[#ede0f8]0/10 px-2 py-1 rounded">
                             {post.cta}
                           </span>
                         </div>

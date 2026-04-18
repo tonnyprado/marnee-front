@@ -2,7 +2,7 @@ import React from "react";
 
 function StatCard({ icon, title, description }) {
   return (
-    <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm text-center">
+    <div className="bg-white border border-[rgba(30,30,30,0.1)] rounded p-5 shadow-sm text-center">
       <div className="text-2xl mb-2">{icon}</div>
       <h3 className="text-sm font-semibold text-gray-900">{title}</h3>
       <p className="text-xs text-gray-500 mt-1">{description}</p>
@@ -12,7 +12,7 @@ function StatCard({ icon, title, description }) {
 
 function ProgressCard({ icon, title, subtitle, value }) {
   return (
-    <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">
+    <div className="bg-white border border-[rgba(30,30,30,0.1)] rounded p-4 shadow-sm">
       <div className="flex items-center gap-2 mb-2">
         <span className="text-lg">{icon}</span>
         <div>
@@ -29,7 +29,7 @@ function ProgressCard({ icon, title, subtitle, value }) {
 
 function PillarCard({ title, purpose, items, benefit }) {
   return (
-    <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+    <div className="bg-white border border-[rgba(30,30,30,0.1)] rounded p-5 shadow-sm">
       <h3 className="text-sm font-semibold text-gray-900">{title}</h3>
       <p className="text-xs text-gray-500 mt-2">
         <span className="font-semibold text-gray-600">Purpose:</span> {purpose}
@@ -40,16 +40,16 @@ function PillarCard({ title, purpose, items, benefit }) {
           <li key={i}>• {i}</li>
         ))}
       </ul>
-      <p className="text-xs text-violet-600 mt-3 font-semibold">{benefit}</p>
+      <p className="text-xs text-[#40086d] mt-3 font-semibold">{benefit}</p>
     </div>
   );
 }
 
 function IdeaCard({ number, title, objective, description, tag, type }) {
   return (
-    <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">
+    <div className="bg-white border border-[rgba(30,30,30,0.1)] rounded p-4 shadow-sm">
       <div className="flex items-center justify-between mb-2">
-        <span className="text-xs font-semibold text-violet-600">0{number}</span>
+        <span className="text-xs font-semibold text-[#40086d]">0{number}</span>
         <span className="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">{type}</span>
       </div>
       <h4 className="text-sm font-semibold text-gray-900">{title}</h4>
@@ -57,7 +57,7 @@ function IdeaCard({ number, title, objective, description, tag, type }) {
         <span className="font-semibold text-gray-600">Objective:</span> {objective}
       </p>
       <p className="text-xs text-gray-500 mt-2">{description}</p>
-      <span className="inline-block text-[10px] px-2 py-0.5 rounded-full bg-violet-50 text-violet-600 mt-3">
+      <span className="inline-block text-[10px] px-2 py-0.5 rounded-full bg-[#ede0f8] text-[#40086d] mt-3">
         {tag}
       </span>
     </div>
@@ -66,26 +66,26 @@ function IdeaCard({ number, title, objective, description, tag, type }) {
 
 function StrategyList({ title, goal, items, tone }) {
   return (
-    <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+    <div className="bg-white border border-[rgba(30,30,30,0.1)] rounded p-5 shadow-sm">
       <h3 className="text-sm font-semibold text-gray-900">{title}</h3>
-      <p className="text-xs text-violet-600 mt-2 font-semibold">Primary Goal: {goal}</p>
+      <p className="text-xs text-[#40086d] mt-2 font-semibold">Primary Goal: {goal}</p>
       <p className="text-xs text-gray-500 mt-3 font-semibold">Recommended Content:</p>
       <ul className="text-xs text-gray-500 mt-2 space-y-1">
         {items.map((i) => (
           <li key={i}>• {i}</li>
         ))}
       </ul>
-      <p className="text-xs text-violet-600 mt-3">Tone: {tone}</p>
+      <p className="text-xs text-[#40086d] mt-3">Tone: {tone}</p>
     </div>
   );
 }
 
 function WorkflowStep({ step, title, leftTitle, leftItems, rightTitle, rightItems, time }) {
   return (
-    <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+    <div className="bg-white border border-[rgba(30,30,30,0.1)] rounded p-5 shadow-sm">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-3">
-          <span className="h-8 w-8 rounded-full bg-violet-50 text-violet-600 text-xs font-semibold flex items-center justify-center">
+          <span className="h-8 w-8 rounded-full bg-[#ede0f8] text-[#40086d] text-xs font-semibold flex items-center justify-center">
             {step}
           </span>
           <h3 className="text-sm font-semibold text-gray-900">{title}</h3>
@@ -118,7 +118,7 @@ function WorkflowStep({ step, title, leftTitle, leftItems, rightTitle, rightItem
 
 function CalendarRow({ day, items }) {
   return (
-    <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">
+    <div className="bg-white border border-[rgba(30,30,30,0.1)] rounded p-4 shadow-sm">
       <h4 className="text-sm font-semibold text-gray-900">{day}</h4>
       <div className="mt-3 space-y-2">
         {items.map((i) => (
@@ -201,7 +201,7 @@ export default function StrategySection() {
             <h2 className="text-xl font-semibold">Content Pillars</h2>
             <p className="text-xs text-gray-500">Three core themes that guide all content creation</p>
           </div>
-          <button className="px-4 py-2 rounded-lg bg-violet-100 text-violet-700 text-xs font-semibold">
+          <button className="px-4 py-2 rounded-lg bg-[#ede0f8] text-[#40086d] text-xs font-semibold">
             Redo Content Pillars with AI
           </button>
         </div>
@@ -235,7 +235,7 @@ export default function StrategySection() {
               Ready-to-create content ideas tailored to your brand pillars
             </p>
           </div>
-          <button className="px-4 py-2 rounded-lg bg-violet-100 text-violet-700 text-xs font-semibold">
+          <button className="px-4 py-2 rounded-lg bg-[#ede0f8] text-[#40086d] text-xs font-semibold">
             Make More Custom Ideas with AI
           </button>
         </div>
@@ -322,7 +322,7 @@ export default function StrategySection() {
           />
         </div>
         <div className="flex justify-center mt-4">
-          <button className="px-4 py-2 rounded-lg border border-violet-200 text-violet-600 text-xs font-semibold">
+          <button className="px-4 py-2 rounded-lg border border-violet-200 text-[#40086d] text-xs font-semibold">
             View All 10 Video Ideas
           </button>
         </div>
@@ -419,7 +419,7 @@ export default function StrategySection() {
         <p className="text-xs text-center text-gray-500">
           Maximize content value by transforming one piece into multiple formats
         </p>
-        <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm mt-4 space-y-4">
+        <div className="bg-white border border-[rgba(30,30,30,0.1)] rounded p-5 shadow-sm mt-4 space-y-4">
           {[
             {
               base: "1 Long-form Video",
@@ -463,7 +463,7 @@ export default function StrategySection() {
               Strategic content schedule optimized for maximum engagement
             </p>
           </div>
-          <button className="px-4 py-2 rounded-lg bg-violet-100 text-violet-700 text-xs font-semibold">
+          <button className="px-4 py-2 rounded-lg bg-[#ede0f8] text-[#40086d] text-xs font-semibold">
             Redo Content Calendar with AI
           </button>
         </div>
@@ -510,22 +510,22 @@ export default function StrategySection() {
         </div>
       </div>
 
-      <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+      <div className="bg-white border border-[rgba(30,30,30,0.1)] rounded p-5 shadow-sm">
         <h3 className="text-sm font-semibold text-gray-900">Optimal Posting Times</h3>
         <div className="grid grid-cols-2 gap-3 mt-3 text-xs text-gray-600">
-          <div className="bg-gray-50 rounded-lg p-3">
+          <div className="bg-[#f6f6f6] rounded-lg p-3">
             <p className="font-semibold text-gray-800">Instagram Feed</p>
             <p>9-11 AM, 1-3 PM, 7-9 PM</p>
           </div>
-          <div className="bg-gray-50 rounded-lg p-3">
+          <div className="bg-[#f6f6f6] rounded-lg p-3">
             <p className="font-semibold text-gray-800">Instagram Reels</p>
             <p>12-3 PM, 7-9 PM</p>
           </div>
-          <div className="bg-gray-50 rounded-lg p-3">
+          <div className="bg-[#f6f6f6] rounded-lg p-3">
             <p className="font-semibold text-gray-800">LinkedIn</p>
             <p>8-10 AM, 12-2 PM, 5-6 PM</p>
           </div>
-          <div className="bg-gray-50 rounded-lg p-3">
+          <div className="bg-[#f6f6f6] rounded-lg p-3">
             <p className="font-semibold text-gray-800">Stories</p>
             <p>Throughout the day (8 AM - 10 PM)</p>
           </div>
@@ -543,7 +543,7 @@ export default function StrategySection() {
           <StatCard icon="👥" title="12.5K" description="Monthly Reach" />
           <StatCard icon="🎯" title="18" description="Qualified Leads" />
         </div>
-        <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm mt-4">
+        <div className="bg-white border border-[rgba(30,30,30,0.1)] rounded p-5 shadow-sm mt-4">
           <h3 className="text-sm font-semibold text-gray-900">Instagram Performance</h3>
           <div className="grid grid-cols-2 gap-4 mt-3">
             <KPIBar label="Follower Growth" value="70%" note="+12%" />
@@ -552,7 +552,7 @@ export default function StrategySection() {
             <KPIBar label="DM Response Rate" value="94%" note="+2%" />
           </div>
         </div>
-        <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm mt-4">
+        <div className="bg-white border border-[rgba(30,30,30,0.1)] rounded p-5 shadow-sm mt-4">
           <h3 className="text-sm font-semibold text-gray-900">LinkedIn Performance</h3>
           <div className="grid grid-cols-2 gap-4 mt-3">
             <KPIBar label="Connection Growth" value="65%" note="+15%" />
@@ -561,7 +561,7 @@ export default function StrategySection() {
             <KPIBar label="Lead Generation" value="48%" note="+3" />
           </div>
         </div>
-        <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm mt-4">
+        <div className="bg-white border border-[rgba(30,30,30,0.1)] rounded p-5 shadow-sm mt-4">
           <h3 className="text-sm font-semibold text-gray-900">Business Impact</h3>
           <div className="grid grid-cols-2 gap-4 mt-3">
             <KPIBar label="Website Traffic" value="62%" note="+28%" />
@@ -570,7 +570,7 @@ export default function StrategySection() {
             <KPIBar label="Brand Mentions" value="52%" note="+12" />
           </div>
         </div>
-        <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm mt-4">
+        <div className="bg-white border border-[rgba(30,30,30,0.1)] rounded p-5 shadow-sm mt-4">
           <h3 className="text-sm font-semibold text-gray-900">Monthly Goals Progress</h3>
           <div className="grid grid-cols-2 gap-4 mt-3">
             <KPIBar label="Community Growth" value="78%" note="156/200 new followers this month" />

@@ -43,7 +43,7 @@ export default function BrandTestIntro() {
       {/* CTA Button */}
       <button
         onClick={handleStart}
-        className="bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 hover:from-violet-700 hover:via-indigo-700 hover:to-cyan-600 text-white font-medium px-8 py-4 rounded-full transition shadow-lg shadow-violet-500/25"
+        className="bg-[#1e1e1e] hover:bg-[#dccaf4] hover:text-[#1a0530] text-white font-medium px-8 py-4 rounded-full transition shadow-sm"
       >
         {t("brandingIntro.cta")}
       </button>
