@@ -61,17 +61,17 @@ const request = async (endpoint, options = {}) => {
 // =====================
 
 /**
- * GET /api/v1/founder/{founderId}/trends - Get trends by founder ID
+ * GET /founder/{founderId}/trends - Get trends by founder ID
  * Auto-generates if doesn't exist
  */
 export const getTrendsByFounder = (founderId) =>
-  request(`/api/v1/founder/${founderId}/trends`);
+  request(`/founder/${founderId}/trends`);
 
 /**
- * POST /api/v1/trends/generate - Generate/regenerate complete trends
+ * POST /trends/generate - Generate/regenerate complete trends
  */
 export const generateTrends = ({ founderId, sessionId }) =>
-  request('/api/v1/trends/generate', {
+  request('/trends/generate', {
     method: 'POST',
     body: JSON.stringify({
       founderId,
@@ -80,11 +80,11 @@ export const generateTrends = ({ founderId, sessionId }) =>
   });
 
 /**
- * POST /api/v1/trends/regenerate-section - Regenerate specific section
+ * POST /trends/regenerate-section - Regenerate specific section
  * Sections: keywords, viral_topics, main_trends, market_insights
  */
 export const regenerateTrendsSection = ({ founderId, section }) =>
-  request('/api/v1/trends/regenerate-section', {
+  request('/trends/regenerate-section', {
     method: 'POST',
     body: JSON.stringify({
       founderId,
@@ -93,10 +93,10 @@ export const regenerateTrendsSection = ({ founderId, section }) =>
   });
 
 /**
- * PUT /api/v1/founder/{founderId}/trends - Update trends manually
+ * PUT /founder/{founderId}/trends - Update trends manually
  */
 export const updateTrends = (founderId, data) =>
-  request(`/api/v1/founder/${founderId}/trends`, {
+  request(`/founder/${founderId}/trends`, {
     method: 'PUT',
     body: JSON.stringify(data),
   });

@@ -61,17 +61,17 @@ const request = async (endpoint, options = {}) => {
 // =====================
 
 /**
- * GET /api/v1/founder/{founderId}/strategy - Get strategy by founder ID
+ * GET /founder/{founderId}/strategy - Get strategy by founder ID
  * Auto-generates if doesn't exist
  */
 export const getStrategyByFounder = (founderId) =>
-  request(`/api/v1/founder/${founderId}/strategy`);
+  request(`/founder/${founderId}/strategy`);
 
 /**
- * POST /api/v1/strategy/generate - Generate/regenerate complete strategy
+ * POST /strategy/generate - Generate/regenerate complete strategy
  */
 export const generateStrategy = ({ founderId, sessionId }) =>
-  request('/api/v1/strategy/generate', {
+  request('/strategy/generate', {
     method: 'POST',
     body: JSON.stringify({
       founderId,
@@ -80,11 +80,11 @@ export const generateStrategy = ({ founderId, sessionId }) =>
   });
 
 /**
- * POST /api/v1/strategy/regenerate-section - Regenerate specific section
+ * POST /strategy/regenerate-section - Regenerate specific section
  * Sections: pillars, video_ideas, calendar, goals
  */
 export const regenerateStrategySection = ({ founderId, section }) =>
-  request('/api/v1/strategy/regenerate-section', {
+  request('/strategy/regenerate-section', {
     method: 'POST',
     body: JSON.stringify({
       founderId,
@@ -93,10 +93,10 @@ export const regenerateStrategySection = ({ founderId, section }) =>
   });
 
 /**
- * PUT /api/v1/founder/{founderId}/strategy - Update strategy manually
+ * PUT /founder/{founderId}/strategy - Update strategy manually
  */
 export const updateStrategy = (founderId, data) =>
-  request(`/api/v1/founder/${founderId}/strategy`, {
+  request(`/founder/${founderId}/strategy`, {
     method: 'PUT',
     body: JSON.stringify(data),
   });

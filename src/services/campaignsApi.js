@@ -65,7 +65,7 @@ const request = async (endpoint, options = {}) => {
  * POST /campaigns - Create campaign manually
  */
 export const createCampaign = (data) =>
-  request('/api/v1/campaigns', {
+  request('/campaigns', {
     method: 'POST',
     body: JSON.stringify(data),
   });
@@ -74,7 +74,7 @@ export const createCampaign = (data) =>
  * POST /campaigns/generate - Generate campaigns with AI
  */
 export const generateCampaigns = ({ founderId, sessionId, calendarId, count = 3 }) =>
-  request('/api/v1/campaigns/generate', {
+  request('/campaigns/generate', {
     method: 'POST',
     body: JSON.stringify({
       founderId,
@@ -88,19 +88,19 @@ export const generateCampaigns = ({ founderId, sessionId, calendarId, count = 3 
  * GET /campaigns/calendar/{calendarId} - Get all campaigns for a calendar
  */
 export const getCampaignsByCalendar = (calendarId) =>
-  request(`/api/v1/campaigns/calendar/${calendarId}`);
+  request(`/campaigns/calendar/${calendarId}`);
 
 /**
  * GET /campaigns/{campaignId} - Get single campaign with tasks/scripts
  */
 export const getCampaign = (campaignId) =>
-  request(`/api/v1/campaigns/${campaignId}`);
+  request(`/campaigns/${campaignId}`);
 
 /**
  * PUT /campaigns/{campaignId} - Update campaign
  */
 export const updateCampaign = (campaignId, data) =>
-  request(`/api/v1/campaigns/${campaignId}`, {
+  request(`/campaigns/${campaignId}`, {
     method: 'PUT',
     body: JSON.stringify(data),
   });
@@ -109,7 +109,7 @@ export const updateCampaign = (campaignId, data) =>
  * DELETE /campaigns/{campaignId} - Delete campaign
  */
 export const deleteCampaign = (campaignId) =>
-  request(`/api/v1/campaigns/${campaignId}`, {
+  request(`/campaigns/${campaignId}`, {
     method: 'DELETE',
   });
 
@@ -117,7 +117,7 @@ export const deleteCampaign = (campaignId) =>
  * POST /campaigns/{campaignId}/regenerate-suggestions - Regenerate AI suggestions
  */
 export const regenerateCampaignSuggestions = (campaignId) =>
-  request(`/api/v1/campaigns/${campaignId}/regenerate-suggestions`, {
+  request(`/campaigns/${campaignId}/regenerate-suggestions`, {
     method: 'POST',
   });
 
@@ -129,7 +129,7 @@ export const regenerateCampaignSuggestions = (campaignId) =>
  * POST /campaigns/{campaignId}/tasks - Create task
  */
 export const createCampaignTask = (campaignId, data) =>
-  request(`/api/v1/campaigns/${campaignId}/tasks`, {
+  request(`/campaigns/${campaignId}/tasks`, {
     method: 'POST',
     body: JSON.stringify(data),
   });
@@ -138,7 +138,7 @@ export const createCampaignTask = (campaignId, data) =>
  * PUT /campaigns/tasks/{taskId} - Update task
  */
 export const updateCampaignTask = (taskId, data) =>
-  request(`/api/v1/campaigns/tasks/${taskId}`, {
+  request(`/campaigns/tasks/${taskId}`, {
     method: 'PUT',
     body: JSON.stringify(data),
   });
@@ -147,7 +147,7 @@ export const updateCampaignTask = (taskId, data) =>
  * DELETE /campaigns/tasks/{taskId} - Delete task
  */
 export const deleteCampaignTask = (taskId) =>
-  request(`/api/v1/campaigns/tasks/${taskId}`, {
+  request(`/campaigns/tasks/${taskId}`, {
     method: 'DELETE',
   });
 
@@ -159,7 +159,7 @@ export const deleteCampaignTask = (taskId) =>
  * POST /campaigns/{campaignId}/scripts - Create script
  */
 export const createCampaignScript = (campaignId, data) =>
-  request(`/api/v1/campaigns/${campaignId}/scripts`, {
+  request(`/campaigns/${campaignId}/scripts`, {
     method: 'POST',
     body: JSON.stringify(data),
   });
@@ -168,7 +168,7 @@ export const createCampaignScript = (campaignId, data) =>
  * PUT /campaigns/scripts/{scriptId} - Update script
  */
 export const updateCampaignScript = (scriptId, data) =>
-  request(`/api/v1/campaigns/scripts/${scriptId}`, {
+  request(`/campaigns/scripts/${scriptId}`, {
     method: 'PUT',
     body: JSON.stringify(data),
   });
@@ -177,7 +177,7 @@ export const updateCampaignScript = (scriptId, data) =>
  * DELETE /campaigns/scripts/{scriptId} - Delete script
  */
 export const deleteCampaignScript = (scriptId) =>
-  request(`/api/v1/campaigns/scripts/${scriptId}`, {
+  request(`/campaigns/scripts/${scriptId}`, {
     method: 'DELETE',
   });
 
