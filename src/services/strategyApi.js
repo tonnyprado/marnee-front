@@ -1,10 +1,15 @@
 /**
  * Strategy API Service
  * All strategy-related API endpoints
+ *
+ * HARDCODED MODE: Using mock data for Diana's testing
+ * See MIGRATION.md for reverting to real API calls
  */
 import API from '../config';
+import { mockStrategy } from '../mocks/strategyMock';
 
 const AUTH_STORAGE_KEY = 'marnee_auth';
+const USE_MOCK_DATA = true; // Set to false to use real API
 
 /**
  * Helper to get auth header from localStorage
@@ -64,33 +69,60 @@ const request = async (endpoint, options = {}) => {
  * GET /founder/{founderId}/strategy - Get strategy by founder ID
  * Auto-generates if doesn't exist
  */
-export const getStrategyByFounder = (founderId) =>
-  request(`/founder/${founderId}/strategy`);
+export const getStrategyByFounder = (founderId) => {
+  if (USE_MOCK_DATA) {
+    return Promise.resolve({ strategy: mockStrategy });
+  }
+  return request(`/founder/${founderId}/strategy`);
+};
 
 /**
  * POST /strategy/generate - Generate/regenerate complete strategy
  */
-export const generateStrategy = ({ founderId, sessionId }) =>
-  request('/strategy/generate', {
+export const generateStrategy = ({ founderId, sessionId }) => {
+  if (USE_MOCK_DATA) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({ strategy: mockStrategy });
+      }, 2000);
+    });
+  }
+  return request('/strategy/generate', {
     method: 'POST',
     body: JSON.stringify({
       founderId,
       sessionId,
     }),
   });
+};
 
 /**
  * POST /strategy/regenerate-section - Regenerate specific section
  * Sections: pillars, video_ideas, calendar, goals
  */
-export const regenerateStrategySection = ({ founderId, section }) =>
-  request('/strategy/regenerate-section', {
+export const regenerateStrategySection = ({ founderId, section }) => {
+  if (USE_MOCK_DATA) {
+    const sectionKeyMap = {
+      'pillars': 'contentPillars',
+      'video_ideas': 'videoIdeas',
+      'calendar': 'publishingCalendar',
+      'goals': 'smartGoals'
+    };
+    const key = sectionKeyMap[section] || section;
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({ [key]: mockStrategy[key] });
+      }, 1500);
+    });
+  }
+  return request('/strategy/regenerate-section', {
     method: 'POST',
     body: JSON.stringify({
       founderId,
       section,
     }),
   });
+};
 
 /**
  * PUT /founder/{founderId}/strategy - Update strategy manually

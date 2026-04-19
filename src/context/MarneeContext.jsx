@@ -11,6 +11,13 @@ const STORAGE_KEYS = {
   CALENDAR_BACKUP: 'marnee_calendar_backup', // Backup calendar in localStorage
 };
 
+// HARDCODED MODE: Default values for Diana's testing
+// See MIGRATION.md for reverting to real values
+const USE_MOCK_DATA = true;
+const MOCK_FOUNDER_ID = 'diana-test-founder-id';
+const MOCK_SESSION_ID = 'diana-test-session-id';
+const MOCK_CALENDAR_ID = 'diana-test-calendar-id';
+
 const STEP_NAMES = {
   1: 'involvement_level',
   2: 'core_niche',
@@ -21,12 +28,14 @@ const STEP_NAMES = {
 };
 
 export function MarneeProvider({ children }) {
-  const [founderId, setFounderId] = useState(() =>
-    localStorage.getItem(STORAGE_KEYS.FOUNDER_ID)
-  );
-  const [sessionId, setSessionId] = useState(() =>
-    localStorage.getItem(STORAGE_KEYS.SESSION_ID)
-  );
+  const [founderId, setFounderId] = useState(() => {
+    if (USE_MOCK_DATA) return MOCK_FOUNDER_ID;
+    return localStorage.getItem(STORAGE_KEYS.FOUNDER_ID);
+  });
+  const [sessionId, setSessionId] = useState(() => {
+    if (USE_MOCK_DATA) return MOCK_SESSION_ID;
+    return localStorage.getItem(STORAGE_KEYS.SESSION_ID);
+  });
   const [conversationId, setConversationId] = useState(() =>
     localStorage.getItem(STORAGE_KEYS.CONVERSATION_ID)
   );
@@ -48,6 +57,10 @@ export function MarneeProvider({ children }) {
   });
   const [welcomeMessage, setWelcomeMessage] = useState(null);
   const [calendarId, setCalendarId] = useState(() => {
+    if (USE_MOCK_DATA) {
+      console.log('[MarneeContext] Using mock calendarId:', MOCK_CALENDAR_ID);
+      return MOCK_CALENDAR_ID;
+    }
     const storedId = localStorage.getItem(STORAGE_KEYS.CALENDAR_ID);
     console.log('[MarneeContext] Initial calendarId from localStorage:', storedId);
     return storedId;

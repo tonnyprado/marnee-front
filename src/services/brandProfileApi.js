@@ -1,10 +1,15 @@
 /**
  * Brand Profile API Service
  * All brand profile-related API endpoints
+ *
+ * HARDCODED MODE: Using mock data for Diana's testing
+ * See MIGRATION.md for reverting to real API calls
  */
 import API from '../config';
+import { mockBrandProfile } from '../mocks/brandProfileMock';
 
 const AUTH_STORAGE_KEY = 'marnee_auth';
+const USE_MOCK_DATA = true; // Set to false to use real API
 
 /**
  * Helper to get auth header from localStorage
@@ -74,8 +79,12 @@ export const getBrandProfile = (profileId) =>
  * - Calendar data
  * - Other available data sources
  */
-export const getBrandProfileByFounder = (founderId) =>
-  request(`/founder/${founderId}/brand-profile`);
+export const getBrandProfileByFounder = (founderId) => {
+  if (USE_MOCK_DATA) {
+    return Promise.resolve({ brandProfile: mockBrandProfile });
+  }
+  return request(`/founder/${founderId}/brand-profile`);
+};
 
 /**
  * PUT /founder/{founderId}/brand-profile - Update brand profile
@@ -90,26 +99,44 @@ export const updateBrandProfile = (founderId, data) =>
  * POST /brand-profile/generate - Generate/regenerate brand profile with AI
  * Uses all available data: tests, chats, calendar, founder profile
  */
-export const generateBrandProfile = ({ founderId, sessionId }) =>
-  request('/brand-profile/generate', {
+export const generateBrandProfile = ({ founderId, sessionId }) => {
+  if (USE_MOCK_DATA) {
+    // Simulate API delay
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({ brandProfile: mockBrandProfile });
+      }, 1500);
+    });
+  }
+  return request('/brand-profile/generate', {
     method: 'POST',
     body: JSON.stringify({
       founderId,
       sessionId,
     }),
   });
+};
 
 /**
  * POST /brand-profile/regenerate-section - Regenerate specific section
  */
-export const regenerateBrandProfileSection = ({ founderId, section }) =>
-  request('/brand-profile/regenerate-section', {
+export const regenerateBrandProfileSection = ({ founderId, section }) => {
+  if (USE_MOCK_DATA) {
+    // Simulate API delay
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({ [section]: mockBrandProfile[section] });
+      }, 1500);
+    });
+  }
+  return request('/brand-profile/regenerate-section', {
     method: 'POST',
     body: JSON.stringify({
       founderId,
       section, // 'purpose', 'voice', 'story', 'pillars', 'guidelines'
     }),
   });
+};
 
 // =====================
 // BRAND GUIDELINES

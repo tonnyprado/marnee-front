@@ -1,10 +1,15 @@
 /**
  * Trends API Service
  * All trends-related API endpoints
+ *
+ * HARDCODED MODE: Using mock data for Diana's testing
+ * See MIGRATION.md for reverting to real API calls
  */
 import API from '../config';
+import { mockTrends } from '../mocks/trendsMock';
 
 const AUTH_STORAGE_KEY = 'marnee_auth';
+const USE_MOCK_DATA = true; // Set to false to use real API
 
 /**
  * Helper to get auth header from localStorage
@@ -64,33 +69,60 @@ const request = async (endpoint, options = {}) => {
  * GET /founder/{founderId}/trends - Get trends by founder ID
  * Auto-generates if doesn't exist
  */
-export const getTrendsByFounder = (founderId) =>
-  request(`/founder/${founderId}/trends`);
+export const getTrendsByFounder = (founderId) => {
+  if (USE_MOCK_DATA) {
+    return Promise.resolve({ trends: mockTrends });
+  }
+  return request(`/founder/${founderId}/trends`);
+};
 
 /**
  * POST /trends/generate - Generate/regenerate complete trends
  */
-export const generateTrends = ({ founderId, sessionId }) =>
-  request('/trends/generate', {
+export const generateTrends = ({ founderId, sessionId }) => {
+  if (USE_MOCK_DATA) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({ trends: mockTrends });
+      }, 2000);
+    });
+  }
+  return request('/trends/generate', {
     method: 'POST',
     body: JSON.stringify({
       founderId,
       sessionId,
     }),
   });
+};
 
 /**
  * POST /trends/regenerate-section - Regenerate specific section
  * Sections: keywords, viral_topics, main_trends, market_insights
  */
-export const regenerateTrendsSection = ({ founderId, section }) =>
-  request('/trends/regenerate-section', {
+export const regenerateTrendsSection = ({ founderId, section }) => {
+  if (USE_MOCK_DATA) {
+    const sectionKeyMap = {
+      'keywords': 'seoKeywords',
+      'viral_topics': 'viralTopics',
+      'main_trends': 'mainTrends',
+      'market_insights': 'marketInsights'
+    };
+    const key = sectionKeyMap[section] || section;
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({ [key]: mockTrends[key] });
+      }, 1500);
+    });
+  }
+  return request('/trends/regenerate-section', {
     method: 'POST',
     body: JSON.stringify({
       founderId,
       section,
     }),
   });
+};
 
 /**
  * PUT /founder/{founderId}/trends - Update trends manually

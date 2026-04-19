@@ -1,10 +1,15 @@
 /**
  * Campaigns API Service
  * All campaign-related API endpoints
+ *
+ * HARDCODED MODE: Using mock data for Diana's testing
+ * See MIGRATION.md for reverting to real API calls
  */
 import API from '../config';
+import { mockCampaigns } from '../mocks/campaignsMock';
 
 const AUTH_STORAGE_KEY = 'marnee_auth';
+const USE_MOCK_DATA = true; // Set to false to use real API
 
 /**
  * Helper to get auth header from localStorage
@@ -73,8 +78,15 @@ export const createCampaign = (data) =>
 /**
  * POST /campaigns/generate - Generate campaigns with AI
  */
-export const generateCampaigns = ({ founderId, sessionId, calendarId, count = 3 }) =>
-  request('/campaigns/generate', {
+export const generateCampaigns = ({ founderId, sessionId, calendarId, count = 3 }) => {
+  if (USE_MOCK_DATA) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({ campaigns: mockCampaigns.slice(0, count) });
+      }, 2000);
+    });
+  }
+  return request('/campaigns/generate', {
     method: 'POST',
     body: JSON.stringify({
       founderId,
@@ -83,12 +95,17 @@ export const generateCampaigns = ({ founderId, sessionId, calendarId, count = 3 
       count,
     }),
   });
+};
 
 /**
  * GET /campaigns/calendar/{calendarId} - Get all campaigns for a calendar
  */
-export const getCampaignsByCalendar = (calendarId) =>
-  request(`/campaigns/calendar/${calendarId}`);
+export const getCampaignsByCalendar = (calendarId) => {
+  if (USE_MOCK_DATA) {
+    return Promise.resolve({ campaigns: mockCampaigns });
+  }
+  return request(`/campaigns/calendar/${calendarId}`);
+};
 
 /**
  * GET /campaigns/{campaignId} - Get single campaign with tasks/scripts
@@ -99,11 +116,19 @@ export const getCampaign = (campaignId) =>
 /**
  * PUT /campaigns/{campaignId} - Update campaign
  */
-export const updateCampaign = (campaignId, data) =>
-  request(`/campaigns/${campaignId}`, {
+export const updateCampaign = (campaignId, data) => {
+  if (USE_MOCK_DATA) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({ success: true, campaign: { id: campaignId, ...data } });
+      }, 500);
+    });
+  }
+  return request(`/campaigns/${campaignId}`, {
     method: 'PUT',
     body: JSON.stringify(data),
   });
+};
 
 /**
  * DELETE /campaigns/{campaignId} - Delete campaign
@@ -137,11 +162,19 @@ export const createCampaignTask = (campaignId, data) =>
 /**
  * PUT /campaigns/tasks/{taskId} - Update task
  */
-export const updateCampaignTask = (taskId, data) =>
-  request(`/campaigns/tasks/${taskId}`, {
+export const updateCampaignTask = (taskId, data) => {
+  if (USE_MOCK_DATA) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({ success: true, task: { id: taskId, ...data } });
+      }, 500);
+    });
+  }
+  return request(`/campaigns/tasks/${taskId}`, {
     method: 'PUT',
     body: JSON.stringify(data),
   });
+};
 
 /**
  * DELETE /campaigns/tasks/{taskId} - Delete task
