@@ -168,6 +168,12 @@ export const api = {
   getConversation: (conversationId) =>
     request(`/marnee/conversation/${conversationId}`),
 
+  // DELETE /marnee/conversation/{conversationId} - Delete conversation
+  deleteConversation: (conversationId) =>
+    request(`/marnee/conversation/${conversationId}`, {
+      method: 'DELETE',
+    }),
+
   // POST /marnee/generate-ideas - Generate content ideas
   generateIdeas: ({ founderId, sessionId, count = 12, pillar }) =>
     request('/marnee/generate-ideas', {

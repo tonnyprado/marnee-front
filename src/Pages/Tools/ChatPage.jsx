@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { api } from '../../services/api';
-import { Send, Loader2, MessageCircle, Search, X } from 'lucide-react';
+import { Send, Loader2, MessageCircle, Search, X, Menu } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PageTransition from '../../Component/PageTransition';
+import ConversationSidebar from '../../Component/ConversationSidebar';
 
 // Markdown components for AI messages (formatted text)
 // eslint-disable-next-line jsx-a11y/heading-has-content
@@ -65,11 +66,12 @@ const userMarkdownComponents = {
 };
 
 /**
- * TestChatPage - Chat with clean architecture
+ * ChatPage - Multi-conversation chat
  *
- * Simple chat that saves messages to database and persists between sessions.
+ * Full-featured chat with multiple conversations that saves messages to database.
+ * Marnee has access to all conversation history for context.
  */
-export default function TestChatPage() {
+export default function ChatPage() {
   // State
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
@@ -81,6 +83,10 @@ export default function TestChatPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [currentResultIndex, setCurrentResultIndex] = useState(0);
+
+  // New state for multiple conversations
+  const [conversations, setConversations] = useState([]);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const messagesEndRef = useRef(null);
   const searchResultRefs = useRef([]);
@@ -160,16 +166,16 @@ export default function TestChatPage() {
     ).join('');
   };
 
-  // Initialize: Load founder, conversation, and messages
+  // Initialize: Load founder, conversations
   useEffect(() => {
     const initialize = async () => {
       try {
-        console.log('[TestChat] Initializing...');
+        console.log('[Chat] Initializing...');
 
         // 1. Get founder
         const founder = await api.getMeFounder();
         setFounderId(founder.id);
-        console.log('[TestChat] Founder loaded:', founder.id);
+        console.log('[Chat] Founder loaded:', founder.id);
 
         // 2. Get or create session
         const sessions = await api.getMeSessions();
@@ -179,42 +185,61 @@ export default function TestChatPage() {
 
         if (latestSession) {
           setSessionId(latestSession.id);
-          console.log('[TestChat] Session loaded:', latestSession.id);
+          console.log('[Chat] Session loaded:', latestSession.id);
         }
 
-        // 3. Get conversations
+        // 3. Load all conversations
         const conversationsResponse = await api.getConversations();
-        console.log('[TestChat] Conversations response:', conversationsResponse);
+        console.log('[Chat] Conversations response:', conversationsResponse);
 
-        let conversationData = null;
         if (conversationsResponse && conversationsResponse.conversations && conversationsResponse.conversations.length > 0) {
-          // Load most recent conversation
-          const latestConv = conversationsResponse.conversations[0];
-          console.log('[TestChat] Loading conversation:', latestConv.id);
+          // Load full conversation data for each
+          const conversationsWithMessages = await Promise.all(
+            conversationsResponse.conversations.map(async (conv) => {
+              try {
+                const fullConv = await api.getConversation(conv.id);
+                return {
+                  ...conv,
+                  messages: fullConv.messages || [],
+                };
+              } catch (err) {
+                console.error('[Chat] Error loading conversation:', conv.id, err);
+                return { ...conv, messages: [] };
+              }
+            })
+          );
 
-          conversationData = await api.getConversation(latestConv.id);
-          console.log('[TestChat] Conversation data:', conversationData);
+          // Sort by most recent first
+          conversationsWithMessages.sort((a, b) =>
+            new Date(b.updatedAt || b.createdAt) - new Date(a.updatedAt || a.createdAt)
+          );
 
-          setConversationId(conversationData.id);
+          setConversations(conversationsWithMessages);
+          console.log('[Chat] Loaded', conversationsWithMessages.length, 'conversations');
 
-          // Load messages
-          if (conversationData.messages && conversationData.messages.length > 0) {
-            const loadedMessages = conversationData.messages.map(msg => ({
-              id: msg.id,
-              role: msg.role,
-              content: msg.content,
-              timestamp: msg.createdAt,
-            }));
+          // Auto-select most recent conversation
+          if (conversationsWithMessages.length > 0) {
+            const mostRecent = conversationsWithMessages[0];
+            setConversationId(mostRecent.id);
 
-            setMessages(loadedMessages);
-            console.log('[TestChat] Loaded', loadedMessages.length, 'messages from DB');
+            if (mostRecent.messages && mostRecent.messages.length > 0) {
+              const loadedMessages = mostRecent.messages.map(msg => ({
+                id: msg.id,
+                role: msg.role,
+                content: msg.content,
+                timestamp: msg.createdAt,
+              }));
+              setMessages(loadedMessages);
+              console.log('[Chat] Loaded', loadedMessages.length, 'messages from most recent conversation');
+            }
           }
         } else {
-          console.log('[TestChat] No existing conversations found');
+          console.log('[Chat] No existing conversations found');
+          setConversations([]);
         }
 
       } catch (error) {
-        console.error('[TestChat] Initialization error:', error);
+        console.error('[Chat] Initialization error:', error);
       } finally {
         setIsInitializing(false);
       }
@@ -223,6 +248,116 @@ export default function TestChatPage() {
     initialize();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Run once on mount
+
+  // Handle conversation selection
+  const handleSelectConversation = async (convId) => {
+    console.log('[Chat] Selecting conversation:', convId);
+
+    // Find conversation in state
+    const conversation = conversations.find(c => c.id === convId);
+
+    if (conversation) {
+      setConversationId(convId);
+
+      // Load messages from conversation
+      if (conversation.messages && conversation.messages.length > 0) {
+        const loadedMessages = conversation.messages.map(msg => ({
+          id: msg.id,
+          role: msg.role,
+          content: msg.content,
+          timestamp: msg.createdAt,
+        }));
+        setMessages(loadedMessages);
+      } else {
+        setMessages([]);
+      }
+
+      // Close sidebar on mobile
+      setIsSidebarOpen(false);
+    }
+  };
+
+  // Handle new conversation
+  const handleNewConversation = () => {
+    console.log('[Chat] Creating new conversation');
+
+    // Reset current conversation
+    setConversationId(null);
+    setMessages([]);
+
+    // Close sidebar on mobile
+    setIsSidebarOpen(false);
+  };
+
+  // Handle delete conversation
+  const handleDeleteConversation = async (convId) => {
+    try {
+      console.log('[Chat] Deleting conversation:', convId);
+
+      // Call API to delete
+      await api.deleteConversation(convId);
+
+      // Remove from local state
+      setConversations(prevConvs => prevConvs.filter(c => c.id !== convId));
+
+      // If deleted conversation was active, clear current chat
+      if (convId === conversationId) {
+        setConversationId(null);
+        setMessages([]);
+      }
+
+      console.log('[Chat] Conversation deleted successfully');
+    } catch (error) {
+      console.error('[Chat] Error deleting conversation:', error);
+      alert('Failed to delete conversation. Please try again.');
+    }
+  };
+
+  // Update conversations list after sending message
+  const updateConversationsAfterMessage = async (convId) => {
+    try {
+      // Reload the conversation that was just updated
+      const updatedConv = await api.getConversation(convId);
+
+      setConversations(prevConvs => {
+        // Check if conversation already exists
+        const existingIndex = prevConvs.findIndex(c => c.id === convId);
+
+        let updated;
+        if (existingIndex >= 0) {
+          // Update existing conversation
+          updated = [...prevConvs];
+          updated[existingIndex] = {
+            ...updated[existingIndex],
+            messages: updatedConv.messages || [],
+            updatedAt: new Date().toISOString(),
+          };
+        } else {
+          // Add new conversation to the list
+          updated = [
+            {
+              id: convId,
+              founderId: founderId,
+              sessionId: sessionId,
+              messages: updatedConv.messages || [],
+              createdAt: new Date().toISOString(),
+              updatedAt: new Date().toISOString(),
+            },
+            ...prevConvs,
+          ];
+        }
+
+        // Sort by most recent
+        updated.sort((a, b) =>
+          new Date(b.updatedAt || b.createdAt) - new Date(a.updatedAt || a.createdAt)
+        );
+
+        return updated;
+      });
+    } catch (error) {
+      console.error('[Chat] Error updating conversations list:', error);
+    }
+  };
 
   // Send message
   const handleSend = async () => {
@@ -243,7 +378,7 @@ export default function TestChatPage() {
     setIsLoading(true);
 
     try {
-      console.log('[TestChat] Sending message...');
+      console.log('[Chat] Sending message...');
 
       // Build messages history for API
       const messagesForApi = messages.map(m => ({
@@ -260,12 +395,13 @@ export default function TestChatPage() {
         messages: messagesForApi,
       });
 
-      console.log('[TestChat] Response received:', response);
+      console.log('[Chat] Response received:', response);
 
       // Update conversation ID if new
+      const finalConvId = response.conversationId || conversationId;
       if (response.conversationId && !conversationId) {
         setConversationId(response.conversationId);
-        console.log('[TestChat] Conversation created:', response.conversationId);
+        console.log('[Chat] Conversation created:', response.conversationId);
       }
 
       // Add AI response
@@ -286,10 +422,15 @@ export default function TestChatPage() {
         ];
       });
 
-      console.log('[TestChat] Messages updated successfully');
+      console.log('[Chat] Messages updated successfully');
+
+      // Update conversations list
+      if (finalConvId) {
+        await updateConversationsAfterMessage(finalConvId);
+      }
 
     } catch (error) {
-      console.error('[TestChat] Send error:', error);
+      console.error('[Chat] Send error:', error);
 
       // Remove temp message on error
       setMessages(prev => prev.filter(m => m.id !== tempUserMsg.id));
@@ -311,8 +452,21 @@ export default function TestChatPage() {
 
   return (
     <PageTransition className="h-screen bg-gradient-to-br from-gray-50 via-purple-50/20 to-gray-50">
-      {/* Main chat area */}
-      <div className="flex flex-col h-full backdrop-blur-sm">
+      {/* Main layout with sidebar */}
+      <div className="flex h-full">
+        {/* Sidebar */}
+        <ConversationSidebar
+          conversations={conversations}
+          activeConversationId={conversationId}
+          onSelectConversation={handleSelectConversation}
+          onNewConversation={handleNewConversation}
+          onDeleteConversation={handleDeleteConversation}
+          isOpen={isSidebarOpen}
+          onClose={() => setIsSidebarOpen(false)}
+        />
+
+        {/* Main chat area */}
+        <div className="flex-1 flex flex-col h-full backdrop-blur-sm">
         {/* Header */}
         <motion.div
           initial={{ y: -20, opacity: 0 }}
@@ -322,6 +476,15 @@ export default function TestChatPage() {
         >
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="flex-1 flex items-center gap-3">
+              {/* Hamburger menu for mobile */}
+              <motion.button
+                whileTap={{ scale: 0.9 }}
+                onClick={() => setIsSidebarOpen(true)}
+                className="lg:hidden p-2 hover:bg-gray-100 rounded-lg transition"
+              >
+                <Menu className="w-6 h-6 text-gray-700" />
+              </motion.button>
+
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
@@ -717,6 +880,7 @@ export default function TestChatPage() {
             </motion.button>
           </div>
         </motion.div>
+        </div>
       </div>
     </PageTransition>
   );

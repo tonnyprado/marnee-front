@@ -18,7 +18,7 @@ import BusinessTestPage from "./Pages/BusinessTestPage";
 import AppLayout from "./Layout/Layout";
 import IAWebPage from "./Pages/Tools/IAWebPage"; // Old chat - kept as backup
 import CalendarPage from "./Pages/Tools/CalendarPage";
-import TestChatPage from "./Pages/Tools/TestChatPage"; // New working chat
+import ChatPage from "./Pages/Tools/ChatPage"; // Main chat with multiple conversations
 import BillingPage from "./Pages/Tools/BillingPage";
 import ProfileSettingsPage from "./Pages/Tools/ProfileSettingsPage";
 import HelpSupportPage from "./Pages/Tools/HelpSupportPage";
@@ -104,8 +104,8 @@ function AppContent() {
             </RequireAuth>
           }
         >
-          {/* /app → NUEVO CHAT QUE SÍ FUNCIONA */}
-          <Route index element={<TestChatPage />} />
+          {/* /app → Main Chat with Multiple Conversations */}
+          <Route index element={<ChatPage />} />
           {/* /app/calendar */}
           <Route path="calendar" element={<CalendarPage />} />
           {/* /app/billing */}
