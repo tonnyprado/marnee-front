@@ -7,9 +7,10 @@ import { useLanguage } from "../context/LanguageContext";
 export default function AuthPage() {
   const { t } = useLanguage();
   const [mode, setMode] = useState("signin"); // "signin" | "signup"
-  const [form, setForm] = useState({ name: "", email: "", password: "" });
+  const [form, setForm] = useState({ name: "", email: "", password: "", acceptTerms: false });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [passwordStrength, setPasswordStrength] = useState(0);
   const navigate = useNavigate();
 
   React.useEffect(() => {
@@ -20,21 +21,51 @@ export default function AuthPage() {
   }, [navigate]);
 
   const handleChange = (field) => (e) => {
-    setForm((prev) => ({ ...prev, [field]: e.target.value }));
+    const value = field === "acceptTerms" ? e.target.checked : e.target.value;
+    setForm((prev) => ({ ...prev, [field]: value }));
+
+    // Update password strength when password changes
+    if (field === "password") {
+      setPasswordStrength(calculatePasswordStrength(e.target.value));
+    }
+  };
+
+  const calculatePasswordStrength = (password) => {
+    let strength = 0;
+    if (password.length >= 8) strength++;
+    if (password.length >= 12) strength++;
+    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+    if (/\d/.test(password)) strength++;
+    if (/[^a-zA-Z0-9]/.test(password)) strength++;
+    return strength;
   };
 
   const isValidEmail = (value) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
 
+  const isStrongPassword = (password) => {
+    return (
+      password.length >= 8 &&
+      /[a-z]/.test(password) &&
+      /[A-Z]/.test(password) &&
+      /\d/.test(password)
+    );
+  };
+
   const validate = () => {
-    if (mode === "signup" && !form.name.trim()) {
-      return t("auth.errors.emptyName");
+    if (mode === "signup") {
+      if (!form.name.trim()) {
+        return t("auth.errors.emptyName");
+      }
+      if (!form.acceptTerms) {
+        return "You must accept the Terms and Conditions to create an account";
+      }
+      if (!isStrongPassword(form.password)) {
+        return "Password must be at least 8 characters and include uppercase, lowercase, and numbers";
+      }
     }
     if (!form.email.trim() || !isValidEmail(form.email)) {
       return t("auth.errors.invalidEmail");
-    }
-    if (mode === "signup" && form.password.trim().length < 6) {
-      return t("auth.errors.passwordMin");
     }
     if (mode === "signin" && !form.password.trim()) {
       return t("auth.errors.passwordEmpty");
@@ -170,7 +201,69 @@ export default function AuthPage() {
               onChange={handleChange("password")}
               className="w-full bg-[#f6f6f6] border border-[rgba(30,30,30,0.1)] rounded px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#40086d] focus:border-transparent transition"
             />
+            {mode === "signup" && form.password && (
+              <div className="mt-2">
+                <div className="flex gap-1 mb-1">
+                  {[...Array(5)].map((_, i) => (
+                    <div
+                      key={i}
+                      className={`h-1 flex-1 rounded ${
+                        i < passwordStrength
+                          ? passwordStrength <= 2
+                            ? "bg-red-500"
+                            : passwordStrength <= 3
+                            ? "bg-yellow-500"
+                            : "bg-green-500"
+                          : "bg-gray-200"
+                      }`}
+                    />
+                  ))}
+                </div>
+                <p className="text-xs text-gray-500">
+                  {passwordStrength <= 2 && "Weak password"}
+                  {passwordStrength === 3 && "Medium password"}
+                  {passwordStrength === 4 && "Strong password"}
+                  {passwordStrength === 5 && "Very strong password"}
+                </p>
+                {passwordStrength < 3 && (
+                  <p className="text-xs text-gray-500 mt-1">
+                    Use 8+ characters with uppercase, lowercase, and numbers
+                  </p>
+                )}
+              </div>
+            )}
           </div>
+
+          {/* Terms and Conditions (Sign up only) */}
+          {mode === "signup" && (
+            <div className="flex items-start gap-2">
+              <input
+                type="checkbox"
+                id="acceptTerms"
+                checked={form.acceptTerms}
+                onChange={handleChange("acceptTerms")}
+                className="mt-1 accent-[#40086d] rounded"
+              />
+              <label htmlFor="acceptTerms" className="text-sm text-gray-600">
+                I accept the{" "}
+                <a
+                  href="/terms"
+                  target="_blank"
+                  className="text-[#40086d] hover:text-[#1a0530] font-medium"
+                >
+                  Terms and Conditions
+                </a>{" "}
+                and{" "}
+                <a
+                  href="/privacy"
+                  target="_blank"
+                  className="text-[#40086d] hover:text-[#1a0530] font-medium"
+                >
+                  Privacy Policy
+                </a>
+              </label>
+            </div>
+          )}
 
           {/* Remember + Forgot */}
           {mode === "signin" && (
