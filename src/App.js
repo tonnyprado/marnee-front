@@ -5,7 +5,6 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { MarneeProvider } from "./context/MarneeContext";
 import { LanguageProvider, useLanguage } from "./context/LanguageContext";
 import { getAuthSession } from "./services/api";
-import LanguageSwitcher from "./Component/LanguageSwitcher";
 
 import LandingPage from "./Pages/LandingPage";
 import PresentationPage from "./Pages/PresentationPage";
@@ -52,7 +51,6 @@ function App() {
 function AppContent() {
   const [globalError, setGlobalError] = React.useState("");
   const { t } = useLanguage();
-  const location = window.location;
 
   React.useEffect(() => {
     let timer;
