@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef } from 'react';
-import { fabric } from 'fabric';
+import * as fabric from 'fabric';
 
 /**
  * Custom hook for managing a Fabric.js canvas for image editing.

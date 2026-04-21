@@ -45,7 +45,7 @@ export default function ImageEditor({ svgContent, dimensions, onSave, onCancel }
       canvasEl.id = 'fabric-canvas';
       containerRef.current.appendChild(canvasEl);
 
-      const fabricCanvas = initializeCanvas(canvasEl, dimensions.width, dimensions.height);
+      initializeCanvas(canvasEl, dimensions.width, dimensions.height);
       loadSVG(svgContent);
     }
   }, [canvas, dimensions, svgContent, initializeCanvas, loadSVG]);
