@@ -31,6 +31,7 @@ async function request(endpoint, options = {}) {
 const imageApi = {
   /**
    * Generate an image for a post.
+   * Now uses FormData for consistency with attachment endpoint.
    *
    * @param {Object} params - Generation parameters
    * @param {string} params.founderId - Founder ID
@@ -40,11 +41,31 @@ const imageApi = {
    * @param {string} [params.outputFormat='both'] - Output format: 'svg', 'png', or 'both'
    * @returns {Promise<Object>} Generated image response
    */
-  generateImage: (params) =>
-    request('/images/generate', {
+  generateImage: async (params) => {
+    const authHeader = getAuthHeader();
+    const baseUrl = API.MARNEE;
+    const url = `${baseUrl}/images/generate`;
+
+    const formData = new FormData();
+    // Send params as JSON string
+    formData.append('params', JSON.stringify(params));
+
+    const response = await fetch(url, {
       method: 'POST',
-      body: JSON.stringify(params),
-    }),
+      headers: {
+        ...authHeader,
+        // Don't set Content-Type - browser sets it with boundary
+      },
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.message || `HTTP ${response.status}`);
+    }
+
+    return response.json();
+  },
 
   /**
    * Get available templates.
