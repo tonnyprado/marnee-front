@@ -60,7 +60,7 @@ const imageApi = {
    * Uses FormData to send files along with generation parameters.
    *
    * @param {Object} params - Generation parameters
-   * @param {Array<File>} attachments - Array of File objects to attach
+   * @param {Array<Object>} attachments - Array of attachment objects with .file property
    * @returns {Promise<Object>} Generated image response
    */
   generateImageWithAttachments: async (params, attachments = []) => {
@@ -73,9 +73,11 @@ const imageApi = {
     // Add JSON params as a string field
     formData.append('params', JSON.stringify(params));
 
-    // Add each attachment
+    // Add each attachment - extract the File object from the attachment wrapper
     attachments.forEach((attachment, index) => {
-      formData.append(`attachment_${index}`, attachment.file);
+      if (attachment && attachment.file) {
+        formData.append(`attachment_${index}`, attachment.file);
+      }
     });
 
     const response = await fetch(url, {

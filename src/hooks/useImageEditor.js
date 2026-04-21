@@ -43,40 +43,52 @@ export function useImageEditor() {
       canvas.clear();
 
       try {
-        // Convert SVG string to data URL
-        const svgBlob = new Blob([svgString], { type: 'image/svg+xml' });
-        const url = URL.createObjectURL(svgBlob);
+        // Create a data URL from the SVG string
+        const svgDataUrl = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgString);
+
+        console.log('Created SVG data URL');
+
+        // Create an HTML image element to load the SVG
+        const imgElement = new Image();
+        imgElement.crossOrigin = 'anonymous';
 
         return new Promise((resolve, reject) => {
-          fabric.Image.fromURL(
-            url,
-            (img) => {
-              if (!img) {
-                console.error('Failed to load SVG image');
-                reject(new Error('Failed to load SVG'));
-                return;
-              }
+          imgElement.onload = () => {
+            console.log('Image element loaded', { width: imgElement.width, height: imgElement.height });
 
-              console.log('SVG loaded successfully', { imgWidth: img.width, imgHeight: img.height });
+            // Create a fabric Image from the loaded element
+            const fabricImg = new fabric.Image(imgElement, {
+              left: 0,
+              top: 0,
+              selectable: true,
+            });
 
-              // Scale image to fit canvas if needed
-              const scale = Math.min(
-                canvas.width / img.width,
-                canvas.height / img.height,
-                1
-              );
+            console.log('Fabric image created', { width: fabricImg.width, height: fabricImg.height });
 
-              console.log('Scaling image by', scale);
-              img.scale(scale);
-              canvas.add(img);
-              canvas.centerObject(img);
-              canvas.renderAll();
-              URL.revokeObjectURL(url);
-              console.log('SVG added to canvas and rendered');
-              resolve(img);
-            },
-            { crossOrigin: 'anonymous' }
-          );
+            // Scale image to fit canvas if needed
+            const scale = Math.min(
+              canvas.width / fabricImg.width,
+              canvas.height / fabricImg.height,
+              1
+            );
+
+            console.log('Scaling image by', scale);
+            fabricImg.scale(scale);
+
+            canvas.add(fabricImg);
+            canvas.centerObject(fabricImg);
+            canvas.renderAll();
+
+            console.log('SVG added to canvas and rendered');
+            resolve(fabricImg);
+          };
+
+          imgElement.onerror = (error) => {
+            console.error('Failed to load image element:', error);
+            reject(new Error('Failed to load SVG'));
+          };
+
+          imgElement.src = svgDataUrl;
         });
       } catch (error) {
         console.error('Error loading SVG:', error);

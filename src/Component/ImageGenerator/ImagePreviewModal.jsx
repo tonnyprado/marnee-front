@@ -253,6 +253,40 @@ export default function ImagePreviewModal({ image, onClose, post, founderId }) {
 
                   <AttachmentList attachments={attachments} onRemove={removeFile} />
 
+                  {/* Regenerate Button */}
+                  <div>
+                    <label className="text-sm font-medium text-gray-700 block mb-2">
+                      {attachments.length > 0 ? 'Regenerate with Context' : 'Regenerate Image'}
+                    </label>
+                    <button
+                      onClick={() => handleTemplateChange(selectedTemplate)}
+                      disabled={isGenerating}
+                      className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isGenerating ? (
+                        <>
+                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                          Regenerating...
+                        </>
+                      ) : (
+                        <>
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                          </svg>
+                          Regenerate
+                        </>
+                      )}
+                    </button>
+                    {attachments.length > 0 && (
+                      <p className="text-xs text-violet-600 mt-1 text-center">
+                        Will include {attachments.length} attachment{attachments.length > 1 ? 's' : ''}
+                      </p>
+                    )}
+                    <p className="text-xs text-gray-400 mt-1 text-center">
+                      Uses current template + Marnee's AI
+                    </p>
+                  </div>
+
                   {/* Download Options */}
                   <div>
                     <label className="text-sm font-medium text-gray-700 block mb-2">Download</label>
