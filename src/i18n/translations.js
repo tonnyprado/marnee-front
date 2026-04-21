@@ -22,7 +22,7 @@ export const translations = {
     },
     navbar: {
       brandingTest: "Branding Test",
-      aiContent: "AI Content & Brand Strategist",
+      aiContent: "Ask Marnee",
       calendar: "Content Calendar",
       dashboard: "My Dashboard",
       profileSettings: "Profile Settings",
@@ -275,7 +275,7 @@ export const translations = {
     },
     navbar: {
       brandingTest: "Test de marca",
-      aiContent: "Estratega de contenido IA y marca",
+      aiContent: "Pregunta a Marnee",
       calendar: "Calendario de contenido",
       dashboard: "Mi panel",
       profileSettings: "Configuración de perfil",
@@ -528,7 +528,7 @@ export const translations = {
     },
     navbar: {
       brandingTest: "브랜딩 테스트",
-      aiContent: "AI 콘텐츠 및 브랜드 전략가",
+      aiContent: "Marnee에게 물어보기",
       calendar: "콘텐츠 캘린더",
       dashboard: "내 대시보드",
       profileSettings: "프로필 설정",

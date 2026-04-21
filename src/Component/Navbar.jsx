@@ -10,7 +10,7 @@ const icons = {
     <lord-icon
       src="https://cdn.lordicon.com/gpgeihgx.json"
       trigger="hover"
-      colors="primary:#1b1091,secondary:#e5d1fa,tertiary:#7166ee,quaternary:#ee66aa"
+      colors="primary:#40086d,secondary:#40086d,tertiary:#40086d,quaternary:#40086d"
       style={{ width: '28px', height: '28px' }}
     />
   ),
@@ -18,7 +18,7 @@ const icons = {
     <lord-icon
       src="https://cdn.lordicon.com/gqlpvzkp.json"
       trigger="hover"
-      colors="primary:#a39cf4,secondary:#ebe6ef"
+      colors="primary:#40086d,secondary:#40086d"
       style={{ width: '28px', height: '28px' }}
     />
   ),
@@ -27,7 +27,7 @@ const icons = {
       src="https://cdn.lordicon.com/xhgjylsr.json"
       trigger="hover"
       state="hover-flutter"
-      colors="primary:#3a3347,secondary:#e5d1fa,tertiary:#a39cf4,quaternary:#f9c9c0"
+      colors="primary:#40086d,secondary:#40086d,tertiary:#40086d,quaternary:#40086d"
       style={{ width: '28px', height: '28px' }}
     />
   ),
@@ -36,7 +36,7 @@ const icons = {
       src="https://cdn.lordicon.com/wdztjihe.json"
       trigger="loop"
       state="loop-all"
-      colors="primary:#121331,secondary:#a39cf4,tertiary:#7166ee,quaternary:#fad1e6"
+      colors="primary:#40086d,secondary:#40086d,tertiary:#40086d,quaternary:#40086d"
       style={{ width: '28px', height: '28px' }}
     />
   ),

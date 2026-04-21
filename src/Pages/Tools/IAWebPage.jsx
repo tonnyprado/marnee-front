@@ -5,6 +5,7 @@ import { api } from "../../services/api";
 import { useMarnee } from "../../context/MarneeContext";
 import marneeMascot from "../../assets/mascot/marnee12.png";
 import ChatDebugger from "../../Component/ChatDebugger";
+import LanguageSwitcher from "../../Component/LanguageSwitcher";
 import { Search, Send, Calendar, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -412,25 +413,28 @@ export default function IAWebPage() {
     <div className="flex h-screen bg-[#f6f6f6] flex-col relative overflow-hidden">
 
       <header className="border-b border-[rgba(30,30,30,0.1)] px-4 py-3 text-gray-900 bg-white flex-shrink-0 relative">
-        <div className="flex items-center gap-3">
-          <motion.div
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.3 }}
-            className="relative flex h-10 w-10 items-center justify-center rounded-full bg-[#40086d]"
-          >
-            <img
-              src={marneeMascot}
-              alt="Marnee mascot"
-              className={`${mascotClassName} h-7 w-7 object-contain`}
-            />
-          </motion.div>
-          <div>
-            <h1 className="text-lg font-semibold text-[#1e1e1e]">Marnee Chat</h1>
-            <p className="text-xs text-gray-500">
-              Your AI content strategist
-            </p>
+        <div className="flex items-center gap-3 justify-between">
+          <div className="flex items-center gap-3 flex-1">
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.3 }}
+              className="relative flex h-10 w-10 items-center justify-center rounded-full bg-[#40086d]"
+            >
+              <img
+                src={marneeMascot}
+                alt="Marnee mascot"
+                className={`${mascotClassName} h-7 w-7 object-contain`}
+              />
+            </motion.div>
+            <div>
+              <h1 className="text-lg font-semibold text-[#1e1e1e]">Marnee Chat</h1>
+              <p className="text-xs text-gray-500">
+                Your AI content strategist
+              </p>
+            </div>
           </div>
+          <LanguageSwitcher />
         </div>
 
         <div className="mt-3 relative">
