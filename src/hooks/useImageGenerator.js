@@ -20,6 +20,7 @@ export function useImageGenerator() {
    * @param {string} [params.templateType] - Specific template (optional)
    * @param {boolean} [params.optimizeCopy] - Optimize copy with AI
    * @param {string} [params.outputFormat='both'] - Output format
+   * @param {Array<Object>} [params.attachments] - File attachments for regeneration
    * @returns {Promise<Object>} Generated image response
    */
   const generateImage = useCallback(async (params) => {
@@ -27,7 +28,11 @@ export function useImageGenerator() {
     setError(null);
 
     try {
-      const response = await imageApi.generateImage(params);
+      // Use different API method if attachments are provided
+      const response = params.attachments && params.attachments.length > 0
+        ? await imageApi.generateImageWithAttachments(params, params.attachments)
+        : await imageApi.generateImage(params);
+
       setGeneratedImage(response);
       return response;
     } catch (err) {

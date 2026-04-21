@@ -1,20 +1,70 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { toPng, toJpeg } from 'html-to-image';
-import { saveAs } from 'file-saver';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { X, Eye, Pencil } from 'lucide-react';
+
+// Preview mode components
+import ZoomablePreview from './Preview/ZoomablePreview';
+import ZoomControls from './Preview/ZoomControls';
+
+// Editor mode components
+import ImageEditor from './Editor/ImageEditor';
+
+// Attachments
+import AttachmentUploader from './Attachments/AttachmentUploader';
+import AttachmentList from './Attachments/AttachmentList';
+
+// Existing components
 import TemplateSelector from './TemplateSelector';
+
+// Hooks
+import { useZoomPan } from '../../hooks/useZoomPan';
+import { useAttachments } from '../../hooks/useAttachments';
 import useImageGenerator from '../../hooks/useImageGenerator';
 
+// Download utilities
+import { toPng, toJpeg } from 'html-to-image';
+import { saveAs } from 'file-saver';
+
 /**
- * Modal to preview and download generated images.
- * Supports downloading as PNG, SVG, or JPG.
+ * Modal to preview and edit generated images.
+ * Supports zoom/pan, advanced editing, attachments, and downloading.
  */
 export default function ImagePreviewModal({ image, onClose, post, founderId }) {
   const svgRef = useRef(null);
+
+  // Mode state: 'preview' | 'edit'
+  const [mode, setMode] = useState('preview');
+  const [currentImage, setCurrentImage] = useState(image);
   const [selectedTemplate, setSelectedTemplate] = useState(image?.templateUsed);
   const [isDownloading, setIsDownloading] = useState(false);
-  const { regenerateWithTemplate, isGenerating } = useImageGenerator();
-  const [currentImage, setCurrentImage] = useState(image);
 
+  // Hooks
+  const { regenerateWithTemplate, isGenerating } = useImageGenerator();
+  const { scale, transformRef, zoomIn, zoomOut, resetTransform, centerView, setScale } =
+    useZoomPan();
+  const {
+    attachments,
+    addFiles,
+    removeFile,
+    errors: attachmentErrors,
+    maxFiles,
+  } = useAttachments();
+
+  // Adjust SVG size after it's inserted to ensure it fits within the container
+  useEffect(() => {
+    if (svgRef.current && mode === 'preview') {
+      const svg = svgRef.current.querySelector('svg');
+      if (svg) {
+        svg.style.width = '100%';
+        svg.style.height = 'auto';
+        svg.style.maxWidth = '100%';
+        svg.style.maxHeight = '100%';
+        svg.style.display = 'block';
+      }
+    }
+  }, [currentImage, mode]);
+
+  // Template change handler (now with attachments)
   const handleTemplateChange = async (templateId) => {
     setSelectedTemplate(templateId);
 
@@ -31,6 +81,7 @@ export default function ImagePreviewModal({ image, onClose, post, founderId }) {
             contentType: post.contentType || 'Educational',
           },
           outputFormat: 'both',
+          attachments: attachments.map((a) => a), // Include attachments
         },
         templateId
       );
@@ -40,11 +91,23 @@ export default function ImagePreviewModal({ image, onClose, post, founderId }) {
     }
   };
 
+  // Editor save handler
+  const handleEditorSave = useCallback(
+    ({ svg, pngDataUrl }) => {
+      setCurrentImage((prev) => ({
+        ...prev,
+        svg,
+        pngBase64: pngDataUrl?.split(',')[1] || null,
+      }));
+      setMode('preview');
+    },
+    []
+  );
+
   const handleDownloadPng = async () => {
     setIsDownloading(true);
     try {
       if (currentImage.pngBase64) {
-        // Use pre-generated PNG from backend
         const byteCharacters = atob(currentImage.pngBase64);
         const byteNumbers = new Array(byteCharacters.length);
         for (let i = 0; i < byteCharacters.length; i++) {
@@ -55,7 +118,6 @@ export default function ImagePreviewModal({ image, onClose, post, founderId }) {
         const filename = `${post.pillar || 'post'}-${Date.now()}.png`;
         saveAs(blob, filename);
       } else if (svgRef.current) {
-        // Generate PNG from SVG in frontend
         const dataUrl = await toPng(svgRef.current, {
           width: currentImage.dimensions.width,
           height: currentImage.dimensions.height,
@@ -97,160 +159,194 @@ export default function ImagePreviewModal({ image, onClose, post, founderId }) {
     }
   };
 
-  // Adjust SVG size after it's inserted to ensure it fits within the container
-  useEffect(() => {
-    if (svgRef.current) {
-      const svg = svgRef.current.querySelector('svg');
-      if (svg) {
-        svg.style.width = '100%';
-        svg.style.height = 'auto';
-        svg.style.maxWidth = '100%';
-        svg.style.maxHeight = '100%';
-        svg.style.display = 'block';
-      }
-    }
-  }, [currentImage]);
+  const modes = [
+    { id: 'preview', label: 'Preview', icon: Eye },
+    { id: 'edit', label: 'Edit', icon: Pencil },
+  ];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-5xl w-full max-h-[90vh] overflow-hidden flex flex-col">
-        {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b">
-          <h2 className="text-lg font-semibold text-gray-900">Generated Image</h2>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition"
-          >
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                fillRule="evenodd"
-                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </button>
-        </div>
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+        onClick={(e) => e.target === e.currentTarget && onClose()}
+      >
+        <motion.div
+          initial={{ scale: 0.95, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.95, opacity: 0 }}
+          className="bg-white rounded-xl shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden flex flex-col"
+        >
+          {/* Header */}
+          <div className="flex items-center justify-between px-6 py-4 border-b">
+            <div className="flex items-center gap-4">
+              <h2 className="text-lg font-semibold text-gray-900">Generated Image</h2>
 
-        {/* Content */}
-        <div className="p-6 flex gap-6 overflow-y-auto flex-1">
-          {/* Preview */}
-          <div className="flex-1 flex items-center justify-center bg-gray-100 rounded-lg p-4 relative overflow-hidden min-h-0">
-            {isGenerating && (
-              <div className="absolute inset-0 bg-white/80 flex items-center justify-center rounded-lg z-10">
-                <div className="flex flex-col items-center gap-2">
-                  <div className="w-8 h-8 border-4 border-violet-500 border-t-transparent rounded-full animate-spin" />
-                  <p className="text-sm text-gray-600">Regenerating...</p>
-                </div>
+              {/* Mode Toggle */}
+              <div className="flex bg-gray-100 rounded-lg p-1">
+                {modes.map(({ id, label, icon: Icon }) => (
+                  <button
+                    key={id}
+                    onClick={() => setMode(id)}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition ${
+                      mode === id
+                        ? 'bg-white text-violet-700 shadow-sm'
+                        : 'text-gray-600 hover:text-gray-900'
+                    }`}
+                  >
+                    <Icon className="w-4 h-4" />
+                    {label}
+                  </button>
+                ))}
               </div>
-            )}
-            <div
-              ref={svgRef}
-              className="w-full h-full flex items-center justify-center"
-              style={{
-                maxWidth: '100%',
-                maxHeight: '100%',
-                aspectRatio: `${currentImage.dimensions.width} / ${currentImage.dimensions.height}`,
-                objectFit: 'contain',
-              }}
-              dangerouslySetInnerHTML={{ __html: currentImage.svg }}
-            />
+            </div>
+
+            <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition">
+              <X className="w-5 h-5" />
+            </button>
           </div>
 
-          {/* Options Sidebar */}
-          <div className="w-72 space-y-6 flex-shrink-0 overflow-y-auto max-h-full">
-            {/* Template Selector */}
-            <div>
-              <label className="text-sm font-medium text-gray-700 block mb-2">
-                Template Style
-              </label>
-              <TemplateSelector
-                selected={selectedTemplate}
-                onChange={handleTemplateChange}
-                platform={post.platform}
-              />
-            </div>
-
-            {/* Download Options */}
-            <div>
-              <label className="text-sm font-medium text-gray-700 block mb-2">
-                Download
-              </label>
-              <div className="space-y-2">
-                <button
-                  onClick={handleDownloadPng}
-                  disabled={isDownloading}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-[#1e1e1e] text-white rounded-lg hover:bg-[#dccaf4] hover:text-[#1a0530] transition font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path
-                      fillRule="evenodd"
-                      d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  Download PNG
-                </button>
-
-                <button
-                  onClick={handleDownloadSvg}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition font-medium text-sm"
-                >
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path
-                      fillRule="evenodd"
-                      d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  Download SVG
-                </button>
-
-                <button
-                  onClick={handleDownloadJpg}
-                  disabled={isDownloading}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path
-                      fillRule="evenodd"
-                      d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  Download JPG
-                </button>
-              </div>
-            </div>
-
-            {/* Context Info */}
-            {currentImage.contextUsed && currentImage.contextUsed.length > 0 && (
-              <div className="p-3 bg-violet-50 rounded-lg">
-                <p className="text-xs font-medium text-violet-700 mb-1">
-                  Generated using:
-                </p>
-                <div className="flex flex-wrap gap-1">
-                  {currentImage.contextUsed.map((context) => (
-                    <span
-                      key={context}
-                      className="inline-block px-2 py-0.5 text-xs bg-violet-100 text-violet-700 rounded"
-                    >
-                      {context.replace('_', ' ')}
-                    </span>
-                  ))}
+          {/* Content */}
+          <div className="flex-1 p-6 flex gap-6 overflow-hidden">
+            {mode === 'preview' ? (
+              <>
+                {/* Preview Mode */}
+                <div className="flex-1 min-h-0">
+                  <ZoomablePreview
+                    svgContent={currentImage.svg}
+                    dimensions={currentImage.dimensions}
+                    transformRef={transformRef}
+                    onScaleChange={setScale}
+                    isGenerating={isGenerating}
+                  />
                 </div>
-              </div>
-            )}
 
-            {/* Dimensions Info */}
-            <div className="text-xs text-gray-500">
-              <p>
-                Dimensions: {currentImage.dimensions.width} x {currentImage.dimensions.height}px
-              </p>
-              <p>Template: {currentImage.templateUsed}</p>
-            </div>
+                {/* Preview Sidebar */}
+                <div className="w-72 space-y-6 overflow-y-auto">
+                  <ZoomControls
+                    scale={scale}
+                    onZoomIn={zoomIn}
+                    onZoomOut={zoomOut}
+                    onReset={resetTransform}
+                    onCenter={centerView}
+                  />
+
+                  <div>
+                    <label className="text-sm font-medium text-gray-700 block mb-2">
+                      Template Style
+                    </label>
+                    <TemplateSelector
+                      selected={selectedTemplate}
+                      onChange={handleTemplateChange}
+                      platform={post.platform}
+                    />
+                  </div>
+
+                  <AttachmentUploader
+                    onFilesAdded={addFiles}
+                    maxFiles={maxFiles}
+                    currentCount={attachments.length}
+                    errors={attachmentErrors}
+                  />
+
+                  <AttachmentList attachments={attachments} onRemove={removeFile} />
+
+                  {/* Download Options */}
+                  <div>
+                    <label className="text-sm font-medium text-gray-700 block mb-2">Download</label>
+                    <div className="space-y-2">
+                      <button
+                        onClick={handleDownloadPng}
+                        disabled={isDownloading}
+                        className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-[#1e1e1e] text-white rounded-lg hover:bg-[#dccaf4] hover:text-[#1a0530] transition font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                          <path
+                            fillRule="evenodd"
+                            d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                        Download PNG
+                      </button>
+
+                      <button
+                        onClick={handleDownloadSvg}
+                        className="w-full flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition font-medium text-sm"
+                      >
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                          <path
+                            fillRule="evenodd"
+                            d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                        Download SVG
+                      </button>
+
+                      <button
+                        onClick={handleDownloadJpg}
+                        disabled={isDownloading}
+                        className="w-full flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                          <path
+                            fillRule="evenodd"
+                            d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                        Download JPG
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Context Info */}
+                  {currentImage.contextUsed && currentImage.contextUsed.length > 0 && (
+                    <div className="p-3 bg-violet-50 rounded-lg">
+                      <p className="text-xs font-medium text-violet-700 mb-1">Generated using:</p>
+                      <div className="flex flex-wrap gap-1">
+                        {currentImage.contextUsed.map((context) => (
+                          <span
+                            key={context}
+                            className="inline-block px-2 py-0.5 text-xs bg-violet-100 text-violet-700 rounded"
+                          >
+                            {context.replace('_', ' ')}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Dimensions Info */}
+                  <div className="text-xs text-gray-500">
+                    <p>
+                      Dimensions: {currentImage.dimensions.width} x{' '}
+                      {currentImage.dimensions.height}px
+                    </p>
+                    <p>Template: {currentImage.templateUsed}</p>
+                  </div>
+                </div>
+              </>
+            ) : (
+              /* Edit Mode */
+              <ImageEditor
+                svgContent={currentImage.svg}
+                dimensions={currentImage.dimensions}
+                onSave={handleEditorSave}
+                onCancel={() => setMode('preview')}
+              />
+            )}
           </div>
-        </div>
-      </div>
-    </div>
+
+          {/* Hidden SVG ref for downloads in preview mode */}
+          {mode === 'preview' && (
+            <div ref={svgRef} className="hidden" dangerouslySetInnerHTML={{ __html: currentImage.svg }} />
+          )}
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
   );
 }

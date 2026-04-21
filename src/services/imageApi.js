@@ -54,6 +54,46 @@ const imageApi = {
    */
   getTemplates: (platform) =>
     request(`/images/templates${platform ? `?platform=${platform}` : ''}`),
+
+  /**
+   * Generate an image with file attachments.
+   * Uses FormData to send files along with generation parameters.
+   *
+   * @param {Object} params - Generation parameters
+   * @param {Array<File>} attachments - Array of File objects to attach
+   * @returns {Promise<Object>} Generated image response
+   */
+  generateImageWithAttachments: async (params, attachments = []) => {
+    const authHeader = getAuthHeader();
+    const baseUrl = API.MARNEE;
+    const url = `${baseUrl}/images/generate`;
+
+    const formData = new FormData();
+
+    // Add JSON params as a string field
+    formData.append('params', JSON.stringify(params));
+
+    // Add each attachment
+    attachments.forEach((attachment, index) => {
+      formData.append(`attachment_${index}`, attachment.file);
+    });
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        ...authHeader,
+        // Note: Don't set Content-Type for FormData - browser sets it with boundary
+      },
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.message || `HTTP ${response.status}`);
+    }
+
+    return response.json();
+  },
 };
 
 export default imageApi;
