@@ -5,8 +5,17 @@ import ImagePreviewModal from './ImagePreviewModal';
 /**
  * Button to generate an image for a post.
  * Opens a modal with the generated image preview and download options.
+ *
+ * @param {string} buttonText - Optional custom button text (default: "Generate Image")
+ * @param {string} buttonClassName - Optional additional CSS classes for the button
  */
-export default function ImageGeneratorButton({ post, founderId, postId }) {
+export default function ImageGeneratorButton({
+  post,
+  founderId,
+  postId,
+  buttonText = 'Generate Image',
+  buttonClassName = '',
+}) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const {
     generateImage,
@@ -57,7 +66,7 @@ export default function ImageGeneratorButton({ post, founderId, postId }) {
       <button
         onClick={handleGenerateClick}
         disabled={isGenerating}
-        className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-gradient-to-r from-violet-500 via-indigo-500 to-cyan-500 text-white text-sm font-medium hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+        className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-gradient-to-r from-violet-500 via-indigo-500 to-cyan-500 text-white text-sm font-medium hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed shadow-sm ${buttonClassName}`}
       >
         {isGenerating ? (
           <>
@@ -79,7 +88,7 @@ export default function ImageGeneratorButton({ post, founderId, postId }) {
                 d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
               />
             </svg>
-            Generate Image
+            {buttonText}
           </>
         )}
       </button>
