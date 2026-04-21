@@ -209,11 +209,11 @@ export default function ImagePreviewModal({ image, onClose, post, founderId }) {
           </div>
 
           {/* Content */}
-          <div className="flex-1 p-6 flex gap-6 overflow-hidden">
+          <div className="flex-1 p-6 flex gap-6 overflow-hidden min-h-0">
             {mode === 'preview' ? (
               <>
                 {/* Preview Mode */}
-                <div className="flex-1 min-h-0">
+                <div className="flex-1 min-h-0 overflow-hidden">
                   <ZoomablePreview
                     svgContent={currentImage.svg}
                     dimensions={currentImage.dimensions}
@@ -224,7 +224,7 @@ export default function ImagePreviewModal({ image, onClose, post, founderId }) {
                 </div>
 
                 {/* Preview Sidebar */}
-                <div className="w-72 space-y-6 overflow-y-auto">
+                <div className="w-72 space-y-6 overflow-y-auto flex-shrink-0">
                   <ZoomControls
                     scale={scale}
                     onZoomIn={zoomIn}
@@ -332,12 +332,14 @@ export default function ImagePreviewModal({ image, onClose, post, founderId }) {
               </>
             ) : (
               /* Edit Mode */
-              <ImageEditor
-                svgContent={currentImage.svg}
-                dimensions={currentImage.dimensions}
-                onSave={handleEditorSave}
-                onCancel={() => setMode('preview')}
-              />
+              <div className="flex-1 min-h-0 w-full">
+                <ImageEditor
+                  svgContent={currentImage.svg}
+                  dimensions={currentImage.dimensions}
+                  onSave={handleEditorSave}
+                  onCancel={() => setMode('preview')}
+                />
+              </div>
             )}
           </div>
 

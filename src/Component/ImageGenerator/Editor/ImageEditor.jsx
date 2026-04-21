@@ -41,14 +41,27 @@ export default function ImageEditor({ svgContent, dimensions, onSave, onCancel }
 
   useEffect(() => {
     if (containerRef.current && !canvas) {
-      const canvasEl = document.createElement('canvas');
-      canvasEl.id = 'fabric-canvas';
-      containerRef.current.appendChild(canvasEl);
+      // Wait for container to be fully rendered
+      setTimeout(() => {
+        if (!containerRef.current) return;
 
-      initializeCanvas(canvasEl, dimensions.width, dimensions.height);
+        const canvasEl = document.createElement('canvas');
+        canvasEl.id = 'fabric-canvas';
+        containerRef.current.appendChild(canvasEl);
+
+        console.log('Creating canvas with dimensions:', dimensions);
+        initializeCanvas(canvasEl, dimensions.width, dimensions.height);
+      }, 100);
+    }
+  }, [canvas, dimensions, initializeCanvas]);
+
+  // Load SVG after canvas is ready
+  useEffect(() => {
+    if (canvas && svgContent) {
+      console.log('Canvas ready, loading SVG...');
       loadSVG(svgContent);
     }
-  }, [canvas, dimensions, svgContent, initializeCanvas, loadSVG]);
+  }, [canvas, svgContent, loadSVG]);
 
   const handleSave = async () => {
     const newSvg = exportToSVG();
@@ -78,12 +91,12 @@ export default function ImageEditor({ svgContent, dimensions, onSave, onCancel }
   }, [deleteSelected, undo, redo]);
 
   return (
-    <div className="flex h-full gap-4">
+    <div className="flex h-full gap-4 min-h-0">
       {/* Canvas Area */}
-      <div className="flex-1 relative">
+      <div className="flex-1 relative overflow-hidden">
         <div
           ref={containerRef}
-          className="w-full h-full bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden"
+          className="w-full h-full bg-gray-100 rounded-lg flex items-center justify-center overflow-auto"
           style={{
             backgroundImage:
               'linear-gradient(45deg, #e5e5e5 25%, transparent 25%), linear-gradient(-45deg, #e5e5e5 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #e5e5e5 75%), linear-gradient(-45deg, transparent 75%, #e5e5e5 75%)',
@@ -109,7 +122,7 @@ export default function ImageEditor({ svgContent, dimensions, onSave, onCancel }
       </div>
 
       {/* Controls Sidebar */}
-      <div className="w-64 space-y-4 overflow-y-auto">
+      <div className="w-64 space-y-4 overflow-y-auto flex-shrink-0">
         <EditorControls
           activeObject={activeObject}
           fillColor={fillColor}

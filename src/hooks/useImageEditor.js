@@ -34,18 +34,53 @@ export function useImageEditor() {
 
   const loadSVG = useCallback(
     async (svgString) => {
-      if (!canvas) return;
+      if (!canvas) {
+        console.log('Canvas not ready for SVG loading');
+        return;
+      }
+
+      console.log('Loading SVG into canvas...', { canvasWidth: canvas.width, canvasHeight: canvas.height });
       canvas.clear();
 
-      return new Promise((resolve) => {
-        fabric.loadSVGFromString(svgString, (objects, options) => {
-          const group = fabric.util.groupSVGElements(objects, options);
-          canvas.add(group);
-          canvas.centerObject(group);
-          canvas.renderAll();
-          resolve(group);
+      try {
+        // Convert SVG string to data URL
+        const svgBlob = new Blob([svgString], { type: 'image/svg+xml' });
+        const url = URL.createObjectURL(svgBlob);
+
+        return new Promise((resolve, reject) => {
+          fabric.Image.fromURL(
+            url,
+            (img) => {
+              if (!img) {
+                console.error('Failed to load SVG image');
+                reject(new Error('Failed to load SVG'));
+                return;
+              }
+
+              console.log('SVG loaded successfully', { imgWidth: img.width, imgHeight: img.height });
+
+              // Scale image to fit canvas if needed
+              const scale = Math.min(
+                canvas.width / img.width,
+                canvas.height / img.height,
+                1
+              );
+
+              console.log('Scaling image by', scale);
+              img.scale(scale);
+              canvas.add(img);
+              canvas.centerObject(img);
+              canvas.renderAll();
+              URL.revokeObjectURL(url);
+              console.log('SVG added to canvas and rendered');
+              resolve(img);
+            },
+            { crossOrigin: 'anonymous' }
+          );
         });
-      });
+      } catch (error) {
+        console.error('Error loading SVG:', error);
+      }
     },
     [canvas]
   );

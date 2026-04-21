@@ -13,7 +13,7 @@ export default function ZoomablePreview({
   isGenerating,
 }) {
   return (
-    <div className="relative w-full h-full flex items-center justify-center bg-gray-100 rounded-lg overflow-hidden">
+    <div className="relative w-full h-full flex items-center justify-center bg-gray-100 rounded-lg overflow-hidden" style={{ maxHeight: '100%' }}>
       {isGenerating && (
         <div className="absolute inset-0 bg-white/80 flex items-center justify-center z-10">
           <div className="flex flex-col items-center gap-2">
@@ -36,24 +36,28 @@ export default function ZoomablePreview({
         limitToBounds={false}
         velocityAnimation={{ sensitivity: 1, animationTime: 100 }}
       >
-        <TransformComponent
-          wrapperStyle={{ width: '100%', height: '100%' }}
-          contentStyle={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <div
-            style={{
-              width: dimensions.width,
-              height: dimensions.height,
+        {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
+          <TransformComponent
+            wrapperStyle={{ width: '100%', height: '100%', maxHeight: '100%' }}
+            contentStyle={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
               maxWidth: '100%',
               maxHeight: '100%',
             }}
-            dangerouslySetInnerHTML={{ __html: svgContent }}
-          />
-        </TransformComponent>
+          >
+            <div
+              style={{
+                width: 'auto',
+                height: 'auto',
+                maxWidth: `${dimensions.width}px`,
+                maxHeight: `${dimensions.height}px`,
+              }}
+              dangerouslySetInnerHTML={{ __html: svgContent }}
+            />
+          </TransformComponent>
+        )}
       </TransformWrapper>
     </div>
   );
