@@ -9,58 +9,58 @@ import PageTransition from '../../Component/PageTransition';
 // eslint-disable-next-line jsx-a11y/heading-has-content
 const aiMarkdownComponents = {
   // eslint-disable-next-line jsx-a11y/heading-has-content
-  h1: ({ node, ...props }) => <h1 className="text-2xl font-bold mb-3 mt-4 text-gray-900" {...props} />,
+  h1: ({ node, ...props }) => <h1 className="text-xl font-bold mb-2 mt-2 text-gray-900" {...props} />,
   // eslint-disable-next-line jsx-a11y/heading-has-content
-  h2: ({ node, ...props }) => <h2 className="text-xl font-bold mb-2 mt-3 text-gray-900" {...props} />,
+  h2: ({ node, ...props }) => <h2 className="text-lg font-bold mb-1.5 mt-2 text-gray-900" {...props} />,
   // eslint-disable-next-line jsx-a11y/heading-has-content
-  h3: ({ node, ...props }) => <h3 className="text-lg font-bold mb-2 mt-3 text-gray-900" {...props} />,
+  h3: ({ node, ...props }) => <h3 className="text-base font-bold mb-1.5 mt-2 text-gray-900" {...props} />,
   // eslint-disable-next-line jsx-a11y/heading-has-content
-  h4: ({ node, ...props }) => <h4 className="text-base font-semibold mb-2 mt-2 text-gray-800" {...props} />,
-  p: ({ node, ...props }) => <p className="mb-3 leading-relaxed" {...props} />,
-  ul: ({ node, ...props }) => <ul className="list-disc list-inside mb-3 space-y-1 ml-2" {...props} />,
-  ol: ({ node, ...props }) => <ol className="list-decimal list-inside mb-3 space-y-1 ml-2" {...props} />,
-  li: ({ node, ...props }) => <li className="leading-relaxed" {...props} />,
+  h4: ({ node, ...props }) => <h4 className="text-sm font-semibold mb-1 mt-1.5 text-gray-800" {...props} />,
+  p: ({ node, ...props }) => <p className="mb-1 last:mb-0 leading-relaxed text-sm" {...props} />,
+  ul: ({ node, ...props }) => <ul className="list-disc list-inside mb-1 space-y-0.5 ml-1 text-sm" {...props} />,
+  ol: ({ node, ...props }) => <ol className="list-decimal list-inside mb-1 space-y-0.5 ml-1 text-sm" {...props} />,
+  li: ({ node, ...props }) => <li className="leading-relaxed text-sm" {...props} />,
   strong: ({ node, ...props }) => <strong className="font-bold text-gray-900" {...props} />,
   em: ({ node, ...props }) => <em className="italic" {...props} />,
   // eslint-disable-next-line jsx-a11y/anchor-has-content
   a: ({ node, ...props }) => <a className="text-[#40086d] hover:text-[#40086d] underline font-medium" {...props} />,
   code: ({ node, inline, ...props }) =>
     inline ? (
-      <code className="bg-gray-100 px-1.5 py-0.5 rounded text-sm font-mono text-gray-800" {...props} />
+      <code className="bg-gray-100 px-1.5 py-0.5 rounded text-xs font-mono text-gray-800" {...props} />
     ) : (
-      <code className="block bg-gray-100 p-3 rounded-lg text-sm font-mono overflow-x-auto mb-3 text-gray-800" {...props} />
+      <code className="block bg-gray-100 p-2 rounded-lg text-xs font-mono overflow-x-auto mb-1 text-gray-800" {...props} />
     ),
   blockquote: ({ node, ...props }) => (
-    <blockquote className="border-l-4 border-violet-300 pl-4 italic my-3 text-gray-700" {...props} />
+    <blockquote className="border-l-4 border-violet-300 pl-3 italic my-1.5 text-gray-700 text-sm" {...props} />
   ),
 };
 
 // Markdown components for user messages (white text on gradient)
 const userMarkdownComponents = {
   // eslint-disable-next-line jsx-a11y/heading-has-content
-  h1: ({ node, ...props }) => <h1 className="text-2xl font-bold mb-3 mt-4 text-white" {...props} />,
+  h1: ({ node, ...props }) => <h1 className="text-xl font-bold mb-2 mt-2 text-white" {...props} />,
   // eslint-disable-next-line jsx-a11y/heading-has-content
-  h2: ({ node, ...props }) => <h2 className="text-xl font-bold mb-2 mt-3 text-white" {...props} />,
+  h2: ({ node, ...props }) => <h2 className="text-lg font-bold mb-1.5 mt-2 text-white" {...props} />,
   // eslint-disable-next-line jsx-a11y/heading-has-content
-  h3: ({ node, ...props }) => <h3 className="text-lg font-bold mb-2 mt-3 text-white" {...props} />,
+  h3: ({ node, ...props }) => <h3 className="text-base font-bold mb-1.5 mt-2 text-white" {...props} />,
   // eslint-disable-next-line jsx-a11y/heading-has-content
-  h4: ({ node, ...props }) => <h4 className="text-base font-semibold mb-2 mt-2 text-white" {...props} />,
-  p: ({ node, ...props }) => <p className="mb-3 leading-relaxed text-white" {...props} />,
-  ul: ({ node, ...props }) => <ul className="list-disc list-inside mb-3 space-y-1 ml-2 text-white" {...props} />,
-  ol: ({ node, ...props }) => <ol className="list-decimal list-inside mb-3 space-y-1 ml-2 text-white" {...props} />,
-  li: ({ node, ...props }) => <li className="leading-relaxed text-white" {...props} />,
+  h4: ({ node, ...props }) => <h4 className="text-sm font-semibold mb-1 mt-1.5 text-white" {...props} />,
+  p: ({ node, ...props }) => <p className="mb-1 last:mb-0 leading-relaxed text-white text-sm" {...props} />,
+  ul: ({ node, ...props }) => <ul className="list-disc list-inside mb-1 space-y-0.5 ml-1 text-white text-sm" {...props} />,
+  ol: ({ node, ...props }) => <ol className="list-decimal list-inside mb-1 space-y-0.5 ml-1 text-white text-sm" {...props} />,
+  li: ({ node, ...props }) => <li className="leading-relaxed text-white text-sm" {...props} />,
   strong: ({ node, ...props }) => <strong className="font-bold text-white" {...props} />,
   em: ({ node, ...props }) => <em className="italic text-white" {...props} />,
   // eslint-disable-next-line jsx-a11y/anchor-has-content
   a: ({ node, ...props }) => <a className="text-white underline hover:text-gray-100 font-medium" {...props} />,
   code: ({ node, inline, ...props }) =>
     inline ? (
-      <code className="bg-white/20 px-1.5 py-0.5 rounded text-sm font-mono text-white" {...props} />
+      <code className="bg-white/20 px-1.5 py-0.5 rounded text-xs font-mono text-white" {...props} />
     ) : (
-      <code className="block bg-white/20 p-3 rounded-lg text-sm font-mono overflow-x-auto mb-3 text-white" {...props} />
+      <code className="block bg-white/20 p-2 rounded-lg text-xs font-mono overflow-x-auto mb-1 text-white" {...props} />
     ),
   blockquote: ({ node, ...props }) => (
-    <blockquote className="border-l-4 border-white/50 pl-4 italic my-3 text-white" {...props} />
+    <blockquote className="border-l-4 border-white/50 pl-3 italic my-1.5 text-white text-sm" {...props} />
   ),
 };
 
@@ -402,7 +402,7 @@ export default function TestChatPage() {
         </motion.div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-4 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzQwMDg2ZCIgc3Ryb2tlLW9wYWNpdHk9IjAuMDMiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')] bg-repeat">
+        <div className="flex-1 overflow-y-auto px-3 py-3 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzQwMDg2ZCIgc3Ryb2tlLW9wYWNpdHk9IjAuMDMiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')] bg-repeat">
           {messages.length === 0 && (
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
@@ -436,7 +436,7 @@ export default function TestChatPage() {
             </motion.div>
           )}
 
-          <div className="space-y-1">
+          <div>
             <AnimatePresence mode="popLayout">
               {messages.map((msg, index) => {
                 const isSearchResult = searchResults.some(result => result.messageIndex === index);
@@ -458,18 +458,18 @@ export default function TestChatPage() {
                 let roundedClass = 'rounded-2xl';
                 if (!isSingleMessage) {
                   if (msg.role === 'user') {
-                    if (isFirstInGroup) roundedClass = 'rounded-2xl rounded-br-sm';
-                    else if (isLastInGroup) roundedClass = 'rounded-2xl rounded-tr-sm';
-                    else roundedClass = 'rounded-2xl rounded-tr-sm rounded-br-sm';
+                    if (isFirstInGroup) roundedClass = 'rounded-2xl rounded-br-md';
+                    else if (isLastInGroup) roundedClass = 'rounded-2xl rounded-tr-md';
+                    else roundedClass = 'rounded-2xl rounded-tr-md rounded-br-md';
                   } else {
-                    if (isFirstInGroup) roundedClass = 'rounded-2xl rounded-bl-sm';
-                    else if (isLastInGroup) roundedClass = 'rounded-2xl rounded-tl-sm';
-                    else roundedClass = 'rounded-2xl rounded-tl-sm rounded-bl-sm';
+                    if (isFirstInGroup) roundedClass = 'rounded-2xl rounded-bl-md';
+                    else if (isLastInGroup) roundedClass = 'rounded-2xl rounded-tl-md';
+                    else roundedClass = 'rounded-2xl rounded-tl-md rounded-bl-md';
                   }
                 }
 
-                // Spacing
-                const marginTop = isSameSenderAsPrev ? 'mt-0.5' : 'mt-6';
+                // Spacing - muy poco espacio entre mensajes consecutivos
+                const marginTop = isSameSenderAsPrev ? 'mt-1' : 'mt-4';
 
                 // Animation variants for incoming messages
                 const messageVariants = {
@@ -513,15 +513,15 @@ export default function TestChatPage() {
                     animate="visible"
                     exit="exit"
                     layout
-                    className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} ${marginTop}`}
+                    className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} ${marginTop} px-1`}
                   >
                     <motion.div
-                      whileHover={{ scale: 1.02 }}
+                      whileHover={{ scale: 1.01 }}
                       transition={{ type: "spring", stiffness: 400 }}
-                      className={`relative max-w-[75%] sm:max-w-md ${roundedClass} px-4 py-2.5 ${
+                      className={`relative inline-block max-w-[80%] ${roundedClass} px-3 py-2 ${
                         msg.role === 'user'
-                          ? 'bg-gradient-to-br from-[#40086d] to-[#2d0550] text-white shadow-lg shadow-purple-900/20'
-                          : 'bg-white border border-gray-200 text-gray-900 shadow-md'
+                          ? 'bg-gradient-to-br from-[#40086d] to-[#2d0550] text-white shadow-md shadow-purple-900/20'
+                          : 'bg-white border border-gray-200 text-gray-900 shadow-sm'
                       } ${
                         isSearchResult
                           ? isCurrentResult
@@ -534,14 +534,14 @@ export default function TestChatPage() {
                       {isFirstInGroup && (
                         <motion.div
                           initial={{ opacity: 0 }}
-                          animate={{ opacity: 0.7 }}
-                          transition={{ delay: 0.1 }}
-                          className="text-[10px] font-semibold mb-1 tracking-wide"
+                          animate={{ opacity: 0.6 }}
+                          transition={{ delay: 0.05 }}
+                          className="text-[9px] font-semibold mb-0.5"
                           style={{
-                            color: msg.role === 'user' ? 'rgba(255,255,255,0.7)' : '#40086d'
+                            color: msg.role === 'user' ? 'rgba(255,255,255,0.6)' : '#40086d'
                           }}
                         >
-                          {msg.role === 'user' ? 'YOU' : 'MARNEE'}
+                          {msg.role === 'user' ? 'You' : 'Marnee'}
                         </motion.div>
                       )}
 
@@ -549,6 +549,7 @@ export default function TestChatPage() {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.05 }}
+                        className="break-words"
                       >
                         <ReactMarkdown
                           components={msg.role === 'user' ? userMarkdownComponents : aiMarkdownComponents}
@@ -561,11 +562,11 @@ export default function TestChatPage() {
                       {isLastInGroup && (
                         <motion.div
                           initial={{ opacity: 0 }}
-                          animate={{ opacity: 0.5 }}
-                          transition={{ delay: 0.2 }}
-                          className="text-[9px] mt-1 text-right"
+                          animate={{ opacity: 0.4 }}
+                          transition={{ delay: 0.15 }}
+                          className="text-[8px] mt-0.5 text-right"
                           style={{
-                            color: msg.role === 'user' ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.4)'
+                            color: msg.role === 'user' ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.35)'
                           }}
                         >
                           {new Date(msg.timestamp).toLocaleTimeString('en-US', {
@@ -592,15 +593,15 @@ export default function TestChatPage() {
                 stiffness: 400,
                 damping: 25
               }}
-              className="flex justify-start mt-6"
+              className="flex justify-start mt-4 px-1"
             >
               <motion.div
-                className="bg-white border border-gray-200 rounded-2xl px-5 py-3.5 shadow-md"
+                className="inline-block bg-white border border-gray-200 rounded-2xl px-4 py-2.5 shadow-sm"
                 animate={{
                   boxShadow: [
-                    "0 4px 6px -1px rgba(0,0,0,0.1)",
-                    "0 6px 12px -1px rgba(64,8,109,0.15)",
-                    "0 4px 6px -1px rgba(0,0,0,0.1)"
+                    "0 1px 3px rgba(0,0,0,0.1)",
+                    "0 2px 6px rgba(64,8,109,0.12)",
+                    "0 1px 3px rgba(0,0,0,0.1)"
                   ]
                 }}
                 transition={{
@@ -611,7 +612,7 @@ export default function TestChatPage() {
               >
                 <div className="flex items-center gap-1.5">
                   <motion.div
-                    className="w-2.5 h-2.5 bg-gradient-to-br from-[#40086d] to-[#2d0550] rounded-full"
+                    className="w-2 h-2 bg-gradient-to-br from-[#40086d] to-[#2d0550] rounded-full"
                     animate={{
                       scale: [1, 1.3, 1],
                       opacity: [0.5, 1, 0.5]
@@ -624,7 +625,7 @@ export default function TestChatPage() {
                     }}
                   />
                   <motion.div
-                    className="w-2.5 h-2.5 bg-gradient-to-br from-[#40086d] to-[#2d0550] rounded-full"
+                    className="w-2 h-2 bg-gradient-to-br from-[#40086d] to-[#2d0550] rounded-full"
                     animate={{
                       scale: [1, 1.3, 1],
                       opacity: [0.5, 1, 0.5]
@@ -638,7 +639,7 @@ export default function TestChatPage() {
                     }}
                   />
                   <motion.div
-                    className="w-2.5 h-2.5 bg-gradient-to-br from-[#40086d] to-[#2d0550] rounded-full"
+                    className="w-2 h-2 bg-gradient-to-br from-[#40086d] to-[#2d0550] rounded-full"
                     animate={{
                       scale: [1, 1.3, 1],
                       opacity: [0.5, 1, 0.5]
