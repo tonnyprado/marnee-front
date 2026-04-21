@@ -6,7 +6,6 @@ import {
   FileText,
   BarChart3,
   FileDown,
-  Share2,
   Sparkles,
   MessagesSquare,
   ChevronLeft,
@@ -80,14 +79,6 @@ export default function QuickActionsBar({
       color: 'text-orange-500',
       bgColor: 'hover:bg-orange-50',
     },
-    {
-      id: 'share',
-      icon: Share2,
-      label: 'Share',
-      description: 'Share conversation link',
-      color: 'text-pink-500',
-      bgColor: 'hover:bg-pink-50',
-    },
   ];
 
   const handleAction = (actionId) => {
@@ -129,12 +120,12 @@ export default function QuickActionsBar({
               {/* Tooltip */}
               {hoveredAction === action.id && (
                 <motion.div
-                  initial={{ opacity: 0, x: 10 }}
+                  initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
-                  className="absolute left-full ml-2 top-1/2 -translate-y-1/2 z-50 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg whitespace-nowrap shadow-lg"
+                  className="absolute right-full mr-2 top-1/2 -translate-y-1/2 z-50 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg whitespace-nowrap shadow-lg"
                 >
                   {action.label}
-                  <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-gray-900" />
+                  <div className="absolute left-full top-1/2 -translate-y-1/2 border-4 border-transparent border-l-gray-900" />
                 </motion.div>
               )}
             </motion.button>

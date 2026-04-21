@@ -8,7 +8,6 @@ import ConversationSidebar from '../../Component/ConversationSidebar';
 import QuickActionsBar from '../../Component/QuickActionsBar';
 import PromptSuggestions from '../../Component/PromptSuggestions';
 import ExportModal from '../../Component/ExportModal';
-import ShareModal from '../../Component/ShareModal';
 import { ChatThemeProvider, useChatTheme } from '../../context/ChatThemeContext';
 
 // Markdown components for AI messages (formatted text)
@@ -105,7 +104,6 @@ function ChatPageContent() {
   });
   const [isVoiceMode, setIsVoiceMode] = useState(false);
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
-  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [copiedMessageId, setCopiedMessageId] = useState(null);
   const [hoveredMessageId, setHoveredMessageId] = useState(null);
   const [favoriteMessageIds, setFavoriteMessageIds] = useState(new Set());
@@ -373,13 +371,6 @@ function ChatPageContent() {
         }
         setIsExportModalOpen(true);
         break;
-      case 'share':
-        if (!conversationId) {
-          alert('Start a conversation first to share!');
-          return;
-        }
-        setIsShareModalOpen(true);
-        break;
       default:
         break;
     }
@@ -424,7 +415,7 @@ function ChatPageContent() {
   // Handle voice mode toggle
   const handleVoiceModeToggle = () => {
     if (!isVoiceMode) {
-      // Start voice mode
+      // Start voice mode - continuous transcription
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
       if (!SpeechRecognition) {
@@ -434,44 +425,68 @@ function ChatPageContent() {
 
       const recognition = new SpeechRecognition();
       recognition.lang = 'en-US';
-      recognition.continuous = false;
-      recognition.interimResults = false;
+      recognition.continuous = true;  // Mantener grabando
+      recognition.interimResults = true;  // Mostrar resultados en tiempo real
 
       recognition.onstart = () => {
         console.log('[Voice] Voice recognition started');
         setIsVoiceMode(true);
+        playSound('voiceStart');
       };
 
       recognition.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
-        console.log('[Voice] Recognized:', transcript);
-        setInput(transcript);
-        setIsVoiceMode(false);
+        // Construir transcripción completa (final + interim)
+        let finalTranscript = '';
+        let interimTranscript = '';
+
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          const transcript = event.results[i][0].transcript;
+          if (event.results[i].isFinal) {
+            finalTranscript += transcript + ' ';
+          } else {
+            interimTranscript += transcript;
+          }
+        }
+
+        // Actualizar input en tiempo real
+        const fullTranscript = (finalTranscript + interimTranscript).trim();
+        console.log('[Voice] Transcription:', fullTranscript);
+        setInput(fullTranscript);
       };
 
       recognition.onerror = (event) => {
         console.error('[Voice] Error:', event.error);
-        setIsVoiceMode(false);
+
+        // No cerrar por "no-speech" ya que es continuo
         if (event.error === 'no-speech') {
-          alert('No speech detected. Please try again.');
-        } else if (event.error === 'not-allowed') {
+          console.log('[Voice] Waiting for speech...');
+          return;
+        }
+
+        setIsVoiceMode(false);
+        if (event.error === 'not-allowed') {
           alert('Microphone access denied. Please allow microphone access in your browser settings.');
-        } else {
+        } else if (event.error !== 'aborted') {
           alert(`Voice recognition error: ${event.error}`);
         }
       };
 
       recognition.onend = () => {
         console.log('[Voice] Voice recognition ended');
-        setIsVoiceMode(false);
+        // Solo cambiar estado si no estamos deteniendo manualmente
+        if (recognitionRef.current && isVoiceMode) {
+          setIsVoiceMode(false);
+        }
       };
 
       recognitionRef.current = recognition;
       recognition.start();
     } else {
-      // Stop voice mode
+      // Stop voice mode - detener grabación
+      playSound('voiceStop');
       if (recognitionRef.current) {
         recognitionRef.current.stop();
+        recognitionRef.current = null;
       }
       setIsVoiceMode(false);
     }
@@ -1098,22 +1113,6 @@ function ChatPageContent() {
         onClose={() => setIsExportModalOpen(false)}
         conversation={{ id: conversationId }}
         messages={messages}
-      />
-
-      {/* Share Modal */}
-      <ShareModal
-        isOpen={isShareModalOpen}
-        onClose={() => setIsShareModalOpen(false)}
-        conversationId={conversationId}
-        onGenerateLink={async (convId, access) => {
-          try {
-            const response = await api.createShareLink(convId, access);
-            return { token: response.token };
-          } catch (error) {
-            console.error('[Chat] Failed to create share link:', error);
-            throw error;
-          }
-        }}
       />
     </PageTransition>
   );

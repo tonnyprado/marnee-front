@@ -9,7 +9,7 @@ export const CHAT_THEMES = {
     name: 'Classic Purple',
     background: 'bg-gradient-to-br from-gray-50 via-purple-50/20 to-gray-50',
     userBubble: 'bg-gradient-to-br from-[#40086d] to-[#2d0550] text-white',
-    airbubble: 'bg-white border border-gray-200 text-gray-900',
+    aiBubble: 'bg-white border border-gray-200 text-gray-900',
     userBubbleShadow: 'shadow-md shadow-purple-900/20',
     aiBubbleShadow: 'shadow-sm',
   },
@@ -110,6 +110,20 @@ export function ChatThemeProvider({ children }) {
       gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
       oscillator.start(audioContext.currentTime);
       oscillator.stop(audioContext.currentTime + 0.15);
+    } else if (type === 'voiceStart') {
+      // Voice recording started: double beep
+      oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+      gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.08);
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.08);
+    } else if (type === 'voiceStop') {
+      // Voice recording stopped: single lower beep
+      oscillator.frequency.setValueAtTime(500, audioContext.currentTime);
+      gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.12);
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.12);
     }
   };
 
