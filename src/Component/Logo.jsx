@@ -1,7 +1,7 @@
 import React from "react";
 
 // Logo Component — Marnee silhouette with headset
-export default function Logo({ dark = true, size = "default" }) {
+export default function Logo({ dark = true, size = "default", iconOnly = false }) {
   const sizes = {
     small:   { icon: 26, text: "text-lg" },
     default: { icon: 32, text: "text-[22px]" },
@@ -79,12 +79,14 @@ export default function Logo({ dark = true, size = "default" }) {
       </svg>
 
       {/* Wordmark */}
-      <span
-        className={`${text} tracking-tight ${dark ? "text-[#1e1e1e]" : "text-white"}`}
-        style={{ fontFamily: "var(--font-display)", fontWeight: 300 }}
-      >
-        Marnee
-      </span>
+      {!iconOnly && (
+        <span
+          className={`${text} tracking-tight ${dark ? "text-[#1e1e1e]" : "text-white"}`}
+          style={{ fontFamily: "var(--font-display)", fontWeight: 300 }}
+        >
+          Marnee
+        </span>
+      )}
     </div>
   );
 }

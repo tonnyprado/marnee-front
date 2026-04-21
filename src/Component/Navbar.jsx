@@ -103,7 +103,7 @@ export default function Navbar({ active = "ai-content" }) {
             onClick={() => navigate("/")}
             className={`cursor-pointer hover:opacity-80 transition ${collapsed ? 'scale-75 lg:scale-75' : ''} max-lg:scale-100`}
           >
-            <Logo dark={true} />
+            <Logo dark={true} iconOnly={collapsed} />
           </div>
           <button
             onClick={() => setCollapsed(true)}
