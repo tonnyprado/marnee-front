@@ -375,7 +375,7 @@ export default function TestChatPage() {
         </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-3 space-y-2">
+        <div className="flex-1 overflow-y-auto p-3">
           {messages.length === 0 && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -388,27 +388,62 @@ export default function TestChatPage() {
             </motion.div>
           )}
 
-          <AnimatePresence>
+          <AnimatePresence mode="popLayout">
             {messages.map((msg, index) => {
               const isSearchResult = searchResults.some(result => result.messageIndex === index);
               const resultIndex = searchResults.findIndex(result => result.messageIndex === index);
               const isCurrentResult = resultIndex === currentResultIndex;
 
+              // Check if previous/next message is from same sender
+              const prevMsg = index > 0 ? messages[index - 1] : null;
+              const nextMsg = index < messages.length - 1 ? messages[index + 1] : null;
+              const isSameSenderAsPrev = prevMsg && prevMsg.role === msg.role;
+              const isSameSenderAsNext = nextMsg && nextMsg.role === msg.role;
+
+              // Determine position in group (for rounded corners)
+              const isFirstInGroup = !isSameSenderAsPrev;
+              const isLastInGroup = !isSameSenderAsNext;
+              const isSingleMessage = isFirstInGroup && isLastInGroup;
+
+              // Dynamic border radius based on position
+              let roundedClass = 'rounded-3xl'; // default for single messages
+              if (!isSingleMessage) {
+                if (msg.role === 'user') {
+                  // User messages (right side)
+                  if (isFirstInGroup) roundedClass = 'rounded-3xl rounded-br-md';
+                  else if (isLastInGroup) roundedClass = 'rounded-3xl rounded-tr-md';
+                  else roundedClass = 'rounded-3xl rounded-tr-md rounded-br-md';
+                } else {
+                  // AI messages (left side)
+                  if (isFirstInGroup) roundedClass = 'rounded-3xl rounded-bl-md';
+                  else if (isLastInGroup) roundedClass = 'rounded-3xl rounded-tl-md';
+                  else roundedClass = 'rounded-3xl rounded-tl-md rounded-bl-md';
+                }
+              }
+
+              // Spacing between messages
+              const marginTop = isSameSenderAsPrev ? 'mt-0.5' : 'mt-4';
+
               return (
                 <motion.div
                   key={msg.id}
                   ref={isSearchResult ? (el) => { searchResultRefs.current[resultIndex] = el; } : null}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.3 }}
-                  className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                  initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.8, y: -20 }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 500,
+                    damping: 30,
+                    mass: 0.5
+                  }}
+                  className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} ${marginTop}`}
                 >
                   <div
-                    className={`max-w-md rounded-3xl px-3 py-2 transition-all ${
+                    className={`max-w-md ${roundedClass} px-3 py-2 transition-all ${
                       msg.role === 'user'
-                        ? 'bg-[#40086d] text-white'
-                        : 'bg-white border border-[rgba(30,30,30,0.1)] text-gray-900'
+                        ? 'bg-[#40086d] text-white shadow-sm'
+                        : 'bg-white border border-[rgba(30,30,30,0.1)] text-gray-900 shadow-sm'
                     } ${
                       isSearchResult
                         ? isCurrentResult
@@ -417,9 +452,12 @@ export default function TestChatPage() {
                         : ''
                     }`}
                   >
-                    <div className="text-[9px] opacity-60 mb-0.5">
-                      {msg.role === 'user' ? 'You' : 'Marnee'}
-                    </div>
+                    {/* Show sender label only on first message of group */}
+                    {isFirstInGroup && (
+                      <div className="text-[9px] opacity-60 mb-0.5">
+                        {msg.role === 'user' ? 'You' : 'Marnee'}
+                      </div>
+                    )}
                     <ReactMarkdown
                       components={msg.role === 'user' ? userMarkdownComponents : aiMarkdownComponents}
                     >
