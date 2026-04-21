@@ -1,11 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { api } from '../../services/api';
-import { Send, Loader2, MessageCircle, Search, X, Menu } from 'lucide-react';
+import { Send, Loader2, MessageCircle, Search, X, Menu, Mic, MicOff, Copy, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PageTransition from '../../Component/PageTransition';
 import ConversationSidebar from '../../Component/ConversationSidebar';
 import QuickActionsBar from '../../Component/QuickActionsBar';
+import PromptSuggestions from '../../Component/PromptSuggestions';
+import ExportModal from '../../Component/ExportModal';
+import ShareModal from '../../Component/ShareModal';
 import { ChatThemeProvider, useChatTheme } from '../../context/ChatThemeContext';
 
 // Markdown components for AI messages (formatted text)
@@ -100,8 +103,14 @@ function ChatPageContent() {
     const saved = localStorage.getItem('actions_bar_collapsed');
     return saved === 'true';
   });
+  const [isVoiceMode, setIsVoiceMode] = useState(false);
+  const [isExportModalOpen, setIsExportModalOpen] = useState(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [copiedMessageId, setCopiedMessageId] = useState(null);
+  const [hoveredMessageId, setHoveredMessageId] = useState(null);
 
   const messagesEndRef = useRef(null);
+  const recognitionRef = useRef(null);
   const searchResultRefs = useRef([]);
 
   // Save sidebar state
@@ -357,19 +366,93 @@ function ChatPageContent() {
         setInput('Summarize our conversation so far');
         break;
       case 'export':
-        // TODO: Open export modal
-        alert('Export feature coming soon!');
+        if (messages.length === 0) {
+          alert('No messages to export yet!');
+          return;
+        }
+        setIsExportModalOpen(true);
         break;
       case 'share':
-        // TODO: Open share modal
-        alert('Share feature coming soon!');
-        break;
-      case 'voice':
-        // TODO: Toggle voice mode
-        alert('Voice mode feature coming soon!');
+        if (!conversationId) {
+          alert('Start a conversation first to share!');
+          return;
+        }
+        setIsShareModalOpen(true);
         break;
       default:
         break;
+    }
+  };
+
+  // Handle prompt selection from suggestions
+  const handleSelectPrompt = (prompt) => {
+    setInput(prompt);
+  };
+
+  // Handle copy message
+  const handleCopyMessage = (messageId, content) => {
+    navigator.clipboard.writeText(content).then(() => {
+      setCopiedMessageId(messageId);
+      setTimeout(() => setCopiedMessageId(null), 2000);
+    }).catch(err => {
+      console.error('[Chat] Failed to copy:', err);
+      alert('Failed to copy message');
+    });
+  };
+
+  // Handle voice mode toggle
+  const handleVoiceModeToggle = () => {
+    if (!isVoiceMode) {
+      // Start voice mode
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+      if (!SpeechRecognition) {
+        alert('Voice recognition is not supported in your browser. Please use Chrome, Edge, or Safari.');
+        return;
+      }
+
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'en-US';
+      recognition.continuous = false;
+      recognition.interimResults = false;
+
+      recognition.onstart = () => {
+        console.log('[Voice] Voice recognition started');
+        setIsVoiceMode(true);
+      };
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        console.log('[Voice] Recognized:', transcript);
+        setInput(transcript);
+        setIsVoiceMode(false);
+      };
+
+      recognition.onerror = (event) => {
+        console.error('[Voice] Error:', event.error);
+        setIsVoiceMode(false);
+        if (event.error === 'no-speech') {
+          alert('No speech detected. Please try again.');
+        } else if (event.error === 'not-allowed') {
+          alert('Microphone access denied. Please allow microphone access in your browser settings.');
+        } else {
+          alert(`Voice recognition error: ${event.error}`);
+        }
+      };
+
+      recognition.onend = () => {
+        console.log('[Voice] Voice recognition ended');
+        setIsVoiceMode(false);
+      };
+
+      recognitionRef.current = recognition;
+      recognition.start();
+    } else {
+      // Stop voice mode
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
+      setIsVoiceMode(false);
     }
   };
 
@@ -635,36 +718,7 @@ function ChatPageContent() {
         {/* Messages */}
         <div className="flex-1 overflow-y-auto px-3 py-3 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzQwMDg2ZCIgc3Ryb2tlLW9wYWNpdHk9IjAuMDMiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')] bg-repeat">
           {messages.length === 0 && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
-              className="text-center text-gray-400 py-12"
-            >
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-              >
-                <MessageCircle className="w-16 h-16 mx-auto mb-4 text-[#40086d] opacity-30" />
-              </motion.div>
-              <motion.p
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="text-base font-medium mb-1"
-              >
-                No messages yet
-              </motion.p>
-              <motion.p
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-                className="text-sm"
-              >
-                Start chatting with Marnee
-              </motion.p>
-            </motion.div>
+            <PromptSuggestions onSelectPrompt={handleSelectPrompt} />
           )}
 
           <div>
@@ -744,7 +798,9 @@ function ChatPageContent() {
                     animate="visible"
                     exit="exit"
                     layout
-                    className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} ${marginTop} px-1`}
+                    className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} ${marginTop} px-1 group`}
+                    onMouseEnter={() => setHoveredMessageId(msg.id)}
+                    onMouseLeave={() => setHoveredMessageId(null)}
                   >
                     <motion.div
                       whileHover={{ scale: 1.01 }}
@@ -775,22 +831,48 @@ function ChatPageContent() {
                         </ReactMarkdown>
                       </motion.div>
 
-                      {/* Timestamp on every message */}
-                      <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 0.4 }}
-                        transition={{ delay: 0.15 }}
-                        className="text-[8px] mt-1 text-right"
-                        style={{
-                          color: msg.role === 'user' ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.35)'
-                        }}
-                      >
-                        {new Date(msg.timestamp).toLocaleTimeString('en-US', {
-                          hour: 'numeric',
-                          minute: '2-digit',
-                          hour12: true
-                        })}
-                      </motion.div>
+                      {/* Timestamp and copy button */}
+                      <div className="flex items-center justify-between mt-1 gap-2">
+                        <motion.div
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 0.4 }}
+                          transition={{ delay: 0.15 }}
+                          className="text-[8px]"
+                          style={{
+                            color: msg.role === 'user' ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.35)'
+                          }}
+                        >
+                          {new Date(msg.timestamp).toLocaleTimeString('en-US', {
+                            hour: 'numeric',
+                            minute: '2-digit',
+                            hour12: true
+                          })}
+                        </motion.div>
+
+                        {/* Copy button - appears on hover */}
+                        <AnimatePresence>
+                          {hoveredMessageId === msg.id && (
+                            <motion.button
+                              initial={{ opacity: 0, scale: 0.8 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              exit={{ opacity: 0, scale: 0.8 }}
+                              onClick={() => handleCopyMessage(msg.id, msg.content)}
+                              className={`p-1 rounded transition-colors ${
+                                msg.role === 'user'
+                                  ? 'hover:bg-white/20 text-white/70 hover:text-white'
+                                  : 'hover:bg-gray-100 text-gray-400 hover:text-gray-600'
+                              }`}
+                              title={copiedMessageId === msg.id ? 'Copied!' : 'Copy message'}
+                            >
+                              {copiedMessageId === msg.id ? (
+                                <Check className="w-3 h-3" />
+                              ) : (
+                                <Copy className="w-3 h-3" />
+                              )}
+                            </motion.button>
+                          )}
+                        </AnimatePresence>
+                      </div>
                     </motion.div>
                   </motion.div>
                 );
@@ -912,6 +994,33 @@ function ChatPageContent() {
                 }}
               />
             </motion.div>
+
+            {/* Voice Mode Button */}
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={handleVoiceModeToggle}
+              disabled={isLoading}
+              className={`w-11 h-11 rounded-full flex items-center justify-center shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
+                isVoiceMode
+                  ? 'bg-red-500 text-white shadow-red-500/30 hover:shadow-red-500/40'
+                  : 'bg-white border-2 border-gray-200 text-gray-600 hover:border-[#40086d] hover:text-[#40086d]'
+              }`}
+              title={isVoiceMode ? 'Stop voice input' : 'Start voice input'}
+            >
+              {isVoiceMode ? (
+                <motion.div
+                  animate={{ scale: [1, 1.2, 1] }}
+                  transition={{ duration: 1, repeat: Infinity }}
+                >
+                  <MicOff className="w-5 h-5" />
+                </motion.div>
+              ) : (
+                <Mic className="w-5 h-5" />
+              )}
+            </motion.button>
+
+            {/* Send Button */}
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.9 }}
@@ -937,11 +1046,29 @@ function ChatPageContent() {
         {/* Quick Actions Bar - Right side */}
         <QuickActionsBar
           onAction={handleQuickAction}
-          isVoiceActive={false}
           isCollapsed={isActionsBarCollapsed}
           onToggleCollapse={() => setIsActionsBarCollapsed(!isActionsBarCollapsed)}
         />
       </div>
+
+      {/* Export Modal */}
+      <ExportModal
+        isOpen={isExportModalOpen}
+        onClose={() => setIsExportModalOpen(false)}
+        conversation={{ id: conversationId }}
+        messages={messages}
+      />
+
+      {/* Share Modal */}
+      <ShareModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        conversationId={conversationId}
+        onGenerateLink={async (convId, access) => {
+          // Generate share token - placeholder for now
+          return { token: btoa(`${convId}-${Date.now()}-${access}`) };
+        }}
+      />
     </PageTransition>
   );
 }

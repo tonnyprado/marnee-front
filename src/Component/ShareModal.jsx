@@ -15,6 +15,7 @@ export default function ShareModal({ isOpen, onClose, conversationId, onGenerate
     if (isOpen && conversationId) {
       generateShareLink();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, conversationId]);
 
   const generateShareLink = async () => {

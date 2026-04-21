@@ -7,7 +7,6 @@ import {
   BarChart3,
   FileDown,
   Share2,
-  Mic,
   Sparkles,
   MessagesSquare,
   ChevronLeft,
@@ -25,7 +24,6 @@ import { useChatTheme, CHAT_THEMES } from '../context/ChatThemeContext';
  */
 export default function QuickActionsBar({
   onAction,
-  isVoiceActive,
   isCollapsed,
   onToggleCollapse,
 }) {
@@ -90,14 +88,6 @@ export default function QuickActionsBar({
       color: 'text-pink-500',
       bgColor: 'hover:bg-pink-50',
     },
-    {
-      id: 'voice',
-      icon: Mic,
-      label: 'Voice Mode',
-      description: 'Speak instead of typing',
-      color: isVoiceActive ? 'text-red-500' : 'text-gray-500',
-      bgColor: isVoiceActive ? 'bg-red-50' : 'hover:bg-gray-50',
-    },
   ];
 
   const handleAction = (actionId) => {
@@ -131,9 +121,7 @@ export default function QuickActionsBar({
               onClick={() => handleAction(action.id)}
               onMouseEnter={() => setHoveredAction(action.id)}
               onMouseLeave={() => setHoveredAction(null)}
-              className={`relative p-2.5 rounded-lg transition-all ${action.bgColor} ${
-                action.id === 'voice' && isVoiceActive ? action.bgColor : ''
-              }`}
+              className={`relative p-2.5 rounded-lg transition-all ${action.bgColor}`}
               title={action.label}
             >
               <Icon className={`w-5 h-5 ${action.color}`} />
@@ -185,9 +173,7 @@ export default function QuickActionsBar({
               whileHover={{ scale: 1.02, x: 2 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => handleAction(action.id)}
-              className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all ${action.bgColor} ${
-                action.id === 'voice' && isVoiceActive ? action.bgColor : ''
-              }`}
+              className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all ${action.bgColor}`}
             >
               <Icon className={`w-5 h-5 flex-shrink-0 ${action.color}`} />
               <div className="flex-1 text-left">
