@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { api } from '../../services/api';
-import { Send, Loader2, MessageCircle, Search, X, Menu, PanelLeftClose, PanelLeft } from 'lucide-react';
+import { Send, Loader2, MessageCircle, Search, X, Menu } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PageTransition from '../../Component/PageTransition';
 import ConversationSidebar from '../../Component/ConversationSidebar';
-import ThemeSelector from '../../Component/ThemeSelector';
+import QuickActionsBar from '../../Component/QuickActionsBar';
 import { ChatThemeProvider, useChatTheme } from '../../context/ChatThemeContext';
 
 // Markdown components for AI messages (formatted text)
@@ -96,6 +96,10 @@ function ChatPageContent() {
     const saved = localStorage.getItem('sidebar_collapsed');
     return saved === 'true';
   });
+  const [isActionsBarCollapsed, setIsActionsBarCollapsed] = useState(() => {
+    const saved = localStorage.getItem('actions_bar_collapsed');
+    return saved === 'true';
+  });
 
   const messagesEndRef = useRef(null);
   const searchResultRefs = useRef([]);
@@ -104,6 +108,11 @@ function ChatPageContent() {
   useEffect(() => {
     localStorage.setItem('sidebar_collapsed', isSidebarCollapsed);
   }, [isSidebarCollapsed]);
+
+  // Save actions bar state
+  useEffect(() => {
+    localStorage.setItem('actions_bar_collapsed', isActionsBarCollapsed);
+  }, [isActionsBarCollapsed]);
 
   // Scroll to bottom
   const scrollToBottom = () => {
@@ -327,6 +336,43 @@ function ChatPageContent() {
     }
   };
 
+  // Handle quick actions from sidebar
+  const handleQuickAction = (actionId) => {
+    console.log('[Chat] Quick action triggered:', actionId);
+
+    switch (actionId) {
+      case 'ideas':
+        setInput('Generate 5 fresh content ideas for this week');
+        break;
+      case 'calendar':
+        setInput('Create a 7-day content calendar');
+        break;
+      case 'script':
+        setInput('Write a script for my next video');
+        break;
+      case 'analyze':
+        setInput('Analyze my current content strategy');
+        break;
+      case 'resume':
+        setInput('Summarize our conversation so far');
+        break;
+      case 'export':
+        // TODO: Open export modal
+        alert('Export feature coming soon!');
+        break;
+      case 'share':
+        // TODO: Open share modal
+        alert('Share feature coming soon!');
+        break;
+      case 'voice':
+        // TODO: Toggle voice mode
+        alert('Voice mode feature coming soon!');
+        break;
+      default:
+        break;
+    }
+  };
+
   // Update conversations list after sending message
   const updateConversationsAfterMessage = async (convId) => {
     try {
@@ -474,36 +520,18 @@ function ChatPageContent() {
     <PageTransition className={`h-screen ${theme.background}`}>
       {/* Main layout with sidebar */}
       <div className="flex h-full relative">
-        {/* Sidebar - Conditionally rendered */}
-        {!isSidebarCollapsed && (
-          <ConversationSidebar
-            conversations={conversations}
-            activeConversationId={conversationId}
-            onSelectConversation={handleSelectConversation}
-            onNewConversation={handleNewConversation}
-            onDeleteConversation={handleDeleteConversation}
-            isOpen={isSidebarOpen}
-            onClose={() => setIsSidebarOpen(false)}
-          />
-        )}
-
-        {/* Sidebar Toggle Button */}
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-          className="hidden lg:flex fixed left-4 top-20 z-30 w-10 h-10 rounded-full bg-white border-2 border-gray-200 hover:border-[#40086d] shadow-md items-center justify-center transition-all"
-          title={isSidebarCollapsed ? 'Show sidebar' : 'Hide sidebar'}
-        >
-          {isSidebarCollapsed ? (
-            <PanelLeft className="w-5 h-5 text-gray-600" />
-          ) : (
-            <PanelLeftClose className="w-5 h-5 text-gray-600" />
-          )}
-        </motion.button>
-
-        {/* Theme Selector */}
-        <ThemeSelector />
+        {/* Sidebar - Always rendered, controls its own collapsed state */}
+        <ConversationSidebar
+          conversations={conversations}
+          activeConversationId={conversationId}
+          onSelectConversation={handleSelectConversation}
+          onNewConversation={handleNewConversation}
+          onDeleteConversation={handleDeleteConversation}
+          isOpen={isSidebarOpen}
+          onClose={() => setIsSidebarOpen(false)}
+          isCollapsed={isSidebarCollapsed}
+          onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+        />
 
         {/* Main chat area */}
         <div className="flex-1 flex flex-col h-full backdrop-blur-sm">
@@ -905,6 +933,14 @@ function ChatPageContent() {
           </div>
         </motion.div>
         </div>
+
+        {/* Quick Actions Bar - Right side */}
+        <QuickActionsBar
+          onAction={handleQuickAction}
+          isVoiceActive={false}
+          isCollapsed={isActionsBarCollapsed}
+          onToggleCollapse={() => setIsActionsBarCollapsed(!isActionsBarCollapsed)}
+        />
       </div>
     </PageTransition>
   );

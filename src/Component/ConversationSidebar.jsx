@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageCircle, Plus, X, Trash2 } from 'lucide-react';
+import { MessageCircle, Plus, X, Trash2, PanelLeftClose, PanelLeft } from 'lucide-react';
 
 /**
  * ConversationSidebar - Sidebar showing list of conversations
@@ -13,6 +13,8 @@ import { MessageCircle, Plus, X, Trash2 } from 'lucide-react';
  * - onDeleteConversation: (conversationId) => void
  * - isOpen: Boolean for mobile sidebar state
  * - onClose: () => void for closing mobile sidebar
+ * - isCollapsed: Boolean for desktop collapsed state
+ * - onToggleCollapse: () => void for toggling collapsed state
  */
 export default function ConversationSidebar({
   conversations = [],
@@ -22,6 +24,8 @@ export default function ConversationSidebar({
   onDeleteConversation,
   isOpen = true,
   onClose,
+  isCollapsed = false,
+  onToggleCollapse,
 }) {
   const [hoveredConvId, setHoveredConvId] = useState(null);
   // Generate title from first message or use default
@@ -55,6 +59,21 @@ export default function ConversationSidebar({
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   };
 
+  // Collapsed thin bar view
+  const collapsedBar = (
+    <div className="h-full w-12 flex flex-col items-center bg-white border-r border-gray-200 py-4">
+      <motion.button
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        onClick={onToggleCollapse}
+        className="p-2 hover:bg-purple-50 rounded-lg transition text-[#40086d]"
+        title="Expand sidebar"
+      >
+        <PanelLeft className="w-5 h-5" />
+      </motion.button>
+    </div>
+  );
+
   const sidebarContent = (
     <div className="h-full flex flex-col bg-white border-r border-gray-200">
       {/* Header */}
@@ -64,13 +83,25 @@ export default function ConversationSidebar({
             <MessageCircle className="w-5 h-5 text-[#40086d]" />
             Conversations
           </h2>
-          {/* Close button for mobile */}
-          <button
-            onClick={onClose}
-            className="lg:hidden p-1.5 hover:bg-gray-100 rounded-lg transition"
-          >
-            <X className="w-5 h-5 text-gray-600" />
-          </button>
+          <div className="flex items-center gap-1">
+            {/* Toggle collapse button for desktop */}
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={onToggleCollapse}
+              className="hidden lg:block p-1.5 hover:bg-purple-50 rounded-lg transition text-[#40086d]"
+              title="Collapse sidebar"
+            >
+              <PanelLeftClose className="w-5 h-5" />
+            </motion.button>
+            {/* Close button for mobile */}
+            <button
+              onClick={onClose}
+              className="lg:hidden p-1.5 hover:bg-gray-100 rounded-lg transition"
+            >
+              <X className="w-5 h-5 text-gray-600" />
+            </button>
+          </div>
         </div>
 
         {/* New Conversation Button */}
@@ -169,9 +200,9 @@ export default function ConversationSidebar({
 
   return (
     <>
-      {/* Desktop Sidebar - Always visible */}
-      <div className="hidden lg:block w-80 h-full">
-        {sidebarContent}
+      {/* Desktop Sidebar - Show collapsed or full */}
+      <div className={`hidden lg:block h-full transition-all ${isCollapsed ? 'w-12' : 'w-80'}`}>
+        {isCollapsed ? collapsedBar : sidebarContent}
       </div>
 
       {/* Mobile Sidebar - Slide in overlay */}

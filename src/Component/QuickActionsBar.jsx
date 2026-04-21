@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Lightbulb,
   Calendar,
@@ -10,10 +10,15 @@ import {
   Mic,
   Sparkles,
   MessagesSquare,
-  BookmarkPlus,
   ChevronLeft,
   ChevronRight,
+  Palette,
+  Volume2,
+  VolumeX,
+  ChevronDown,
+  ChevronUp,
 } from 'lucide-react';
+import { useChatTheme, CHAT_THEMES } from '../context/ChatThemeContext';
 
 /**
  * QuickActionsBar - Sidebar with quick action buttons for chat
@@ -25,6 +30,8 @@ export default function QuickActionsBar({
   onToggleCollapse,
 }) {
   const [hoveredAction, setHoveredAction] = useState(null);
+  const [isThemeExpanded, setIsThemeExpanded] = useState(false);
+  const { currentTheme, changeTheme, soundEnabled, toggleSound } = useChatTheme();
 
   const actions = [
     {
@@ -196,12 +203,121 @@ export default function QuickActionsBar({
         })}
       </div>
 
-      {/* Footer Hint */}
-      <div className="p-3 border-t border-gray-100">
-        <div className="text-xs text-gray-500 text-center">
-          <BookmarkPlus className="w-4 h-4 inline mr-1" />
-          Click message to save as favorite
-        </div>
+      {/* Theme Customization Footer */}
+      <div className="border-t border-gray-100">
+        {/* Toggle Button */}
+        <motion.button
+          whileTap={{ scale: 0.98 }}
+          onClick={() => setIsThemeExpanded(!isThemeExpanded)}
+          className="w-full p-3 flex items-center justify-between hover:bg-gray-50 transition-colors"
+        >
+          <div className="flex items-center gap-2">
+            <Palette className="w-4 h-4 text-[#40086d]" />
+            <span className="text-sm font-semibold text-gray-900">Customize</span>
+          </div>
+          {isThemeExpanded ? (
+            <ChevronDown className="w-4 h-4 text-gray-500" />
+          ) : (
+            <ChevronUp className="w-4 h-4 text-gray-500" />
+          )}
+        </motion.button>
+
+        {/* Expandable Theme Panel */}
+        <AnimatePresence>
+          {isThemeExpanded && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="overflow-hidden"
+            >
+              <div className="p-3 space-y-3 border-t border-gray-100">
+                {/* Sound Toggle */}
+                <div>
+                  <h4 className="text-xs font-semibold text-gray-700 mb-2">Sound Effects</h4>
+                  <motion.button
+                    whileTap={{ scale: 0.98 }}
+                    onClick={toggleSound}
+                    className={`w-full flex items-center justify-between p-2 rounded-lg border transition-all ${
+                      soundEnabled
+                        ? 'bg-purple-50 border-[#40086d]'
+                        : 'bg-gray-50 border-gray-200'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      {soundEnabled ? (
+                        <Volume2 className="w-4 h-4 text-[#40086d]" />
+                      ) : (
+                        <VolumeX className="w-4 h-4 text-gray-400" />
+                      )}
+                      <span className={`text-xs font-medium ${
+                        soundEnabled ? 'text-[#40086d]' : 'text-gray-600'
+                      }`}>
+                        {soundEnabled ? 'Enabled' : 'Disabled'}
+                      </span>
+                    </div>
+                    <div
+                      className={`w-9 h-5 rounded-full transition-colors ${
+                        soundEnabled ? 'bg-[#40086d]' : 'bg-gray-300'
+                      } relative`}
+                    >
+                      <motion.div
+                        animate={{ x: soundEnabled ? 18 : 2 }}
+                        transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                        className="absolute top-0.5 w-4 h-4 bg-white rounded-full shadow-sm"
+                      />
+                    </div>
+                  </motion.button>
+                </div>
+
+                {/* Theme Selection */}
+                <div>
+                  <h4 className="text-xs font-semibold text-gray-700 mb-2">Color Theme</h4>
+                  <div className="space-y-1.5 max-h-64 overflow-y-auto">
+                    {Object.values(CHAT_THEMES).map((t) => {
+                      const isActive = t.id === currentTheme;
+                      return (
+                        <motion.button
+                          key={t.id}
+                          whileHover={{ scale: 1.01 }}
+                          whileTap={{ scale: 0.99 }}
+                          onClick={() => changeTheme(t.id)}
+                          className={`w-full p-2 rounded-lg border transition-all text-left ${
+                            isActive
+                              ? 'border-[#40086d] bg-purple-50'
+                              : 'border-gray-200 bg-gray-50 hover:border-gray-300'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between mb-1">
+                            <span className={`text-xs font-semibold ${
+                              isActive ? 'text-[#40086d]' : 'text-gray-900'
+                            }`}>
+                              {t.name}
+                            </span>
+                            {isActive && (
+                              <motion.div
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                className="w-1.5 h-1.5 bg-[#40086d] rounded-full"
+                              />
+                            )}
+                          </div>
+
+                          {/* Theme Preview */}
+                          <div className="flex gap-1.5">
+                            <div className={`flex-1 h-6 rounded ${t.userBubble} ${t.userBubbleShadow}`} />
+                            <div className={`flex-1 h-6 rounded ${t.aiBubble} ${t.aiBubbleShadow}`} />
+                          </div>
+                        </motion.button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );
