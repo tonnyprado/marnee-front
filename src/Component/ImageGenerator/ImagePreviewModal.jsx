@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { toPng, toJpeg } from 'html-to-image';
 import { saveAs } from 'file-saver';
 import TemplateSelector from './TemplateSelector';
@@ -97,6 +97,20 @@ export default function ImagePreviewModal({ image, onClose, post, founderId }) {
     }
   };
 
+  // Adjust SVG size after it's inserted to ensure it fits within the container
+  useEffect(() => {
+    if (svgRef.current) {
+      const svg = svgRef.current.querySelector('svg');
+      if (svg) {
+        svg.style.width = '100%';
+        svg.style.height = 'auto';
+        svg.style.maxWidth = '100%';
+        svg.style.maxHeight = '100%';
+        svg.style.display = 'block';
+      }
+    }
+  }, [currentImage]);
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
       <div className="bg-white rounded-lg shadow-xl max-w-5xl w-full max-h-[90vh] overflow-hidden flex flex-col">
@@ -120,9 +134,9 @@ export default function ImagePreviewModal({ image, onClose, post, founderId }) {
         {/* Content */}
         <div className="p-6 flex gap-6 overflow-y-auto flex-1">
           {/* Preview */}
-          <div className="flex-1 flex items-center justify-center bg-gray-100 rounded-lg p-4 relative">
+          <div className="flex-1 flex items-center justify-center bg-gray-100 rounded-lg p-4 relative overflow-hidden min-h-0">
             {isGenerating && (
-              <div className="absolute inset-0 bg-white/80 flex items-center justify-center rounded-lg">
+              <div className="absolute inset-0 bg-white/80 flex items-center justify-center rounded-lg z-10">
                 <div className="flex flex-col items-center gap-2">
                   <div className="w-8 h-8 border-4 border-violet-500 border-t-transparent rounded-full animate-spin" />
                   <p className="text-sm text-gray-600">Regenerating...</p>
@@ -131,16 +145,19 @@ export default function ImagePreviewModal({ image, onClose, post, founderId }) {
             )}
             <div
               ref={svgRef}
-              className="max-w-full max-h-full"
+              className="w-full h-full flex items-center justify-center"
               style={{
+                maxWidth: '100%',
+                maxHeight: '100%',
                 aspectRatio: `${currentImage.dimensions.width} / ${currentImage.dimensions.height}`,
+                objectFit: 'contain',
               }}
               dangerouslySetInnerHTML={{ __html: currentImage.svg }}
             />
           </div>
 
           {/* Options Sidebar */}
-          <div className="w-72 space-y-6 flex-shrink-0">
+          <div className="w-72 space-y-6 flex-shrink-0 overflow-y-auto max-h-full">
             {/* Template Selector */}
             <div>
               <label className="text-sm font-medium text-gray-700 block mb-2">

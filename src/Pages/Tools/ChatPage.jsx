@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { api } from '../../services/api';
-import { Send, Loader2, MessageCircle, Search, X, Menu } from 'lucide-react';
+import { Send, Loader2, MessageCircle, Search, X, Menu, PanelLeftClose, PanelLeft } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PageTransition from '../../Component/PageTransition';
 import ConversationSidebar from '../../Component/ConversationSidebar';
+import ThemeSelector from '../../Component/ThemeSelector';
+import { ChatThemeProvider, useChatTheme } from '../../context/ChatThemeContext';
 
 // Markdown components for AI messages (formatted text)
 // eslint-disable-next-line jsx-a11y/heading-has-content
@@ -71,7 +73,10 @@ const userMarkdownComponents = {
  * Full-featured chat with multiple conversations that saves messages to database.
  * Marnee has access to all conversation history for context.
  */
-export default function ChatPage() {
+function ChatPageContent() {
+  // Theme context
+  const { theme, playSound } = useChatTheme();
+
   // State
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
@@ -87,9 +92,18 @@ export default function ChatPage() {
   // New state for multiple conversations
   const [conversations, setConversations] = useState([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
+    const saved = localStorage.getItem('sidebar_collapsed');
+    return saved === 'true';
+  });
 
   const messagesEndRef = useRef(null);
   const searchResultRefs = useRef([]);
+
+  // Save sidebar state
+  useEffect(() => {
+    localStorage.setItem('sidebar_collapsed', isSidebarCollapsed);
+  }, [isSidebarCollapsed]);
 
   // Scroll to bottom
   const scrollToBottom = () => {
@@ -366,6 +380,9 @@ export default function ChatPage() {
     const userMessage = input.trim();
     setInput('');
 
+    // Play send sound
+    playSound('send');
+
     // Optimistic UI update
     const tempUserMsg = {
       id: `temp-${Date.now()}`,
@@ -412,6 +429,9 @@ export default function ChatPage() {
         timestamp: new Date().toISOString(),
       };
 
+      // Play receive sound
+      playSound('receive');
+
       // Replace temp message with confirmed ones
       setMessages(prev => {
         const withoutTemp = prev.filter(m => m.id !== tempUserMsg.id);
@@ -451,19 +471,39 @@ export default function ChatPage() {
   }
 
   return (
-    <PageTransition className="h-screen bg-gradient-to-br from-gray-50 via-purple-50/20 to-gray-50">
+    <PageTransition className={`h-screen ${theme.background}`}>
       {/* Main layout with sidebar */}
-      <div className="flex h-full">
-        {/* Sidebar */}
-        <ConversationSidebar
-          conversations={conversations}
-          activeConversationId={conversationId}
-          onSelectConversation={handleSelectConversation}
-          onNewConversation={handleNewConversation}
-          onDeleteConversation={handleDeleteConversation}
-          isOpen={isSidebarOpen}
-          onClose={() => setIsSidebarOpen(false)}
-        />
+      <div className="flex h-full relative">
+        {/* Sidebar - Conditionally rendered */}
+        {!isSidebarCollapsed && (
+          <ConversationSidebar
+            conversations={conversations}
+            activeConversationId={conversationId}
+            onSelectConversation={handleSelectConversation}
+            onNewConversation={handleNewConversation}
+            onDeleteConversation={handleDeleteConversation}
+            isOpen={isSidebarOpen}
+            onClose={() => setIsSidebarOpen(false)}
+          />
+        )}
+
+        {/* Sidebar Toggle Button */}
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+          className="hidden lg:flex fixed left-4 top-20 z-30 w-10 h-10 rounded-full bg-white border-2 border-gray-200 hover:border-[#40086d] shadow-md items-center justify-center transition-all"
+          title={isSidebarCollapsed ? 'Show sidebar' : 'Hide sidebar'}
+        >
+          {isSidebarCollapsed ? (
+            <PanelLeft className="w-5 h-5 text-gray-600" />
+          ) : (
+            <PanelLeftClose className="w-5 h-5 text-gray-600" />
+          )}
+        </motion.button>
+
+        {/* Theme Selector */}
+        <ThemeSelector />
 
         {/* Main chat area */}
         <div className="flex-1 flex flex-col h-full backdrop-blur-sm">
@@ -683,8 +723,8 @@ export default function ChatPage() {
                       transition={{ type: "spring", stiffness: 400 }}
                       className={`relative inline-block max-w-[80%] ${roundedClass} px-3 py-2 ${
                         msg.role === 'user'
-                          ? 'bg-gradient-to-br from-[#40086d] to-[#2d0550] text-white shadow-md shadow-purple-900/20'
-                          : 'bg-white border border-gray-200 text-gray-900 shadow-sm'
+                          ? `${theme.userBubble} ${theme.userBubbleShadow}`
+                          : `${theme.aiBubble} ${theme.aiBubbleShadow}`
                       } ${
                         isSearchResult
                           ? isCurrentResult
@@ -693,21 +733,7 @@ export default function ChatPage() {
                           : ''
                       }`}
                     >
-                      {/* Show sender label only on first message of group */}
-                      {isFirstInGroup && (
-                        <motion.div
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 0.6 }}
-                          transition={{ delay: 0.05 }}
-                          className="text-[9px] font-semibold mb-0.5"
-                          style={{
-                            color: msg.role === 'user' ? 'rgba(255,255,255,0.6)' : '#40086d'
-                          }}
-                        >
-                          {msg.role === 'user' ? 'You' : 'Marnee'}
-                        </motion.div>
-                      )}
-
+                      {/* Message content */}
                       <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -721,24 +747,22 @@ export default function ChatPage() {
                         </ReactMarkdown>
                       </motion.div>
 
-                      {/* Timestamp on last message of group */}
-                      {isLastInGroup && (
-                        <motion.div
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 0.4 }}
-                          transition={{ delay: 0.15 }}
-                          className="text-[8px] mt-0.5 text-right"
-                          style={{
-                            color: msg.role === 'user' ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.35)'
-                          }}
-                        >
-                          {new Date(msg.timestamp).toLocaleTimeString('en-US', {
-                            hour: 'numeric',
-                            minute: '2-digit',
-                            hour12: true
-                          })}
-                        </motion.div>
-                      )}
+                      {/* Timestamp on every message */}
+                      <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 0.4 }}
+                        transition={{ delay: 0.15 }}
+                        className="text-[8px] mt-1 text-right"
+                        style={{
+                          color: msg.role === 'user' ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.35)'
+                        }}
+                      >
+                        {new Date(msg.timestamp).toLocaleTimeString('en-US', {
+                          hour: 'numeric',
+                          minute: '2-digit',
+                          hour12: true
+                        })}
+                      </motion.div>
                     </motion.div>
                   </motion.div>
                 );
@@ -883,5 +907,14 @@ export default function ChatPage() {
         </div>
       </div>
     </PageTransition>
+  );
+}
+
+// Export wrapped with ChatThemeProvider
+export default function ChatPage() {
+  return (
+    <ChatThemeProvider>
+      <ChatPageContent />
+    </ChatThemeProvider>
   );
 }
