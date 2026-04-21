@@ -9,6 +9,7 @@ import { getAuthSession } from "./services/api";
 import LandingPage from "./Pages/LandingPage";
 import PresentationPage from "./Pages/PresentationPage";
 import AuthPage from "./Pages/AuthPage";
+import OAuth2CallbackPage from "./Pages/OAuth2CallbackPage";
 import BrandingTestIntro from "./Pages/BrandingTestIntro";
 import BrandTestPage from "./Pages/BrandTestPage";
 import TestSelectionPage from "./Pages/TestSelectionPage";
@@ -75,6 +76,7 @@ function AppContent() {
         <Route path="/intro-page" element={<LandingPage />} />
         <Route path="/presentation" element={<Navigate to="/" replace />} />
         <Route path="/auth" element={<AuthPage />} />
+        <Route path="/auth/callback" element={<OAuth2CallbackPage />} />
         <Route path="/brand-test/intro" element={<BrandingTestIntro />} />
         <Route path="/test-selection" element={<TestSelectionPage />} />
         <Route path="/business-test/questions" element={<BusinessTestPage />} />

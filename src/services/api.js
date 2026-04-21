@@ -127,6 +127,20 @@ export const api = {
       baseUrl: API.AUTH,
     }),
 
+  // OAuth - Google Sign In
+  // Redirects to backend OAuth endpoint which handles Google authentication
+  googleSignIn: () => {
+    const redirectUrl = `${API.AUTH}/auth/google`;
+    window.location.href = redirectUrl;
+  },
+
+  // OAuth - Apple Sign In
+  // Redirects to backend OAuth endpoint which handles Apple authentication
+  appleSignIn: () => {
+    const redirectUrl = `${API.AUTH}/auth/apple`;
+    window.location.href = redirectUrl;
+  },
+
   // POST /founder/questionnaire - Submit full questionnaire
   submitQuestionnaire: (data) =>
     request('/founder/questionnaire', {
