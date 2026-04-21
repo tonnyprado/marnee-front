@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { api } from '../../services/api';
-import { Send, Loader2, MessageCircle, Search, X, Menu, Mic, MicOff, Copy, Check } from 'lucide-react';
+import { Send, Loader2, MessageCircle, Search, X, Menu, Mic, MicOff, Copy, Check, Star } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PageTransition from '../../Component/PageTransition';
 import ConversationSidebar from '../../Component/ConversationSidebar';
@@ -108,6 +108,7 @@ function ChatPageContent() {
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [copiedMessageId, setCopiedMessageId] = useState(null);
   const [hoveredMessageId, setHoveredMessageId] = useState(null);
+  const [favoriteMessageIds, setFavoriteMessageIds] = useState(new Set());
 
   const messagesEndRef = useRef(null);
   const recognitionRef = useRef(null);
@@ -398,6 +399,26 @@ function ChatPageContent() {
       console.error('[Chat] Failed to copy:', err);
       alert('Failed to copy message');
     });
+  };
+
+  // Handle toggle favorite
+  const handleToggleFavorite = async (messageId) => {
+    try {
+      const response = await api.toggleMessageFavorite(messageId);
+
+      setFavoriteMessageIds(prev => {
+        const newSet = new Set(prev);
+        if (response.isFavorite) {
+          newSet.add(messageId);
+        } else {
+          newSet.delete(messageId);
+        }
+        return newSet;
+      });
+    } catch (error) {
+      console.error('[Chat] Failed to toggle favorite:', error);
+      alert('Failed to save favorite');
+    }
   };
 
   // Handle voice mode toggle
@@ -849,27 +870,47 @@ function ChatPageContent() {
                           })}
                         </motion.div>
 
-                        {/* Copy button - appears on hover */}
+                        {/* Action buttons - appear on hover */}
                         <AnimatePresence>
                           {hoveredMessageId === msg.id && (
-                            <motion.button
+                            <motion.div
                               initial={{ opacity: 0, scale: 0.8 }}
                               animate={{ opacity: 1, scale: 1 }}
                               exit={{ opacity: 0, scale: 0.8 }}
-                              onClick={() => handleCopyMessage(msg.id, msg.content)}
-                              className={`p-1 rounded transition-colors ${
-                                msg.role === 'user'
-                                  ? 'hover:bg-white/20 text-white/70 hover:text-white'
-                                  : 'hover:bg-gray-100 text-gray-400 hover:text-gray-600'
-                              }`}
-                              title={copiedMessageId === msg.id ? 'Copied!' : 'Copy message'}
+                              className="flex items-center gap-1"
                             >
-                              {copiedMessageId === msg.id ? (
-                                <Check className="w-3 h-3" />
-                              ) : (
-                                <Copy className="w-3 h-3" />
-                              )}
-                            </motion.button>
+                              {/* Favorite button */}
+                              <motion.button
+                                onClick={() => handleToggleFavorite(msg.id)}
+                                className={`p-1 rounded transition-colors ${
+                                  msg.role === 'user'
+                                    ? 'hover:bg-white/20 text-white/70 hover:text-white'
+                                    : 'hover:bg-gray-100 text-gray-400 hover:text-gray-600'
+                                }`}
+                                title={favoriteMessageIds.has(msg.id) ? 'Remove from favorites' : 'Add to favorites'}
+                              >
+                                <Star
+                                  className={`w-3 h-3 ${favoriteMessageIds.has(msg.id) ? 'fill-yellow-400 text-yellow-400' : ''}`}
+                                />
+                              </motion.button>
+
+                              {/* Copy button */}
+                              <motion.button
+                                onClick={() => handleCopyMessage(msg.id, msg.content)}
+                                className={`p-1 rounded transition-colors ${
+                                  msg.role === 'user'
+                                    ? 'hover:bg-white/20 text-white/70 hover:text-white'
+                                    : 'hover:bg-gray-100 text-gray-400 hover:text-gray-600'
+                                }`}
+                                title={copiedMessageId === msg.id ? 'Copied!' : 'Copy message'}
+                              >
+                                {copiedMessageId === msg.id ? (
+                                  <Check className="w-3 h-3" />
+                                ) : (
+                                  <Copy className="w-3 h-3" />
+                                )}
+                              </motion.button>
+                            </motion.div>
                           )}
                         </AnimatePresence>
                       </div>
@@ -1065,8 +1106,13 @@ function ChatPageContent() {
         onClose={() => setIsShareModalOpen(false)}
         conversationId={conversationId}
         onGenerateLink={async (convId, access) => {
-          // Generate share token - placeholder for now
-          return { token: btoa(`${convId}-${Date.now()}-${access}`) };
+          try {
+            const response = await api.createShareLink(convId, access);
+            return { token: response.token };
+          } catch (error) {
+            console.error('[Chat] Failed to create share link:', error);
+            throw error;
+          }
         }}
       />
     </PageTransition>

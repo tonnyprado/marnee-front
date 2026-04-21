@@ -174,6 +174,41 @@ export const api = {
       method: 'DELETE',
     }),
 
+  // =====================
+  // FAVORITES
+  // =====================
+
+  // POST /marnee/message/{messageId}/favorite - Toggle message favorite
+  toggleMessageFavorite: (messageId) =>
+    request(`/marnee/message/${messageId}/favorite`, {
+      method: 'POST',
+    }),
+
+  // GET /marnee/favorites - Get all favorite messages
+  getFavoriteMessages: () =>
+    request('/marnee/favorites'),
+
+  // =====================
+  // SHARE CONVERSATION
+  // =====================
+
+  // POST /marnee/conversation/{conversationId}/share - Create share link
+  createShareLink: (conversationId, accessType = 'view') =>
+    request(`/marnee/conversation/${conversationId}/share`, {
+      method: 'POST',
+      body: JSON.stringify({ access: accessType }),
+    }),
+
+  // GET /shared/{token} - Get shared conversation (no auth required)
+  getSharedConversation: (token) =>
+    request(`/shared/${token}`, {
+      auth: false,
+    }),
+
+  // GET /marnee/conversation/{conversationId}/shares - Get all shares for conversation
+  getConversationShares: (conversationId) =>
+    request(`/marnee/conversation/${conversationId}/shares`),
+
   // POST /marnee/generate-ideas - Generate content ideas
   generateIdeas: ({ founderId, sessionId, count = 12, pillar }) =>
     request('/marnee/generate-ideas', {
