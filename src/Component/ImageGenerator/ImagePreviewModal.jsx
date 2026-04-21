@@ -29,7 +29,7 @@ import { saveAs } from 'file-saver';
  * Modal to preview and edit generated images.
  * Supports zoom/pan, advanced editing, attachments, and downloading.
  */
-export default function ImagePreviewModal({ image, onClose, post, founderId }) {
+export default function ImagePreviewModal({ image, onClose, post, founderId, postId }) {
   const svgRef = useRef(null);
 
   // Mode state: 'preview' | 'edit'
@@ -39,7 +39,7 @@ export default function ImagePreviewModal({ image, onClose, post, founderId }) {
   const [isDownloading, setIsDownloading] = useState(false);
 
   // Hooks
-  const { regenerateWithTemplate, isGenerating } = useImageGenerator();
+  const { regenerateWithTemplate, saveGeneratedImage, isGenerating } = useImageGenerator();
   const { scale, transformRef, zoomIn, zoomOut, resetTransform, centerView, setScale } =
     useZoomPan();
   const {
@@ -86,6 +86,16 @@ export default function ImagePreviewModal({ image, onClose, post, founderId }) {
         templateId
       );
       setCurrentImage(newImage);
+
+      // Save the regenerated image to the database
+      if (postId && newImage) {
+        try {
+          await saveGeneratedImage(postId, newImage);
+          console.log('✅ Regenerated image saved to database');
+        } catch (saveErr) {
+          console.error('Failed to save regenerated image:', saveErr);
+        }
+      }
     } catch (err) {
       console.error('Failed to regenerate with template:', err);
     }
@@ -93,15 +103,27 @@ export default function ImagePreviewModal({ image, onClose, post, founderId }) {
 
   // Editor save handler
   const handleEditorSave = useCallback(
-    ({ svg, pngDataUrl }) => {
-      setCurrentImage((prev) => ({
-        ...prev,
+    async ({ svg, pngDataUrl }) => {
+      const updatedImage = {
+        ...currentImage,
         svg,
         pngBase64: pngDataUrl?.split(',')[1] || null,
-      }));
+      };
+
+      setCurrentImage(updatedImage);
       setMode('preview');
+
+      // Save edited image to database
+      if (postId && updatedImage) {
+        try {
+          await saveGeneratedImage(postId, updatedImage);
+          console.log('✅ Edited image saved to database');
+        } catch (saveErr) {
+          console.error('Failed to save edited image:', saveErr);
+        }
+      }
     },
-    []
+    [currentImage, postId, saveGeneratedImage]
   );
 
   const handleDownloadPng = async () => {

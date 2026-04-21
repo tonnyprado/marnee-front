@@ -63,6 +63,8 @@ export default function CampaignForm({
 }) {
   const { founderId } = useMarnee();
   const [form, setForm] = useState({
+    // ID
+    id: null,
     // Basic Information
     title: "",
     taskType: "content",
@@ -89,6 +91,9 @@ export default function CampaignForm({
     // Feedback
     feedbackType: "",
     notes: "",
+    // Generated Image
+    generatedImageSvg: null,
+    hasGeneratedImage: false,
   });
   const [isSaving, setIsSaving] = useState(false);
   const [activeTab, setActiveTab] = useState("details"); // details | comments
@@ -96,6 +101,8 @@ export default function CampaignForm({
   useEffect(() => {
     if (post) {
       setForm({
+        // ID
+        id: post.id || null,
         // Basic Information
         title: post.title || "",
         taskType: post.taskType || "content",
@@ -121,6 +128,9 @@ export default function CampaignForm({
         // Feedback
         feedbackType: post.feedbackType || "",
         notes: post.notes || "",
+        // Generated Image
+        generatedImageSvg: post.generatedImageSvg || null,
+        hasGeneratedImage: Boolean(post.generatedImageSvg),
       });
     }
   }, [post]);
@@ -484,10 +494,16 @@ export default function CampaignForm({
 
             <div className="space-y-3">
               <p className="text-sm text-gray-600">
-                Generate a branded image for this post using your brand colors and style.
+                {form.hasGeneratedImage
+                  ? 'Edit or regenerate your branded image.'
+                  : 'Generate a branded image for this post using your brand colors and style.'}
               </p>
 
-              <ImageGeneratorButton post={form} founderId={founderId} />
+              <ImageGeneratorButton
+                post={form}
+                founderId={founderId}
+                postId={form.id}
+              />
 
               <p className="text-xs text-gray-500">
                 The image will be generated using data from your Brand Profile, Current Trends, and Strategy.

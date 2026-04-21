@@ -6,13 +6,19 @@ import ImagePreviewModal from './ImagePreviewModal';
  * Button to generate an image for a post.
  * Opens a modal with the generated image preview and download options.
  */
-export default function ImageGeneratorButton({ post, founderId }) {
+export default function ImageGeneratorButton({ post, founderId, postId }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { generateImage, isGenerating, generatedImage, error } = useImageGenerator();
+  const {
+    generateImage,
+    saveGeneratedImage,
+    isGenerating,
+    generatedImage,
+    error
+  } = useImageGenerator();
 
   const handleGenerateClick = async () => {
     try {
-      await generateImage({
+      const newImage = await generateImage({
         founderId,
         postData: {
           hook: post.hook || '',
@@ -27,6 +33,18 @@ export default function ImageGeneratorButton({ post, founderId }) {
         outputFormat: 'both',
         optimizeCopy: false, // Can be made configurable
       });
+
+      // Save the generated image to the database if we have a postId
+      if (postId && newImage) {
+        try {
+          await saveGeneratedImage(postId, newImage);
+          console.log('✅ Image saved to database for post:', postId);
+        } catch (saveErr) {
+          console.error('Failed to save image to database:', saveErr);
+          // Don't block the modal from opening even if save fails
+        }
+      }
+
       setIsModalOpen(true);
     } catch (err) {
       console.error('Failed to generate image:', err);
@@ -76,6 +94,7 @@ export default function ImageGeneratorButton({ post, founderId }) {
           onClose={() => setIsModalOpen(false)}
           post={post}
           founderId={founderId}
+          postId={postId}
         />
       )}
     </>
