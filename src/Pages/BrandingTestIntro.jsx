@@ -1,16 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import Logo from "../Component/Logo";
+import LoadingTransition from "../Component/LoadingTransition";
 import { useLanguage } from "../context/LanguageContext";
 
 export default function BrandTestIntro() {
   const { t } = useLanguage();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleStart = () => {
-    window.location.href = "/test-selection";
+    setIsLoading(true);
+    setTimeout(() => {
+      window.location.href = "/test-selection";
+    }, 800);
   };
 
   return (
     <div className="min-h-screen bg-[#f6f6f6] text-gray-900 flex flex-col items-center justify-center px-6 relative overflow-hidden">
+      <LoadingTransition isLoading={isLoading} message="Loading tests..." />
       {/* Logo */}
       <div className="absolute top-6 left-8">
         <Logo dark={true} />

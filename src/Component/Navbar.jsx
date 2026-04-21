@@ -100,8 +100,7 @@ export default function Navbar({ active = "ai-content" }) {
         {/* Logo */}
         <div className={`flex items-center ${collapsed ? 'justify-center lg:justify-center' : 'justify-between'} px-4 py-5 border-b border-[rgba(30,30,30,0.1)] max-lg:justify-between`}>
           <div
-            onClick={() => navigate("/")}
-            className={`cursor-pointer hover:opacity-80 transition ${collapsed ? 'scale-75 lg:scale-75' : ''} max-lg:scale-100`}
+            className={`transition ${collapsed ? 'scale-75 lg:scale-75' : ''} max-lg:scale-100`}
           >
             <Logo dark={true} iconOnly={collapsed} />
           </div>

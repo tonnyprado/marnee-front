@@ -89,7 +89,12 @@ export default function AuthPage() {
       <div className="relative z-10 w-full max-w-md bg-white border border-[rgba(30,30,30,0.1)] rounded p-8 shadow-sm">
         {/* Logo */}
         <div className="flex flex-col items-center mb-8">
-          <Logo dark={true} size="large" />
+          <div
+            onClick={() => navigate("/")}
+            className="cursor-pointer hover:opacity-80 transition"
+          >
+            <Logo dark={true} size="large" />
+          </div>
           <div className="h-px w-16 bg-[rgba(64,8,109,0.2)] mt-4" />
         </div>
 

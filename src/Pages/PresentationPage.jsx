@@ -1,8 +1,9 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import marneeLogo from '../assets/marnee-logo.png';
 import demoVideo from '../assets/videos/0207.mp4';
 import LanguageSwitcher from '../Component/LanguageSwitcher';
+import LoadingTransition from '../Component/LoadingTransition';
 import { useLanguage } from '../context/LanguageContext';
 
 const WAITLIST_URL = 'https://tally.so/r/D4NkGl';
@@ -704,6 +705,7 @@ export default function LandingPage() {
   const navigate = useNavigate();
   const { t } = useLanguage();
   const titleRef = useRef(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const typewriterLines = [
     [t('presentation.hero.line1'), false, false],
@@ -714,10 +716,16 @@ export default function LandingPage() {
   useTypewriter(titleRef, typewriterLines);
   useFadeUpObserver();
 
-  const handleLoginClick = () => navigate('/intro-page');
+  const handleLoginClick = () => {
+    setIsLoading(true);
+    setTimeout(() => {
+      navigate('/intro-page');
+    }, 800);
+  };
 
   return (
     <>
+      <LoadingTransition isLoading={isLoading} message="Redirecting..." />
       <LandingNav onLoginClick={handleLoginClick} />
       <HeroSection titleRef={titleRef} />
       <Ticker />

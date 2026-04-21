@@ -3,12 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { Star, Lightbulb } from "lucide-react";
 import { api } from "../services/api";
 import { useLanguage } from "../context/LanguageContext";
+import LoadingTransition from "../Component/LoadingTransition";
 
 export default function TestSelectionPage() {
   const { t } = useLanguage();
   const navigate = useNavigate();
   const [testTypes, setTestTypes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isNavigating, setIsNavigating] = useState(false);
   const [businessTestProgress, setBusinessTestProgress] = useState(0);
   const [personalTestProgress, setPersonalTestProgress] = useState(0);
 
@@ -110,11 +112,14 @@ export default function TestSelectionPage() {
   }, [loadTestTypes, loadProgress]);
 
   const handleSelectTest = (testType) => {
-    if (testType === "business") {
-      navigate("/business-test/questions");
-    } else if (testType === "personal") {
-      navigate("/brand-test/questions");
-    }
+    setIsNavigating(true);
+    setTimeout(() => {
+      if (testType === "business") {
+        navigate("/business-test/questions");
+      } else if (testType === "personal") {
+        navigate("/brand-test/questions");
+      }
+    }, 800);
   };
 
   if (loading) {
@@ -132,6 +137,7 @@ export default function TestSelectionPage() {
 
   return (
     <div className="min-h-screen bg-[#f6f6f6] relative">
+      <LoadingTransition isLoading={isNavigating} message="Loading test..." />
       {/* Back Button */}
       <button
         onClick={() => navigate('/app')}

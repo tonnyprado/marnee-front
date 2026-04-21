@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../services/api";
 import { useMarnee } from "../context/MarneeContext";
+import LoadingTransition from "../Component/LoadingTransition";
 
 // Question types: radio, multiSelect, textarea, slider
 const STEPS = [
@@ -528,6 +529,7 @@ export default function BrandTestPage() {
 
   return (
     <div className="min-h-screen bg-white text-gray-900 flex">
+      <LoadingTransition isLoading={isSubmitting} message="Saving your brand profile..." />
       {/* Sidebar */}
       <aside className="w-72 bg-[#f6f6f6] border-r border-[rgba(30,30,30,0.1)] p-6 flex flex-col">
         {/* Back Button */}
