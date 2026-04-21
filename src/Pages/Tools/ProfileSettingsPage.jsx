@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import { User, Lock, Bell, Globe, Trash2, Save, Camera } from "lucide-react";
 import { getAuthSession } from "../../services/api";
 import PageTransition from "../../Component/PageTransition";
+import { useLanguage } from "../../context/LanguageContext";
 
 export default function ProfileSettingsPage() {
   const session = getAuthSession();
+  const { language, setLanguage, languages } = useLanguage();
 
   // Hardcoded data - will be replaced with real data later
   const [profileData, setProfileData] = useState({
@@ -22,7 +24,6 @@ export default function ProfileSettingsPage() {
   });
 
   const [preferences, setPreferences] = useState({
-    language: "en",
     emailNotifications: true,
     marketingEmails: false,
     weeklyDigest: true,
@@ -218,13 +219,15 @@ export default function ProfileSettingsPage() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Language</label>
                 <select
-                  value={preferences.language}
-                  onChange={(e) => handlePreferenceChange("language", e.target.value)}
+                  value={language}
+                  onChange={(e) => setLanguage(e.target.value)}
                   className="w-full md:w-64 px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#40086d] focus:border-transparent"
                 >
-                  <option value="en">English</option>
-                  <option value="es">Español</option>
-                  <option value="ko">한국어</option>
+                  {languages.map((lang) => (
+                    <option key={lang.code} value={lang.code}>
+                      {lang.flag} {lang.label}
+                    </option>
+                  ))}
                 </select>
               </div>
 

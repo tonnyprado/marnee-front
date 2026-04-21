@@ -29,6 +29,13 @@ function LandingNav({ onLoginClick }) {
         <div className="mn-nav-actions">
           <LanguageSwitcher className="border-[rgba(30,30,30,0.1)] bg-white/90 backdrop-blur shadow-sm" />
 
+          <button
+            onClick={onLoginClick}
+            className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-[#40086d] transition-colors"
+          >
+            Sign In
+          </button>
+
           <a
             href={WAITLIST_URL}
             target="_blank"
@@ -707,7 +714,7 @@ export default function LandingPage() {
   useTypewriter(titleRef, typewriterLines);
   useFadeUpObserver();
 
-  const handleLoginClick = () => navigate('/auth');
+  const handleLoginClick = () => navigate('/intro-page');
 
   return (
     <>
