@@ -8,6 +8,7 @@ import ConversationSidebar from '../../Component/ConversationSidebar';
 import QuickActionsBar from '../../Component/QuickActionsBar';
 import PromptSuggestions from '../../Component/PromptSuggestions';
 import ExportModal from '../../Component/ExportModal';
+import FavoritesModal from '../../Component/FavoritesModal';
 import { ChatThemeProvider, useChatTheme } from '../../context/ChatThemeContext';
 
 // Markdown components for AI messages (formatted text)
@@ -104,6 +105,7 @@ function ChatPageContent() {
   });
   const [isVoiceMode, setIsVoiceMode] = useState(false);
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
+  const [isFavoritesModalOpen, setIsFavoritesModalOpen] = useState(false);
   const [copiedMessageId, setCopiedMessageId] = useState(null);
   const [hoveredMessageId, setHoveredMessageId] = useState(null);
   const [favoriteMessageIds, setFavoriteMessageIds] = useState(new Set());
@@ -363,6 +365,9 @@ function ChatPageContent() {
         break;
       case 'resume':
         setInput('Summarize our conversation so far');
+        break;
+      case 'favorites':
+        setIsFavoritesModalOpen(true);
         break;
       case 'export':
         if (messages.length === 0) {
@@ -1113,6 +1118,12 @@ function ChatPageContent() {
         onClose={() => setIsExportModalOpen(false)}
         conversation={{ id: conversationId }}
         messages={messages}
+      />
+
+      {/* Favorites Modal */}
+      <FavoritesModal
+        isOpen={isFavoritesModalOpen}
+        onClose={() => setIsFavoritesModalOpen(false)}
       />
     </PageTransition>
   );

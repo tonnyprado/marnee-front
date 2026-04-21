@@ -15,6 +15,7 @@ import {
   VolumeX,
   ChevronDown,
   ChevronUp,
+  Star,
 } from 'lucide-react';
 import { useChatTheme, CHAT_THEMES } from '../context/ChatThemeContext';
 
@@ -70,6 +71,14 @@ export default function QuickActionsBar({
       description: 'Get conversation summary',
       color: 'text-cyan-500',
       bgColor: 'hover:bg-cyan-50',
+    },
+    {
+      id: 'favorites',
+      icon: Star,
+      label: 'View Favorites',
+      description: 'See favorite messages',
+      color: 'text-yellow-500',
+      bgColor: 'hover:bg-yellow-50',
     },
     {
       id: 'export',
