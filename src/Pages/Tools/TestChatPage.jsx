@@ -310,17 +310,44 @@ export default function TestChatPage() {
   }
 
   return (
-    <PageTransition className="h-screen bg-[#f6f6f6]">
+    <PageTransition className="h-screen bg-gradient-to-br from-gray-50 via-purple-50/20 to-gray-50">
       {/* Main chat area */}
-      <div className="flex flex-col h-full">
+      <div className="flex flex-col h-full backdrop-blur-sm">
         {/* Header */}
-        <div className="bg-white border-b border-[rgba(30,30,30,0.1)] px-4 py-3">
+        <motion.div
+          initial={{ y: -20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.4 }}
+          className="bg-gradient-to-r from-white to-purple-50/30 border-b border-gray-200 shadow-sm px-4 py-4"
+        >
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div className="flex-1">
-              <h1 className="text-lg font-bold text-gray-900">Chat with Marnee</h1>
-              <p className="text-xs text-gray-600">
-                Your AI content strategist
-              </p>
+            <div className="flex-1 flex items-center gap-3">
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+                className="w-10 h-10 rounded-full bg-gradient-to-br from-[#40086d] to-[#2d0550] flex items-center justify-center shadow-lg"
+              >
+                <MessageCircle className="w-5 h-5 text-white" />
+              </motion.div>
+              <div>
+                <motion.h1
+                  initial={{ x: -20, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ delay: 0.3 }}
+                  className="text-lg font-bold text-gray-900"
+                >
+                  Chat with Marnee
+                </motion.h1>
+                <motion.p
+                  initial={{ x: -20, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ delay: 0.4 }}
+                  className="text-xs text-gray-600"
+                >
+                  Your AI content strategist
+                </motion.p>
+              </div>
             </div>
 
             {/* Search box */}
@@ -375,125 +402,257 @@ export default function TestChatPage() {
         </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-3">
+        <div className="flex-1 overflow-y-auto p-4 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzQwMDg2ZCIgc3Ryb2tlLW9wYWNpdHk9IjAuMDMiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')] bg-repeat">
           {messages.length === 0 && (
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-center text-gray-400 py-8"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+              className="text-center text-gray-400 py-12"
             >
-              <MessageCircle className="w-12 h-12 mx-auto mb-3 text-[#40086d] opacity-40" />
-              <p className="text-sm mb-1">No messages yet</p>
-              <p className="text-xs">Start chatting with Marnee</p>
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+              >
+                <MessageCircle className="w-16 h-16 mx-auto mb-4 text-[#40086d] opacity-30" />
+              </motion.div>
+              <motion.p
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="text-base font-medium mb-1"
+              >
+                No messages yet
+              </motion.p>
+              <motion.p
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="text-sm"
+              >
+                Start chatting with Marnee
+              </motion.p>
             </motion.div>
           )}
 
-          <AnimatePresence mode="popLayout">
-            {messages.map((msg, index) => {
-              const isSearchResult = searchResults.some(result => result.messageIndex === index);
-              const resultIndex = searchResults.findIndex(result => result.messageIndex === index);
-              const isCurrentResult = resultIndex === currentResultIndex;
+          <div className="space-y-1">
+            <AnimatePresence mode="popLayout">
+              {messages.map((msg, index) => {
+                const isSearchResult = searchResults.some(result => result.messageIndex === index);
+                const resultIndex = searchResults.findIndex(result => result.messageIndex === index);
+                const isCurrentResult = resultIndex === currentResultIndex;
 
-              // Check if previous/next message is from same sender
-              const prevMsg = index > 0 ? messages[index - 1] : null;
-              const nextMsg = index < messages.length - 1 ? messages[index + 1] : null;
-              const isSameSenderAsPrev = prevMsg && prevMsg.role === msg.role;
-              const isSameSenderAsNext = nextMsg && nextMsg.role === msg.role;
+                // Check if previous/next message is from same sender
+                const prevMsg = index > 0 ? messages[index - 1] : null;
+                const nextMsg = index < messages.length - 1 ? messages[index + 1] : null;
+                const isSameSenderAsPrev = prevMsg && prevMsg.role === msg.role;
+                const isSameSenderAsNext = nextMsg && nextMsg.role === msg.role;
 
-              // Determine position in group (for rounded corners)
-              const isFirstInGroup = !isSameSenderAsPrev;
-              const isLastInGroup = !isSameSenderAsNext;
-              const isSingleMessage = isFirstInGroup && isLastInGroup;
+                // Determine position in group
+                const isFirstInGroup = !isSameSenderAsPrev;
+                const isLastInGroup = !isSameSenderAsNext;
+                const isSingleMessage = isFirstInGroup && isLastInGroup;
 
-              // Dynamic border radius based on position
-              let roundedClass = 'rounded-3xl'; // default for single messages
-              if (!isSingleMessage) {
-                if (msg.role === 'user') {
-                  // User messages (right side)
-                  if (isFirstInGroup) roundedClass = 'rounded-3xl rounded-br-md';
-                  else if (isLastInGroup) roundedClass = 'rounded-3xl rounded-tr-md';
-                  else roundedClass = 'rounded-3xl rounded-tr-md rounded-br-md';
-                } else {
-                  // AI messages (left side)
-                  if (isFirstInGroup) roundedClass = 'rounded-3xl rounded-bl-md';
-                  else if (isLastInGroup) roundedClass = 'rounded-3xl rounded-tl-md';
-                  else roundedClass = 'rounded-3xl rounded-tl-md rounded-bl-md';
+                // Dynamic border radius - WhatsApp style
+                let roundedClass = 'rounded-2xl';
+                if (!isSingleMessage) {
+                  if (msg.role === 'user') {
+                    if (isFirstInGroup) roundedClass = 'rounded-2xl rounded-br-sm';
+                    else if (isLastInGroup) roundedClass = 'rounded-2xl rounded-tr-sm';
+                    else roundedClass = 'rounded-2xl rounded-tr-sm rounded-br-sm';
+                  } else {
+                    if (isFirstInGroup) roundedClass = 'rounded-2xl rounded-bl-sm';
+                    else if (isLastInGroup) roundedClass = 'rounded-2xl rounded-tl-sm';
+                    else roundedClass = 'rounded-2xl rounded-tl-sm rounded-bl-sm';
+                  }
                 }
-              }
 
-              // Spacing between messages
-              const marginTop = isSameSenderAsPrev ? 'mt-0.5' : 'mt-4';
+                // Spacing
+                const marginTop = isSameSenderAsPrev ? 'mt-0.5' : 'mt-6';
 
-              return (
-                <motion.div
-                  key={msg.id}
-                  ref={isSearchResult ? (el) => { searchResultRefs.current[resultIndex] = el; } : null}
-                  initial={{ opacity: 0, scale: 0.8, y: 20 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.8, y: -20 }}
-                  transition={{
-                    type: "spring",
-                    stiffness: 500,
-                    damping: 30,
-                    mass: 0.5
-                  }}
-                  className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} ${marginTop}`}
-                >
-                  <div
-                    className={`max-w-md ${roundedClass} px-3 py-2 transition-all ${
-                      msg.role === 'user'
-                        ? 'bg-[#40086d] text-white shadow-sm'
-                        : 'bg-white border border-[rgba(30,30,30,0.1)] text-gray-900 shadow-sm'
-                    } ${
-                      isSearchResult
-                        ? isCurrentResult
-                          ? 'ring-2 ring-yellow-400 shadow-lg'
-                          : 'ring-1 ring-yellow-200'
-                        : ''
-                    }`}
+                // Animation variants for incoming messages
+                const messageVariants = {
+                  hidden: (role) => ({
+                    opacity: 0,
+                    scale: 0.3,
+                    x: role === 'user' ? 50 : -50,
+                    y: 20,
+                  }),
+                  visible: {
+                    opacity: 1,
+                    scale: 1,
+                    x: 0,
+                    y: 0,
+                    transition: {
+                      type: "spring",
+                      stiffness: 400,
+                      damping: 25,
+                      mass: 0.5,
+                      opacity: { duration: 0.2 },
+                    }
+                  },
+                  exit: (role) => ({
+                    opacity: 0,
+                    scale: 0.3,
+                    x: role === 'user' ? 50 : -50,
+                    transition: {
+                      duration: 0.2,
+                      ease: "easeIn"
+                    }
+                  })
+                };
+
+                return (
+                  <motion.div
+                    key={msg.id}
+                    ref={isSearchResult ? (el) => { searchResultRefs.current[resultIndex] = el; } : null}
+                    custom={msg.role}
+                    variants={messageVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                    layout
+                    className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} ${marginTop}`}
                   >
-                    {/* Show sender label only on first message of group */}
-                    {isFirstInGroup && (
-                      <div className="text-[9px] opacity-60 mb-0.5">
-                        {msg.role === 'user' ? 'You' : 'Marnee'}
-                      </div>
-                    )}
-                    <ReactMarkdown
-                      components={msg.role === 'user' ? userMarkdownComponents : aiMarkdownComponents}
+                    <motion.div
+                      whileHover={{ scale: 1.02 }}
+                      transition={{ type: "spring", stiffness: 400 }}
+                      className={`relative max-w-[75%] sm:max-w-md ${roundedClass} px-4 py-2.5 ${
+                        msg.role === 'user'
+                          ? 'bg-gradient-to-br from-[#40086d] to-[#2d0550] text-white shadow-lg shadow-purple-900/20'
+                          : 'bg-white border border-gray-200 text-gray-900 shadow-md'
+                      } ${
+                        isSearchResult
+                          ? isCurrentResult
+                            ? 'ring-2 ring-yellow-400 shadow-xl'
+                            : 'ring-1 ring-yellow-200'
+                          : ''
+                      }`}
                     >
-                      {isSearchResult ? highlightText(msg.content, searchTerm) : msg.content}
-                    </ReactMarkdown>
-                  </div>
-                </motion.div>
-              );
-            })}
-          </AnimatePresence>
+                      {/* Show sender label only on first message of group */}
+                      {isFirstInGroup && (
+                        <motion.div
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 0.7 }}
+                          transition={{ delay: 0.1 }}
+                          className="text-[10px] font-semibold mb-1 tracking-wide"
+                          style={{
+                            color: msg.role === 'user' ? 'rgba(255,255,255,0.7)' : '#40086d'
+                          }}
+                        >
+                          {msg.role === 'user' ? 'YOU' : 'MARNEE'}
+                        </motion.div>
+                      )}
+
+                      <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.05 }}
+                      >
+                        <ReactMarkdown
+                          components={msg.role === 'user' ? userMarkdownComponents : aiMarkdownComponents}
+                        >
+                          {isSearchResult ? highlightText(msg.content, searchTerm) : msg.content}
+                        </ReactMarkdown>
+                      </motion.div>
+
+                      {/* Timestamp on last message of group */}
+                      {isLastInGroup && (
+                        <motion.div
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 0.5 }}
+                          transition={{ delay: 0.2 }}
+                          className="text-[9px] mt-1 text-right"
+                          style={{
+                            color: msg.role === 'user' ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.4)'
+                          }}
+                        >
+                          {new Date(msg.timestamp).toLocaleTimeString('en-US', {
+                            hour: 'numeric',
+                            minute: '2-digit',
+                            hour12: true
+                          })}
+                        </motion.div>
+                      )}
+                    </motion.div>
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
+          </div>
 
           {isLoading && (
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="flex justify-start"
+              initial={{ opacity: 0, scale: 0.3, x: -50 }}
+              animate={{ opacity: 1, scale: 1, x: 0 }}
+              exit={{ opacity: 0, scale: 0.3 }}
+              transition={{
+                type: "spring",
+                stiffness: 400,
+                damping: 25
+              }}
+              className="flex justify-start mt-6"
             >
-              <div className="bg-white border border-[rgba(30,30,30,0.1)] rounded-3xl px-3 py-2">
-                <div className="flex items-center gap-2">
+              <motion.div
+                className="bg-white border border-gray-200 rounded-2xl px-5 py-3.5 shadow-md"
+                animate={{
+                  boxShadow: [
+                    "0 4px 6px -1px rgba(0,0,0,0.1)",
+                    "0 6px 12px -1px rgba(64,8,109,0.15)",
+                    "0 4px 6px -1px rgba(0,0,0,0.1)"
+                  ]
+                }}
+                transition={{
+                  duration: 1.5,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+              >
+                <div className="flex items-center gap-1.5">
                   <motion.div
-                    className="w-2 h-2 bg-[#40086d] rounded-full"
-                    animate={{ y: [0, -8, 0] }}
-                    transition={{ duration: 0.6, repeat: Infinity, ease: "easeInOut" }}
+                    className="w-2.5 h-2.5 bg-gradient-to-br from-[#40086d] to-[#2d0550] rounded-full"
+                    animate={{
+                      scale: [1, 1.3, 1],
+                      opacity: [0.5, 1, 0.5]
+                    }}
+                    transition={{
+                      duration: 1,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                      times: [0, 0.5, 1]
+                    }}
                   />
                   <motion.div
-                    className="w-2 h-2 bg-[#40086d] rounded-full"
-                    animate={{ y: [0, -8, 0] }}
-                    transition={{ duration: 0.6, repeat: Infinity, ease: "easeInOut", delay: 0.1 }}
+                    className="w-2.5 h-2.5 bg-gradient-to-br from-[#40086d] to-[#2d0550] rounded-full"
+                    animate={{
+                      scale: [1, 1.3, 1],
+                      opacity: [0.5, 1, 0.5]
+                    }}
+                    transition={{
+                      duration: 1,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                      delay: 0.2,
+                      times: [0, 0.5, 1]
+                    }}
                   />
                   <motion.div
-                    className="w-2 h-2 bg-[#40086d] rounded-full"
-                    animate={{ y: [0, -8, 0] }}
-                    transition={{ duration: 0.6, repeat: Infinity, ease: "easeInOut", delay: 0.2 }}
+                    className="w-2.5 h-2.5 bg-gradient-to-br from-[#40086d] to-[#2d0550] rounded-full"
+                    animate={{
+                      scale: [1, 1.3, 1],
+                      opacity: [0.5, 1, 0.5]
+                    }}
+                    transition={{
+                      duration: 1,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                      delay: 0.4,
+                      times: [0, 0.5, 1]
+                    }}
                   />
                 </div>
-              </div>
+              </motion.div>
             </motion.div>
           )}
 
@@ -501,29 +660,62 @@ export default function TestChatPage() {
         </div>
 
         {/* Input */}
-        <div className="bg-white border-t border-[rgba(30,30,30,0.1)] px-3 py-2 flex items-center gap-2">
-          <input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSend()}
-            disabled={isLoading}
-            placeholder="Type your message..."
-            className="flex-1 bg-[#f6f6f6] border border-[rgba(30,30,30,0.1)] rounded-full px-3 py-1.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#40086d] focus:border-transparent"
-          />
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={handleSend}
-            disabled={isLoading || !input.trim()}
-            className="w-9 h-9 rounded-full bg-[#40086d] flex items-center justify-center text-white hover:bg-[#1a0530] transition disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isLoading ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <Send className="w-4 h-4" />
-            )}
-          </motion.button>
-        </div>
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.2, duration: 0.4 }}
+          className="bg-gradient-to-r from-white to-purple-50/30 border-t border-gray-200 shadow-lg px-4 py-4"
+        >
+          <div className="flex items-end gap-3 max-w-5xl mx-auto">
+            <motion.div
+              className="flex-1 relative"
+              initial={{ scale: 0.95 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.3 }}
+            >
+              <textarea
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSend();
+                  }
+                }}
+                disabled={isLoading}
+                placeholder="Type your message..."
+                rows={1}
+                className="w-full bg-white border-2 border-gray-200 rounded-2xl px-5 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#40086d] focus:border-transparent resize-none shadow-sm transition-all"
+                style={{
+                  minHeight: '44px',
+                  maxHeight: '120px'
+                }}
+                onInput={(e) => {
+                  e.target.style.height = 'auto';
+                  e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px';
+                }}
+              />
+            </motion.div>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={handleSend}
+              disabled={isLoading || !input.trim()}
+              className="w-11 h-11 rounded-full bg-gradient-to-br from-[#40086d] to-[#2d0550] flex items-center justify-center text-white shadow-lg shadow-purple-900/30 hover:shadow-xl hover:shadow-purple-900/40 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
+            >
+              <motion.div
+                animate={isLoading ? { rotate: 360 } : {}}
+                transition={isLoading ? { duration: 1, repeat: Infinity, ease: "linear" } : {}}
+              >
+                {isLoading ? (
+                  <Loader2 className="w-5 h-5" />
+                ) : (
+                  <Send className="w-5 h-5" />
+                )}
+              </motion.div>
+            </motion.button>
+          </div>
+        </motion.div>
       </div>
     </PageTransition>
   );
