@@ -237,17 +237,6 @@ const STEPS = [
   {
     id: 18,
     section: "Branding & Assets",
-    field: "website",
-    title: "Website",
-    question: "Do you have a website?",
-    subtitle: "If yes, please share the URL",
-    type: "url",
-    placeholder: "https://example.com",
-    required: false,
-  },
-  {
-    id: 19,
-    section: "Branding & Assets",
     field: "hasBrandGuidelines",
     title: "Brand guidelines",
     question: "Do you have brand guidelines?",
@@ -264,7 +253,7 @@ const STEPS = [
   // SECTION 7: Marketing & Channels (1 question)
   // =====================
   {
-    id: 20,
+    id: 19,
     section: "Marketing & Channels",
     field: "currentClientAcquisition",
     title: "Client acquisition",
@@ -279,7 +268,7 @@ const STEPS = [
   // SECTION 8: Content & Execution (3 questions)
   // =====================
   {
-    id: 21,
+    id: 20,
     section: "Content & Execution",
     field: "contentCreationExperience",
     title: "Content experience",
@@ -290,7 +279,7 @@ const STEPS = [
     required: false,
   },
   {
-    id: 22,
+    id: 21,
     section: "Content & Execution",
     field: "teamContentCreator",
     title: "Team content creators",
@@ -304,7 +293,7 @@ const STEPS = [
     ],
   },
   {
-    id: 23,
+    id: 22,
     section: "Content & Execution",
     field: "interestedInPersonalBrand",
     title: "Personal brand",
@@ -322,7 +311,7 @@ const STEPS = [
   // SECTION 9: Growth & Priorities (3 questions)
   // =====================
   {
-    id: 24,
+    id: 23,
     section: "Growth & Priorities",
     field: "mainPriority",
     title: "Main priority",
@@ -337,7 +326,7 @@ const STEPS = [
     ],
   },
   {
-    id: 25,
+    id: 24,
     section: "Growth & Priorities",
     field: "marketingBudget",
     title: "Marketing budget",
@@ -348,7 +337,7 @@ const STEPS = [
     required: false,
   },
   {
-    id: 26,
+    id: 25,
     section: "Growth & Priorities",
     field: "upcomingEvents",
     title: "Upcoming events",

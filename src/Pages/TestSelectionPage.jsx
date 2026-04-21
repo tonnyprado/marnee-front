@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Star, Lightbulb } from "lucide-react";
 import { api } from "../services/api";
 import { useLanguage } from "../context/LanguageContext";
 
@@ -120,7 +121,7 @@ export default function TestSelectionPage() {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-violet-200 border-t-violet-600 rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="w-16 h-16 border-4 border-[#ede0f8] border-t-[#40086d] rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-gray-600">{t("testSelection.loading")}</p>
         </div>
       </div>
@@ -149,7 +150,7 @@ export default function TestSelectionPage() {
       <div className="max-w-4xl mx-auto px-6 py-16">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-violet-600 via-indigo-500 to-cyan-500 bg-clip-text text-transparent">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-[#40086d] via-[#6b21a8] to-[#9333ea] bg-clip-text text-transparent">
             {t("testSelection.title")}
           </h1>
           <p className="text-lg text-gray-600">
@@ -168,14 +169,14 @@ export default function TestSelectionPage() {
                 key={test.testType}
                 className={`relative bg-white rounded border-2 transition-all duration-300 hover:shadow-sm ${
                   test.isMandatory
-                    ? "border-violet-300 shadow-sm shadow-violet-100"
+                    ? "border-[#dccaf4] shadow-sm shadow-[#ede0f8]"
                     : "border-[rgba(30,30,30,0.1)]"
                 }`}
               >
                 {/* Mandatory Badge */}
                 {test.isMandatory && (
-                  <div className="absolute -top-3 -right-3 bg-gradient-to-r from-violet-600 to-indigo-600 text-white px-4 py-1 rounded-full text-xs font-semibold shadow-sm flex items-center gap-1">
-                    <span>⭐</span>
+                  <div className="absolute -top-3 -right-3 bg-gradient-to-r from-[#40086d] to-[#6b21a8] text-white px-4 py-1 rounded-full text-xs font-semibold shadow-sm flex items-center gap-1">
+                    <Star className="w-3 h-3 fill-current" />
                     <span>{t("testSelection.required")}</span>
                   </div>
                 )}
@@ -237,7 +238,7 @@ export default function TestSelectionPage() {
                       </div>
                       <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-gradient-to-r from-violet-500 via-indigo-500 to-cyan-400 transition-all duration-500"
+                          className="h-full bg-gradient-to-r from-[#40086d] via-[#6b21a8] to-[#9333ea] transition-all duration-500"
                           style={{ width: `${progress}%` }}
                         />
                       </div>
@@ -269,8 +270,8 @@ export default function TestSelectionPage() {
 
         {/* Info Footer */}
         <div className="mt-12 text-center">
-          <div className="inline-flex items-center gap-2 bg-[#ede0f8] px-6 py-3 rounded-full border border-violet-200">
-            <span className="text-2xl">💡</span>
+          <div className="inline-flex items-center gap-2 bg-[#ede0f8] px-6 py-3 rounded-full border border-[#dccaf4]">
+            <Lightbulb className="w-5 h-5 text-[#40086d]" />
             <p className="text-sm text-[#40086d]">
               {t("testSelection.footer")}
             </p>
