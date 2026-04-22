@@ -10,6 +10,9 @@ import LandingPage from "./Pages/LandingPage";
 import PresentationPage from "./Pages/PresentationPage";
 import AuthPage from "./Pages/AuthPage";
 import OAuth2CallbackPage from "./Pages/OAuth2CallbackPage";
+import VerifyEmailPage from "./Pages/VerifyEmailPage";
+import ForgotPasswordPage from "./Pages/ForgotPasswordPage";
+import ResetPasswordPage from "./Pages/ResetPasswordPage";
 import BrandingTestIntro from "./Pages/BrandingTestIntro";
 import BrandTestPage from "./Pages/BrandTestPage";
 import TestSelectionPage from "./Pages/TestSelectionPage";
@@ -77,6 +80,9 @@ function AppContent() {
         <Route path="/presentation" element={<Navigate to="/" replace />} />
         <Route path="/auth" element={<AuthPage />} />
         <Route path="/auth/callback" element={<OAuth2CallbackPage />} />
+        <Route path="/auth/verify-email" element={<VerifyEmailPage />} />
+        <Route path="/auth/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
         <Route path="/brand-test/intro" element={<BrandingTestIntro />} />
         <Route path="/test-selection" element={<TestSelectionPage />} />
         <Route path="/business-test/questions" element={<BusinessTestPage />} />

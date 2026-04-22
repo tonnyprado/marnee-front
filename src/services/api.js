@@ -141,6 +141,53 @@ export const api = {
     window.location.href = redirectUrl;
   },
 
+  // =====================
+  // EMAIL VERIFICATION & PASSWORD RESET
+  // =====================
+
+  // GET /auth/verify-email - Verify email with token
+  verifyEmail: (token) =>
+    request(`/auth/verify-email?token=${encodeURIComponent(token)}`, {
+      method: 'GET',
+      auth: false,
+      baseUrl: API.AUTH,
+    }),
+
+  // POST /auth/resend-verification - Resend verification email
+  resendVerification: (email) =>
+    request('/auth/resend-verification', {
+      method: 'POST',
+      body: JSON.stringify({ email }),
+      auth: false,
+      baseUrl: API.AUTH,
+    }),
+
+  // POST /auth/forgot-password - Request password reset
+  forgotPassword: (email) =>
+    request('/auth/forgot-password', {
+      method: 'POST',
+      body: JSON.stringify({ email }),
+      auth: false,
+      baseUrl: API.AUTH,
+    }),
+
+  // POST /auth/reset-password - Reset password with token
+  resetPassword: (token, newPassword) =>
+    request('/auth/reset-password', {
+      method: 'POST',
+      body: JSON.stringify({ token, newPassword }),
+      auth: false,
+      baseUrl: API.AUTH,
+    }),
+
+  // GET /auth/validate-reset-token - Validate reset token
+  validateResetToken: (token) =>
+    request(`/auth/validate-reset-token?token=${encodeURIComponent(token)}`, {
+      method: 'GET',
+      auth: false,
+      baseUrl: API.AUTH,
+    }),
+
   // POST /founder/questionnaire - Submit full questionnaire
   submitQuestionnaire: (data) =>
     request('/founder/questionnaire', {
