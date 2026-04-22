@@ -19,21 +19,21 @@ export default function VerifyEmailPage() {
       return;
     }
 
-    verifyEmail(token);
-  }, [searchParams]);
+    const verifyEmail = async (token) => {
+      try {
+        await api.verifyEmail(token);
+        setStatus("success");
+        setTimeout(() => {
+          navigate("/auth");
+        }, 3000);
+      } catch (err) {
+        setStatus("error");
+        setError(err.message || "Verification failed");
+      }
+    };
 
-  const verifyEmail = async (token) => {
-    try {
-      await api.verifyEmail(token);
-      setStatus("success");
-      setTimeout(() => {
-        navigate("/auth");
-      }, 3000);
-    } catch (err) {
-      setStatus("error");
-      setError(err.message || "Verification failed");
-    }
-  };
+    verifyEmail(token);
+  }, [searchParams, navigate]);
 
   if (status === "verifying") {
     return <LoadingTransition isLoading={true} message="Verifying your email..." />;
