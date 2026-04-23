@@ -78,6 +78,13 @@ export const changeUserPassword = async (id, newPassword) => {
   });
 };
 
+export const createUser = async (data) => {
+  return authRequest('/admin/users', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+};
+
 export const deleteUser = async (id) => {
   return authRequest(`/admin/users/${id}`, {
     method: 'DELETE',
@@ -202,6 +209,7 @@ const adminApiService = {
   getUsers,
   getUserById,
   searchUsers,
+  createUser,
   updateUser,
   updateUserRole,
   changeUserPassword,

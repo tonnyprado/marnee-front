@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react';
-import { Search, Edit, Trash2, Key, Shield } from 'lucide-react';
+import { Search, Edit, Trash2, Key, Shield, Lock, UserPlus } from 'lucide-react';
 import {
   getUsers,
   searchUsers,
+  createUser,
   updateUser,
   updateUserRole,
   changeUserPassword,
   deleteUser,
 } from '../../services/adminApi';
+import UserSecurityModal from '../components/UserSecurityModal';
 
 export default function UserManagement() {
   const [users, setUsers] = useState([]);
@@ -18,10 +20,12 @@ export default function UserManagement() {
   const [totalPages, setTotalPages] = useState(0);
 
   // Modals
+  const [createModal, setCreateModal] = useState(false);
   const [editModal, setEditModal] = useState(null);
   const [roleModal, setRoleModal] = useState(null);
   const [passwordModal, setPasswordModal] = useState(null);
   const [deleteModal, setDeleteModal] = useState(null);
+  const [securityModal, setSecurityModal] = useState(null);
 
   useEffect(() => {
     loadUsers();
@@ -58,6 +62,17 @@ export default function UserManagement() {
       setError(err.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleCreateUser = async (data) => {
+    try {
+      await createUser(data);
+      setCreateModal(false);
+      loadUsers();
+      alert('Usuario creado correctamente');
+    } catch (err) {
+      alert('Error creando usuario: ' + err.message);
     }
   };
 
@@ -115,6 +130,15 @@ export default function UserManagement() {
 
       {/* Search Bar */}
       <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+        <div className="flex gap-4 mb-4">
+          <button
+            onClick={() => setCreateModal(true)}
+            className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2"
+          >
+            <UserPlus size={20} />
+            Crear Usuario
+          </button>
+        </div>
         <div className="flex gap-4">
           <div className="flex-1 relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
@@ -191,6 +215,13 @@ export default function UserManagement() {
                       {new Date(user.createdAt).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-4 text-sm text-right">
+                      <button
+                        onClick={() => setSecurityModal(user)}
+                        className="text-indigo-600 hover:text-indigo-800 mr-3"
+                        title="Security Details"
+                      >
+                        <Lock size={18} />
+                      </button>
                       <button
                         onClick={() => setEditModal(user)}
                         className="text-blue-600 hover:text-blue-800 mr-3"
@@ -303,6 +334,29 @@ export default function UserManagement() {
             user={deleteModal}
             onConfirm={() => handleDeleteUser(deleteModal.id)}
             onCancel={() => setDeleteModal(null)}
+          />
+        </Modal>
+      )}
+
+      {/* Security Modal */}
+      {securityModal && (
+        <UserSecurityModal
+          userId={securityModal.id}
+          open={!!securityModal}
+          onClose={() => setSecurityModal(null)}
+          onUpdate={loadUsers}
+        />
+      )}
+
+      {/* Create User Modal */}
+      {createModal && (
+        <Modal
+          title="Crear Nuevo Usuario"
+          onClose={() => setCreateModal(false)}
+        >
+          <CreateUserForm
+            onSave={handleCreateUser}
+            onCancel={() => setCreateModal(false)}
           />
         </Modal>
       )}
@@ -483,6 +537,90 @@ function DeleteUserForm({ user, onConfirm, onCancel }) {
           className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
         >
           Eliminar
+        </button>
+        <button
+          onClick={onCancel}
+          className="flex-1 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
+        >
+          Cancelar
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// Create User Form
+function CreateUserForm({ onSave, onCancel }) {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [role, setRole] = useState('USER');
+
+  const handleSubmit = () => {
+    if (!name.trim()) {
+      alert('El nombre es requerido');
+      return;
+    }
+    if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      alert('Email inválido');
+      return;
+    }
+    if (password.length < 8) {
+      alert('La contraseña debe tener al menos 8 caracteres');
+      return;
+    }
+    onSave({ name, email, password, role });
+  };
+
+  return (
+    <div className="space-y-4">
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-mn-purple focus:border-transparent"
+          placeholder="Nombre completo"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-mn-purple focus:border-transparent"
+          placeholder="correo@ejemplo.com"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-mn-purple focus:border-transparent"
+          placeholder="Mínimo 8 caracteres"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Rol</label>
+        <select
+          value={role}
+          onChange={(e) => setRole(e.target.value)}
+          className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-mn-purple focus:border-transparent"
+        >
+          <option value="USER">USER</option>
+          <option value="ADMIN">ADMIN</option>
+        </select>
+      </div>
+      <div className="flex gap-3 pt-4">
+        <button
+          onClick={handleSubmit}
+          className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+        >
+          Crear Usuario
         </button>
         <button
           onClick={onCancel}

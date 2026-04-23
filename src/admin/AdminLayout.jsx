@@ -1,7 +1,7 @@
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   Users, LayoutDashboard, CreditCard, FileText,
-  BarChart3, LogOut, Settings
+  BarChart3, LogOut, Settings, Shield, Lock, Activity, AlertTriangle
 } from 'lucide-react';
 import { getAuthSession, setAuthSession } from '../services/api';
 
@@ -20,6 +20,13 @@ export default function AdminLayout() {
     { path: '/admin/subscriptions', label: 'Suscripciones', icon: CreditCard },
     { path: '/admin/seo', label: 'SEO', icon: FileText },
     { path: '/admin/analytics', label: 'Analytics', icon: BarChart3 },
+  ];
+
+  const securityItems = [
+    { path: '/admin/security', label: 'Security Dashboard', icon: Shield, exact: true },
+    { path: '/admin/security/audit-logs', label: 'Audit Logs', icon: Activity },
+    { path: '/admin/security/sessions', label: 'Active Sessions', icon: Lock },
+    { path: '/admin/security/alerts', label: 'Security Alerts', icon: AlertTriangle },
   ];
 
   const isActive = (path, exact = false) => {
@@ -44,6 +51,35 @@ export default function AdminLayout() {
         {/* Navigation */}
         <nav className="flex-1 overflow-y-auto p-4">
           {menuItems.map((item) => {
+            const Icon = item.icon;
+            const active = isActive(item.path, item.exact);
+
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={`
+                  flex items-center gap-3 px-4 py-3 rounded-lg mb-2
+                  transition-colors duration-200
+                  ${active
+                    ? 'bg-mn-purple text-white'
+                    : 'text-gray-300 hover:bg-mn-purple/50 hover:text-white'
+                  }
+                `}
+              >
+                <Icon size={20} />
+                <span className="font-medium">{item.label}</span>
+              </Link>
+            );
+          })}
+
+          {/* Security Section */}
+          <div className="mt-6 mb-2 px-4">
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              Security
+            </p>
+          </div>
+          {securityItems.map((item) => {
             const Icon = item.icon;
             const active = isActive(item.path, item.exact);
 

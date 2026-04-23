@@ -35,6 +35,10 @@ import UserManagement from "./admin/pages/UserManagement";
 import SubscriptionPlans from "./admin/pages/SubscriptionPlans";
 import SeoManagement from "./admin/pages/SeoManagement";
 import AnalyticsDashboard from "./admin/pages/AnalyticsDashboard";
+import SecurityDashboard from "./admin/pages/SecurityDashboard";
+import AuditLogsPage from "./admin/pages/AuditLogsPage";
+import ActiveSessionsPage from "./admin/pages/ActiveSessionsPage";
+import SecurityAlertsPage from "./admin/pages/SecurityAlertsPage";
 
 function RequireAuth({ children }) {
   const session = getAuthSession();
@@ -137,6 +141,10 @@ function AppContent() {
           <Route path="subscriptions" element={<SubscriptionPlans />} />
           <Route path="seo" element={<SeoManagement />} />
           <Route path="analytics" element={<AnalyticsDashboard />} />
+          <Route path="security" element={<SecurityDashboard />} />
+          <Route path="security/audit-logs" element={<AuditLogsPage />} />
+          <Route path="security/sessions" element={<ActiveSessionsPage />} />
+          <Route path="security/alerts" element={<SecurityAlertsPage />} />
         </Route>
 
         {/* fallback */}
