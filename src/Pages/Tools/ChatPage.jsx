@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { api } from '../../services/api';
-import { Send, Loader2, MessageCircle, Search, X, Menu, Mic, MicOff, Copy, Check, Star } from 'lucide-react';
+import { Send, Loader2, MessageCircle, Search, X, Menu, Mic, MicOff, Copy, Check, Star, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PageTransition from '../../Component/PageTransition';
 import ConversationSidebar from '../../Component/ConversationSidebar';
@@ -705,8 +705,17 @@ function ChatPageContent() {
               </div>
             </div>
 
-            {/* Search box */}
+            {/* Search box and Quick Actions button */}
             <div className="flex items-center gap-2">
+              {/* Quick Actions button - Mobile */}
+              <motion.button
+                whileTap={{ scale: 0.9 }}
+                onClick={() => setIsActionsBarCollapsed(!isActionsBarCollapsed)}
+                className="lg:hidden p-2 hover:bg-purple-50 rounded-lg transition"
+                title={isActionsBarCollapsed ? "Show quick actions" : "Hide quick actions"}
+              >
+                <Sparkles className="w-6 h-6 text-[#40086d]" />
+              </motion.button>
               <div className="relative flex-1 sm:flex-initial">
                 <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <input

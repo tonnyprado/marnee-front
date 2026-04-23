@@ -98,33 +98,34 @@ export default function QuickActionsBar({
 
   if (isCollapsed) {
     return (
-      <div className="hidden lg:flex flex-col items-center gap-3 p-2 bg-white border-l border-gray-200 shadow-sm">
+      <div className="flex flex-col items-center gap-3 p-2 bg-white border-l border-gray-200 shadow-sm max-lg:border-l-0 max-lg:p-0 max-lg:bg-transparent">
         {/* Expand Button */}
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={onToggleCollapse}
-          className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+          className="p-2 hover:bg-gray-100 rounded-lg transition-colors max-lg:hover:bg-purple-50"
           title="Expand actions"
         >
-          <ChevronLeft className="w-5 h-5 text-gray-600" />
+          <ChevronLeft className="w-5 h-5 text-gray-600 max-lg:text-[#40086d]" />
         </motion.button>
 
-        {/* Collapsed Icons */}
-        {actions.map((action) => {
-          const Icon = action.icon;
-          return (
-            <motion.button
-              key={action.id}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => handleAction(action.id)}
-              onMouseEnter={() => setHoveredAction(action.id)}
-              onMouseLeave={() => setHoveredAction(null)}
-              className={`relative p-2.5 rounded-lg transition-all ${action.bgColor}`}
-              title={action.label}
-            >
-              <Icon className={`w-5 h-5 ${action.color}`} />
+        {/* Collapsed Icons - Desktop only */}
+        <div className="hidden lg:flex flex-col gap-3">
+          {actions.map((action) => {
+            const Icon = action.icon;
+            return (
+              <motion.button
+                key={action.id}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => handleAction(action.id)}
+                onMouseEnter={() => setHoveredAction(action.id)}
+                onMouseLeave={() => setHoveredAction(null)}
+                className={`relative p-2.5 rounded-lg transition-all ${action.bgColor}`}
+                title={action.label}
+              >
+                <Icon className={`w-5 h-5 ${action.color}`} />
 
               {/* Tooltip */}
               {hoveredAction === action.id && (
@@ -137,17 +138,23 @@ export default function QuickActionsBar({
                   <div className="absolute left-full top-1/2 -translate-y-1/2 border-4 border-transparent border-l-gray-900" />
                 </motion.div>
               )}
-            </motion.button>
-          );
-        })}
+              </motion.button>
+            );
+          })}
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="hidden lg:flex flex-col w-56 bg-white border-l border-gray-200 shadow-sm">
+    <div className="flex flex-col w-56 bg-white border-l border-gray-200 shadow-sm max-lg:fixed max-lg:bottom-0 max-lg:left-0 max-lg:right-0 max-lg:w-full max-lg:border-l-0 max-lg:border-t max-lg:rounded-t-3xl max-lg:max-h-[70vh] max-lg:z-40 max-lg:shadow-2xl">
+      {/* Mobile handle */}
+      <div className="lg:hidden flex justify-center py-3">
+        <div className="w-12 h-1.5 bg-gray-300 rounded-full" />
+      </div>
+
       {/* Header */}
-      <div className="p-4 border-b border-gray-200 flex items-center justify-between">
+      <div className="p-4 border-b border-gray-200 flex items-center justify-between max-lg:pb-3 max-lg:pt-0">
         <div className="flex items-center gap-2">
           <Sparkles className="w-5 h-5 text-[#40086d]" />
           <h3 className="font-bold text-gray-900 text-sm">Quick Actions</h3>
@@ -164,7 +171,7 @@ export default function QuickActionsBar({
       </div>
 
       {/* Actions List */}
-      <div className="flex-1 overflow-y-auto p-3 space-y-2">
+      <div className="flex-1 overflow-y-auto p-3 space-y-2 max-lg:p-4">
         {actions.map((action) => {
           const Icon = action.icon;
           return (
