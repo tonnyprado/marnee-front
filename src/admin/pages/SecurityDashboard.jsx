@@ -43,12 +43,17 @@ export default function SecurityDashboard() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="p-8 space-y-6 animate-fadeIn">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">Security Dashboard</h1>
+        <div>
+          <h1 className="text-3xl font-display font-bold bg-gradient-to-r from-mn-purple to-purple-600 bg-clip-text text-transparent">
+            Security Dashboard
+          </h1>
+          <p className="text-gray-600 mt-1">Monitor security metrics and alerts</p>
+        </div>
         <button
           onClick={loadData}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          className="px-6 py-3 bg-gradient-to-r from-mn-purple to-purple-600 text-white rounded-xl hover:shadow-lg transition-all transform hover:scale-105 font-medium"
         >
           Refresh
         </button>
@@ -100,15 +105,15 @@ export default function SecurityDashboard() {
 
       {/* Login Stats Chart */}
       {loginStats && (
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-white rounded-2xl shadow-lg p-6 border border-mn-lilac/20">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-gray-900">
+            <h2 className="text-xl font-display font-semibold text-mn-black">
               Login Attempts (Last {days} Days)
             </h2>
             <select
               value={days}
               onChange={(e) => setDays(Number(e.target.value))}
-              className="px-3 py-2 border rounded"
+              className="px-4 py-2 border border-mn-lilac rounded-xl focus:ring-2 focus:ring-mn-purple focus:border-transparent transition-all"
             >
               <option value={7}>7 days</option>
               <option value={30}>30 days</option>
@@ -160,17 +165,17 @@ export default function SecurityDashboard() {
 
       {/* Top Failed IPs */}
       {loginStats?.topFailedIPs && loginStats.topFailedIPs.length > 0 && (
-        <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">
+        <div className="bg-white rounded-2xl shadow-lg p-6 border border-mn-lilac/20">
+          <h2 className="text-xl font-display font-semibold text-mn-black mb-4">
             Top IPs with Failed Attempts
           </h2>
           <div className="space-y-2">
             {loginStats.topFailedIPs.map((ip, index) => (
               <div
                 key={index}
-                className="flex items-center justify-between p-3 bg-gray-50 rounded"
+                className="flex items-center justify-between p-4 bg-gradient-to-r from-red-50 to-orange-50 rounded-xl border border-red-100"
               >
-                <span className="text-sm font-medium text-gray-900">{ip.ipAddress}</span>
+                <span className="text-sm font-medium text-mn-black font-mono">{ip.ipAddress}</span>
                 <span className="text-sm text-red-600 font-semibold">
                   {ip.count} failed attempts
                 </span>
@@ -184,23 +189,23 @@ export default function SecurityDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Link
           to="/admin/security/audit-logs"
-          className="p-6 bg-white rounded-lg shadow hover:shadow-md transition text-center"
+          className="group p-6 bg-gradient-to-br from-white to-mn-ice rounded-2xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105 text-center border border-mn-lilac/20"
         >
-          <h3 className="font-semibold text-gray-900">Audit Logs</h3>
+          <h3 className="font-display font-semibold text-mn-purple group-hover:text-purple-600 transition-colors">Audit Logs</h3>
           <p className="text-sm text-gray-600 mt-2">View detailed audit trail</p>
         </Link>
         <Link
           to="/admin/security/sessions"
-          className="p-6 bg-white rounded-lg shadow hover:shadow-md transition text-center"
+          className="group p-6 bg-gradient-to-br from-white to-mn-ice rounded-2xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105 text-center border border-mn-lilac/20"
         >
-          <h3 className="font-semibold text-gray-900">Active Sessions</h3>
+          <h3 className="font-display font-semibold text-mn-purple group-hover:text-purple-600 transition-colors">Active Sessions</h3>
           <p className="text-sm text-gray-600 mt-2">Manage user sessions</p>
         </Link>
         <Link
           to="/admin/security/alerts"
-          className="p-6 bg-white rounded-lg shadow hover:shadow-md transition text-center"
+          className="group p-6 bg-gradient-to-br from-white to-mn-ice rounded-2xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105 text-center border border-mn-lilac/20"
         >
-          <h3 className="font-semibold text-gray-900">Security Alerts</h3>
+          <h3 className="font-display font-semibold text-mn-purple group-hover:text-purple-600 transition-colors">Security Alerts</h3>
           <p className="text-sm text-gray-600 mt-2">Review security threats</p>
         </Link>
       </div>

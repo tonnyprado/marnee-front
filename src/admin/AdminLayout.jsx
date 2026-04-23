@@ -1,13 +1,17 @@
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import {
   Users, LayoutDashboard, CreditCard, FileText,
-  BarChart3, LogOut, Settings, Shield, Lock, Activity, AlertTriangle
+  BarChart3, LogOut, Settings, Shield, Lock, Activity, AlertTriangle, Sparkles
 } from 'lucide-react';
 import { getAuthSession, setAuthSession } from '../services/api';
+import LogoutConfirmModal from './components/LogoutConfirmModal';
+import AdminTransition from './components/AdminTransition';
 
 export default function AdminLayout() {
   const location = useLocation();
   const navigate = useNavigate();
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const handleLogout = () => {
     setAuthSession(null);
@@ -39,17 +43,27 @@ export default function AdminLayout() {
   const session = getAuthSession();
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen bg-gradient-to-br from-mn-ice via-white to-mn-lilac/20">
       {/* Sidebar */}
-      <aside className="w-64 bg-mn-night text-white flex flex-col">
+      <aside className="w-64 bg-gradient-to-b from-mn-night to-mn-purple text-white flex flex-col shadow-2xl relative overflow-hidden">
+        {/* Decorative gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-mn-purple/20 to-transparent pointer-events-none"></div>
+
         {/* Header */}
-        <div className="p-6 border-b border-mn-purple">
-          <h1 className="text-2xl font-display font-bold">Marnee Admin</h1>
-          <p className="text-sm text-gray-400 mt-1">Panel de administración</p>
+        <div className="p-6 border-b border-white/10 relative z-10">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-gradient-to-br from-mn-lilac to-white rounded-lg flex items-center justify-center">
+              <Sparkles className="w-6 h-6 text-mn-purple" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-display font-bold">Marnee</h1>
+              <p className="text-xs text-mn-lilac">Admin Panel</p>
+            </div>
+          </div>
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 overflow-y-auto p-4">
+        <nav className="flex-1 overflow-y-auto p-4 relative z-10">
           {menuItems.map((item) => {
             const Icon = item.icon;
             const active = isActive(item.path, item.exact);
@@ -59,11 +73,11 @@ export default function AdminLayout() {
                 key={item.path}
                 to={item.path}
                 className={`
-                  flex items-center gap-3 px-4 py-3 rounded-lg mb-2
-                  transition-colors duration-200
+                  flex items-center gap-3 px-4 py-3 rounded-xl mb-2
+                  transition-all duration-300 transform
                   ${active
-                    ? 'bg-mn-purple text-white'
-                    : 'text-gray-300 hover:bg-mn-purple/50 hover:text-white'
+                    ? 'bg-white/20 text-white shadow-lg backdrop-blur-sm scale-105 border border-white/20'
+                    : 'text-mn-lilac hover:bg-white/10 hover:text-white hover:scale-102 hover:translate-x-1'
                   }
                 `}
               >
@@ -74,10 +88,13 @@ export default function AdminLayout() {
           })}
 
           {/* Security Section */}
-          <div className="mt-6 mb-2 px-4">
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-              Security
-            </p>
+          <div className="mt-6 mb-3 px-4">
+            <div className="flex items-center gap-2">
+              <Shield className="w-4 h-4 text-mn-lilac" />
+              <p className="text-xs font-semibold text-mn-lilac uppercase tracking-wider">
+                Seguridad
+              </p>
+            </div>
           </div>
           {securityItems.map((item) => {
             const Icon = item.icon;
@@ -88,11 +105,11 @@ export default function AdminLayout() {
                 key={item.path}
                 to={item.path}
                 className={`
-                  flex items-center gap-3 px-4 py-3 rounded-lg mb-2
-                  transition-colors duration-200
+                  flex items-center gap-3 px-4 py-3 rounded-xl mb-2
+                  transition-all duration-300 transform
                   ${active
-                    ? 'bg-mn-purple text-white'
-                    : 'text-gray-300 hover:bg-mn-purple/50 hover:text-white'
+                    ? 'bg-white/20 text-white shadow-lg backdrop-blur-sm scale-105 border border-white/20'
+                    : 'text-mn-lilac hover:bg-white/10 hover:text-white hover:scale-102 hover:translate-x-1'
                   }
                 `}
               >
@@ -104,33 +121,47 @@ export default function AdminLayout() {
         </nav>
 
         {/* User info & logout */}
-        <div className="p-4 border-t border-mn-purple">
-          <div className="flex items-center gap-3 px-4 py-3 bg-mn-purple/30 rounded-lg mb-2">
-            <Settings size={20} />
+        <div className="p-4 border-t border-white/10 relative z-10">
+          <div className="flex items-center gap-3 px-4 py-3 bg-white/10 backdrop-blur-sm rounded-xl mb-3 border border-white/10">
+            <div className="w-10 h-10 bg-gradient-to-br from-mn-lilac to-white rounded-full flex items-center justify-center">
+              <Settings size={20} className="text-mn-purple" />
+            </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium truncate">{session?.name || session?.email}</p>
-              <p className="text-xs text-gray-400">Administrador</p>
+              <p className="text-sm font-medium truncate text-white">{session?.name || session?.email}</p>
+              <p className="text-xs text-mn-lilac">Administrador</p>
             </div>
           </div>
 
           <button
-            onClick={handleLogout}
+            onClick={() => setShowLogoutModal(true)}
             className="
               w-full flex items-center justify-center gap-2 px-4 py-3
-              bg-red-600 hover:bg-red-700 text-white rounded-lg
-              transition-colors duration-200
+              bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700
+              text-white rounded-xl shadow-lg hover:shadow-xl
+              transition-all duration-300 transform hover:scale-105
+              font-medium
             "
           >
             <LogOut size={18} />
-            <span className="font-medium">Cerrar sesión</span>
+            <span>Cerrar sesión</span>
           </button>
         </div>
       </aside>
 
       {/* Main content */}
       <main className="flex-1 overflow-y-auto">
-        <Outlet />
+        <AdminTransition>
+          <Outlet />
+        </AdminTransition>
       </main>
+
+      {/* Logout confirmation modal */}
+      {showLogoutModal && (
+        <LogoutConfirmModal
+          onConfirm={handleLogout}
+          onCancel={() => setShowLogoutModal(false)}
+        />
+      )}
     </div>
   );
 }
