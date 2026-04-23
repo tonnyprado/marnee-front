@@ -12,6 +12,7 @@ export const translations = {
       userFallback: "User",
       freePlan: "Free Plan",
       close: "Close",
+      cancel: "Cancel",
     },
     language: {
       label: "Language",
@@ -30,6 +31,13 @@ export const translations = {
       notifications: "Notifications",
       helpSupport: "Help & Support",
       logout: "Logout",
+    },
+    logout: {
+      confirmTitle: "Log Out",
+      confirmMessage: "Are you sure you want to log out?",
+      loggingOut: "Logging out...",
+      goodbye: "See you soon",
+      closingSession: "Closing your session securely...",
     },
     landing: {
       stepBadge: "Step 1: Take your personal brand test",
@@ -265,6 +273,7 @@ export const translations = {
       userFallback: "Usuario",
       freePlan: "Plan gratuito",
       close: "Cerrar",
+      cancel: "Cancelar",
     },
     language: {
       label: "Idioma",
@@ -283,6 +292,13 @@ export const translations = {
       notifications: "Notificaciones",
       helpSupport: "Ayuda y soporte",
       logout: "Cerrar sesión",
+    },
+    logout: {
+      confirmTitle: "Cerrar Sesión",
+      confirmMessage: "¿Estás seguro de que deseas cerrar sesión?",
+      loggingOut: "Cerrando sesión...",
+      goodbye: "Hasta pronto",
+      closingSession: "Cerrando tu sesión de forma segura...",
     },
     landing: {
       stepBadge: "Paso 1: haz tu test de marca personal",
@@ -518,6 +534,7 @@ export const translations = {
       userFallback: "사용자",
       freePlan: "무료 플랜",
       close: "닫기",
+      cancel: "취소",
     },
     language: {
       label: "언어",
@@ -536,6 +553,13 @@ export const translations = {
       notifications: "알림",
       helpSupport: "도움말 및 지원",
       logout: "로그아웃",
+    },
+    logout: {
+      confirmTitle: "로그아웃",
+      confirmMessage: "정말 로그아웃 하시겠습니까?",
+      loggingOut: "로그아웃 중...",
+      goodbye: "안녕히 가세요",
+      closingSession: "안전하게 세션을 종료하는 중...",
     },
     landing: {
       stepBadge: "1단계: 퍼스널 브랜드 테스트 시작",

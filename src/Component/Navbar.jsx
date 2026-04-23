@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Logo from "./Logo";
 import { getAuthSession, setAuthSession } from "../services/api";
 import { useLanguage } from "../context/LanguageContext";
+import LogoutConfirmationModal from "./LogoutConfirmationModal";
 
 // Lordicon animated icons
 const icons = {
@@ -48,6 +49,7 @@ export default function Navbar({ active = "ai-content" }) {
   const session = getAuthSession();
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
   const displayName = session?.name || session?.email || t("common.userFallback");
   const initials = displayName
@@ -56,6 +58,13 @@ export default function Navbar({ active = "ai-content" }) {
     .slice(0, 2)
     .map((part) => part[0].toUpperCase())
     .join("");
+
+  const handleLogout = () => {
+    setAuthSession(null);
+    window.dispatchEvent(new CustomEvent("app-logout"));
+    navigate("/auth");
+    setMobileOpen(false);
+  };
 
   const navItems = [
     { id: "branding-test", label: t("navbar.brandingTest"), icon: "sparkles", path: "/brand-test/intro" },
@@ -187,12 +196,7 @@ export default function Navbar({ active = "ai-content" }) {
             </div>
 
             <button
-              onClick={() => {
-                setAuthSession(null);
-                window.dispatchEvent(new CustomEvent("app-logout"));
-                navigate("/auth");
-                setMobileOpen(false);
-              }}
+              onClick={() => setIsLogoutModalOpen(true)}
               className="mt-4 text-sm text-red-500 hover:text-red-600 transition w-full text-left"
             >
               {t("navbar.logout")}
@@ -221,11 +225,7 @@ export default function Navbar({ active = "ai-content" }) {
                 </div>
 
                 <button
-                  onClick={() => {
-                    setAuthSession(null);
-                    window.dispatchEvent(new CustomEvent("app-logout"));
-                    navigate("/auth");
-                  }}
+                  onClick={() => setIsLogoutModalOpen(true)}
                   className="mt-4 text-sm text-red-500 hover:text-red-600 transition w-full text-left"
                 >
                   {t("navbar.logout")}
@@ -237,11 +237,7 @@ export default function Navbar({ active = "ai-content" }) {
                   {initials || t("common.userFallback").slice(0, 1).toUpperCase()}
                 </div>
                 <button
-                  onClick={() => {
-                    setAuthSession(null);
-                    window.dispatchEvent(new CustomEvent("app-logout"));
-                    navigate("/auth");
-                  }}
+                  onClick={() => setIsLogoutModalOpen(true)}
                   className="text-red-500 hover:text-red-600 transition"
                   title={t("navbar.logout")}
                 >
@@ -254,6 +250,13 @@ export default function Navbar({ active = "ai-content" }) {
           </div>
         </div>
       </aside>
+
+      {/* Logout Confirmation Modal */}
+      <LogoutConfirmationModal
+        isOpen={isLogoutModalOpen}
+        onClose={() => setIsLogoutModalOpen(false)}
+        onConfirm={handleLogout}
+      />
     </>
   );
 }

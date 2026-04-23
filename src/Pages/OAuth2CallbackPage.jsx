@@ -13,6 +13,7 @@ export default function OAuth2CallbackPage() {
     const userId = searchParams.get("userId");
     const email = searchParams.get("email");
     const name = searchParams.get("name");
+    const role = searchParams.get("role");
     const errorParam = searchParams.get("error");
 
     if (errorParam) {
@@ -31,10 +32,15 @@ export default function OAuth2CallbackPage() {
         userId,
         email: decodeURIComponent(email),
         name: name ? decodeURIComponent(name) : email,
+        role: role || "USER",
       });
 
-      // Redirect to app
-      navigate("/app", { replace: true });
+      // Redirect based on role
+      if (role === "ADMIN") {
+        navigate("/admin", { replace: true });
+      } else {
+        navigate("/app", { replace: true });
+      }
     } else {
       setError("Invalid OAuth response. Missing required parameters.");
       setTimeout(() => {

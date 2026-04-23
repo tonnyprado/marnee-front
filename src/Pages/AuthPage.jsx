@@ -16,7 +16,12 @@ export default function AuthPage() {
   React.useEffect(() => {
     const session = getAuthSession();
     if (session?.token) {
-      navigate("/app", { replace: true });
+      // Redirect based on role if already authenticated
+      if (session.role === "ADMIN") {
+        navigate("/admin", { replace: true });
+      } else {
+        navigate("/app", { replace: true });
+      }
     }
   }, [navigate]);
 
@@ -104,9 +109,15 @@ export default function AuthPage() {
         userId: response.userId,
         email: response.email,
         name: response.name,
+        role: response.role,
       });
 
-      navigate("/app");
+      // Redirect based on role
+      if (response.role === "ADMIN") {
+        navigate("/admin");
+      } else {
+        navigate("/app");
+      }
     } catch (err) {
       setError(err.message || t("auth.errors.generic"));
     } finally {
