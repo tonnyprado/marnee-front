@@ -48,7 +48,6 @@ export default function Navbar({ active = "ai-content" }) {
   const navigate = useNavigate();
   const session = getAuthSession();
   const [collapsed, setCollapsed] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
   const displayName = session?.name || session?.email || t("common.userFallback");
@@ -63,7 +62,6 @@ export default function Navbar({ active = "ai-content" }) {
     setAuthSession(null);
     window.dispatchEvent(new CustomEvent("app-logout"));
     navigate("/auth");
-    setMobileOpen(false);
   };
 
   const navItems = [
@@ -75,43 +73,26 @@ export default function Navbar({ active = "ai-content" }) {
 
   return (
     <>
-      {/* Mobile Menu Button */}
-      <button
-        onClick={() => setMobileOpen(!mobileOpen)}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-white rounded-lg shadow-lg border border-gray-200 hover:bg-gray-50 transition"
-      >
-        <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          {mobileOpen ? (
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          ) : (
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-          )}
-        </svg>
-      </button>
-
-      {/* Mobile Overlay */}
-      {mobileOpen && (
-        <div
-          className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
-          onClick={() => setMobileOpen(false)}
-        />
-      )}
-
       {/* Sidebar */}
       <aside
         className={`
           ${collapsed ? 'w-20' : 'w-72'}
-          bg-white text-gray-900 flex flex-col h-screen border-r border-[rgba(30,30,30,0.1)] shrink-0 transition-all duration-300
-          max-lg:fixed max-lg:z-40 max-lg:!w-72
-          ${mobileOpen ? 'max-lg:translate-x-0' : 'max-lg:-translate-x-full'}
+          bg-white text-gray-900 flex flex-col h-dvh border-r border-[rgba(30,30,30,0.1)] shrink-0 transition-all duration-300
+          max-lg:!w-20
         `}
       >
         {/* Logo */}
-        <div className={`flex items-center ${collapsed ? 'justify-center lg:justify-center' : 'justify-between'} px-4 py-5 border-b border-[rgba(30,30,30,0.1)] max-lg:justify-between`}>
+        <div className={`flex items-center ${collapsed ? 'justify-center' : 'justify-between'} px-4 py-5 border-b border-[rgba(30,30,30,0.1)] max-lg:justify-center`}>
           <div
-            className={`transition ${collapsed ? 'scale-75 lg:scale-75' : ''} max-lg:scale-100`}
+            className={`transition ${collapsed ? 'scale-75' : ''} max-lg:scale-75`}
           >
-            <Logo dark={true} iconOnly={collapsed} />
+            {/* En móvil siempre mostrar solo icono, en desktop depende de collapsed */}
+            <div className="hidden lg:block">
+              <Logo dark={true} iconOnly={collapsed} />
+            </div>
+            <div className="lg:hidden">
+              <Logo dark={true} iconOnly={true} />
+            </div>
           </div>
           <button
             onClick={() => setCollapsed(true)}
@@ -148,7 +129,6 @@ export default function Navbar({ active = "ai-content" }) {
                 <button
                   onClick={() => {
                     navigate(item.path);
-                    setMobileOpen(false);
                   }}
                   className={`w-full flex items-center ${isCollapsedDesktop ? 'lg:justify-center lg:px-3' : 'gap-3 px-3'} gap-3 px-3 py-3 rounded text-left transition ${
                     isActive
@@ -189,10 +169,10 @@ export default function Navbar({ active = "ai-content" }) {
             </div>
 
             <div className="space-y-2 text-sm text-gray-500">
-              <button onClick={() => { navigate("/app/profile-settings"); setMobileOpen(false); }} className="block w-full text-left hover:text-[#40086d] transition">{t("navbar.profileSettings")}</button>
-              <button onClick={() => { navigate("/app/billing"); setMobileOpen(false); }} className="block w-full text-left hover:text-[#40086d] transition">{t("navbar.billingPlans")}</button>
+              <button onClick={() => { navigate("/app/profile-settings"); }} className="block w-full text-left hover:text-[#40086d] transition">{t("navbar.profileSettings")}</button>
+              <button onClick={() => { navigate("/app/billing"); }} className="block w-full text-left hover:text-[#40086d] transition">{t("navbar.billingPlans")}</button>
               <button className="block w-full text-left hover:text-[#40086d] transition">{t("navbar.notifications")}</button>
-              <button onClick={() => { navigate("/app/help-support"); setMobileOpen(false); }} className="block w-full text-left hover:text-[#40086d] transition">{t("navbar.helpSupport")}</button>
+              <button onClick={() => { navigate("/app/help-support"); }} className="block w-full text-left hover:text-[#40086d] transition">{t("navbar.helpSupport")}</button>
             </div>
 
             <button

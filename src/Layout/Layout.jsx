@@ -14,9 +14,9 @@ export default function AppLayout() {
   else if (location.pathname.startsWith("/brand-test")) active = "branding-test";
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex h-dvh overflow-hidden">
       <Navbar active={active} />
-      <div className="flex-1 bg-gray-50 overflow-y-auto max-lg:pt-16">
+      <div className="flex-1 bg-gray-50 overflow-y-auto">
         <AnimatePresence mode="wait">
           <Outlet key={location.pathname} />
         </AnimatePresence>

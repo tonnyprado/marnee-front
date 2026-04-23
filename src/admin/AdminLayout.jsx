@@ -43,9 +43,30 @@ export default function AdminLayout() {
   const session = getAuthSession();
 
   return (
-    <div className="flex h-screen bg-gradient-to-br from-mn-ice via-white to-mn-lilac/20">
-      {/* Sidebar */}
-      <aside className="w-64 bg-gradient-to-b from-mn-night to-mn-purple text-white flex flex-col shadow-2xl relative overflow-hidden">
+    <div className="flex h-dvh bg-gradient-to-br from-mn-ice via-white to-mn-lilac/20">
+      {/* Mobile Header */}
+      <div className="lg:hidden fixed top-0 left-0 right-0 h-14 bg-gradient-to-r from-mn-night to-mn-purple text-white flex items-center justify-between px-4 shadow-lg z-40">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 bg-gradient-to-br from-mn-lilac to-white rounded-lg flex items-center justify-center">
+            <Sparkles className="w-5 h-5 text-mn-purple" />
+          </div>
+          <span className="text-lg font-display font-bold">Marnee</span>
+        </div>
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 bg-gradient-to-br from-mn-lilac to-white rounded-full flex items-center justify-center">
+            <Settings size={16} className="text-mn-purple" />
+          </div>
+          <button
+            onClick={() => setShowLogoutModal(true)}
+            className="text-red-300 hover:text-red-100 transition"
+          >
+            <LogOut size={20} />
+          </button>
+        </div>
+      </div>
+
+      {/* Sidebar - Desktop only */}
+      <aside className="hidden lg:flex w-64 bg-gradient-to-b from-mn-night to-mn-purple text-white flex-col shadow-2xl relative overflow-hidden">
         {/* Decorative gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-br from-mn-purple/20 to-transparent pointer-events-none"></div>
 
@@ -149,11 +170,33 @@ export default function AdminLayout() {
       </aside>
 
       {/* Main content */}
-      <main className="flex-1 overflow-y-auto">
+      <main className="flex-1 overflow-y-auto lg:pt-0 pt-14 pb-16 lg:pb-0">
         <AdminTransition>
           <Outlet />
         </AdminTransition>
       </main>
+
+      {/* Bottom Tab Bar - Mobile only */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 h-16 bg-gradient-to-r from-mn-night to-mn-purple border-t border-white/10 flex items-center justify-around px-2 z-40">
+        {menuItems.map((item) => {
+          const Icon = item.icon;
+          const active = isActive(item.path, item.exact);
+          return (
+            <Link
+              key={item.path}
+              to={item.path}
+              className={`flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-all ${
+                active
+                  ? 'bg-white/20 text-white scale-105'
+                  : 'text-mn-lilac/70 hover:text-white'
+              }`}
+            >
+              <Icon size={20} />
+              <span className="text-[10px] font-medium">{item.label}</span>
+            </Link>
+          );
+        })}
+      </div>
 
       {/* Logout confirmation modal */}
       {showLogoutModal && (
