@@ -641,7 +641,7 @@ function ChatPageContent() {
   }
 
   return (
-    <PageTransition className={`h-screen ${theme.background}`}>
+    <PageTransition className={`h-dvh ${theme.background}`}>
       {/* Main layout with sidebar */}
       <div className="flex h-full relative">
         {/* Sidebar - Always rendered, controls its own collapsed state */}

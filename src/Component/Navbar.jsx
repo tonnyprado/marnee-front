@@ -130,7 +130,7 @@ export default function Navbar({ active = "ai-content" }) {
                   onClick={() => {
                     navigate(item.path);
                   }}
-                  className={`w-full flex items-center ${isCollapsedDesktop ? 'lg:justify-center lg:px-3' : 'gap-3 px-3'} gap-3 px-3 py-3 rounded text-left transition ${
+                  className={`w-full flex items-center ${isCollapsedDesktop ? 'lg:justify-center lg:px-3' : 'gap-3 px-3'} max-lg:justify-center max-lg:px-3 py-3 rounded transition ${
                     isActive
                       ? "bg-[#ede0f8] text-[#40086d] border border-[#dccaf4]"
                       : "text-gray-600 hover:bg-[#f6f6f6]"
@@ -140,7 +140,7 @@ export default function Navbar({ active = "ai-content" }) {
                   <span className={`shrink-0 ${isActive ? "text-[#40086d]" : "text-gray-400"}`}>
                     {icons[item.icon]}
                   </span>
-                  <span className={`text-sm font-medium ${isCollapsedDesktop ? 'lg:hidden' : ''}`}>{item.label}</span>
+                  <span className={`text-sm font-medium ${isCollapsedDesktop ? 'lg:hidden' : ''} max-lg:hidden`}>{item.label}</span>
                 </button>
 
                 {/* Tooltip when collapsed - only on desktop */}
