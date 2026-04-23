@@ -6,7 +6,7 @@ import { useLanguage } from "../context/LanguageContext";
 
 export default function AuthPage() {
   const { t } = useLanguage();
-  const [mode, setMode] = useState("signin"); // "signin" | "signup"
+  const mode = "signin"; // Fixed to signin only - signup disabled
   const [form, setForm] = useState({ name: "", email: "", password: "", acceptTerms: false });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -125,15 +125,16 @@ export default function AuthPage() {
     }
   };
 
-  const handleGoogleSignIn = () => {
-    // Redirect to backend OAuth endpoint
-    api.googleSignIn();
-  };
+  // DISABLED: OAuth sign in temporarily disabled
+  // const handleGoogleSignIn = () => {
+  //   // Redirect to backend OAuth endpoint
+  //   api.googleSignIn();
+  // };
 
-  const handleAppleSignIn = () => {
-    // Redirect to backend OAuth endpoint
-    api.appleSignIn();
-  };
+  // const handleAppleSignIn = () => {
+  //   // Redirect to backend OAuth endpoint
+  //   api.appleSignIn();
+  // };
 
   return (
     <div className="min-h-screen bg-[#f6f6f6] relative flex items-center justify-center px-4">
