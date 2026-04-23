@@ -156,30 +156,19 @@ export default function Navbar({ active = "ai-content" }) {
 
         {/* User box */}
         <div className="mt-auto border-t border-[rgba(30,30,30,0.1)] px-3 py-4">
-          {/* Mobile - always expanded */}
-          <div className="lg:hidden">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded bg-[#40086d] text-[#dccaf4] flex items-center justify-center text-sm font-medium">
-                {initials || t("common.userFallback").slice(0, 1).toUpperCase()}
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-900 truncate">{displayName}</p>
-                <p className="text-xs text-gray-500 truncate">{session?.email || t("common.freePlan")}</p>
-              </div>
+          {/* Mobile/Tablet - always collapsed (icon only) */}
+          <div className="lg:hidden flex flex-col items-center gap-2">
+            <div className="w-10 h-10 rounded bg-[#40086d] text-[#dccaf4] flex items-center justify-center text-sm font-medium">
+              {initials || t("common.userFallback").slice(0, 1).toUpperCase()}
             </div>
-
-            <div className="space-y-2 text-sm text-gray-500">
-              <button onClick={() => { navigate("/app/profile-settings"); }} className="block w-full text-left hover:text-[#40086d] transition">{t("navbar.profileSettings")}</button>
-              <button onClick={() => { navigate("/app/billing"); }} className="block w-full text-left hover:text-[#40086d] transition">{t("navbar.billingPlans")}</button>
-              <button className="block w-full text-left hover:text-[#40086d] transition">{t("navbar.notifications")}</button>
-              <button onClick={() => { navigate("/app/help-support"); }} className="block w-full text-left hover:text-[#40086d] transition">{t("navbar.helpSupport")}</button>
-            </div>
-
             <button
               onClick={() => setIsLogoutModalOpen(true)}
-              className="mt-4 text-sm text-red-500 hover:text-red-600 transition w-full text-left"
+              className="text-red-500 hover:text-red-600 transition"
+              title={t("navbar.logout")}
             >
-              {t("navbar.logout")}
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
             </button>
           </div>
 

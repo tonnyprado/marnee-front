@@ -1,6 +1,5 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Sparkles } from 'lucide-react';
 
 export default function PromptSuggestions({ onSelectPrompt }) {
   const suggestions = [
@@ -33,7 +32,14 @@ export default function PromptSuggestions({ onSelectPrompt }) {
   return (
     <div className="p-6 max-w-2xl mx-auto">
       <div className="text-center mb-6">
-        <Sparkles className="w-12 h-12 text-[#40086d] mx-auto mb-3 opacity-50" />
+        <div className="mx-auto mb-3 flex justify-center">
+          <lord-icon
+            src="https://cdn.lordicon.com/abhwievu.json"
+            trigger="loop"
+            colors="primary:#a866ee,secondary:#ee66aa,tertiary:#a39cf4,quaternary:#ebe6ef"
+            style={{ width: '120px', height: '120px' }}
+          />
+        </div>
         <h3 className="text-lg font-bold text-gray-900 mb-2">
           What can I help you with?
         </h3>
