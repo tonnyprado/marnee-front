@@ -14,7 +14,7 @@
  * - Request retries (optional)
  */
 
-import { getAuthHeader, setAuthSession } from '../utils/auth';
+import { getAuthHeader } from '../utils/auth';
 import errorHandler from './ErrorHandler';
 import logger from '../utils/logger';
 

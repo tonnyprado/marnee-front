@@ -208,7 +208,7 @@ export function MarneeProvider({ children }) {
     };
     window.addEventListener('app-logout', handleLogout);
     return () => window.removeEventListener('app-logout', handleLogout);
-  }, []);
+  }, [clearSession]);
 
   // Get messages in API format
   const getMessagesForApi = () => {
