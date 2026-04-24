@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Users, CreditCard, Package, UserCheck } from 'lucide-react';
 import { getDashboardStats, getAnalyticsOverview } from '../../services/adminApi';
+import OpenAICreditsCard from '../components/OpenAICreditsCard';
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState(null);
@@ -114,7 +115,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Additional Info */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
         {/* System Stats */}
         <div className="bg-white rounded-lg shadow-sm p-6">
           <h3 className="text-lg font-semibold mb-4">Estadísticas del Sistema</h3>
@@ -151,6 +152,11 @@ export default function AdminDashboard() {
               <span className="font-semibold text-blue-600">{analytics?.page_views || 0}</span>
             </div>
           </div>
+        </div>
+
+        {/* OpenAI Credits */}
+        <div className="lg:col-span-2 xl:col-span-1">
+          <OpenAICreditsCard />
         </div>
       </div>
     </div>

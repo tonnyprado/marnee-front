@@ -41,6 +41,7 @@ import SecurityDashboard from "./admin/pages/SecurityDashboard";
 import AuditLogsPage from "./admin/pages/AuditLogsPage";
 import ActiveSessionsPage from "./admin/pages/ActiveSessionsPage";
 import SecurityAlertsPage from "./admin/pages/SecurityAlertsPage";
+import PromptManagement from "./admin/pages/PromptManagement";
 
 function RequireAuth({ children }) {
   const session = getAuthSession();
@@ -143,6 +144,7 @@ function AppContent() {
           <Route index element={<AdminDashboard />} />
           <Route path="users" element={<UserManagement />} />
           <Route path="subscriptions" element={<SubscriptionPlans />} />
+          <Route path="marnee-training" element={<PromptManagement />} />
           <Route path="seo" element={<SeoManagement />} />
           <Route path="analytics" element={<AnalyticsDashboard />} />
           <Route path="security" element={<SecurityDashboard />} />

@@ -2,7 +2,7 @@ import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import {
   Users, LayoutDashboard, CreditCard, FileText,
-  BarChart3, LogOut, Settings, Shield, Lock, Activity, AlertTriangle, Sparkles
+  BarChart3, LogOut, Settings, Shield, Lock, Activity, AlertTriangle, Sparkles, Brain
 } from 'lucide-react';
 import { getAuthSession, setAuthSession } from '../services/api';
 import LogoutConfirmModal from './components/LogoutConfirmModal';
@@ -22,6 +22,7 @@ export default function AdminLayout() {
     { path: '/admin', label: 'Dashboard', icon: LayoutDashboard, exact: true },
     { path: '/admin/users', label: 'Usuarios', icon: Users },
     { path: '/admin/subscriptions', label: 'Suscripciones', icon: CreditCard },
+    { path: '/admin/marnee-training', label: 'Marnee Training', icon: Brain },
     { path: '/admin/seo', label: 'SEO', icon: FileText },
     { path: '/admin/analytics', label: 'Analytics', icon: BarChart3 },
   ];
