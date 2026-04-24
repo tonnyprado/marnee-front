@@ -20,6 +20,7 @@ export default function PromptVersionHistory({ promptId, onRollback }) {
     if (promptId) {
       fetchVersions();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [promptId]);
 
   const fetchVersions = async () => {
