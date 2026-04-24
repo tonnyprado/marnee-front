@@ -14,7 +14,7 @@
  * AFTER: Uses StorageService from core + AuthContext (React Native ready)
  */
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import storage from '../core/services/StorageService';
 import { useAuth } from './AuthContext';
 
@@ -179,7 +179,7 @@ export function MarneeProvider({ children }) {
   };
 
   // Clear session
-  const clearSession = () => {
+  const clearSession = useCallback(() => {
     console.log('[MarneeContext] Clearing session and all data');
 
     // Clear auth via AuthContext
@@ -200,7 +200,7 @@ export function MarneeProvider({ children }) {
     setMessages([]);
     setWelcomeMessage(null);
     setCalendar(null);
-  };
+  }, [auth]);
 
   useEffect(() => {
     const handleLogout = () => {
