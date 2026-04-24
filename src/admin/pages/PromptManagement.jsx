@@ -26,6 +26,8 @@ export default function PromptManagement() {
       setAllPrompts(response.data || []);
     } catch (error) {
       console.error('Error fetching prompts:', error);
+      // Don't show error - tables might not exist yet
+      setAllPrompts([]);
     }
   };
 

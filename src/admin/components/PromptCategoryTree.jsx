@@ -35,6 +35,9 @@ export default function PromptCategoryTree({ onSelectPrompt, selectedPromptId })
       setExpandedCategories(allCategoryIds);
     } catch (error) {
       console.error('Error fetching data:', error);
+      // Set empty data - tables might not exist yet
+      setCategories([]);
+      setPrompts([]);
     } finally {
       setLoading(false);
     }
@@ -89,8 +92,9 @@ export default function PromptCategoryTree({ onSelectPrompt, selectedPromptId })
 
       <div className="p-2">
         {categories.length === 0 ? (
-          <div className="p-4 text-center text-gray-500 text-sm">
-            No categories found
+          <div className="p-4 text-center">
+            <p className="text-sm text-gray-500 mb-2">No prompts found</p>
+            <p className="text-xs text-gray-400">Run database migration or click "Import from Code"</p>
           </div>
         ) : (
           <div className="space-y-1">
