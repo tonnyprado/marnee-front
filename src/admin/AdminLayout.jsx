@@ -2,8 +2,9 @@ import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import {
   Users, LayoutDashboard, CreditCard, FileText,
-  BarChart3, LogOut, Settings, Shield, Lock, Activity, AlertTriangle, Sparkles, Brain
+  BarChart3, LogOut, Settings, Shield, Lock, Activity, AlertTriangle, Sparkles, Brain, ChevronDown
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { getAuthSession, setAuthSession } from '../services/api';
 import LogoutConfirmModal from './components/LogoutConfirmModal';
 import AdminTransition from './components/AdminTransition';
@@ -12,6 +13,7 @@ export default function AdminLayout() {
   const location = useLocation();
   const navigate = useNavigate();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [securityExpanded, setSecurityExpanded] = useState(true);
 
   const handleLogout = () => {
     setAuthSession(null);
@@ -109,37 +111,66 @@ export default function AdminLayout() {
             );
           })}
 
-          {/* Security Section */}
-          <div className="mt-6 mb-3 px-4">
-            <div className="flex items-center gap-2">
-              <Shield className="w-4 h-4 text-mn-lilac" />
-              <p className="text-xs font-semibold text-mn-lilac uppercase tracking-wider">
+          {/* Security Section - Collapsible */}
+          <div className="mt-6">
+            {/* Security Header Button */}
+            <button
+              onClick={() => setSecurityExpanded(!securityExpanded)}
+              className="w-full flex items-center gap-2 px-4 py-3 rounded-xl mb-2 transition-all duration-300 hover:bg-white/10 group"
+            >
+              <Shield className="w-5 h-5 text-mn-lilac group-hover:text-white transition-colors" />
+              <span className="flex-1 text-left text-sm font-semibold text-mn-lilac group-hover:text-white uppercase tracking-wider transition-colors">
                 Seguridad
-              </p>
-            </div>
-          </div>
-          {securityItems.map((item) => {
-            const Icon = item.icon;
-            const active = isActive(item.path, item.exact);
-
-            return (
-              <Link
-                key={item.path}
-                to={item.path}
-                className={`
-                  flex items-center gap-3 px-4 py-3 rounded-xl mb-2
-                  transition-all duration-300 transform
-                  ${active
-                    ? 'bg-white/20 text-white shadow-lg backdrop-blur-sm scale-105 border border-white/20'
-                    : 'text-mn-lilac hover:bg-white/10 hover:text-white hover:scale-102 hover:translate-x-1'
-                  }
-                `}
+              </span>
+              <motion.div
+                animate={{ rotate: securityExpanded ? 180 : 0 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
               >
-                <Icon size={20} />
-                <span className="font-medium">{item.label}</span>
-              </Link>
-            );
-          })}
+                <ChevronDown className="w-4 h-4 text-mn-lilac group-hover:text-white transition-colors" />
+              </motion.div>
+            </button>
+
+            {/* Security Items - Animated */}
+            <AnimatePresence>
+              {securityExpanded && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{
+                    height: { duration: 0.3, ease: "easeInOut" },
+                    opacity: { duration: 0.2, ease: "easeInOut" }
+                  }}
+                  className="overflow-hidden"
+                >
+                  <div className="pl-2">
+                    {securityItems.map((item) => {
+                      const Icon = item.icon;
+                      const active = isActive(item.path, item.exact);
+
+                      return (
+                        <Link
+                          key={item.path}
+                          to={item.path}
+                          className={`
+                            flex items-center gap-3 px-4 py-3 rounded-xl mb-2
+                            transition-all duration-300 transform
+                            ${active
+                              ? 'bg-white/20 text-white shadow-lg backdrop-blur-sm scale-105 border border-white/20'
+                              : 'text-mn-lilac hover:bg-white/10 hover:text-white hover:scale-102 hover:translate-x-1'
+                            }
+                          `}
+                        >
+                          <Icon size={18} />
+                          <span className="font-medium text-sm">{item.label}</span>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </nav>
 
         {/* User info & logout */}
