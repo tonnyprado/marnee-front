@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { api } from "../../../services/api";
-import { useMarnee } from "../../../context/MarneeContext";
+import { useAuth } from "../../../context/AuthContext";
 
 const STATUS_COLORS = {
   idea: "bg-gray-100 text-gray-700 border-gray-300",
@@ -12,7 +12,7 @@ const STATUS_COLORS = {
 const PLATFORMS = ["TikTok", "Instagram", "LinkedIn", "YouTube", "Twitter/X", "Facebook", "Pinterest"];
 
 export default function BrainstormingSection({ calendarId }) {
-  const { founderId } = useMarnee();
+  const { founderId } = useAuth();
   const [ideas, setIdeas] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isFormOpen, setIsFormOpen] = useState(false);

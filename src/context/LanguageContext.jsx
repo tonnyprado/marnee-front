@@ -1,12 +1,20 @@
+/**
+ * LanguageContext - Refactored to use StorageService
+ *
+ * BEFORE: Direct localStorage usage (lines 9, 34)
+ * AFTER: Uses StorageService from core (React Native ready)
+ */
+
 import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES, translations } from "../i18n/translations";
+import storage from '../core/services/StorageService';
 
 const STORAGE_KEY = "marnee_language";
 
 const LanguageContext = createContext(null);
 
 function getStoredLanguage() {
-  const stored = localStorage.getItem(STORAGE_KEY);
+  const stored = storage.getItem(STORAGE_KEY);
   if (SUPPORTED_LANGUAGES.some((language) => language.code === stored)) {
     return stored;
   }
@@ -31,7 +39,7 @@ export function LanguageProvider({ children }) {
   const [language, setLanguage] = useState(getStoredLanguage);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, language);
+    storage.setItem(STORAGE_KEY, language);
     document.documentElement.lang = language;
   }, [language]);
 

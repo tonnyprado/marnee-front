@@ -1,4 +1,22 @@
+/**
+ * MarneeContext - Refactored to use StorageService and AuthContext
+ *
+ * MIGRATION NOTES:
+ * - Now uses AuthContext for founderId/sessionId (backward compatible)
+ * - Still manages messages/calendar/steps for legacy support
+ * - Components should gradually migrate to:
+ *   - useAuth() for founderId/sessionId
+ *   - useChat() for messages
+ *   - useConversations() for conversations
+ *   - This context for app-level state only (steps, calendar)
+ *
+ * BEFORE: Direct localStorage usage (15+ calls)
+ * AFTER: Uses StorageService from core + AuthContext (React Native ready)
+ */
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import storage from '../core/services/StorageService';
+import { useAuth } from './AuthContext';
 
 const MarneeContext = createContext(null);
 
@@ -7,8 +25,8 @@ const STORAGE_KEYS = {
   SESSION_ID: 'marnee_sessionId',
   CALENDAR_ID: 'marnee_calendarId',
   CONVERSATION_ID: 'marnee_conversationId',
-  MESSAGES_BACKUP: 'marnee_messages_backup', // Backup messages in localStorage
-  CALENDAR_BACKUP: 'marnee_calendar_backup', // Backup calendar in localStorage
+  MESSAGES_BACKUP: 'marnee_messages_backup',
+  CALENDAR_BACKUP: 'marnee_calendar_backup',
 };
 
 const STEP_NAMES = {
@@ -21,116 +39,83 @@ const STEP_NAMES = {
 };
 
 export function MarneeProvider({ children }) {
-  const [founderId, setFounderId] = useState(() =>
-    localStorage.getItem(STORAGE_KEYS.FOUNDER_ID)
-  );
-  const [sessionId, setSessionId] = useState(() =>
-    localStorage.getItem(STORAGE_KEYS.SESSION_ID)
-  );
+  // Use AuthContext for session management
+  const auth = useAuth();
+
+  // App state
   const [conversationId, setConversationId] = useState(() =>
-    localStorage.getItem(STORAGE_KEYS.CONVERSATION_ID)
+    storage.getItem(STORAGE_KEYS.CONVERSATION_ID)
   );
   const [currentStep, setCurrentStep] = useState(1);
   const [stepName, setStepName] = useState(STEP_NAMES[1]);
+
   const [messages, setMessages] = useState(() => {
-    // Try to load messages from localStorage backup on init
-    try {
-      const backup = localStorage.getItem(STORAGE_KEYS.MESSAGES_BACKUP);
-      if (backup) {
-        const parsed = JSON.parse(backup);
-        console.log('[MarneeContext] Restored', parsed.length, 'messages from localStorage backup');
-        return parsed;
-      }
-    } catch (error) {
-      console.error('[MarneeContext] Failed to restore messages from localStorage:', error);
-    }
-    return [];
+    const backup = storage.getItem(STORAGE_KEYS.MESSAGES_BACKUP, []);
+    console.log('[MarneeContext] Restored', backup.length, 'messages from storage backup');
+    return backup;
   });
+
   const [welcomeMessage, setWelcomeMessage] = useState(null);
+
   const [calendarId, setCalendarId] = useState(() => {
-    const storedId = localStorage.getItem(STORAGE_KEYS.CALENDAR_ID);
-    console.log('[MarneeContext] Initial calendarId from localStorage:', storedId);
+    const storedId = storage.getItem(STORAGE_KEYS.CALENDAR_ID);
+    console.log('[MarneeContext] Initial calendarId from storage:', storedId);
     return storedId;
   });
+
   const [calendar, setCalendar] = useState(() => {
-    // Try to load calendar from localStorage backup on init
-    try {
-      const backup = localStorage.getItem(STORAGE_KEYS.CALENDAR_BACKUP);
-      if (backup) {
-        const parsed = JSON.parse(backup);
-        console.log('[MarneeContext] Restored calendar from localStorage backup:', {
-          postsCount: parsed?.posts?.length || 0,
-          startDate: parsed?.startDate,
-          endDate: parsed?.endDate,
-        });
-        return parsed;
-      }
-    } catch (error) {
-      console.error('[MarneeContext] Failed to restore calendar from localStorage:', error);
+    const backup = storage.getItem(STORAGE_KEYS.CALENDAR_BACKUP);
+    if (backup) {
+      console.log('[MarneeContext] Restored calendar from storage backup:', {
+        postsCount: backup?.posts?.length || 0,
+        startDate: backup?.startDate,
+        endDate: backup?.endDate,
+      });
     }
-    return null;
+    return backup;
   });
 
-  // Persist to localStorage
-  useEffect(() => {
-    if (founderId) {
-      localStorage.setItem(STORAGE_KEYS.FOUNDER_ID, founderId);
-    }
-  }, [founderId]);
-
-  useEffect(() => {
-    if (sessionId) {
-      localStorage.setItem(STORAGE_KEYS.SESSION_ID, sessionId);
-    }
-  }, [sessionId]);
-
+  // Persist to storage
   useEffect(() => {
     if (calendarId) {
-      console.log('[MarneeContext] Saving calendarId to localStorage:', calendarId);
-      localStorage.setItem(STORAGE_KEYS.CALENDAR_ID, calendarId);
+      console.log('[MarneeContext] Saving calendarId to storage:', calendarId);
+      storage.setItem(STORAGE_KEYS.CALENDAR_ID, calendarId);
     } else {
-      console.log('[MarneeContext] calendarId is null/undefined, not saving to localStorage');
+      console.log('[MarneeContext] calendarId is null/undefined, not saving to storage');
     }
   }, [calendarId]);
 
   useEffect(() => {
     if (conversationId) {
-      localStorage.setItem(STORAGE_KEYS.CONVERSATION_ID, conversationId);
+      storage.setItem(STORAGE_KEYS.CONVERSATION_ID, conversationId);
     }
   }, [conversationId]);
 
-  // Persist messages to localStorage as backup
+  // Persist messages to storage as backup
   useEffect(() => {
     if (messages.length > 0) {
-      try {
-        localStorage.setItem(STORAGE_KEYS.MESSAGES_BACKUP, JSON.stringify(messages));
-        console.log('[MarneeContext] Backed up', messages.length, 'messages to localStorage');
-      } catch (error) {
-        console.error('[MarneeContext] Failed to backup messages to localStorage:', error);
-      }
+      storage.setItem(STORAGE_KEYS.MESSAGES_BACKUP, messages);
+      console.log('[MarneeContext] Backed up', messages.length, 'messages to storage');
     }
   }, [messages]);
 
-  // Persist calendar to localStorage as backup
+  // Persist calendar to storage as backup
   useEffect(() => {
     if (calendar && calendar.posts && calendar.posts.length > 0) {
-      try {
-        localStorage.setItem(STORAGE_KEYS.CALENDAR_BACKUP, JSON.stringify(calendar));
-        console.log('[MarneeContext] Backed up calendar to localStorage:', {
-          postsCount: calendar.posts.length,
-          startDate: calendar.startDate,
-          endDate: calendar.endDate,
-        });
-      } catch (error) {
-        console.error('[MarneeContext] Failed to backup calendar to localStorage:', error);
-      }
+      storage.setItem(STORAGE_KEYS.CALENDAR_BACKUP, calendar);
+      console.log('[MarneeContext] Backed up calendar to storage:', {
+        postsCount: calendar.posts.length,
+        startDate: calendar.startDate,
+        endDate: calendar.endDate,
+      });
     }
   }, [calendar]);
 
   // Initialize session after questionnaire
   const initSession = ({ founderId: fId, sessionId: sId, welcomeMessage: wMsg, conversationId: cId, clearMessages = true }) => {
-    setFounderId(fId);
-    setSessionId(sId);
+    // Use AuthContext for session
+    auth.login({ founderId: fId, sessionId: sId });
+
     setConversationId(cId || null);
     setWelcomeMessage(wMsg);
     setCurrentStep(1);
@@ -163,8 +148,11 @@ export function MarneeProvider({ children }) {
     console.log('[MarneeContext] Conversation has', conversation.messages?.length || 0, 'messages');
 
     setConversationId(conversation.id);
-    setFounderId(conversation.founderId);
-    setSessionId(conversation.sessionId);
+    // Update auth context
+    auth.login({
+      founderId: conversation.founderId,
+      sessionId: conversation.sessionId,
+    });
 
     // Convert backend messages to UI format
     const uiMessages = conversation.messages.map((msg) => ({
@@ -193,14 +181,18 @@ export function MarneeProvider({ children }) {
   // Clear session
   const clearSession = () => {
     console.log('[MarneeContext] Clearing session and all data');
-    localStorage.removeItem(STORAGE_KEYS.FOUNDER_ID);
-    localStorage.removeItem(STORAGE_KEYS.SESSION_ID);
-    localStorage.removeItem(STORAGE_KEYS.CALENDAR_ID);
-    localStorage.removeItem(STORAGE_KEYS.CONVERSATION_ID);
-    localStorage.removeItem(STORAGE_KEYS.MESSAGES_BACKUP);
-    localStorage.removeItem(STORAGE_KEYS.CALENDAR_BACKUP);
-    setFounderId(null);
-    setSessionId(null);
+
+    // Clear auth via AuthContext
+    auth.logout();
+
+    // Clear app-specific storage
+    storage.removeMultiple([
+      STORAGE_KEYS.CALENDAR_ID,
+      STORAGE_KEYS.CONVERSATION_ID,
+      STORAGE_KEYS.MESSAGES_BACKUP,
+      STORAGE_KEYS.CALENDAR_BACKUP,
+    ]);
+
     setCalendarId(null);
     setConversationId(null);
     setCurrentStep(1);
@@ -227,17 +219,25 @@ export function MarneeProvider({ children }) {
   };
 
   const value = {
-    founderId,
-    setFounderId,
-    sessionId,
-    setSessionId,
+    // Session (delegated to AuthContext, kept for backward compatibility)
+    founderId: auth.founderId,
+    setFounderId: auth.setFounderId,
+    sessionId: auth.sessionId,
+    setSessionId: auth.setSessionId,
+    hasSession: auth.hasSession,
+
+    // App state
     conversationId,
     calendarId,
     calendar,
     currentStep,
     stepName,
+
+    // Messages (legacy support - should use useChat hook instead)
     messages,
     welcomeMessage,
+
+    // Methods
     initSession,
     addMessage,
     setMessages,
@@ -248,7 +248,6 @@ export function MarneeProvider({ children }) {
     loadConversation,
     clearSession,
     getMessagesForApi,
-    hasSession: Boolean(founderId && sessionId),
   };
 
   return (

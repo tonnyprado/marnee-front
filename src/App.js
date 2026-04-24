@@ -4,6 +4,8 @@ import { Routes, Route, Navigate } from "react-router-dom";
 
 import { MarneeProvider } from "./context/MarneeContext";
 import { LanguageProvider, useLanguage } from "./context/LanguageContext";
+import { AuthProvider } from "./context/AuthContext";
+import { ChatThemeProvider } from "./context/ChatThemeContext";
 import { getAuthSession } from "./services/api";
 
 import LandingPage from "./Pages/LandingPage";
@@ -76,8 +78,10 @@ function AppContent() {
   }, [t]);
 
   return (
-    <MarneeProvider>
-      <Routes>
+    <ChatThemeProvider>
+      <AuthProvider>
+        <MarneeProvider>
+          <Routes>
         {/* públicas */}
         <Route path="/" element={<PresentationPage />} />
         <Route path="/intro-page" element={<LandingPage />} />
@@ -149,8 +153,8 @@ function AppContent() {
 
         {/* fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-      {globalError && (
+          </Routes>
+          {globalError && (
         <div className="fixed bottom-6 right-6 z-50 max-w-sm rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800 shadow-lg">
           <div className="flex items-start gap-3">
             <span className="mt-0.5 inline-block h-2 w-2 rounded-full bg-red-500" />
@@ -164,8 +168,10 @@ function AppContent() {
             </button>
           </div>
         </div>
-      )}
-    </MarneeProvider>
+          )}
+        </MarneeProvider>
+      </AuthProvider>
+    </ChatThemeProvider>
   );
 }
 

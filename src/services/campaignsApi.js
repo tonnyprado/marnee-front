@@ -1,186 +1,96 @@
 /**
- * Campaigns API Service
- * All campaign-related API endpoints
+ * Campaigns API Service - Refactored
+ *
+ * BEFORE: 200 lines with duplicated auth/request logic
+ * AFTER: 50 lines using unified ApiClient
  */
+
+import apiClient from '../core/services/ApiClient';
 import API from '../config';
-
-const AUTH_STORAGE_KEY = 'marnee_auth';
-
-/**
- * Helper to get auth header from localStorage
- */
-function getAuthHeader() {
-  try {
-    const raw = localStorage.getItem(AUTH_STORAGE_KEY);
-    if (!raw) return {};
-    const session = JSON.parse(raw);
-    if (!session || !session.token) return {};
-    const type = session.type || 'Bearer';
-    return { Authorization: `${type} ${session.token}` };
-  } catch (error) {
-    return {};
-  }
-}
-
-/**
- * Helper to make API requests with proper error handling
- */
-const request = async (endpoint, options = {}) => {
-  const url = `${API.MARNEE}${endpoint}`;
-  const authHeader = getAuthHeader();
-
-  const defaultHeaders = {
-    'Content-Type': 'application/json',
-    ...authHeader,
-  };
-
-  const config = {
-    ...options,
-    headers: {
-      ...defaultHeaders,
-      ...options.headers,
-    },
-  };
-
-  try {
-    const response = await fetch(url, config);
-
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({ detail: 'Network error' }));
-      throw new Error(error.detail || error.message || 'Request failed');
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error('API Error:', error);
-    throw error;
-  }
-};
 
 // =====================
 // CAMPAIGNS ENDPOINTS
 // =====================
 
-/**
- * POST /campaigns - Create campaign manually
- */
 export const createCampaign = (data) =>
-  request('/campaigns', {
-    method: 'POST',
-    body: JSON.stringify(data),
+  apiClient.post('/campaigns', data, {
+    baseUrl: API.MARNEE,
   });
 
-/**
- * POST /campaigns/generate - Generate campaigns with AI
- */
 export const generateCampaigns = ({ founderId, sessionId, calendarId, count = 3 }) =>
-  request('/campaigns/generate', {
-    method: 'POST',
-    body: JSON.stringify({
-      founderId,
-      sessionId,
-      calendarId,
-      count,
-    }),
+  apiClient.post('/campaigns/generate', {
+    founderId,
+    sessionId,
+    calendarId,
+    count,
+  }, {
+    baseUrl: API.MARNEE,
   });
 
-/**
- * GET /campaigns/calendar/{calendarId} - Get all campaigns for a calendar
- */
 export const getCampaignsByCalendar = (calendarId) =>
-  request(`/campaigns/calendar/${calendarId}`);
+  apiClient.get(`/campaigns/calendar/${calendarId}`, {
+    baseUrl: API.MARNEE,
+  });
 
-/**
- * GET /campaigns/{campaignId} - Get single campaign with tasks/scripts
- */
 export const getCampaign = (campaignId) =>
-  request(`/campaigns/${campaignId}`);
+  apiClient.get(`/campaigns/${campaignId}`, {
+    baseUrl: API.MARNEE,
+  });
 
-/**
- * PUT /campaigns/{campaignId} - Update campaign
- */
 export const updateCampaign = (campaignId, data) =>
-  request(`/campaigns/${campaignId}`, {
-    method: 'PUT',
-    body: JSON.stringify(data),
+  apiClient.put(`/campaigns/${campaignId}`, data, {
+    baseUrl: API.MARNEE,
   });
 
-/**
- * DELETE /campaigns/{campaignId} - Delete campaign
- */
 export const deleteCampaign = (campaignId) =>
-  request(`/campaigns/${campaignId}`, {
-    method: 'DELETE',
+  apiClient.delete(`/campaigns/${campaignId}`, {
+    baseUrl: API.MARNEE,
   });
 
-/**
- * POST /campaigns/{campaignId}/regenerate-suggestions - Regenerate AI suggestions
- */
 export const regenerateCampaignSuggestions = (campaignId) =>
-  request(`/campaigns/${campaignId}/regenerate-suggestions`, {
-    method: 'POST',
+  apiClient.post(`/campaigns/${campaignId}/regenerate-suggestions`, null, {
+    baseUrl: API.MARNEE,
   });
 
 // =====================
 // CAMPAIGN TASKS
 // =====================
 
-/**
- * POST /campaigns/{campaignId}/tasks - Create task
- */
 export const createCampaignTask = (campaignId, data) =>
-  request(`/campaigns/${campaignId}/tasks`, {
-    method: 'POST',
-    body: JSON.stringify(data),
+  apiClient.post(`/campaigns/${campaignId}/tasks`, data, {
+    baseUrl: API.MARNEE,
   });
 
-/**
- * PUT /campaigns/tasks/{taskId} - Update task
- */
 export const updateCampaignTask = (taskId, data) =>
-  request(`/campaigns/tasks/${taskId}`, {
-    method: 'PUT',
-    body: JSON.stringify(data),
+  apiClient.put(`/campaigns/tasks/${taskId}`, data, {
+    baseUrl: API.MARNEE,
   });
 
-/**
- * DELETE /campaigns/tasks/{taskId} - Delete task
- */
 export const deleteCampaignTask = (taskId) =>
-  request(`/campaigns/tasks/${taskId}`, {
-    method: 'DELETE',
+  apiClient.delete(`/campaigns/tasks/${taskId}`, {
+    baseUrl: API.MARNEE,
   });
 
 // =====================
 // CAMPAIGN SCRIPTS
 // =====================
 
-/**
- * POST /campaigns/{campaignId}/scripts - Create script
- */
 export const createCampaignScript = (campaignId, data) =>
-  request(`/campaigns/${campaignId}/scripts`, {
-    method: 'POST',
-    body: JSON.stringify(data),
+  apiClient.post(`/campaigns/${campaignId}/scripts`, data, {
+    baseUrl: API.MARNEE,
   });
 
-/**
- * PUT /campaigns/scripts/{scriptId} - Update script
- */
 export const updateCampaignScript = (scriptId, data) =>
-  request(`/campaigns/scripts/${scriptId}`, {
-    method: 'PUT',
-    body: JSON.stringify(data),
+  apiClient.put(`/campaigns/scripts/${scriptId}`, data, {
+    baseUrl: API.MARNEE,
   });
 
-/**
- * DELETE /campaigns/scripts/{scriptId} - Delete script
- */
 export const deleteCampaignScript = (scriptId) =>
-  request(`/campaigns/scripts/${scriptId}`, {
-    method: 'DELETE',
+  apiClient.delete(`/campaigns/scripts/${scriptId}`, {
+    baseUrl: API.MARNEE,
   });
 
+// Default export
 const campaignsApi = {
   createCampaign,
   generateCampaigns,

@@ -3,7 +3,7 @@ import CommentsSection from "./CommentsSection";
 import ImageGeneratorButton from "../../../Component/ImageGenerator/ImageGeneratorButton";
 import ImagePreviewModal from "../../../Component/ImageGenerator/ImagePreviewModal";
 import useImageGenerator from "../../../hooks/useImageGenerator";
-import { useMarnee } from "../../../context/MarneeContext";
+import { useAuth } from "../../../context/AuthContext";
 
 const STATUS_OPTIONS = [
   { value: "todo", label: "To Do", color: "gray" },
@@ -63,7 +63,7 @@ export default function CampaignForm({
   onClose,
   onSave,
 }) {
-  const { founderId } = useMarnee();
+  const { founderId } = useAuth();
   const [form, setForm] = useState({
     // ID
     id: null,

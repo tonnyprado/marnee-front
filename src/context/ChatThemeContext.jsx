@@ -1,4 +1,12 @@
+/**
+ * ChatThemeContext - Refactored to use StorageService
+ *
+ * BEFORE: Direct localStorage usage (lines 57, 62, 67, 71)
+ * AFTER: Uses StorageService from core (React Native ready)
+ */
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import storage from '../core/services/StorageService';
 
 const ChatThemeContext = createContext();
 
@@ -53,22 +61,22 @@ export const CHAT_THEMES = {
 
 export function ChatThemeProvider({ children }) {
   const [currentTheme, setCurrentTheme] = useState(() => {
-    // Load from localStorage
-    const saved = localStorage.getItem('chat_theme');
+    // Load from storage
+    const saved = storage.getItem('chat_theme');
     return saved && CHAT_THEMES[saved] ? saved : 'classic';
   });
 
   const [soundEnabled, setSoundEnabled] = useState(() => {
-    const saved = localStorage.getItem('chat_sound_enabled');
-    return saved === null ? true : saved === 'true';
+    const saved = storage.getItem('chat_sound_enabled');
+    return saved === null ? true : saved;
   });
 
   useEffect(() => {
-    localStorage.setItem('chat_theme', currentTheme);
+    storage.setItem('chat_theme', currentTheme);
   }, [currentTheme]);
 
   useEffect(() => {
-    localStorage.setItem('chat_sound_enabled', soundEnabled);
+    storage.setItem('chat_sound_enabled', soundEnabled);
   }, [soundEnabled]);
 
   const theme = CHAT_THEMES[currentTheme];
