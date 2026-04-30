@@ -23,7 +23,14 @@ const authRequest = async (endpoint, options = {}) => {
     throw new Error(error.message || `HTTP ${response.status}`);
   }
 
-  return response.json();
+  // Handle empty responses (204 No Content or empty body)
+  const contentType = response.headers.get('content-type');
+  if (response.status === 204 || !contentType || !contentType.includes('application/json')) {
+    return null;
+  }
+
+  const text = await response.text();
+  return text ? JSON.parse(text) : null;
 };
 
 const aiRequest = async (endpoint, options = {}) => {
@@ -40,7 +47,14 @@ const aiRequest = async (endpoint, options = {}) => {
     throw new Error(error.detail || error.message || `HTTP ${response.status}`);
   }
 
-  return response.json();
+  // Handle empty responses (204 No Content or empty body)
+  const contentType = response.headers.get('content-type');
+  if (response.status === 204 || !contentType || !contentType.includes('application/json')) {
+    return null;
+  }
+
+  const text = await response.text();
+  return text ? JSON.parse(text) : null;
 };
 
 // ==================== USER MANAGEMENT ====================
