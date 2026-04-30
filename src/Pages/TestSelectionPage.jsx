@@ -235,22 +235,6 @@ export default function TestSelectionPage() {
                     </span>
                   </div>
 
-                  {/* Progress Bar */}
-                  {isStarted && (
-                    <div className="mb-4">
-                      <div className="flex justify-between items-center mb-2">
-                        <span className="text-xs text-gray-500">{t("testSelection.progress")}</span>
-                        <span className="text-xs font-semibold text-gray-700">{progress}%</span>
-                      </div>
-                      <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-gradient-to-r from-[#40086d] via-[#6b21a8] to-[#9333ea] transition-all duration-500"
-                          style={{ width: `${progress}%` }}
-                        />
-                      </div>
-                    </div>
-                  )}
-
                   {/* Action Button */}
                   <button
                     onClick={() => handleSelectTest(test.testType)}

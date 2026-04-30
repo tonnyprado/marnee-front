@@ -269,6 +269,60 @@ function ChatPageContent() {
         } else {
           console.log('[Chat] No existing conversations found');
           setConversations([]);
+
+          // Auto-start conversation for new users who just completed business test
+          // Check if user has business test completed
+          try {
+            const businessTest = await api.getBusinessTestMe();
+            if (businessTest && founder.id && latestSession) {
+              console.log('[Chat] New user with completed business test - starting automatic conversation');
+
+              try {
+                // Send auto-start request to backend
+                // Backend will generate personalized welcome based on business test data
+                const response = await api.sendMessage({
+                  founderId: founder.id,
+                  sessionId: latestSession.id,
+                  conversationId: null,
+                  message: '', // Empty message - Marnee will start
+                  messages: [],
+                  autoStart: true, // Critical: tells backend to auto-generate welcome
+                });
+
+                console.log('[Chat] Auto-start response:', response);
+
+                // Create AI message with the personalized welcome from backend
+                const aiMessage = {
+                  id: `ai-${Date.now()}`,
+                  role: 'assistant',
+                  content: response.reply,
+                  timestamp: new Date().toISOString(),
+                };
+
+                setMessages([aiMessage]);
+                setConversationId(response.conversationId);
+
+                // Update conversations list
+                setConversations([{
+                  id: response.conversationId,
+                  founderId: founder.id,
+                  sessionId: latestSession.id,
+                  messages: [aiMessage],
+                  createdAt: new Date().toISOString(),
+                  updatedAt: new Date().toISOString(),
+                }]);
+
+                console.log('[Chat] Auto-start successful! Conversation started with Marnee.');
+
+              } catch (error) {
+                console.error('[Chat] Error auto-starting conversation:', error);
+                // Don't block the user - they can still start chatting manually
+              }
+            }
+          } catch (error) {
+            // If business test doesn't exist (404), user will be blocked by modal anyway
+            console.log('[Chat] No business test found or error:', error);
+          }
         }
 
       } catch (error) {

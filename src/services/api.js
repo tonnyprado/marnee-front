@@ -148,7 +148,7 @@ export const api = {
   /**
    * POST /marnee/chat - Send message to Marnee
    */
-  sendMessage: ({ founderId, sessionId, conversationId, message, messages, brandContext }) =>
+  sendMessage: ({ founderId, sessionId, conversationId, message, messages, brandContext, autoStart }) =>
     apiClient.post('/marnee/chat', {
       founderId,
       sessionId,
@@ -156,6 +156,7 @@ export const api = {
       message,
       messages,
       brandContext,
+      autoStart,
     }, {
       baseUrl: API.MARNEE,
     }),

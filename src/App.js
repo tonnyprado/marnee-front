@@ -8,7 +8,6 @@ import { AuthProvider } from "./context/AuthContext";
 import { ChatThemeProvider } from "./context/ChatThemeContext";
 import { getAuthSession } from "./services/api";
 
-import LandingPage from "./Pages/LandingPage";
 import PresentationPage from "./Pages/PresentationPage";
 import AuthPage from "./Pages/AuthPage";
 import OAuth2CallbackPage from "./Pages/OAuth2CallbackPage";
@@ -85,7 +84,6 @@ function AppContent() {
           <Routes>
         {/* públicas */}
         <Route path="/" element={<PresentationPage />} />
-        <Route path="/intro-page" element={<LandingPage />} />
         <Route path="/presentation" element={<Navigate to="/" replace />} />
         <Route path="/auth" element={<AuthPage />} />
         <Route path="/auth/callback" element={<OAuth2CallbackPage />} />

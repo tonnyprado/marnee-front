@@ -719,7 +719,7 @@ export default function LandingPage() {
   const handleLoginClick = () => {
     setIsLoading(true);
     setTimeout(() => {
-      navigate('/intro-page');
+      navigate('/auth');
     }, 800);
   };
 

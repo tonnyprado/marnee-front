@@ -1,3 +1,11 @@
 # https://www.robotstxt.org/robotstxt.html
 User-agent: *
-Disallow:
+Allow: /
+
+# Disallow private sections
+Disallow: /app/
+Disallow: /admin/
+Disallow: /chat-viejo
+
+# Sitemap location
+Sitemap: https://www.dn-hub.com/sitemap.xml
