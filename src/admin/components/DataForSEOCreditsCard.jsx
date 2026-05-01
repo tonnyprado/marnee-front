@@ -15,7 +15,19 @@ export default function DataForSEOCreditsCard() {
       setUsage(response.data);
       setError(null);
     } catch (err) {
-      setError(err.message);
+      console.error('DataForSEO usage fetch error:', err);
+      // If endpoint doesn't exist yet (404/500), show a friendly message
+      setError('DataForSEO monitoring is being deployed. Please check back soon.');
+      // Set default data so the card still renders nicely
+      setUsage({
+        balance: 0.0,
+        limits: {},
+        usage_this_month: 0.0,
+        requests_today: 0,
+        pricing_per_request: 0.05,
+        enabled: false,
+        note: 'DataForSEO monitoring endpoint is being deployed.'
+      });
     } finally {
       setLoading(false);
       setRefreshing(false);
