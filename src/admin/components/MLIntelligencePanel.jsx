@@ -170,13 +170,6 @@ function SystemStatusTab({ status, onRefresh }) {
   const dataSourcesStatus = status.status.free_data_sources;
   const recommendations = status.recommendations || [];
 
-  const getStatusIcon = (available) => {
-    if (available) {
-      return <CheckCircle className="text-green-600" size={20} />;
-    }
-    return <XCircle className="text-gray-400" size={20} />;
-  };
-
   return (
     <div className="space-y-6">
       {/* Overall Status */}
