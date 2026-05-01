@@ -148,6 +148,12 @@ export const getOpenAIUsage = async () => {
   return request('/admin/prompts/openai-usage');
 };
 
+// ==================== DATAFORSEO USAGE ====================
+
+export const getDataForSEOUsage = async () => {
+  return request('/admin/prompts/dataforseo-usage');
+};
+
 const promptsApi = {
   getCategories,
   getPrompts,
@@ -167,6 +173,7 @@ const promptsApi = {
   importPromptsFromCode,
   testChat,
   getOpenAIUsage,
+  getDataForSEOUsage,
 };
 
 export default promptsApi;
