@@ -17,9 +17,10 @@ export default function CalendarPage() {
     currentStep,
     setCalendarId,
     setCalendar: setCachedCalendar,
+    setFounderId,
+    setSessionId,
     hasSession
   } = useMarnee();
-  const canAccessCalendar = Boolean(calendarId || founderId || hasSession);
 
   const [mainTab, setMainTab] = useState("calendar"); // calendar | brainstorming
   const [view, setView] = useState("calendar");
@@ -29,6 +30,7 @@ export default function CalendarPage() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [hasCheckedHistory, setHasCheckedHistory] = useState(false);
   const [error, setError] = useState(null);
+  const [isLoadingSession, setIsLoadingSession] = useState(false);
   const autoGenerateAttemptedRef = useRef(false);
 
   // Form state
@@ -41,6 +43,45 @@ export default function CalendarPage() {
     setCalendar(newCalendar);
     setCachedCalendar(newCalendar);
   }, [setCachedCalendar]);
+
+  // Load session data from API if not available in context
+  const loadSessionData = useCallback(async () => {
+    if (isLoadingSession) return; // Prevent multiple simultaneous loads
+
+    console.log('[CalendarPage] Loading session data from API...');
+    setIsLoadingSession(true);
+
+    try {
+      // Try to get founder profile
+      const founder = await api.getMeFounder();
+
+      if (founder && founder.id) {
+        console.log('[CalendarPage] Loaded founder from API:', founder.id);
+        setFounderId(founder.id);
+
+        // If we have a session ID in the founder object, use it
+        if (founder.sessionId) {
+          setSessionId(founder.sessionId);
+        }
+
+        return true;
+      } else {
+        console.warn('[CalendarPage] No founder profile found');
+        setError('Unable to load your session. Please try refreshing the page.');
+        return false;
+      }
+    } catch (error) {
+      console.error('[CalendarPage] Error loading session:', error);
+      if (error.status === 404) {
+        setError('Session not found. Please complete the business test first.');
+      } else {
+        setError('Failed to load session. Please try refreshing the page.');
+      }
+      return false;
+    } finally {
+      setIsLoadingSession(false);
+    }
+  }, [isLoadingSession, setFounderId, setSessionId]);
 
   const handleGenerateCalendar = async (weeks = 4) => {
     setIsGenerating(true);
@@ -73,16 +114,29 @@ export default function CalendarPage() {
 
   // Load existing calendar when backend already created one
   useEffect(() => {
-    console.log('[CalendarPage] useEffect triggered - checking calendar access:', {
-      canAccessCalendar,
+    console.log('[CalendarPage] useEffect triggered - checking session:', {
       calendarId,
       founderId,
       sessionId,
       hasSession,
     });
 
-    if (!canAccessCalendar) {
-      console.log('[CalendarPage] No access to calendar - user needs to complete business test');
+    // If we don't have session data, try to load it from API
+    if (!founderId && !sessionId && !isLoadingSession) {
+      console.log('[CalendarPage] No session data in context, attempting to load from API...');
+      loadSessionData().then((success) => {
+        if (!success) {
+          setIsLoading(false);
+          setHasCheckedHistory(true);
+        }
+        // If successful, this effect will re-run with the new founderId/sessionId
+      });
+      return;
+    }
+
+    // If we still don't have founderId or sessionId after loading, show error
+    if (!founderId && !sessionId) {
+      console.log('[CalendarPage] No session data available after loading attempt');
       setIsLoading(false);
       setHasCheckedHistory(true);
       return;
@@ -196,13 +250,16 @@ export default function CalendarPage() {
     };
 
     loadCalendar();
-  }, [calendarId, canAccessCalendar, founderId, sessionId, setCalendarId, updateCalendar, cachedCalendar, hasSession]);
+  }, [calendarId, founderId, sessionId, setCalendarId, updateCalendar, cachedCalendar, hasSession, loadSessionData, isLoadingSession]);
 
   // If the conversation is already in the calendar phase but no calendar exists yet,
   // generate it directly in the calendar workspace instead of leaving the user in chat text.
   useEffect(() => {
+    // Check if we have the necessary session data
+    const hasSessionData = Boolean(founderId || sessionId);
+
     if (
-      !canAccessCalendar ||
+      !hasSessionData ||
       !hasCheckedHistory ||
       isLoading ||
       isGenerating ||
@@ -238,7 +295,7 @@ export default function CalendarPage() {
     };
 
     autoGenerateCalendar();
-  }, [calendar, calendarId, canAccessCalendar, currentStep, founderId, hasCheckedHistory, isGenerating, isLoading, sessionId, setCalendarId, updateCalendar]);
+  }, [calendar, calendarId, currentStep, founderId, hasCheckedHistory, isGenerating, isLoading, sessionId, setCalendarId, updateCalendar]);
 
   // Handle post click
   const handlePostClick = (post, index) => {
@@ -277,26 +334,38 @@ export default function CalendarPage() {
       : calendar.posts.filter((p) => p.status === statusFilter)
     : [];
 
-  // Show message if no business test completed
-  if (!canAccessCalendar) {
+  // Show loading or error message if session data is not available
+  if (!founderId && !sessionId && !isLoadingSession) {
     return (
       <div className="min-h-screen bg-[#f6f6f6] text-gray-900 flex items-center justify-center">
         <div className="text-center p-8 bg-white rounded shadow-sm border border-[rgba(30,30,30,0.1)] max-w-md">
-          <div className="w-16 h-16 bg-[#ede0f8] rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg className="w-8 h-8 text-[#40086d]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg className="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
           </div>
-          <h2 className="text-2xl font-bold mb-4">Complete Your Business Test First</h2>
+          <h2 className="text-2xl font-bold mb-4">Session Error</h2>
           <p className="text-gray-500 mb-6">
-            To access the content calendar, you need to complete the business test. This helps Marnee understand your business and create personalized content strategies.
+            {error || 'Unable to load your session. Please try refreshing the page or logging in again.'}
           </p>
-          <a
-            href="/business-test/questions"
-            className="px-6 py-3 rounded bg-[#1e1e1e] text-white font-medium hover:bg-[#dccaf4] hover:text-[#1a0530] transition inline-block shadow-sm"
+          <button
+            onClick={() => window.location.reload()}
+            className="px-6 py-3 rounded bg-[#1e1e1e] text-white font-medium hover:bg-[#dccaf4] hover:text-[#1a0530] transition shadow-sm"
           >
-            Start Business Test
-          </a>
+            Refresh Page
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Show loading while session is being loaded
+  if (isLoadingSession) {
+    return (
+      <div className="min-h-screen bg-[#f6f6f6] text-gray-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-gray-500">Loading your session...</p>
         </div>
       </div>
     );
