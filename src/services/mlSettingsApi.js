@@ -1,60 +1,69 @@
-import api from './api';
+import API from '../config';
+import { getAuthHeader } from './api';
 
 /**
- * ML Settings API
+ * ML Settings API Service
  * Manage ML/Hybrid Intelligence configuration
  */
 
-export const mlSettingsApi = {
-  // Get current ML settings
-  getSettings: async () => {
-    const response = await api.get('/admin/ml-settings');
-    return response.data;
-  },
+const request = async (endpoint, options = {}) => {
+  const response = await fetch(`${API.MARNEE}${endpoint}`, {
+    headers: {
+      'Content-Type': 'application/json',
+      ...getAuthHeader(),
+    },
+    ...options,
+  });
 
-  // Update ML settings
-  updateSettings: async (settings) => {
-    const response = await api.put('/admin/ml-settings', settings);
-    return response.data;
-  },
-
-  // Get ML system status
-  getStatus: async () => {
-    const response = await api.get('/admin/ml-settings/status');
-    return response.data;
-  },
-
-  // Get usage statistics
-  getUsageStats: async (days = 30) => {
-    const response = await api.get(`/admin/ml-settings/usage-stats`, {
-      params: { days }
-    });
-    return response.data;
-  },
-
-  // Test ML analysis
-  testAnalysis: async (texts, analysisType = 'all') => {
-    const response = await api.post('/admin/ml-settings/test', {
-      texts,
-      analysis_type: analysisType
-    });
-    return response.data;
-  },
-
-  // Get data sources info
-  getDataSourcesInfo: async () => {
-    const response = await api.get('/admin/ml-settings/data-sources');
-    return response.data;
-  },
-
-  // Regenerate cache for a niche
-  regenerateCache: async (niche, dataSources) => {
-    const response = await api.post('/admin/ml-settings/regenerate-cache', {
-      niche,
-      data_sources: dataSources
-    });
-    return response.data;
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ message: 'Request failed' }));
+    throw new Error(error.detail || error.message || `HTTP ${response.status}`);
   }
+
+  return response.json();
 };
 
-export default mlSettingsApi;
+// ==================== ML SETTINGS ====================
+
+export const getSettings = async () => {
+  return request('/admin/ml-settings');
+};
+
+export const updateSettings = async (settings) => {
+  return request('/admin/ml-settings', {
+    method: 'PUT',
+    body: JSON.stringify(settings),
+  });
+};
+
+export const getStatus = async () => {
+  return request('/admin/ml-settings/status');
+};
+
+export const getUsageStats = async (days = 30) => {
+  return request(`/admin/ml-settings/usage-stats?days=${days}`);
+};
+
+export const testAnalysis = async (texts, analysisType = 'all') => {
+  return request('/admin/ml-settings/test', {
+    method: 'POST',
+    body: JSON.stringify({
+      texts,
+      analysis_type: analysisType
+    }),
+  });
+};
+
+export const getDataSourcesInfo = async () => {
+  return request('/admin/ml-settings/data-sources');
+};
+
+export const regenerateCache = async (niche, dataSources) => {
+  return request('/admin/ml-settings/regenerate-cache', {
+    method: 'POST',
+    body: JSON.stringify({
+      niche,
+      data_sources: dataSources
+    }),
+  });
+};

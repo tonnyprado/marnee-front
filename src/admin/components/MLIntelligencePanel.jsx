@@ -10,7 +10,7 @@ import {
   RefreshCw,
   BarChart3
 } from 'lucide-react';
-import mlSettingsApi from '../../services/mlSettingsApi';
+import * as mlSettingsApi from '../../services/mlSettingsApi';
 
 export default function MLIntelligencePanel() {
   const [activeTab, setActiveTab] = useState('status');
