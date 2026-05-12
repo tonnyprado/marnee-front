@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Logo from "../Component/Logo";
 import { api, getAuthSession, setAuthSession } from "../services/api";
 import { useLanguage } from "../context/LanguageContext";
+import { trackCompleteRegistration, trackLogin } from "../services/facebookPixel";
 
 export default function AuthPage() {
   const { t } = useLanguage();
@@ -111,6 +112,16 @@ export default function AuthPage() {
         name: response.name,
         role: response.role,
       });
+
+      // Track Facebook Pixel event
+      if (mode === "signup") {
+        trackCompleteRegistration({
+          email: response.email,
+          name: response.name
+        });
+      } else {
+        trackLogin();
+      }
 
       // Redirect based on role
       if (response.role === "ADMIN") {

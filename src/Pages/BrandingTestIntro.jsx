@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Logo from "../Component/Logo";
 import LoadingTransition from "../Component/LoadingTransition";
 import { useLanguage } from "../context/LanguageContext";
+import { trackBrandTestStart } from "../services/facebookPixel";
 
 export default function BrandTestIntro() {
   const { t } = useLanguage();
@@ -9,6 +10,7 @@ export default function BrandTestIntro() {
 
   const handleStart = () => {
     setIsLoading(true);
+    trackBrandTestStart();
     setTimeout(() => {
       window.location.href = "/test-selection";
     }, 800);

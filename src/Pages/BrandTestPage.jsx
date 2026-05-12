@@ -5,6 +5,7 @@ import { useMarnee } from "../context/MarneeContext";
 import LoadingTransition from "../Component/LoadingTransition";
 import { Mic, MicOff } from 'lucide-react';
 import { useVoiceRecognition } from "./Tools/Chat/useVoiceRecognition";
+import { trackBrandTestComplete } from "../services/facebookPixel";
 
 // Question types: radio, multiSelect, textarea, slider
 const STEPS = [
@@ -411,6 +412,9 @@ export default function BrandTestPage() {
         sessionId: response.sessionId,
         welcomeMessage: response.welcomeMessage,
       });
+
+      // Track brand test completion
+      trackBrandTestComplete();
 
       navigate('/app');
     } catch (err) {

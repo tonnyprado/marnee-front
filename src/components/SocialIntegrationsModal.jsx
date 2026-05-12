@@ -4,6 +4,7 @@ import { X, CheckCircle, Loader2, Camera, Video, BarChart3, TrendingUp, Building
 import { getInstagramStatus, connectInstagram, disconnectInstagram } from '../services/instagramApi';
 import { getGoogleStatus, connectGoogle, disconnectGoogle, disconnectGoogleService, addGoogleService } from '../services/googleApi';
 import { getTikTokStatus, connectTikTok, disconnectTikTok } from '../services/tiktokApi';
+import { trackSocialConnect, trackSocialDisconnect } from '../services/facebookPixel';
 
 /**
  * SocialIntegrationsModal - Modal for managing social media integrations
@@ -46,6 +47,7 @@ export default function SocialIntegrationsModal({ isOpen, onClose }) {
 
   const handleMetaConnect = () => {
     setActionLoading('meta');
+    trackSocialConnect('instagram');
     connectInstagram();
   };
 
@@ -56,6 +58,7 @@ export default function SocialIntegrationsModal({ isOpen, onClose }) {
     setActionLoading('meta');
     try {
       await disconnectInstagram();
+      trackSocialDisconnect('instagram');
       await fetchStatuses();
     } catch (error) {
       console.error('Error disconnecting Meta:', error);
@@ -67,11 +70,13 @@ export default function SocialIntegrationsModal({ isOpen, onClose }) {
 
   const handleGoogleConnect = (services) => {
     setActionLoading('google');
+    services.forEach(service => trackSocialConnect(service));
     connectGoogle(services);
   };
 
   const handleGoogleServiceAdd = (service) => {
     setActionLoading(`google-${service}`);
+    trackSocialConnect(service);
     addGoogleService(service);
   };
 
@@ -100,6 +105,7 @@ export default function SocialIntegrationsModal({ isOpen, onClose }) {
     setActionLoading(`google-${service}`);
     try {
       await disconnectGoogleService(service);
+      trackSocialDisconnect(service);
       await fetchStatuses();
     } catch (error) {
       console.error(`Error disconnecting ${service}:`, error);
@@ -111,6 +117,7 @@ export default function SocialIntegrationsModal({ isOpen, onClose }) {
 
   const handleTikTokConnect = () => {
     setActionLoading('tiktok');
+    trackSocialConnect('tiktok');
     connectTikTok();
   };
 
@@ -121,6 +128,7 @@ export default function SocialIntegrationsModal({ isOpen, onClose }) {
     setActionLoading('tiktok');
     try {
       await disconnectTikTok();
+      trackSocialDisconnect('tiktok');
       await fetchStatuses();
     } catch (error) {
       console.error('Error disconnecting TikTok:', error);

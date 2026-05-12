@@ -15,22 +15,40 @@ export default function AppLayout() {
   // Check if user has completed business test
   useEffect(() => {
     const checkBusinessTest = async () => {
+      // Check localStorage cache first
+      const cachedStatus = localStorage.getItem('hasBusinessTest');
+
       try {
         const businessTest = await api.getBusinessTestMe();
         // If we get data, business test exists
         if (businessTest) {
           setHasBusinessTest(true);
+          localStorage.setItem('hasBusinessTest', 'true');
         } else {
           setHasBusinessTest(false);
+          localStorage.setItem('hasBusinessTest', 'false');
         }
       } catch (error) {
         // 404 means no business test exists
         if (error.status === 404) {
           setHasBusinessTest(false);
+          localStorage.setItem('hasBusinessTest', 'false');
         } else {
           console.error('[AppLayout] Error checking business test:', error);
-          // On error, assume they need to complete it
-          setHasBusinessTest(false);
+
+          // On network/CORS errors, use cached value or assume test is completed
+          // This prevents blocking users when the API is unreachable
+          if (cachedStatus === 'true') {
+            console.log('[AppLayout] Using cached business test status: completed');
+            setHasBusinessTest(true);
+          } else if (cachedStatus === 'false') {
+            console.log('[AppLayout] Using cached business test status: not completed');
+            setHasBusinessTest(false);
+          } else {
+            // No cache - assume test is completed to avoid blocking users on network errors
+            console.log('[AppLayout] No cache found, assuming business test completed due to network error');
+            setHasBusinessTest(true);
+          }
         }
       } finally {
         setIsCheckingTest(false);
