@@ -1,6 +1,6 @@
 // src/admin/components/MetaMaintenanceCard.jsx
 import React, { useState, useEffect } from 'react';
-import { Instagram, AlertTriangle, CheckCircle2, Clock, RefreshCw, AlertCircle } from 'lucide-react';
+import { Camera, AlertTriangle, CheckCircle2, Clock, RefreshCw, AlertCircle } from 'lucide-react';
 import { getMetaIntegrationsStatus } from '../../services/adminIntegrationsApi';
 
 /**
@@ -67,7 +67,7 @@ const MetaMaintenanceCard = () => {
       <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
-            <Instagram className="w-6 h-6 text-white" />
+            <Camera className="w-6 h-6 text-white" />
           </div>
           <div>
             <h3 className="text-lg font-semibold text-gray-900">Meta (Instagram/Facebook)</h3>
@@ -149,7 +149,7 @@ const MetaMaintenanceCard = () => {
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
-              <Instagram className="w-6 h-6 text-white" />
+              <Camera className="w-6 h-6 text-white" />
             </div>
             <div>
               <h3 className="text-lg font-semibold text-gray-900">Meta (Instagram/Facebook)</h3>

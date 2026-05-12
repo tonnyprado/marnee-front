@@ -1,6 +1,6 @@
 // src/components/InstagramRequirementsModal.jsx
 import React from 'react';
-import { X, CheckCircle2, AlertTriangle, ExternalLink, Instagram, Facebook } from 'lucide-react';
+import { X, CheckCircle2, AlertTriangle, ExternalLink, Camera } from 'lucide-react';
 
 /**
  * Instagram Requirements Modal
@@ -111,7 +111,7 @@ const InstagramRequirementsModal = ({ isOpen, onClose, onConfirm }) => {
           {/* What Marnee will access */}
           <div className="mb-6 p-4 bg-purple-50 border border-purple-200 rounded-lg">
             <h3 className="font-semibold text-purple-900 mb-3 flex items-center gap-2">
-              <Instagram className="w-5 h-5" />
+              <Camera className="w-5 h-5" />
               Qué datos accederá Marnee:
             </h3>
             <ul className="space-y-2 text-sm text-purple-800">
@@ -191,7 +191,7 @@ const InstagramRequirementsModal = ({ isOpen, onClose, onConfirm }) => {
               onClick={onConfirm}
               className="flex-1 px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all shadow-lg font-medium flex items-center justify-center gap-2"
             >
-              <Instagram className="w-5 h-5" />
+              <Camera className="w-5 h-5" />
               Conectar Instagram
             </button>
           </div>

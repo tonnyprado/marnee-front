@@ -40,7 +40,7 @@ import {
   Warning as WarningIcon,
   Info as InfoIcon,
 } from '@mui/icons-material';
-import { adminService } from '../../services/adminService';
+import adminService from '../../services/adminApi';
 
 const RAGManagement = () => {
   // State

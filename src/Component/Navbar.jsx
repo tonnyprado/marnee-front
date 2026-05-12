@@ -4,7 +4,7 @@ import Logo from "./Logo";
 import { getAuthSession, setAuthSession } from "../services/api";
 import { useLanguage } from "../context/LanguageContext";
 import LogoutConfirmationModal from "./LogoutConfirmationModal";
-import InstagramConnectionButton from "./InstagramConnectionButton";
+import InstagramConnectionButton from "../components/InstagramConnectionButton";
 
 // Lordicon animated icons
 const icons = {

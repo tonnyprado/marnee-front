@@ -1,6 +1,6 @@
 // src/components/InstagramConnectionButton.jsx
 import React, { useState, useEffect } from 'react';
-import { Instagram, AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
+import { Camera, AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
 import { getInstagramStatus, connectInstagram, disconnectInstagram } from '../services/instagramApi';
 import InstagramRequirementsModal from './InstagramRequirementsModal';
 
@@ -91,7 +91,7 @@ const InstagramConnectionButton = ({ collapsed = false }) => {
           onClick={() => {}}
           title={collapsed ? `@${status.instagramUsername}` : ''}
         >
-          <Instagram className="w-5 h-5" />
+          <Camera className="w-5 h-5" />
           {!collapsed && (
             <>
               <CheckCircle2 className="w-4 h-4" />
@@ -114,7 +114,7 @@ const InstagramConnectionButton = ({ collapsed = false }) => {
                 />
               ) : (
                 <div className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
-                  <Instagram className="w-6 h-6 text-white" />
+                  <Camera className="w-6 h-6 text-white" />
                 </div>
               )}
               <div className="flex-1">
@@ -171,7 +171,7 @@ const InstagramConnectionButton = ({ collapsed = false }) => {
         className={`flex items-center ${collapsed ? 'justify-center w-12 h-12' : 'gap-2 px-4 py-2'} bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all shadow-lg hover:shadow-xl ${!collapsed && 'transform hover:scale-105'}`}
         title={collapsed ? 'Conectar Instagram' : ''}
       >
-        <Instagram className="w-5 h-5" />
+        <Camera className="w-5 h-5" />
         {!collapsed && <span className="font-medium">Conectar Instagram</span>}
       </button>
 
