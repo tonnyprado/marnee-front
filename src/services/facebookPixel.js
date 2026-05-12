@@ -10,6 +10,15 @@
  */
 
 /**
+ * Generate unique event ID for deduplication
+ * Format: {event_name}_{user_id}_{timestamp}
+ */
+const generateEventId = (eventName, userId = 'unknown') => {
+  const timestamp = Date.now();
+  return `${eventName.toLowerCase()}_${userId}_${timestamp}`;
+};
+
+/**
  * Check if Facebook Pixel is loaded
  */
 const isPixelLoaded = () => {
@@ -20,28 +29,54 @@ const isPixelLoaded = () => {
  * Track a standard Facebook event
  * @param {string} eventName - Standard event name (e.g., 'Purchase', 'Lead', 'CompleteRegistration')
  * @param {Object} params - Event parameters
+ * @param {string} eventId - Optional event ID for deduplication
+ * @returns {string} Event ID used (for sending to backend)
  */
-export const trackEvent = (eventName, params = {}) => {
+export const trackEvent = (eventName, params = {}, eventId = null) => {
+  // Generate event ID if not provided
+  const finalEventId = eventId || generateEventId(eventName, params.userId);
+
   if (isPixelLoaded()) {
-    window.fbq('track', eventName, params);
-    console.log('[FB Pixel] Event tracked:', eventName, params);
+    // Add event_id to params for deduplication
+    const trackParams = {
+      ...params,
+      eventID: finalEventId
+    };
+
+    window.fbq('track', eventName, trackParams);
+    console.log('[FB Pixel] Event tracked:', eventName, trackParams);
   } else {
     console.warn('[FB Pixel] Pixel not loaded, event not tracked:', eventName);
   }
+
+  return finalEventId;
 };
 
 /**
  * Track a custom Facebook event
  * @param {string} eventName - Custom event name
  * @param {Object} params - Event parameters
+ * @param {string} eventId - Optional event ID for deduplication
+ * @returns {string} Event ID used
  */
-export const trackCustomEvent = (eventName, params = {}) => {
+export const trackCustomEvent = (eventName, params = {}, eventId = null) => {
+  // Generate event ID if not provided
+  const finalEventId = eventId || generateEventId(eventName, params.userId);
+
   if (isPixelLoaded()) {
-    window.fbq('trackCustom', eventName, params);
-    console.log('[FB Pixel] Custom event tracked:', eventName, params);
+    // Add event_id to params for deduplication
+    const trackParams = {
+      ...params,
+      eventID: finalEventId
+    };
+
+    window.fbq('trackCustom', eventName, trackParams);
+    console.log('[FB Pixel] Custom event tracked:', eventName, trackParams);
   } else {
     console.warn('[FB Pixel] Pixel not loaded, custom event not tracked:', eventName);
   }
+
+  return finalEventId;
 };
 
 /**
@@ -61,22 +96,29 @@ export const trackPageView = () => {
 /**
  * Track user registration/signup
  * @param {Object} params - User data (optional)
+ * @param {string} eventId - Optional event ID for deduplication
+ * @returns {string} Event ID used (send this to backend)
  */
-export const trackCompleteRegistration = (params = {}) => {
-  trackEvent('CompleteRegistration', {
+export const trackCompleteRegistration = (params = {}, eventId = null) => {
+  return trackEvent('CompleteRegistration', {
     content_name: 'User Registration',
     status: 'completed',
+    userId: params.userId,
     ...params
-  });
+  }, eventId);
 };
 
 /**
  * Track user login
+ * @param {string} userId - User ID
+ * @param {string} eventId - Optional event ID for deduplication
+ * @returns {string} Event ID used (send this to backend)
  */
-export const trackLogin = () => {
-  trackCustomEvent('Login', {
-    content_name: 'User Login'
-  });
+export const trackLogin = (userId = 'unknown', eventId = null) => {
+  return trackCustomEvent('Login', {
+    content_name: 'User Login',
+    userId: userId
+  }, eventId);
 };
 
 /**

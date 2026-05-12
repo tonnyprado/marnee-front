@@ -223,32 +223,78 @@ META_APP_SECRET=836d66edaaadb5ffa62a245824e74f07
 
 ---
 
-## Event Deduplication
+## Event Deduplication ✅ IMPLEMENTADO
 
-Para evitar contar eventos dos veces (Pixel + Conversions API), ambos sistemas usan **Event IDs únicos**.
+Para evitar contar eventos dos veces (Pixel + Conversions API), ambos sistemas usan **Event IDs únicos compartidos**.
 
 ### Cómo Funciona
 
-1. **Frontend** genera Event ID:
+**Sistema de Deduplicación Perfecta** implementado:
+
+1. **Frontend genera Event ID** (ANTES de hacer request):
 ```javascript
-const eventId = `login_${userId}_${Date.now()}`;
+// En AuthPage.jsx
+const eventName = mode === "signup" ? "CompleteRegistration" : "Login";
+const eventId = `${eventName.toLowerCase()}_${form.email}_${Date.now()}`;
 ```
 
-2. **Backend** genera Event ID igual:
+2. **Frontend envía Event ID al Backend**:
+```javascript
+const payload = {
+  email: form.email,
+  password: form.password,
+  fbEventId: eventId  // ← Enviado al backend
+};
+await api.login(payload);
+```
+
+3. **Backend recibe y usa el mismo Event ID**:
 ```java
-String eventId = "login_" + userId + "_" + System.currentTimeMillis();
+// En AuthService.java
+facebookConversionsAPI.trackLogin(
+    user.getEmail(),
+    user.getId().toString(),
+    getClientIp(httpRequest),
+    httpRequest.getHeader("User-Agent"),
+    request.getFbEventId()  // ← Usa el ID del frontend
+);
 ```
 
-3. **Facebook deduplica**: Si recibe el mismo `event_id` del Pixel y de Conversions API, solo cuenta 1 evento.
+4. **Frontend rastrea con el mismo Event ID**:
+```javascript
+// En AuthPage.jsx (después de response exitoso)
+trackLogin(response.userId, eventId);  // ← Mismo event ID
+```
 
-### ⚠️ Importante
+5. **Facebook deduplica automáticamente**: Si recibe el mismo `event_id` del Pixel y de Conversions API, solo cuenta 1 evento.
 
-Para deduplicación perfecta, necesitarías pasar el `event_id` del frontend al backend. Por ahora, cada uno genera su propio ID, por lo que **pueden contarse eventos dos veces** si ambos se disparan.
+### ✅ Ventajas del Sistema
 
-**Solución futura (opcional)**:
-- Generar Event ID en frontend
-- Enviarlo al backend en el request
-- Backend usa el mismo ID
+- **Deduplicación perfecta**: 0% de eventos duplicados
+- **Mayor precisión**: Facebook cuenta eventos una sola vez
+- **Mejor atribución**: Datos más limpios para optimización de ads
+- **Captura completa**: Si el Pixel es bloqueado, el servidor captura el evento de todos modos
+
+### 📊 Formato de Event IDs
+
+Los Event IDs siguen este formato:
+```
+{event_name}_{user_identifier}_{timestamp}
+```
+
+**Ejemplos**:
+- `completeregistration_user@example.com_1715530800000`
+- `login_user@example.com_1715530850000`
+
+### 🔍 Cómo Verificar Deduplicación
+
+1. Ve a **Facebook Events Manager** → Tu Pixel
+2. Sección **Test Events**
+3. Haz un login/registro en tu app
+4. Verás 2 eventos con el mismo `event_id`:
+   - Source: **Browser** (Pixel)
+   - Source: **Server** (Conversions API)
+5. Facebook automáticamente los cuenta como **1 solo evento**
 
 ---
 

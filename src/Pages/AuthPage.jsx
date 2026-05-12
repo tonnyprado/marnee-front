@@ -90,14 +90,24 @@ export default function AuthPage() {
 
     try {
       setLoading(true);
+
+      // Generate event ID for Facebook deduplication (before making request)
+      const eventName = mode === "signup" ? "CompleteRegistration" : "Login";
+      const eventId = `${eventName.toLowerCase()}_${form.email}_${Date.now()}`;
+
       const payload =
         mode === "signup"
           ? {
               name: form.name.trim(),
               email: form.email.trim(),
               password: form.password,
+              fbEventId: eventId, // Send to backend for server-side tracking
             }
-          : { email: form.email.trim(), password: form.password };
+          : {
+              email: form.email.trim(),
+              password: form.password,
+              fbEventId: eventId, // Send to backend for server-side tracking
+            };
 
       const response =
         mode === "signup"
@@ -113,14 +123,15 @@ export default function AuthPage() {
         role: response.role,
       });
 
-      // Track Facebook Pixel event
+      // Track Facebook Pixel event with same event ID (for deduplication)
       if (mode === "signup") {
         trackCompleteRegistration({
           email: response.email,
-          name: response.name
-        });
+          name: response.name,
+          userId: response.userId
+        }, eventId); // Use same event ID
       } else {
-        trackLogin();
+        trackLogin(response.userId, eventId); // Use same event ID
       }
 
       // Redirect based on role

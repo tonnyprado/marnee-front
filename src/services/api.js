@@ -48,8 +48,8 @@ export const api = {
   /**
    * POST /auth/register - Register user
    */
-  register: ({ name, email, password }) =>
-    apiClient.post('/auth/register', { name, email, password }, {
+  register: ({ name, email, password, fbEventId }) =>
+    apiClient.post('/auth/register', { name, email, password, fbEventId }, {
       auth: false,
       baseUrl: API.AUTH,
     }),
@@ -57,8 +57,8 @@ export const api = {
   /**
    * POST /auth/login - Login user
    */
-  login: ({ email, password }) =>
-    apiClient.post('/auth/login', { email, password }, {
+  login: ({ email, password, fbEventId }) =>
+    apiClient.post('/auth/login', { email, password, fbEventId }, {
       auth: false,
       baseUrl: API.AUTH,
     }),
