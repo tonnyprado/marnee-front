@@ -29,6 +29,7 @@ export default function AdminLayout() {
     { path: '/admin/seo', label: 'SEO', icon: FileText },
     { path: '/admin/analytics', label: 'Analytics', icon: BarChart3 },
     { path: '/admin/integrations', label: 'Integraciones', icon: Plug },
+    { path: '/admin/legal', label: 'Legal Documents', icon: FileText },
   ];
 
   const securityItems = [

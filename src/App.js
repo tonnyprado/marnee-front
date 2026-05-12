@@ -18,6 +18,8 @@ import BrandingTestIntro from "./Pages/BrandingTestIntro";
 import BrandTestPage from "./Pages/BrandTestPage";
 import TestSelectionPage from "./Pages/TestSelectionPage";
 import BusinessTestPage from "./Pages/BusinessTestPage";
+import TermsOfServicePage from "./Pages/Legal/TermsOfServicePage";
+import PrivacyPolicyPage from "./Pages/Legal/PrivacyPolicyPage";
 
 import AppLayout from "./Layout/Layout";
 import IAWebPage from "./Pages/Tools/IAWebPage"; // Old chat - kept as backup
@@ -43,6 +45,7 @@ import SecurityAlertsPage from "./admin/pages/SecurityAlertsPage";
 import PromptManagement from "./admin/pages/PromptManagement";
 import RAGManagement from "./admin/pages/RAGManagement";
 import IntegrationsPage from "./admin/pages/IntegrationsPage";
+import LegalDocumentsPage from "./admin/pages/LegalDocumentsPage";
 
 function RequireAuth({ children }) {
   const session = getAuthSession();
@@ -96,6 +99,8 @@ function AppContent() {
         <Route path="/test-selection" element={<TestSelectionPage />} />
         <Route path="/business-test/questions" element={<BusinessTestPage />} />
         <Route path="/brand-test/questions" element={<BrandTestPage />} />
+        <Route path="/terms" element={<TermsOfServicePage />} />
+        <Route path="/privacy" element={<PrivacyPolicyPage />} />
 
         {/* CHAT VIEJO - BACKUP (por si acaso) */}
         <Route
@@ -149,6 +154,7 @@ function AppContent() {
           <Route path="seo" element={<SeoManagement />} />
           <Route path="analytics" element={<AnalyticsDashboard />} />
           <Route path="integrations" element={<IntegrationsPage />} />
+          <Route path="legal" element={<LegalDocumentsPage />} />
           <Route path="security" element={<SecurityDashboard />} />
           <Route path="security/audit-logs" element={<AuditLogsPage />} />
           <Route path="security/sessions" element={<ActiveSessionsPage />} />
