@@ -494,22 +494,30 @@ function ChatPageContent() {
       };
 
       recognition.onresult = (event) => {
-        // Construir transcripción completa (final + interim)
+        // Construir transcripción completa procesando TODOS los resultados
+        // Esto asegura que no perdemos el texto anterior al pausar/reanudar
         let finalTranscript = '';
         let interimTranscript = '';
 
-        for (let i = event.resultIndex; i < event.results.length; i++) {
+        // Procesar TODOS los resultados desde el inicio (index 0)
+        for (let i = 0; i < event.results.length; i++) {
           const transcript = event.results[i][0].transcript;
           if (event.results[i].isFinal) {
             finalTranscript += transcript + ' ';
           } else {
-            interimTranscript += transcript;
+            // Solo agregar interim para los últimos resultados
+            if (i >= event.resultIndex) {
+              interimTranscript += transcript;
+            }
           }
         }
 
-        // Actualizar input en tiempo real
+        // Combinar todo el texto final con el texto interim actual
         const fullTranscript = (finalTranscript + interimTranscript).trim();
-        console.log('[Voice] Transcription:', fullTranscript);
+
+        console.log('[Voice] Final:', finalTranscript);
+        console.log('[Voice] Interim:', interimTranscript);
+        console.log('[Voice] Full Transcription:', fullTranscript);
         setInput(fullTranscript);
       };
 

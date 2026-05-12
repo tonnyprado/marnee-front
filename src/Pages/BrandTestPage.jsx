@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { api } from "../services/api";
 import { useMarnee } from "../context/MarneeContext";
 import LoadingTransition from "../Component/LoadingTransition";
+import { Mic, MicOff } from 'lucide-react';
+import { useVoiceRecognition } from "./Tools/Chat/useVoiceRecognition";
 
 // Question types: radio, multiSelect, textarea, slider
 const STEPS = [
@@ -289,6 +291,20 @@ export default function BrandTestPage() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Voice recognition for textarea fields
+  const { isVoiceMode, toggleVoiceMode } = useVoiceRecognition({
+    onTranscriptChange: (transcript) => {
+      // Update the current step's field with the transcript
+      if (step && step.type === 'textarea') {
+        setAnswers((prev) => ({
+          ...prev,
+          [step.field]: transcript,
+        }));
+      }
+    },
+    playSound: () => {}, // No sound for tests
+  });
+
   useEffect(() => {
     loadExistingData();
   }, []);
@@ -493,13 +509,41 @@ export default function BrandTestPage() {
 
       case 'textarea':
         return (
-          <textarea
-            value={answers[step.field] || ''}
-            onChange={(e) => handleTextChange(e.target.value)}
-            placeholder={step.placeholder}
-            rows={4}
-            className="w-full bg-[#f6f6f6] border border-[rgba(30,30,30,0.1)] rounded px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#dccaf4] focus:border-transparent resize-none transition"
-          />
+          <div className="relative">
+            <textarea
+              value={answers[step.field] || ''}
+              onChange={(e) => handleTextChange(e.target.value)}
+              placeholder={isVoiceMode ? "Listening... Speak now" : step.placeholder}
+              rows={4}
+              className={`w-full bg-[#f6f6f6] border ${
+                isVoiceMode ? 'border-red-300 ring-2 ring-red-200' : 'border-[rgba(30,30,30,0.1)]'
+              } rounded px-4 py-3 pr-12 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#dccaf4] focus:border-transparent resize-none transition`}
+            />
+            {/* Voice button */}
+            <button
+              type="button"
+              onClick={toggleVoiceMode}
+              className={`absolute right-3 top-3 p-2 rounded-lg transition-all ${
+                isVoiceMode
+                  ? 'bg-red-500 text-white shadow-lg shadow-red-200'
+                  : 'hover:bg-gray-200 text-gray-600'
+              }`}
+              title={isVoiceMode ? "Stop recording" : "Start voice input"}
+            >
+              {isVoiceMode ? (
+                <MicOff className="w-4 h-4" />
+              ) : (
+                <Mic className="w-4 h-4" />
+              )}
+            </button>
+            {/* Voice mode indicator */}
+            {isVoiceMode && (
+              <div className="mt-2 flex items-center gap-2 text-xs text-red-600">
+                <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+                Recording... Click the microphone to stop
+              </div>
+            )}
+          </div>
         );
 
       case 'slider':

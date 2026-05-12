@@ -10,6 +10,7 @@ import { useState, useRef, useCallback } from 'react';
 export function useVoiceRecognition({ onTranscriptChange, playSound }) {
   const [isVoiceMode, setIsVoiceMode] = useState(false);
   const recognitionRef = useRef(null);
+  const accumulatedTranscriptRef = useRef('');
 
   /**
    * Toggle voice recognition on/off
@@ -29,6 +30,9 @@ export function useVoiceRecognition({ onTranscriptChange, playSound }) {
       recognition.continuous = true;  // Keep recording
       recognition.interimResults = true;  // Show results in real-time
 
+      // Reset accumulated transcript when starting
+      accumulatedTranscriptRef.current = '';
+
       recognition.onstart = () => {
         console.log('[Voice] Voice recognition started');
         setIsVoiceMode(true);
@@ -38,22 +42,30 @@ export function useVoiceRecognition({ onTranscriptChange, playSound }) {
       };
 
       recognition.onresult = (event) => {
-        // Build complete transcription (final + interim)
+        // Build complete transcription by processing ALL results
+        // This ensures we don't lose previous text when pausing/resuming
         let finalTranscript = '';
         let interimTranscript = '';
 
-        for (let i = event.resultIndex; i < event.results.length; i++) {
+        // Process ALL results from the beginning (index 0)
+        for (let i = 0; i < event.results.length; i++) {
           const transcript = event.results[i][0].transcript;
           if (event.results[i].isFinal) {
             finalTranscript += transcript + ' ';
           } else {
-            interimTranscript += transcript;
+            // Only add interim for the latest results
+            if (i >= event.resultIndex) {
+              interimTranscript += transcript;
+            }
           }
         }
 
-        // Update input in real-time
+        // Combine accumulated final text with current interim text
         const fullTranscript = (finalTranscript + interimTranscript).trim();
-        console.log('[Voice] Transcription:', fullTranscript);
+
+        console.log('[Voice] Final:', finalTranscript);
+        console.log('[Voice] Interim:', interimTranscript);
+        console.log('[Voice] Full Transcription:', fullTranscript);
 
         if (onTranscriptChange) {
           onTranscriptChange(fullTranscript);
