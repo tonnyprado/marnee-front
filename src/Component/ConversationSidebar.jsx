@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageCircle, Plus, X, Trash2, PanelLeftClose, PanelLeft } from 'lucide-react';
+import { MessageCircle, Plus, X, Trash2, PanelLeftClose, PanelLeft, Link2 } from 'lucide-react';
+import SocialIntegrationsModal from '../components/SocialIntegrationsModal';
 
 /**
  * ConversationSidebar - Sidebar showing list of conversations
@@ -28,6 +29,7 @@ export default function ConversationSidebar({
   onToggleCollapse,
 }) {
   const [hoveredConvId, setHoveredConvId] = useState(null);
+  const [isIntegrationsModalOpen, setIsIntegrationsModalOpen] = useState(false);
   // Generate title from first message or use default
   const getConversationTitle = (conversation) => {
     if (conversation.title) return conversation.title;
@@ -61,7 +63,7 @@ export default function ConversationSidebar({
 
   // Collapsed thin bar view
   const collapsedBar = (
-    <div className="h-full w-12 flex flex-col items-center bg-white border-r border-gray-200 py-4">
+    <div className="h-full w-12 flex flex-col items-center bg-white border-r border-gray-200 py-4 space-y-2">
       <motion.button
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
@@ -70,6 +72,19 @@ export default function ConversationSidebar({
         title="Expand sidebar"
       >
         <PanelLeft className="w-5 h-5" />
+      </motion.button>
+
+      <div className="flex-1" />
+
+      {/* Integrations button in collapsed view */}
+      <motion.button
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        onClick={() => setIsIntegrationsModalOpen(true)}
+        className="p-2 bg-gradient-to-br from-purple-600 to-pink-600 text-white rounded-lg hover:shadow-md transition"
+        title="Integraciones"
+      >
+        <Link2 className="w-5 h-5" />
       </motion.button>
     </div>
   );
@@ -195,6 +210,22 @@ export default function ConversationSidebar({
           </div>
         )}
       </div>
+
+      {/* Social Integrations Button */}
+      <div className="p-4 border-t border-gray-200 mt-auto">
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          onClick={() => setIsIntegrationsModalOpen(true)}
+          className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl py-3 px-4 flex items-center justify-center gap-2 font-medium shadow-md hover:shadow-lg transition-all"
+        >
+          <Link2 className="w-5 h-5" />
+          Integraciones
+        </motion.button>
+        <p className="text-xs text-gray-500 text-center mt-2">
+          Conecta tus redes sociales
+        </p>
+      </div>
     </div>
   );
 
@@ -231,6 +262,12 @@ export default function ConversationSidebar({
           </>
         )}
       </AnimatePresence>
+
+      {/* Social Integrations Modal */}
+      <SocialIntegrationsModal
+        isOpen={isIntegrationsModalOpen}
+        onClose={() => setIsIntegrationsModalOpen(false)}
+      />
     </>
   );
 }
