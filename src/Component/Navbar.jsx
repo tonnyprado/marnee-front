@@ -4,6 +4,7 @@ import Logo from "./Logo";
 import { getAuthSession, setAuthSession } from "../services/api";
 import { useLanguage } from "../context/LanguageContext";
 import LogoutConfirmationModal from "./LogoutConfirmationModal";
+import InstagramConnectionButton from "./InstagramConnectionButton";
 
 // Lordicon animated icons
 const icons = {
@@ -153,6 +154,13 @@ export default function Navbar({ active = "ai-content" }) {
             );
           })}
         </nav>
+
+        {/* Instagram Connection - Highlighted Partner Integration */}
+        <div className={`px-3 ${collapsed ? 'lg:px-2' : ''} max-lg:px-2 pb-4`}>
+          <div className={`${collapsed ? 'lg:flex lg:justify-center' : ''} max-lg:flex max-lg:justify-center`}>
+            <InstagramConnectionButton collapsed={collapsed} />
+          </div>
+        </div>
 
         {/* User box */}
         <div className="mt-auto border-t border-[rgba(30,30,30,0.1)] px-3 py-4">

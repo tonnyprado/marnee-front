@@ -2,7 +2,7 @@ import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import {
   Users, LayoutDashboard, CreditCard, FileText,
-  BarChart3, LogOut, Settings, Shield, Lock, Activity, AlertTriangle, Sparkles, Brain, ChevronDown
+  BarChart3, LogOut, Settings, Shield, Lock, Activity, AlertTriangle, Sparkles, Brain, ChevronDown, Plug, Database
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getAuthSession, setAuthSession } from '../services/api';
@@ -25,8 +25,10 @@ export default function AdminLayout() {
     { path: '/admin/users', label: 'Usuarios', icon: Users },
     { path: '/admin/subscriptions', label: 'Suscripciones', icon: CreditCard },
     { path: '/admin/marnee-training', label: 'Marnee Training', icon: Brain },
+    { path: '/admin/rag', label: 'RAG Management', icon: Database },
     { path: '/admin/seo', label: 'SEO', icon: FileText },
     { path: '/admin/analytics', label: 'Analytics', icon: BarChart3 },
+    { path: '/admin/integrations', label: 'Integraciones', icon: Plug },
   ];
 
   const securityItems = [

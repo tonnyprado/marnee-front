@@ -218,6 +218,44 @@ export const getUserConversations = async (userId) => {
   return aiRequest(`/admin/users/${userId}/conversations`);
 };
 
+// ==================== RAG MANAGEMENT ====================
+
+export const getRagStatus = async () => {
+  return aiRequest('/admin/rag/status');
+};
+
+export const populateRagKnowledge = async (reset = false) => {
+  return aiRequest(`/admin/rag/populate-knowledge?reset=${reset}`, {
+    method: 'POST',
+  });
+};
+
+export const indexUser = async (userId) => {
+  return aiRequest(`/admin/rag/index-user/${userId}`, {
+    method: 'POST',
+  });
+};
+
+export const indexAllUsers = async () => {
+  return aiRequest('/admin/rag/index-all-users', {
+    method: 'POST',
+  });
+};
+
+export const resetRagCollection = async (collectionName) => {
+  return aiRequest(`/admin/rag/collection/${collectionName}`, {
+    method: 'DELETE',
+  });
+};
+
+export const searchRag = async (query, collection = null, topK = 5) => {
+  const params = new URLSearchParams({ query, top_k: topK });
+  if (collection) {
+    params.append('collection', collection);
+  }
+  return aiRequest(`/admin/rag/search?${params.toString()}`);
+};
+
 const adminApiService = {
   // Users
   getUsers,
@@ -258,6 +296,14 @@ const adminApiService = {
   getUserActivity,
   getUserCalendars,
   getUserConversations,
+
+  // RAG Management
+  getRagStatus,
+  populateRagKnowledge,
+  indexUser,
+  indexAllUsers,
+  resetRagCollection,
+  searchRag,
 };
 
 export default adminApiService;
