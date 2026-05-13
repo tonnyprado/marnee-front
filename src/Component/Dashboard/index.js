@@ -29,3 +29,4 @@ export { default as MetricsGrid } from './MetricsGrid';
 export { default as ActivityStatus } from './ActivityStatus';
 export { default as TopPostsList } from './TopPostsList';
 export { default as GoalsProgress } from './GoalsProgress';
+export { default as ConnectionCard } from './ConnectionCard';
