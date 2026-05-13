@@ -52,13 +52,13 @@ export default function SocialIntegrationsModal({ isOpen, onClose }) {
       await connectInstagram();
     } catch (error) {
       console.error('Error connecting Instagram:', error);
-      alert('Error al conectar Instagram. Por favor intenta de nuevo.');
+      alert('Error connecting Instagram. Please try again.');
       setActionLoading(null);
     }
   };
 
   const handleMetaDisconnect = async () => {
-    if (!window.confirm('¿Desconectar Instagram? Esto eliminará el acceso a tus datos de Instagram.')) {
+    if (!window.confirm('Disconnect Instagram? This will remove access to your Instagram data.')) {
       return;
     }
     setActionLoading('meta');
@@ -68,7 +68,7 @@ export default function SocialIntegrationsModal({ isOpen, onClose }) {
       await fetchStatuses();
     } catch (error) {
       console.error('Error disconnecting Meta:', error);
-      alert('Error al desconectar Instagram. Por favor intenta de nuevo.');
+      alert('Error disconnecting Instagram. Please try again.');
     } finally {
       setActionLoading(null);
     }
@@ -81,7 +81,7 @@ export default function SocialIntegrationsModal({ isOpen, onClose }) {
       await connectGoogle(services);
     } catch (error) {
       console.error('Error connecting Google services:', error);
-      alert('Error al conectar servicios de Google. Por favor intenta de nuevo.');
+      alert('Error connecting Google services. Please try again.');
       setActionLoading(null);
     }
   };
@@ -93,7 +93,7 @@ export default function SocialIntegrationsModal({ isOpen, onClose }) {
       await addGoogleService(service);
     } catch (error) {
       console.error(`Error adding Google service ${service}:`, error);
-      alert(`Error al conectar ${service}. Por favor intenta de nuevo.`);
+      alert(`Error connecting ${service}. Please try again.`);
       setActionLoading(null);
     }
   };
@@ -101,7 +101,7 @@ export default function SocialIntegrationsModal({ isOpen, onClose }) {
   // Reserved for future use: disconnect all Google services at once
   // eslint-disable-next-line no-unused-vars
   const handleGoogleDisconnect = async () => {
-    if (!window.confirm('¿Desconectar todos los servicios de Google? Esto eliminará el acceso a YouTube, Analytics, Ads y My Business.')) {
+    if (!window.confirm('Disconnect all Google services? This will remove access to YouTube, Analytics, Ads and My Business.')) {
       return;
     }
     setActionLoading('google');
@@ -110,14 +110,14 @@ export default function SocialIntegrationsModal({ isOpen, onClose }) {
       await fetchStatuses();
     } catch (error) {
       console.error('Error disconnecting Google:', error);
-      alert('Error al desconectar Google. Por favor intenta de nuevo.');
+      alert('Error disconnecting Google. Please try again.');
     } finally {
       setActionLoading(null);
     }
   };
 
   const handleGoogleServiceDisconnect = async (service) => {
-    if (!window.confirm(`¿Desconectar ${service}?`)) {
+    if (!window.confirm(`Disconnect ${service}?`)) {
       return;
     }
     setActionLoading(`google-${service}`);
@@ -127,7 +127,7 @@ export default function SocialIntegrationsModal({ isOpen, onClose }) {
       await fetchStatuses();
     } catch (error) {
       console.error(`Error disconnecting ${service}:`, error);
-      alert(`Error al desconectar ${service}. Por favor intenta de nuevo.`);
+      alert(`Error disconnecting ${service}. Please try again.`);
     } finally {
       setActionLoading(null);
     }
@@ -140,7 +140,7 @@ export default function SocialIntegrationsModal({ isOpen, onClose }) {
   };
 
   const handleTikTokDisconnect = async () => {
-    if (!window.confirm('¿Desconectar TikTok? Esto eliminará el acceso a tus datos de TikTok.')) {
+    if (!window.confirm('Disconnect TikTok? This will remove access to your TikTok data.')) {
       return;
     }
     setActionLoading('tiktok');
@@ -150,7 +150,7 @@ export default function SocialIntegrationsModal({ isOpen, onClose }) {
       await fetchStatuses();
     } catch (error) {
       console.error('Error disconnecting TikTok:', error);
-      alert('Error al desconectar TikTok. Por favor intenta de nuevo.');
+      alert('Error disconnecting TikTok. Please try again.');
     } finally {
       setActionLoading(null);
     }
@@ -385,7 +385,7 @@ export default function SocialIntegrationsModal({ isOpen, onClose }) {
                   <p className="font-semibold mb-1">Acerca de tus datos</p>
                   <p className="text-blue-700">
                     Marnee solo accede a datos de lectura para proporcionarte análisis e insights.
-                    Nunca publicamos ni modificamos contenido sin tu autorización explícita.
+                    We never post or modify content without your explicit authorization.
                     Puedes desconectar cualquier servicio en cualquier momento.
                   </p>
                 </div>
@@ -457,7 +457,7 @@ function IntegrationCard({ integration, actionLoading }) {
               {/* Requirements (show when not connected) */}
               {!integration.connected && showDetails && (
                 <div className="text-sm bg-gray-50 border border-gray-200 rounded-lg p-3 mb-3">
-                  <p className="font-semibold text-gray-900 mb-2">Requisitos:</p>
+                  <p className="font-semibold text-gray-900 mb-2">Requirements:</p>
                   <ul className="space-y-1">
                     {integration.requirements.map((req, idx) => (
                       <li key={idx} className="text-gray-700 flex items-start gap-2">
@@ -475,7 +475,7 @@ function IntegrationCard({ integration, actionLoading }) {
                   onClick={() => setShowDetails(!showDetails)}
                   className="text-sm text-[#40086d] hover:text-[#2d0550] font-medium"
                 >
-                  {showDetails ? 'Ocultar requisitos' : 'Ver requisitos'}
+                  {showDetails ? 'Hide requirements' : 'Show requirements'}
                 </button>
               )}
             </div>
@@ -490,7 +490,7 @@ function IntegrationCard({ integration, actionLoading }) {
                 className="px-4 py-2 border-2 border-red-500 text-red-600 rounded-lg font-medium hover:bg-red-50 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               >
                 {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
-                Desconectar
+                Disconnect
               </button>
             ) : (
               <button
@@ -499,7 +499,7 @@ function IntegrationCard({ integration, actionLoading }) {
                 className={`px-4 py-2 bg-gradient-to-r ${integration.color} text-white rounded-lg font-medium hover:shadow-lg transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2`}
               >
                 {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
-                Conectar
+                Connect
               </button>
             )}
           </div>
