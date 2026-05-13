@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { api } from "../../../services/api";
 import { useAuth } from "../../../context/AuthContext";
 
@@ -18,6 +19,9 @@ export default function BrainstormingSection({ calendarId }) {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingIdea, setEditingIdea] = useState(null);
   const [statusFilter, setStatusFilter] = useState("idea");
+  const [newlyAddedIds, setNewlyAddedIds] = useState([]); // Track new ideas for pulse animation
+  const [showNotification, setShowNotification] = useState(false);
+  const [notificationCount, setNotificationCount] = useState(0);
 
   const [form, setForm] = useState({
     title: "",
@@ -27,17 +31,38 @@ export default function BrainstormingSection({ calendarId }) {
     notes: "",
   });
 
-  const loadIdeas = useCallback(async () => {
+  const loadIdeas = useCallback(async (detectNew = false) => {
     setIsLoading(true);
     try {
       const data = await api.getBrainstormingIdeas(founderId, calendarId);
-      setIdeas(data.ideas || []);
+      const newIdeas = data.ideas || [];
+
+      // Detect newly added ideas if requested
+      if (detectNew && ideas.length > 0) {
+        const previousIds = new Set(ideas.map(i => i.id));
+        const freshIds = newIdeas
+          .filter(idea => !previousIds.has(idea.id))
+          .map(idea => idea.id);
+
+        if (freshIds.length > 0) {
+          setNewlyAddedIds(freshIds);
+          setNotificationCount(freshIds.length);
+          setShowNotification(true);
+
+          // Remove pulse effect after 3 seconds
+          setTimeout(() => setNewlyAddedIds([]), 3000);
+          // Hide notification after 5 seconds
+          setTimeout(() => setShowNotification(false), 5000);
+        }
+      }
+
+      setIdeas(newIdeas);
     } catch (err) {
       console.error("Failed to load brainstorming ideas:", err);
     } finally {
       setIsLoading(false);
     }
-  }, [founderId, calendarId]);
+  }, [founderId, calendarId, ideas]);
 
   useEffect(() => {
     if (founderId) {
@@ -88,7 +113,7 @@ export default function BrainstormingSection({ calendarId }) {
         await api.createBrainstormingIdea(data);
       }
 
-      await loadIdeas();
+      await loadIdeas(true); // Detect new ideas
       resetForm();
     } catch (err) {
       console.error("Failed to save idea:", err);
@@ -167,6 +192,64 @@ export default function BrainstormingSection({ calendarId }) {
 
   return (
     <div className="space-y-6">
+      {/* Notification Toast */}
+      <AnimatePresence>
+        {showNotification && (
+          <motion.div
+            initial={{ opacity: 0, y: -50, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.9 }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+            className="fixed top-4 right-4 z-50 bg-gradient-to-r from-violet-600 to-purple-600 text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 max-w-md"
+          >
+            <motion.div
+              animate={{
+                rotate: [0, 10, -10, 10, 0],
+                scale: [1, 1.1, 1]
+              }}
+              transition={{ duration: 0.5 }}
+              className="flex-shrink-0"
+            >
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+                />
+              </svg>
+            </motion.div>
+            <div className="flex-1">
+              <p className="font-semibold">Marnee added {notificationCount} new {notificationCount === 1 ? 'idea' : 'ideas'}!</p>
+              <p className="text-sm text-violet-100">Check them out in your brainstorming board</p>
+            </div>
+            <button
+              onClick={() => setShowNotification(false)}
+              className="flex-shrink-0 hover:bg-white/20 rounded-lg p-1 transition"
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -175,12 +258,37 @@ export default function BrainstormingSection({ calendarId }) {
             Capture content ideas before converting them to calendar tasks
           </p>
         </div>
-        <button
-          onClick={handleOpenNew}
-          className="px-4 py-2 rounded-lg bg-[#1e1e1e] text-white font-medium text-sm hover:bg-[#dccaf4] hover:text-[#1a0530] transition shadow-sm"
-        >
-          + New Idea
-        </button>
+        <div className="flex gap-2">
+          <motion.button
+            onClick={() => loadIdeas(true)}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="px-4 py-2 rounded-lg border border-[rgba(30,30,30,0.1)] text-gray-700 font-medium text-sm hover:bg-[#f6f6f6] transition shadow-sm"
+            title="Refresh ideas"
+          >
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+              />
+            </svg>
+          </motion.button>
+          <motion.button
+            onClick={handleOpenNew}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="px-4 py-2 rounded-lg bg-[#1e1e1e] text-white font-medium text-sm hover:bg-[#dccaf4] hover:text-[#1a0530] transition shadow-sm"
+          >
+            + New Idea
+          </motion.button>
+        </div>
       </div>
 
       {/* Filters */}
@@ -194,9 +302,11 @@ export default function BrainstormingSection({ calendarId }) {
             { value: "converted_to_task", label: "Converted" },
             { value: "rejected", label: "Rejected" },
           ].map((filter) => (
-            <button
+            <motion.button
               key={filter.value}
               onClick={() => setStatusFilter(filter.value)}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               className={`px-3 py-1.5 rounded-lg text-sm border transition ${
                 statusFilter === filter.value
                   ? "bg-[#ede0f8] text-[#40086d] border-violet-300 font-medium"
@@ -204,7 +314,7 @@ export default function BrainstormingSection({ calendarId }) {
               }`}
             >
               {filter.label}
-            </button>
+            </motion.button>
           ))}
         </div>
       </div>
@@ -240,11 +350,56 @@ export default function BrainstormingSection({ calendarId }) {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredIdeas.map((idea) => (
-            <div
-              key={idea.id}
-              className="bg-white border border-[rgba(30,30,30,0.1)] rounded p-5 hover:shadow-md transition"
-            >
+          <AnimatePresence>
+            {filteredIdeas.map((idea, index) => {
+              const isNew = newlyAddedIds.includes(idea.id);
+
+              return (
+                <motion.div
+                  key={idea.id}
+                  initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                  animate={{
+                    opacity: 1,
+                    y: 0,
+                    scale: 1,
+                  }}
+                  exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
+                  transition={{
+                    duration: 0.3,
+                    delay: index * 0.05, // Stagger effect
+                    type: "spring",
+                    stiffness: 300,
+                    damping: 25,
+                  }}
+                  whileHover={{
+                    y: -4,
+                    boxShadow: "0 10px 25px rgba(64, 8, 109, 0.15)",
+                    transition: { duration: 0.2 }
+                  }}
+                  className={`bg-white border rounded p-5 cursor-pointer relative ${
+                    isNew
+                      ? "border-violet-400"
+                      : "border-[rgba(30,30,30,0.1)]"
+                  }`}
+                >
+                  {/* Pulse ring for new ideas */}
+                  {isNew && (
+                    <motion.div
+                      className="absolute inset-0 rounded-lg pointer-events-none"
+                      animate={{
+                        boxShadow: [
+                          "0 0 0 0 rgba(139, 92, 246, 0.7)",
+                          "0 0 0 10px rgba(139, 92, 246, 0)",
+                          "0 0 0 0 rgba(139, 92, 246, 0)"
+                        ]
+                      }}
+                      transition={{
+                        duration: 1.5,
+                        repeat: 2,
+                        ease: "easeOut"
+                      }}
+                    />
+                  )}
               {/* Status Badge */}
               <div className="flex items-start justify-between mb-3">
                 <span
@@ -371,8 +526,10 @@ export default function BrainstormingSection({ calendarId }) {
                   </button>
                 )}
               </div>
-            </div>
-          ))}
+            </motion.div>
+          );
+        })}
+          </AnimatePresence>
         </div>
       )}
 
