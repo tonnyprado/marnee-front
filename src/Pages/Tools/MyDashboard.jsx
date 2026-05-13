@@ -5,14 +5,15 @@ import CampaignsSection from "./MyDashboardSections/CampaignsSection";
 import CurrentTrendsSection from "./MyDashboardSections/CurrentTrendsSection";
 import StrategySection from "./MyDashboardSections/StrategySection";
 import PageTransition from "../../Component/PageTransition";
+import { TopTabs } from "../../Component/Dashboard";
 import { useAuth } from "../../context/AuthContext";
 import { useMarnee } from "../../context/MarneeContext";
 
-// Tab content animation variants
+// Tab content animation variants - smoother, more refined
 const tabContentVariants = {
-  hidden: { opacity: 0, x: -20 },
-  visible: { opacity: 1, x: 0 },
-  exit: { opacity: 0, x: 20 }
+  hidden: { opacity: 0, y: 3 },
+  visible: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -3 }
 };
 
 export default function MyDashboard() {
@@ -20,37 +21,26 @@ export default function MyDashboard() {
   const { founderId, sessionId } = useAuth();
   const { calendarId } = useMarnee();
 
-  return (
-    <PageTransition className="flex min-h-screen bg-[#f6f6f6] text-gray-900">
-      {/* Main */}
-      <div className="flex-1 flex flex-col">
-        {/* Top tabs */}
-        <div className="border-b border-[rgba(30,30,30,0.1)] h-14 flex items-center px-6 gap-6 bg-white">
-          {[
-            "Brand Profile",
-            "Current Trends",
-            "Campaigns",
-            "Strategy",
-          ].map((tab) => {
-            const key = tab.toLowerCase().replace(/\s+/g, "-");
-            return (
-              <button
-                key={key}
-                onClick={() => setActiveTab(key)}
-                className={`pb-3 text-sm font-medium ${
-                  activeTab === key
-                    ? "text-purple-600 border-b-2 border-purple-500"
-                    : "text-gray-500 hover:text-gray-900"
-                }`}
-              >
-                {tab}
-              </button>
-            );
-          })}
-        </div>
+  const tabs = [
+    "Brand Profile",
+    "Current Trends",
+    "Campaigns",
+    "Strategy",
+  ];
 
-        {/* Content */}
-        <div className="flex-1 p-6 space-y-6">
+  return (
+    <PageTransition className="flex min-h-screen bg-[#f6f6f6]">
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col">
+        {/* Premium Top Navigation Tabs */}
+        <TopTabs
+          tabs={tabs}
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+        />
+
+        {/* Content Area with Premium Spacing */}
+        <div className="flex-1 p-8">
           <AnimatePresence mode="wait">
             {activeTab === "brand-profile" && (
               <motion.div
@@ -59,7 +49,7 @@ export default function MyDashboard() {
                 initial="hidden"
                 animate="visible"
                 exit="exit"
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.18, ease: "easeOut" }}
               >
                 <BrandProfileSection
                   founderId={founderId}
@@ -74,7 +64,7 @@ export default function MyDashboard() {
                 initial="hidden"
                 animate="visible"
                 exit="exit"
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.18, ease: "easeOut" }}
               >
                 <CurrentTrendsSection
                   founderId={founderId}
@@ -89,7 +79,7 @@ export default function MyDashboard() {
                 initial="hidden"
                 animate="visible"
                 exit="exit"
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.18, ease: "easeOut" }}
               >
                 <CampaignsSection
                   calendarId={calendarId}
@@ -105,7 +95,7 @@ export default function MyDashboard() {
                 initial="hidden"
                 animate="visible"
                 exit="exit"
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.18, ease: "easeOut" }}
               >
                 <StrategySection
                   founderId={founderId}

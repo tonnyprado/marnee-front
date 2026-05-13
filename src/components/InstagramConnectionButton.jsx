@@ -52,11 +52,15 @@ const InstagramConnectionButton = ({ collapsed = false }) => {
     return (
       <button
         disabled
-        className={`flex items-center ${collapsed ? 'justify-center w-12 h-12' : 'gap-2 px-4 py-2'} bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg opacity-50 cursor-not-allowed shadow-md`}
+        className={`
+          flex items-center rounded-lg opacity-50 cursor-not-allowed
+          bg-[rgba(220,202,244,0.15)] text-[rgba(246,246,246,0.5)]
+          ${collapsed ? 'justify-center w-10 h-10 max-lg:w-10 max-lg:h-10' : 'gap-2 px-3.5 py-2 w-full'}
+        `}
         title="Cargando..."
       >
-        <Loader2 className="w-5 h-5 animate-spin" />
-        {!collapsed && <span className="font-medium text-sm">Cargando...</span>}
+        <Loader2 className="w-4 h-4 animate-spin" />
+        {!collapsed && <span className="font-['DM_Sans'] font-normal text-[13px] max-lg:hidden">Cargando...</span>}
       </button>
     );
   }
@@ -68,18 +72,29 @@ const InstagramConnectionButton = ({ collapsed = false }) => {
     <>
       <button
         onClick={handleOpenIntegrations}
-        className={`flex items-center ${collapsed ? 'justify-center w-12 h-12' : 'gap-2 px-4 py-2'} bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all shadow-lg hover:shadow-xl ${!collapsed && 'transform hover:scale-105'}`}
+        className={`
+          flex items-center rounded-lg transition-all duration-150
+          font-['DM_Sans']
+          ${collapsed
+            ? 'justify-center w-10 h-10 max-lg:w-10 max-lg:h-10'
+            : 'gap-2 px-3.5 py-2 w-full'
+          }
+          ${hasConnections
+            ? 'bg-[rgba(34,197,94,0.15)] text-[rgba(34,197,94,0.9)] hover:bg-[rgba(34,197,94,0.25)]'
+            : 'bg-[rgba(220,202,244,0.15)] text-[rgba(220,202,244,0.9)] hover:bg-[rgba(220,202,244,0.25)]'
+          }
+        `}
         title={collapsed ? 'Integraciones' : ''}
       >
         {hasConnections ? (
           <>
-            <CheckCircle2 className="w-5 h-5" />
-            {!collapsed && <span className="font-medium text-sm">Integraciones</span>}
+            <CheckCircle2 className="w-4 h-4" />
+            {!collapsed && <span className="font-normal text-[13px] max-lg:hidden">Integraciones</span>}
           </>
         ) : (
           <>
-            <Link2 className="w-5 h-5" />
-            {!collapsed && <span className="font-medium text-sm">Conectar Redes</span>}
+            <Link2 className="w-4 h-4" />
+            {!collapsed && <span className="font-normal text-[13px] max-lg:hidden">Conectar Redes</span>}
           </>
         )}
       </button>

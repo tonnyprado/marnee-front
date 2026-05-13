@@ -6,16 +6,35 @@
 
 /* ── TOKENS ─────────────────────────────────────────────── */
 :root {
-  --ice:    #f6f6f6;
-  --black:  #1e1e1e;
-  --purple: #40086d;
-  --lilac:  #dccaf4;
-  --night:  #1a0530;
-  --muted:  rgba(30, 30, 30, 0.45);
-  --border: rgba(30, 30, 30, 0.1);
+  /* Brand colors - Premium palette */
+  --ice:         #f6f6f6;
+  --black:       #1e1e1e;
+  --deep-purple: #40086d;
+  --lilac:       #dccaf4;
+  --lilac-soft:  #ede0f8;
+  --night:       #1a0530;
 
-  /* Typography */
-  --font-display: 'Cormorant Garamond', Georgia, serif;
+  /* Legacy support */
+  --purple: #40086d;
+
+  /* Text colors */
+  --text-primary:   #1e1e1e;
+  --text-secondary: rgba(30, 30, 30, 0.55);
+  --text-muted:     rgba(30, 30, 30, 0.38);
+
+  /* Backgrounds */
+  --bg-page: #f6f6f6;
+  --bg-card: #f6f6f6;
+
+  /* Borders */
+  --border:    rgba(30, 30, 30, 0.1);
+  --border-light: rgba(220, 202, 244, 0.3);
+
+  /* Legacy support */
+  --muted: rgba(30, 30, 30, 0.45);
+
+  /* Typography - Premium fonts */
+  --font-display: 'Noto Serif', Georgia, serif;
   --font-body:    'DM Sans', system-ui, sans-serif;
   --font-mono:    'DM Mono', 'Courier New', monospace;
 

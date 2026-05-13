@@ -141,3 +141,34 @@ export const getContentPerformance = async (limit = 10) => {
     throw error;
   }
 };
+
+/**
+ * Get Instagram Stories with insights
+ * Note: Stories are only available for 24 hours
+ */
+export const getInstagramStories = async (limit = 10) => {
+  try {
+    const response = await apiClient.get(`${API_BASE_URL}/instagram/stories`, {
+      params: { limit }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching Instagram stories:', error);
+    throw error;
+  }
+};
+
+/**
+ * Get Instagram Reels with enhanced metrics
+ */
+export const getInstagramReels = async (limit = 10) => {
+  try {
+    const response = await apiClient.get(`${API_BASE_URL}/instagram/reels`, {
+      params: { limit }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching Instagram reels:', error);
+    throw error;
+  }
+};
