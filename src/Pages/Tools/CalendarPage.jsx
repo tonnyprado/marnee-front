@@ -257,6 +257,7 @@ export default function CalendarPage() {
     if (!hasCheckedHistory) {
       loadCalendar();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [calendarId, founderId, sessionId, setCalendarId, updateCalendar, hasSession, loadSessionData, isLoadingSession, hasCheckedHistory]);
 
   // If the conversation is already in the calendar phase but no calendar exists yet,
