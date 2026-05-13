@@ -2,20 +2,18 @@
  * AnimatedMetricCard Component
  * Métrica con contador animado y efectos hover interactivos
  */
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
 // Hook para animar números
 function useCountUp(end, duration = 1000, start = 0) {
   const [count, setCount] = useState(start);
-  const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
     if (end === null || end === undefined || isNaN(end)) return;
 
-    setIsAnimating(true);
     let startTime;
-    const startValue = count;
+    const startValue = start;
     const diff = end - startValue;
 
     const animate = (timestamp) => {
@@ -30,12 +28,11 @@ function useCountUp(end, duration = 1000, start = 0) {
         requestAnimationFrame(animate);
       } else {
         setCount(end);
-        setIsAnimating(false);
       }
     };
 
     requestAnimationFrame(animate);
-  }, [end]);
+  }, [end, duration, start]);
 
   return count;
 }
@@ -49,7 +46,8 @@ export default function AnimatedMetricCard({
   trend,
   icon: Icon,
   locked = false,
-  onClick
+  onClick,
+  format = 'number'
 }) {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -61,15 +59,17 @@ export default function AnimatedMetricCard({
   const animatedValue = useCountUp(locked ? 0 : numericValue, 1500);
 
   // Calculate trend
-  const trendPercentage = previousValue
+  const trendPercentage = trend
+    ? trend.value
+    : previousValue
     ? ((numericValue - previousValue) / previousValue) * 100
     : 0;
-  const isPositive = trendPercentage > 0;
+  const isPositive = trend ? trend.isPositive : trendPercentage > 0;
 
   // Format display value
   const displayValue = locked
     ? value
-    : value.toString().includes('.')
+    : format === 'decimal'
     ? animatedValue.toFixed(1)
     : animatedValue.toLocaleString();
 
@@ -145,7 +145,7 @@ export default function AnimatedMetricCard({
             </svg>
             <span>Connect to unlock</span>
           </div>
-        ) : trend !== undefined ? (
+        ) : (trend !== undefined || previousValue !== undefined) ? (
           <motion.div
             className={`
               text-[11px] font-medium flex items-center gap-1
