@@ -75,6 +75,12 @@ export function MarneeProvider({ children }) {
     return backup;
   });
 
+  // Brainstorming notification state
+  const [brainstormingNotification, setBrainstormingNotification] = useState({
+    show: false,
+    count: 0,
+  });
+
   // Persist to storage
   useEffect(() => {
     if (calendarId) {
@@ -218,6 +224,19 @@ export function MarneeProvider({ children }) {
     }));
   };
 
+  // Brainstorming notification methods
+  const showBrainstormingNotification = (count) => {
+    setBrainstormingNotification({ show: true, count });
+    // Auto-dismiss after 5 seconds
+    setTimeout(() => {
+      hideBrainstormingNotification();
+    }, 5000);
+  };
+
+  const hideBrainstormingNotification = () => {
+    setBrainstormingNotification({ show: false, count: 0 });
+  };
+
   const value = {
     // Session (delegated to AuthContext, kept for backward compatibility)
     founderId: auth.founderId,
@@ -236,6 +255,11 @@ export function MarneeProvider({ children }) {
     // Messages (legacy support - should use useChat hook instead)
     messages,
     welcomeMessage,
+
+    // Brainstorming notifications
+    brainstormingNotification,
+    showBrainstormingNotification,
+    hideBrainstormingNotification,
 
     // Methods
     initSession,

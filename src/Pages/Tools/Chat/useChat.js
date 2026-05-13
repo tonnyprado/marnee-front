@@ -7,8 +7,10 @@
 
 import { useState, useCallback } from 'react';
 import { api } from '../../../services/api';
+import { useMarnee } from '../../../context/MarneeContext';
 
 export function useChat({ founderId, sessionId, conversationId, setConversationId, playSound }) {
+  const { showBrainstormingNotification } = useMarnee();
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -85,6 +87,12 @@ export function useChat({ founderId, sessionId, conversationId, setConversationI
       });
 
       console.log('[useChat] Messages updated successfully');
+
+      // Check if Marnee auto-saved ideas to brainstorming
+      if (response.brainstormingIdeasSaved && response.savedIdeasCount > 0) {
+        console.log(`[useChat] Marnee saved ${response.savedIdeasCount} ideas to brainstorming`);
+        showBrainstormingNotification(response.savedIdeasCount);
+      }
 
       // Notify parent to update conversations list
       if (onConversationUpdate && finalConvId) {

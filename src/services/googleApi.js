@@ -26,21 +26,53 @@ export const getGoogleStatus = async () => {
  * @param {Array<string>} services - Array of services to connect: ['youtube', 'analytics', 'ads', 'mybusiness']
  * @param {string} redirectTo - Optional redirect URL after OAuth
  */
-export const connectGoogle = (services = ['youtube'], redirectTo = null) => {
-  const servicesParam = services.join(',');
-  const redirect = redirectTo || `${window.location.origin}/settings`;
-  const redirectParam = encodeURIComponent(redirect);
-  window.location.href = `${API_BASE_URL}/google/connect?services=${servicesParam}&redirect_to=${redirectParam}`;
+export const connectGoogle = async (services = ['youtube'], redirectTo = null) => {
+  try {
+    const servicesParam = services.join(',');
+    const redirect = redirectTo || `${window.location.origin}/settings`;
+    const redirectParam = encodeURIComponent(redirect);
+
+    // Use new POST endpoint that accepts authenticated requests
+    const endpoint = `${API_BASE_URL}/google/get-connect-url?services=${servicesParam}&redirect_to=${redirectParam}`;
+    const response = await apiClient.post(endpoint, null, {
+      baseUrl: '',
+      auth: true
+    });
+
+    // Redirect to OAuth URL
+    if (response && response.oauthUrl) {
+      window.location.href = response.oauthUrl;
+    }
+  } catch (error) {
+    console.error('Error getting Google OAuth URL:', error);
+    throw error;
+  }
 };
 
 /**
  * Add an additional Google service without disconnecting existing ones
  * @param {string} service - Service to add: 'youtube' | 'analytics' | 'ads' | 'mybusiness'
  */
-export const addGoogleService = (service, redirectTo = null) => {
-  const redirect = redirectTo || `${window.location.origin}/settings`;
-  const redirectParam = encodeURIComponent(redirect);
-  window.location.href = `${API_BASE_URL}/google/add-service?service=${service}&redirect_to=${redirectParam}`;
+export const addGoogleService = async (service, redirectTo = null) => {
+  try {
+    const redirect = redirectTo || `${window.location.origin}/settings`;
+    const redirectParam = encodeURIComponent(redirect);
+
+    // Use the same endpoint with a single service
+    const endpoint = `${API_BASE_URL}/google/get-connect-url?services=${service}&redirect_to=${redirectParam}`;
+    const response = await apiClient.post(endpoint, null, {
+      baseUrl: '',
+      auth: true
+    });
+
+    // Redirect to OAuth URL
+    if (response && response.oauthUrl) {
+      window.location.href = response.oauthUrl;
+    }
+  } catch (error) {
+    console.error('Error getting Google OAuth URL:', error);
+    throw error;
+  }
 };
 
 /**

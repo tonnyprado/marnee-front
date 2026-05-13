@@ -1,12 +1,13 @@
 // src/App.js
 import React from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 
-import { MarneeProvider } from "./context/MarneeContext";
+import { MarneeProvider, useMarnee } from "./context/MarneeContext";
 import { LanguageProvider, useLanguage } from "./context/LanguageContext";
 import { AuthProvider } from "./context/AuthContext";
 import { ChatThemeProvider } from "./context/ChatThemeContext";
 import { getAuthSession } from "./services/api";
+import BrainstormingNotification from "./Component/BrainstormingNotification";
 
 import PresentationPage from "./Pages/PresentationPage";
 import AuthPage from "./Pages/AuthPage";
@@ -63,6 +64,29 @@ function App() {
   );
 }
 
+// Component to handle brainstorming notifications (needs to be inside MarneeProvider)
+function BrainstormingNotificationHandler() {
+  const navigate = useNavigate();
+  const {
+    brainstormingNotification,
+    hideBrainstormingNotification,
+  } = useMarnee();
+
+  const handleViewIdeas = () => {
+    hideBrainstormingNotification();
+    navigate('/app/calendar', { state: { tab: 'brainstorming' } });
+  };
+
+  return (
+    <BrainstormingNotification
+      show={brainstormingNotification.show}
+      count={brainstormingNotification.count}
+      onClose={hideBrainstormingNotification}
+      onViewIdeas={handleViewIdeas}
+    />
+  );
+}
+
 function AppContent() {
   const [globalError, setGlobalError] = React.useState("");
   const { t } = useLanguage();
@@ -80,7 +104,7 @@ function AppContent() {
       window.removeEventListener("app-error", handler);
       if (timer) clearTimeout(timer);
     };
-  }, [t]);
+  }, [t];
 
   return (
     <ChatThemeProvider>
@@ -164,6 +188,9 @@ function AppContent() {
         {/* fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
+          {/* Brainstorming notification (global) */}
+          <BrainstormingNotificationHandler />
+
           {globalError && (
         <div className="fixed bottom-6 right-6 z-50 max-w-sm rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800 shadow-lg">
           <div className="flex items-start gap-3">

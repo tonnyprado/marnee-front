@@ -7,6 +7,7 @@ import { PageHeader } from '../../../Component/Dashboard';
 import ConnectionCard from '../../../Component/Dashboard/ConnectionCard';
 import { useInstagramData } from '../../../hooks/useInstagramData';
 import { connectInstagram, disconnectInstagram } from '../../../services/instagramApi';
+import { connectGoogle } from '../../../services/googleApi';
 
 // Social Media Icons
 const InstagramIcon = ({ className, style }) => (
@@ -66,25 +67,30 @@ export default function ConnectionsHub() {
     }));
   }, [instagramConnected]);
 
-  const handleConnect = (platform) => {
-    switch(platform) {
-      case 'Instagram':
-        connectInstagram();
-        break;
-      case 'YouTube':
-        window.location.href = '/api/v1/google/connect?services=youtube';
-        break;
-      case 'Google Analytics':
-        window.location.href = '/api/v1/google/connect?services=analytics';
-        break;
-      case 'Google Ads':
-        window.location.href = '/api/v1/google/connect?services=ads';
-        break;
-      case 'Google My Business':
-        window.location.href = '/api/v1/google/connect?services=mybusiness';
-        break;
-      default:
-        console.log('Platform not supported yet');
+  const handleConnect = async (platform) => {
+    try {
+      switch(platform) {
+        case 'Instagram':
+          await connectInstagram();
+          break;
+        case 'YouTube':
+          await connectGoogle(['youtube']);
+          break;
+        case 'Google Analytics':
+          await connectGoogle(['analytics']);
+          break;
+        case 'Google Ads':
+          await connectGoogle(['ads']);
+          break;
+        case 'Google My Business':
+          await connectGoogle(['mybusiness']);
+          break;
+        default:
+          console.log('Platform not supported yet');
+      }
+    } catch (error) {
+      console.error(`Error connecting ${platform}:`, error);
+      alert(`Failed to connect ${platform}. Please try again.`);
     }
   };
 

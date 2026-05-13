@@ -25,9 +25,25 @@ export const getInstagramStatus = async () => {
  * Initiate Instagram connection (OAuth)
  * This will redirect to Meta OAuth page
  */
-export const connectInstagram = () => {
-  const redirectTo = encodeURIComponent(window.location.origin + '/settings');
-  window.location.href = `${API_BASE_URL}/meta/connect?redirect_to=${redirectTo}`;
+export const connectInstagram = async () => {
+  try {
+    const redirectTo = encodeURIComponent(window.location.origin + '/settings');
+
+    // Use new POST endpoint that accepts authenticated requests
+    const endpoint = `${API_BASE_URL}/meta/get-connect-url?redirect_to=${redirectTo}`;
+    const response = await apiClient.post(endpoint, null, {
+      baseUrl: '',
+      auth: true
+    });
+
+    // Redirect to OAuth URL
+    if (response && response.oauthUrl) {
+      window.location.href = response.oauthUrl;
+    }
+  } catch (error) {
+    console.error('Error getting Instagram OAuth URL:', error);
+    throw error;
+  }
 };
 
 /**

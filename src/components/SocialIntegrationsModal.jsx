@@ -45,10 +45,16 @@ export default function SocialIntegrationsModal({ isOpen, onClose }) {
     }
   };
 
-  const handleMetaConnect = () => {
+  const handleMetaConnect = async () => {
     setActionLoading('meta');
-    trackSocialConnect('instagram');
-    connectInstagram();
+    try {
+      trackSocialConnect('instagram');
+      await connectInstagram();
+    } catch (error) {
+      console.error('Error connecting Instagram:', error);
+      alert('Error al conectar Instagram. Por favor intenta de nuevo.');
+      setActionLoading(null);
+    }
   };
 
   const handleMetaDisconnect = async () => {
@@ -68,16 +74,28 @@ export default function SocialIntegrationsModal({ isOpen, onClose }) {
     }
   };
 
-  const handleGoogleConnect = (services) => {
+  const handleGoogleConnect = async (services) => {
     setActionLoading('google');
-    services.forEach(service => trackSocialConnect(service));
-    connectGoogle(services);
+    try {
+      services.forEach(service => trackSocialConnect(service));
+      await connectGoogle(services);
+    } catch (error) {
+      console.error('Error connecting Google services:', error);
+      alert('Error al conectar servicios de Google. Por favor intenta de nuevo.');
+      setActionLoading(null);
+    }
   };
 
-  const handleGoogleServiceAdd = (service) => {
+  const handleGoogleServiceAdd = async (service) => {
     setActionLoading(`google-${service}`);
-    trackSocialConnect(service);
-    addGoogleService(service);
+    try {
+      trackSocialConnect(service);
+      await addGoogleService(service);
+    } catch (error) {
+      console.error(`Error adding Google service ${service}:`, error);
+      alert(`Error al conectar ${service}. Por favor intenta de nuevo.`);
+      setActionLoading(null);
+    }
   };
 
   // Reserved for future use: disconnect all Google services at once

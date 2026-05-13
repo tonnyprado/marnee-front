@@ -73,9 +73,8 @@ class ApiClient {
       const authHeader = getAuthHeader();
 
       if (!authHeader.Authorization) {
-        const message = 'Sesión no válida. Inicia sesión de nuevo.';
-        errorHandler.handleAuthError(message);
-        throw new Error(message);
+        errorHandler.handleAuthError();
+        throw new Error(errorHandler.getTranslation('errors.sessionInvalid'));
       }
 
       Object.assign(requestHeaders, authHeader);
@@ -143,7 +142,7 @@ class ApiClient {
       // Handle network errors
       if (error.name === 'AbortError' || error.message.includes('timeout')) {
         log.error('Request timeout', { url, timeout });
-        throw errorHandler.handleNetworkError(new Error('La solicitud tardó demasiado. Inténtalo de nuevo.'));
+        throw errorHandler.handleNetworkError(new Error(errorHandler.getTranslation('errors.requestTimeout')));
       }
 
       // Handle other errors

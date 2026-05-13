@@ -8,11 +8,13 @@
  * - Categorized error types
  * - Global error event emission
  * - Automatic authentication error handling
- * - User-friendly error messages
+ * - User-friendly error messages (i18n-ready)
  * - Integration with logging system
  */
 
 import logger from '../utils/logger';
+import storage from './StorageService';
+import { translations, DEFAULT_LANGUAGE } from '../../i18n/translations';
 
 const log = logger.createContextLogger('ErrorHandler');
 
@@ -49,6 +51,31 @@ class ErrorHandler {
   constructor() {
     this.errorListeners = [];
     this.authErrorCallback = null;
+  }
+
+  /**
+   * Get translation for error message
+   * @param {string} key - Translation key (e.g., 'errors.sessionExpired')
+   * @returns {string} Translated message
+   */
+  getTranslation(key) {
+    const language = storage.getItem('marnee_language') || DEFAULT_LANGUAGE;
+    const keys = key.split('.');
+    let value = translations[language];
+
+    for (const k of keys) {
+      value = value?.[k];
+    }
+
+    // Fallback to English if translation not found
+    if (!value) {
+      value = translations[DEFAULT_LANGUAGE];
+      for (const k of keys) {
+        value = value?.[k];
+      }
+    }
+
+    return value || key;
   }
 
   /**
@@ -102,10 +129,11 @@ class ErrorHandler {
    * Handle authentication error
    * @param {string} message - Error message
    */
-  handleAuthError(message = 'Tu sesión expiró o no es válida. Vuelve a iniciar sesión.') {
-    log.warn('Authentication error', { message });
+  handleAuthError(message = null) {
+    const errorMessage = message || this.getTranslation('errors.sessionExpired');
+    log.warn('Authentication error', { message: errorMessage });
 
-    this.emitGlobalError(message);
+    this.emitGlobalError(errorMessage);
     this.emitGlobalLogout();
 
     // Call custom callback if set
@@ -147,18 +175,21 @@ class ErrorHandler {
    * @param {string} defaultMessage - Default message if no specific one exists
    * @returns {string}
    */
-  getUserFriendlyMessage(status, defaultMessage = 'Ocurrió un error. Inténtalo de nuevo.') {
-    const messages = {
-      400: 'La solicitud no es válida. Verifica los datos e inténtalo de nuevo.',
-      401: 'Tu sesión expiró. Inicia sesión de nuevo.',
-      403: 'No tienes permiso para realizar esta acción.',
-      404: 'No se encontró el recurso solicitado.',
-      422: 'Los datos proporcionados no son válidos.',
-      500: 'Error del servidor. Inténtalo más tarde.',
-      503: 'El servicio no está disponible. Inténtalo más tarde.',
+  getUserFriendlyMessage(status, defaultMessage = null) {
+    const defaultMsg = defaultMessage || this.getTranslation('app.defaultError');
+
+    const messageKeys = {
+      400: 'errors.invalidRequest',
+      401: 'errors.unauthorized',
+      403: 'errors.forbidden',
+      404: 'errors.notFound',
+      422: 'errors.validationError',
+      500: 'errors.serverError',
+      503: 'errors.serviceUnavailable',
     };
 
-    return messages[status] || defaultMessage;
+    const key = messageKeys[status];
+    return key ? this.getTranslation(key) : defaultMsg;
   }
 
   /**
@@ -241,7 +272,7 @@ class ErrorHandler {
   handleNetworkError(error) {
     log.error('Network error', error);
 
-    const message = 'Error de conexión. Verifica tu conexión a internet.';
+    const message = this.getTranslation('errors.connectionError');
 
     this.emitGlobalError(message);
 
@@ -262,7 +293,7 @@ class ErrorHandler {
   handleGenericError(error, context = 'Unknown') {
     log.error(`Error in ${context}`, error);
 
-    const message = error.message || 'Ocurrió un error inesperado.';
+    const message = error.message || this.getTranslation('errors.unexpectedError');
 
     return new AppError(
       message,

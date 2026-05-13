@@ -21,6 +21,20 @@ export const translations = {
     app: {
       defaultError: "Something went wrong.",
     },
+    errors: {
+      sessionExpired: "Your session expired or is invalid. Please log in again.",
+      sessionInvalid: "Invalid session. Please log in again.",
+      requestTimeout: "The request took too long. Please try again.",
+      connectionError: "Connection error. Check your internet connection.",
+      unexpectedError: "An unexpected error occurred.",
+      invalidRequest: "The request is invalid. Check the data and try again.",
+      unauthorized: "Your session expired. Please log in again.",
+      forbidden: "You don't have permission to perform this action.",
+      notFound: "The requested resource was not found.",
+      validationError: "The provided data is not valid.",
+      serverError: "Server error. Please try again later.",
+      serviceUnavailable: "The service is unavailable. Please try again later.",
+    },
     navbar: {
       brandingTest: "Branding Test",
       aiContent: "Ask Marnee",
@@ -281,6 +295,20 @@ export const translations = {
     app: {
       defaultError: "Ocurrió un error.",
     },
+    errors: {
+      sessionExpired: "Tu sesión expiró o no es válida. Vuelve a iniciar sesión.",
+      sessionInvalid: "Sesión no válida. Inicia sesión de nuevo.",
+      requestTimeout: "La solicitud tardó demasiado. Inténtalo de nuevo.",
+      connectionError: "Error de conexión. Verifica tu conexión a internet.",
+      unexpectedError: "Ocurrió un error inesperado.",
+      invalidRequest: "La solicitud no es válida. Verifica los datos e inténtalo de nuevo.",
+      unauthorized: "Tu sesión expiró. Inicia sesión de nuevo.",
+      forbidden: "No tienes permiso para realizar esta acción.",
+      notFound: "No se encontró el recurso solicitado.",
+      validationError: "Los datos proporcionados no son válidos.",
+      serverError: "Error del servidor. Inténtalo más tarde.",
+      serviceUnavailable: "El servicio no está disponible. Inténtalo más tarde.",
+    },
     navbar: {
       brandingTest: "Test de marca",
       aiContent: "Pregunta a Marnee",
@@ -540,6 +568,20 @@ export const translations = {
     },
     app: {
       defaultError: "문제가 발생했습니다.",
+    },
+    errors: {
+      sessionExpired: "세션이 만료되었거나 유효하지 않습니다. 다시 로그인하세요.",
+      sessionInvalid: "유효하지 않은 세션입니다. 다시 로그인하세요.",
+      requestTimeout: "요청 시간이 초과되었습니다. 다시 시도하세요.",
+      connectionError: "연결 오류. 인터넷 연결을 확인하세요.",
+      unexpectedError: "예기치 않은 오류가 발생했습니다.",
+      invalidRequest: "잘못된 요청입니다. 데이터를 확인하고 다시 시도하세요.",
+      unauthorized: "세션이 만료되었습니다. 다시 로그인하세요.",
+      forbidden: "이 작업을 수행할 권한이 없습니다.",
+      notFound: "요청한 리소스를 찾을 수 없습니다.",
+      validationError: "제공된 데이터가 유효하지 않습니다.",
+      serverError: "서버 오류. 나중에 다시 시도하세요.",
+      serviceUnavailable: "서비스를 사용할 수 없습니다. 나중에 다시 시도하세요.",
     },
     navbar: {
       brandingTest: "브랜딩 테스트",

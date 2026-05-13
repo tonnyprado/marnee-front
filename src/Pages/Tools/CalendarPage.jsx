@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useLocation } from "react-router-dom";
 import { api } from "../../services/api";
 import { useMarnee } from "../../context/MarneeContext";
 import CalendarView from "./Calendar/CalendarView";
@@ -9,6 +10,7 @@ import LanguageSwitcher from "../../Component/LanguageSwitcher";
 import PageTransition from "../../Component/PageTransition";
 
 export default function CalendarPage() {
+  const location = useLocation();
   const {
     founderId,
     sessionId,
@@ -22,7 +24,9 @@ export default function CalendarPage() {
     hasSession
   } = useMarnee();
 
-  const [mainTab, setMainTab] = useState("calendar"); // calendar | brainstorming
+  // Check if we should navigate to brainstorming tab from notification
+  const initialTab = location.state?.tab === 'brainstorming' ? 'brainstorming' : 'calendar';
+  const [mainTab, setMainTab] = useState(initialTab);
   const [view, setView] = useState("calendar");
   const [statusFilter, setStatusFilter] = useState("all");
   const [calendar, setCalendar] = useState(cachedCalendar); // Initialize from cached calendar
@@ -249,8 +253,11 @@ export default function CalendarPage() {
       }
     };
 
-    loadCalendar();
-  }, [calendarId, founderId, sessionId, setCalendarId, updateCalendar, cachedCalendar, hasSession, loadSessionData, isLoadingSession]);
+    // Only load calendar if we haven't checked history yet
+    if (!hasCheckedHistory) {
+      loadCalendar();
+    }
+  }, [calendarId, founderId, sessionId, setCalendarId, updateCalendar, hasSession, loadSessionData, isLoadingSession, hasCheckedHistory]);
 
   // If the conversation is already in the calendar phase but no calendar exists yet,
   // generate it directly in the calendar workspace instead of leaving the user in chat text.
