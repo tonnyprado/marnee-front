@@ -16,12 +16,6 @@ export default function LandingPage() {
         <Logo dark={true} />
       </div>
 
-      {/* Step badge */}
-      <div className="mb-6">
-        <span className="bg-[#ede0f8] text-[#40086d] px-4 py-2 rounded-full text-sm font-medium">
-          {t("landing.stepBadge")}
-        </span>
-      </div>
 
       {/* Title */}
       <h1 className="text-4xl md:text-6xl font-bold text-center mb-6 leading-tight">

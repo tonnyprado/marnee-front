@@ -49,7 +49,6 @@ export const translations = {
       secondaryCta: "Learn More",
     },
     brandingIntro: {
-      stepBadge: "Step 2: Begin your personalized brand test",
       titlePrefix: "Let's Discover Your",
       titleHighlight: "Unique Brand Voice",
       description:
@@ -310,7 +309,6 @@ export const translations = {
       secondaryCta: "Conocer más",
     },
     brandingIntro: {
-      stepBadge: "Paso 2: comienza tu test de marca personalizado",
       titlePrefix: "Descubramos tu",
       titleHighlight: "Voz de marca única",
       description:
@@ -562,7 +560,6 @@ export const translations = {
       closingSession: "안전하게 세션을 종료하는 중...",
     },
     landing: {
-      stepBadge: "1단계: 퍼스널 브랜드 테스트 시작",
       titlePrefix: "당신의",
       titleHighlight: "브랜드 성향을 발견하세요",
       description:
@@ -571,7 +568,6 @@ export const translations = {
       secondaryCta: "더 알아보기",
     },
     brandingIntro: {
-      stepBadge: "2단계: 맞춤형 브랜드 테스트 시작",
       titlePrefix: "당신만의",
       titleHighlight: "브랜드 보이스를 찾아보세요",
       description:
