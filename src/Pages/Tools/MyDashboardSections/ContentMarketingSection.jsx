@@ -51,7 +51,7 @@ const InstagramIcon = () => (
 );
 
 export default function ContentMarketingSection() {
-  const { isLoading, hasData, isConnected, refresh } = useInstagramData();
+  const { isLoading, hasData, isConnected } = useInstagramData();
   const [insights, setInsights] = useState(null);
   const [topPosts, setTopPosts] = useState([]);
   const [loadingData, setLoadingData] = useState(false);
@@ -61,6 +61,7 @@ export default function ContentMarketingSection() {
     if (hasData && !insights) {
       fetchData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasData]);
 
   const fetchData = async () => {
