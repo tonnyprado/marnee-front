@@ -104,7 +104,7 @@ function AppContent() {
       window.removeEventListener("app-error", handler);
       if (timer) clearTimeout(timer);
     };
-  }, [t];
+  }, [t]);
 
   return (
     <ChatThemeProvider>
