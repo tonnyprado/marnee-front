@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import API from "../../../services/api";
+import API from "../../../config";
+import apiClient from "../../../core/services/ApiClient";
 import { useAuth } from "../../../context/AuthContext";
 
 export default function OptimalTimeSuggestions({ platform, onSelectTime, currentTime }) {
@@ -22,13 +23,13 @@ export default function OptimalTimeSuggestions({ platform, onSelectTime, current
     setError(null);
 
     try {
-      const response = await API.get(
-        `${API.MARNEE}/calendar/optimal-times/${founderId}`,
-        { params: { platform } }
+      const response = await apiClient.get(
+        `/calendar/optimal-times/${founderId}?platform=${encodeURIComponent(platform)}`,
+        { baseUrl: API.MARNEE }
       );
 
-      if (response.data.success) {
-        setSuggestions(response.data);
+      if (response.success) {
+        setSuggestions(response);
       }
     } catch (err) {
       console.error("Error fetching optimal times:", err);
