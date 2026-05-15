@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import CommentsSection from "./CommentsSection";
 import ImageGeneratorButton from "../../../Component/ImageGenerator/ImageGeneratorButton";
 import ImagePreviewModal from "../../../Component/ImageGenerator/ImagePreviewModal";
+import OptimalTimeSuggestions from "./OptimalTimeSuggestions";
 import useImageGenerator from "../../../hooks/useImageGenerator";
 import { useAuth } from "../../../context/AuthContext";
 
@@ -88,6 +89,15 @@ export default function CampaignForm({
     // Execution Details
     format: "",
     assets: [],
+    // Publishing & Scheduling
+    scheduledTime: "",
+    timezone: "UTC",
+    caption: "",
+    hashtags: [],
+    mediaUrl: "",
+    mediaType: "",
+    mediaThumbnailUrl: "",
+    publishStatus: "draft",
     // Status & Tracking
     status: "todo",
     // Feedback
@@ -130,6 +140,15 @@ export default function CampaignForm({
         // Execution Details
         format: post.format || "",
         assets: post.assets || [],
+        // Publishing & Scheduling
+        scheduledTime: post.scheduledTime || "",
+        timezone: post.timezone || "UTC",
+        caption: post.caption || "",
+        hashtags: post.hashtags || [],
+        mediaUrl: post.mediaUrl || "",
+        mediaType: post.mediaType || "",
+        mediaThumbnailUrl: post.mediaThumbnailUrl || "",
+        publishStatus: post.publishStatus || "draft",
         // Status & Tracking
         status: post.status || "todo",
         // Feedback
@@ -574,6 +593,136 @@ export default function CampaignForm({
               <p className="text-xs text-gray-500">
                 The image will be generated using data from your Brand Profile, Current Trends, and Strategy.
               </p>
+            </div>
+          </div>
+
+          {/* === PUBLISHING & SCHEDULING === */}
+          <div className="border-t border-[rgba(30,30,30,0.1)] pt-6">
+            <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
+              Publishing & Scheduling
+            </h3>
+
+            {/* Media Upload (Disabled - S3 not configured) */}
+            <div className="mb-4">
+              <label className="text-sm font-medium text-gray-700 block mb-1.5">
+                Media Upload <span className="text-xs text-gray-500">(Image/Video)</span>
+              </label>
+              <div className="relative">
+                <input
+                  type="file"
+                  disabled
+                  accept="image/*,video/*"
+                  className="w-full bg-gray-100 border border-[rgba(30,30,30,0.1)] rounded-lg px-3 py-2 text-sm cursor-not-allowed opacity-60"
+                />
+                <div className="mt-2 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                  <p className="text-xs text-amber-800 flex items-start gap-2">
+                    <svg className="w-4 h-4 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    <span>
+                      <strong>S3 Storage not yet configured.</strong> Media upload will be available once AWS S3 is set up.
+                      Estimated cost: $0.10-$0.50/month for 1000 posts. Files are automatically deleted 1 day after publishing to minimize costs.
+                    </span>
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Caption/Description */}
+            <div className="mb-4">
+              <label className="text-sm font-medium text-gray-700 block mb-1.5">
+                Caption/Description <span className="text-gray-400 font-normal">(For social media post)</span>
+              </label>
+              <textarea
+                value={form.caption}
+                onChange={(e) => handleChange("caption", e.target.value)}
+                placeholder="Write your social media caption here..."
+                rows={4}
+                className="w-full bg-white border border-[rgba(30,30,30,0.1)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#40086d] resize-none"
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                This will be the actual caption posted to {form.platform || "social media"}
+              </p>
+            </div>
+
+            {/* Hashtags */}
+            <div className="mb-4">
+              <label className="text-sm font-medium text-gray-700 block mb-1.5">
+                Hashtags <span className="text-gray-400 font-normal">(Press Enter to add)</span>
+              </label>
+              <input
+                type="text"
+                placeholder="#example"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && e.target.value.trim()) {
+                    e.preventDefault();
+                    const tag = e.target.value.trim().startsWith("#")
+                      ? e.target.value.trim()
+                      : `#${e.target.value.trim()}`;
+                    if (!form.hashtags.includes(tag)) {
+                      handleChange("hashtags", [...form.hashtags, tag]);
+                      e.target.value = "";
+                    }
+                  }
+                }}
+                className="w-full bg-white border border-[rgba(30,30,30,0.1)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#40086d]"
+              />
+              {form.hashtags.length > 0 && (
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {form.hashtags.map((tag, idx) => (
+                    <span
+                      key={idx}
+                      className="px-2 py-1 bg-violet-100 text-violet-700 rounded text-xs flex items-center gap-1"
+                    >
+                      {tag}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const newHashtags = form.hashtags.filter((_, i) => i !== idx);
+                          handleChange("hashtags", newHashtags);
+                        }}
+                        className="hover:text-violet-900"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Scheduled Time */}
+            <div className="mb-4">
+              <label className="text-sm font-medium text-gray-700 block mb-1.5">
+                Scheduled Time <span className="text-gray-400 font-normal">(When to publish)</span>
+              </label>
+              <input
+                type="time"
+                value={form.scheduledTime}
+                onChange={(e) => handleChange("scheduledTime", e.target.value)}
+                className="w-full bg-white border border-[rgba(30,30,30,0.1)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#40086d]"
+              />
+
+              {/* Optimal Time Suggestions */}
+              <OptimalTimeSuggestions
+                platform={form.platform}
+                currentTime={form.scheduledTime}
+                onSelectTime={(time) => handleChange("scheduledTime", time)}
+              />
+            </div>
+
+            {/* Publish Status */}
+            <div className="mb-4">
+              <label className="text-sm font-medium text-gray-700 block mb-1.5">Publish Status</label>
+              <select
+                value={form.publishStatus}
+                onChange={(e) => handleChange("publishStatus", e.target.value)}
+                className="w-full bg-white border border-[rgba(30,30,30,0.1)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#40086d]"
+              >
+                <option value="draft">Draft</option>
+                <option value="scheduled">Scheduled</option>
+                <option value="published">Published</option>
+              </select>
             </div>
           </div>
 
