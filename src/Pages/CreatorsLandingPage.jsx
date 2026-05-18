@@ -1,18 +1,90 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import marneeLogo from '../assets/marnee-logo.png';
-import demoVideo from '../assets/videos/0207.mp4';
-import LanguageSwitcher from '../Component/LanguageSwitcher';
 import LoadingTransition from '../Component/LoadingTransition';
-import { useLanguage } from '../context/LanguageContext';
 
-const WAITLIST_URL = 'https://tally.so/r/D4NkGl';
+// ─── CONFIG ───────────────────────────────────────────────────────────────────
+// Replace with your Formspree form ID (formspree.io) or your own backend endpoint
+// e.g. 'https://formspree.io/f/YOUR_FORM_ID'  or  '/api/waitlist'
+const WAITLIST_ENDPOINT = 'https://formspree.io/f/YOUR_FORM_ID';
+// ──────────────────────────────────────────────────────────────────────────────
 
-/* ── SUB-COMPONENTS ──────────────────────────────────────── */
+/* ── WAITLIST FORM ────────────────────────────────────────── */
+function WaitlistForm({ size = 'hero' }) {
+  const [email, setEmail] = useState('');
+  const [status, setStatus] = useState('idle'); // idle | loading | success | error
 
-function LandingNav({ onLoginClick }) {
-  const { t } = useLanguage();
+  const isHero = size === 'hero';
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return;
+
+    setStatus('loading');
+    try {
+      const res = await fetch(WAITLIST_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      if (res.ok) {
+        setStatus('success');
+      } else {
+        setStatus('error');
+      }
+    } catch {
+      setStatus('error');
+    }
+  };
+
+  if (status === 'success') {
+    return (
+      <div className={`mn-waitlist-success ${isHero ? 'mn-waitlist-success--hero' : ''}`}>
+        <div className="mn-waitlist-success-icon">✓</div>
+        <div>
+          <div className="mn-waitlist-success-title">You're on the list!</div>
+          <div className="mn-waitlist-success-sub">We'll email you as soon as Marnee for creators is ready.</div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <form
+      className={`mn-waitlist-form ${isHero ? 'mn-waitlist-form--hero' : ''}`}
+      onSubmit={handleSubmit}
+      noValidate
+    >
+      <input
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder="your@email.com"
+        className="mn-waitlist-input"
+        required
+        disabled={status === 'loading'}
+        aria-label="Email address"
+      />
+      <button
+        type="submit"
+        className="mn-waitlist-btn"
+        disabled={status === 'loading'}
+      >
+        {status === 'loading' ? (
+          <span className="mn-waitlist-spinner" />
+        ) : (
+          'Join the waitlist'
+        )}
+      </button>
+      {status === 'error' && (
+        <p className="mn-waitlist-error">Something went wrong. Try again.</p>
+      )}
+    </form>
+  );
+}
+
+/* ── NAV ──────────────────────────────────────────────────── */
+function CreatorsNav({ onLoginClick }) {
   return (
     <nav className="mn-nav">
       <div className="mn-nav-inner">
@@ -24,26 +96,18 @@ function LandingNav({ onLoginClick }) {
         <div className="mn-nav-links">
           <a href="#how">How it works</a>
           <a href="#features">Features</a>
-          <a href="#waitlist">Pricing</a>
+          <a href="#waitlist">Join waitlist</a>
         </div>
 
         <div className="mn-nav-actions">
-          <LanguageSwitcher className="border-[rgba(30,30,30,0.1)] bg-white/90 backdrop-blur shadow-sm" />
-
           <button
             onClick={onLoginClick}
             className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-[#40086d] transition-colors"
           >
             Sign In
           </button>
-
-          <a
-            href={WAITLIST_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mn-nav-pill"
-          >
-            Join Waitlist
+          <a href="#waitlist" className="mn-nav-pill">
+            Get early access
           </a>
         </div>
       </div>
@@ -51,71 +115,66 @@ function LandingNav({ onLoginClick }) {
   );
 }
 
+/* ── HERO ─────────────────────────────────────────────────── */
 function HeroSection({ titleRef }) {
   return (
-    <section className="mn-hero">
+    <section className="mn-hero mn-hero--creators">
       <div className="mn-hero-inner">
 
-        <div className="mn-hero-tag mn-fade-up">
+        <div className="mn-hero-tag mn-hero-anim" style={{ fontSize: 11, animationDelay: '0s' }}>
           <span className="mn-hero-tag-dot" />
-          For Content Creators
+          Built for content creators
         </div>
 
-        {/* eslint-disable-next-line jsx-a11y/heading-has-content */}
-        <h1 className="mn-hero-title" ref={titleRef} id="hero-title" aria-label="Turn your creative vision into consistent content strategy" />
+        <h1 className="mn-hero-title" ref={titleRef} id="hero-title" aria-label="Save your time and get direct recommendations tailored to your niche & data." style={{ fontSize: 'clamp(28px, 3.2vw, 50px)' }} />
 
-        <div className="mn-hero-stats mn-fade-up" style={{ transitionDelay: '.2s' }}>
-          <div className="mn-stat-t">
-            <div className="mn-stat-t-num">10x</div>
-            <div className="mn-stat-t-label">Faster content<br />planning</div>
-          </div>
-          <div className="mn-stat-divider" />
-          <div className="mn-stat-t">
-            <div className="mn-stat-t-num">90%</div>
-            <div className="mn-stat-t-label">Less creative<br />burnout</div>
-          </div>
-        </div>
-
-        <p className="mn-hero-body mn-fade-up" style={{ transitionDelay: '.3s' }}>
-          Stop spending hours planning content. Marnee analyzes your niche, understands your<br />
-          unique voice, and creates a complete content strategy tailored to your audience.
+        <p className="mn-hero-body mn-hero-anim" style={{ animationDelay: '.3s', maxWidth: 680 }}>
+          Marnee is your AI content strategist. Tell her your niche and goals, and she builds your full content strategy in minutes with no guessing.
         </p>
 
-        <div className="mn-hero-cta mn-fade-up" style={{ transitionDelay: '.4s' }}>
-          <a href={WAITLIST_URL} target="_blank" rel="noopener noreferrer" className="mn-btn-primary">
-            Start Creating Smarter
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M5 12h14M12 5l7 7-7 7" />
-            </svg>
-          </a>
-          <a href="#how" className="mn-btn-ghost">See How It Works</a>
+        <div className="mn-hero-stats mn-hero-anim" style={{ animationDelay: '.35s' }}>
+          <div className="mn-hero-stat mn-hero-stat--hoverable">
+            <div className="mn-hero-stat-num">10x</div>
+            <div className="mn-hero-stat-label">EASIER THAN SETTING ANY AI GENERAL TOOL</div>
+          </div>
+          <div className="mn-hero-stat mn-hero-stat--hoverable">
+            <div className="mn-hero-stat-num">2x</div>
+            <div className="mn-hero-stat-label">CHEAPER THAN OTHER LLM'S + TAILORED TO YOU</div>
+          </div>
         </div>
 
-        <div className="mn-hero-proof mn-fade-up" style={{ transitionDelay: '.5s' }}>
+        <div className="mn-hero-anim" style={{ animationDelay: '.4s' }}>
+          <p className="mn-hero-founder-note">
+            Early access is limited. Founder price: <strong>₩15,000 KRW / $11</strong> <span>(regular price ₩25,000)</span>
+          </p>
+          <WaitlistForm size="hero" />
+        </div>
+
+        <div className="mn-hero-proof mn-hero-anim" style={{ animationDelay: '.5s', marginTop: 16 }}>
           <div className="mn-proof-avs">
             <div className="mn-proof-av">A</div>
             <div className="mn-proof-av">S</div>
             <div className="mn-proof-av">J</div>
             <div className="mn-proof-av">M</div>
           </div>
-          <span>Join <strong>20+</strong> creators already using Marnee</span>
+          <span><strong>100+ creators</strong> already on the waitlist</span>
         </div>
 
+      </div>
+
+      <div className="mn-hero-ticker-anchor">
+        <Ticker />
       </div>
     </section>
   );
 }
 
+/* ── TICKER ───────────────────────────────────────────────── */
 function Ticker() {
   const items = [
-    'Content Strategy',
-    'Trend Analysis',
-    'Brand Voice',
-    'Audience Insights',
-    'Content Calendar',
-    'Hook Generation',
-    'Performance Tracking',
-    'Creative Ideas',
+    'Global Growth', 'Trend Detection', 'Idea Generation', 'Script Generation',
+    'Content Calendar', 'Brand Intelligence', 'Personal Branding', 'Niche Research',
+    'Hook Writing', 'Audience Insights', 'AI-Powered Strategy', '40X Cheaper',
   ];
   const all = [...items, ...items];
 
@@ -130,15 +189,15 @@ function Ticker() {
   );
 }
 
+/* ── PROBLEM ──────────────────────────────────────────────── */
 function ProblemSection() {
   return (
     <section className="mn-problem">
       <div className="mn-section-wrap">
         <div className="mn-problem-head mn-fade-up">
-          <div className="mn-section-tag">The Creator Struggle</div>
+          <div className="mn-section-tag">The creator struggle is real</div>
           <h2 className="mn-section-title">
-            You create amazing content.<br />
-            But planning it? That's the hard part.
+            You create every day.<br />But growth still feels random.
           </h2>
         </div>
 
@@ -146,24 +205,26 @@ function ProblemSection() {
           {[
             {
               n: '01',
-              title: 'Content Burnout',
-              body: 'Constantly creating without a clear strategy drains your creativity and leads to inconsistent posting.',
+              title: 'You don\'t know what to post',
+              body: 'You spend hours brainstorming and still end up posting something average. Content block is killing your momentum.',
             },
             {
               n: '02',
-              title: 'Trend Overload',
-              body: 'Too many trends to track. By the time you hop on one, it\'s already over. You\'re always one step behind.',
+              title: 'The algorithm keeps changing',
+              body: 'What worked last month tanks today. You\'re always reactive, never ahead of the curve.',
+              delay: '.1s',
             },
             {
               n: '03',
-              title: 'Audience Disconnect',
-              body: 'You\'re creating content, but is it what your audience actually wants? Guesswork isn\'t a strategy.',
+              title: 'No strategy, just vibes',
+              body: 'You post consistently but without a real plan. Growth is slow, inconsistent, and impossible to scale.',
+              delay: '.2s',
             },
-          ].map(({ n, title, body }, i) => (
+          ].map(({ n, title, body, delay }) => (
             <div
               className="mn-pain-card mn-card-base mn-fade-up"
               key={n}
-              style={{ transitionDelay: `${i * 0.1}s` }}
+              style={delay ? { transitionDelay: delay } : undefined}
             >
               <div className="mn-pain-num">{n}</div>
               <div className="mn-pain-title">{title}</div>
@@ -174,10 +235,10 @@ function ProblemSection() {
 
         <div className="mn-stat-row">
           {[
-            { num: '15+hrs', txt: 'Weekly content planning', delay: '0s' },
-            { num: '68%', txt: 'Creators feel burned out', delay: '.1s' },
-            { num: '3-5', txt: 'Platforms to manage', delay: '.2s' },
-            { num: '24/7', txt: 'Always-on pressure', delay: '.3s' },
+            { num: '15h+', txt: 'spent on content planning every week', delay: '0s' },
+            { num: '73%', txt: 'of creators feel burned out regularly', delay: '.1s' },
+            { num: '3x', txt: 'more growth with a consistent strategy', delay: '.2s' },
+            { num: '2h', txt: 'is all you need with Marnee', delay: '.3s' },
           ].map(({ num, txt, delay }) => (
             <div className="mn-stat-box mn-card-base mn-fade-up" key={num} style={{ transitionDelay: delay }}>
               <div className="mn-stat-box-num">{num}</div>
@@ -190,84 +251,39 @@ function ProblemSection() {
   );
 }
 
-function SolutionSection() {
-  return (
-    <section className="mn-solution">
-      <div className="mn-section-wrap">
-        <div className="mn-fade-up">
-          <div className="mn-section-tag">The Solution</div>
-          <h2 className="mn-section-title">
-            Your AI content partner that<br />
-            gets your creative vision
-          </h2>
-          <p className="mn-section-sub">Marnee learns your voice, analyzes your audience, and creates content strategies that actually work.</p>
-        </div>
-
-        <div className="mn-grid-3" style={{ marginTop: 48 }}>
-          {[
-            {
-              n: '01',
-              title: 'Know Your Audience',
-              body: 'Marnee analyzes real-time data from your niche to understand what your audience truly wants.',
-            },
-            {
-              n: '02',
-              title: 'Stay Ahead of Trends',
-              body: 'Get trend alerts before they peak. Marnee helps you ride the wave, not chase it.',
-              delay: '.1s',
-            },
-            {
-              n: '03',
-              title: 'Consistent Content Flow',
-              body: 'Generate weeks of content ideas in minutes. Never stare at a blank screen again.',
-              delay: '.2s',
-            },
-          ].map(({ n, title, body, delay }) => (
-            <div
-              className="mn-sol-card mn-card-base mn-fade-up"
-              key={n}
-              style={delay ? { transitionDelay: delay } : undefined}
-            >
-              <div className="mn-sol-num">{n}</div>
-              <div className="mn-sol-title">{title}</div>
-              <div className="mn-sol-body">{body}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
+/* ── HOW IT WORKS ─────────────────────────────────────────── */
 function HowSection() {
   return (
     <section className="mn-how" id="how">
       <div className="mn-section-wrap">
         <div className="mn-fade-up">
           <div className="mn-section-tag">How it works</div>
-          <h2 className="mn-section-title">From chaos to clarity in three steps</h2>
-          <p className="mn-section-sub">Set up your creator profile, get insights, and start creating with confidence.</p>
+          <h2 className="mn-section-title">From "what do I post?" to a full strategy — in minutes</h2>
+          <p className="mn-section-sub">Tell Marnee about yourself. She does the rest.</p>
         </div>
 
         <div className="mn-steps">
           <div className="mn-step mn-fade-up" data-n="01">
             <div className="mn-step-line" />
-            <div className="mn-step-title">Tell Marnee about your content</div>
+            <div className="mn-step-title">Tell Marnee about your niche</div>
             <div className="mn-step-body">
-              Share your niche, audience, and creative style. Marnee learns what makes your content unique.
+              Answer a few quick questions about your content style, audience, and goals.
+              No agency. No consultant. Just you and your AI strategist.
             </div>
           </div>
           <div className="mn-step mn-fade-up" data-n="02" style={{ transitionDelay: '.15s' }}>
             <div className="mn-step-line" />
-            <div className="mn-step-title">Get data-driven insights</div>
+            <div className="mn-step-title">Marnee builds your strategy</div>
             <div className="mn-step-body">
-              Marnee analyzes trends in your space and shows you what's working—and why—so you can make informed decisions.
+              She scans what's trending in your niche, generates content angles, hooks,
+              formats and a full posting calendar. Tailored to you.
             </div>
           </div>
           <div className="mn-step mn-fade-up" data-n="03" style={{ transitionDelay: '.3s' }}>
-            <div className="mn-step-title">Create with confidence</div>
+            <div className="mn-step-title">Execute with confidence</div>
             <div className="mn-step-body">
-              Generate content ideas, hooks, and full strategies. Everything organized in your dashboard. No more guesswork.
+              Your content calendar is ready. Post with intention. Track what works.
+              Grow consistently — without burning out.
             </div>
           </div>
         </div>
@@ -275,37 +291,43 @@ function HowSection() {
         <div className="mn-grid-4">
           {[
             {
-              tag: 'Step 1 — Setup',
-              title: 'Creator Profile',
-              body: 'Tell Marnee about your brand, your audience, and your goals. The more she knows, the better your strategy.',
+              tag: 'Step 1 — Niche Setup',
+              title: 'Your creator profile',
+              body: 'Marnee learns your niche, your audience, your tone, and your goals. It takes 3 minutes and unlocks everything.',
             },
             {
-              tag: 'Step 2 — Analysis',
-              title: 'Niche Research',
-              body: 'Marnee dives into your niche, analyzing top-performing content and emerging trends so you don\'t have to.',
+              tag: 'Step 2 — Trend Analysis',
+              title: 'Real-time niche research',
+              body: 'Marnee scans Instagram, TikTok, and YouTube Shorts to find what\'s getting views and engagement in your space right now.',
               delay: '.1s',
             },
             {
-              tag: 'Step 3 — Strategy',
-              title: 'Content Calendar',
-              body: 'Get a complete content calendar with ideas, hooks, and posting schedules tailored to your audience.',
+              tag: 'Step 3 — Content Plan',
+              title: 'Your full content calendar',
+              body: 'A month of content ideas, hooks, formats, and posting times — tailored to your niche and ready to execute.',
               delay: '.15s',
             },
             {
-              tag: 'Step 4 — Execute',
-              title: 'Dashboard & Analytics',
-              body: 'Track performance, refine your strategy, and keep your content pipeline full—all from one place.',
+              tag: 'Coming soon',
+              title: 'Performance tracking',
+              body: 'See which content is hitting and let Marnee adjust your strategy automatically based on your results.',
+              comingSoon: true,
               delay: '.2s',
             },
-          ].map(({ tag, title, body, delay }) => (
+          ].map(({ tag, title, body, comingSoon, delay }) => (
             <div
               className="mn-detail-card mn-card-base mn-fade-up"
               key={tag}
               style={delay ? { transitionDelay: delay } : undefined}
             >
-              <div className="mn-detail-tag">{tag}</div>
-              <div className="mn-detail-title">{title}</div>
-              <div className="mn-detail-body">{body}</div>
+              <div className={`mn-detail-tag${comingSoon ? ' mn-gray' : ''}`}>{tag}</div>
+              <div className={`mn-detail-title${comingSoon ? ' mn-dim' : ''}`}>{title}</div>
+              <div
+                className="mn-detail-body"
+                style={comingSoon ? { color: 'rgba(30,30,30,0.3)' } : undefined}
+              >
+                {body}
+              </div>
             </div>
           ))}
         </div>
@@ -314,95 +336,55 @@ function HowSection() {
   );
 }
 
-function DemoSection() {
-  return (
-    <section className="mn-demo">
-      <div className="mn-section-wrap">
-        <div className="mn-fade-up">
-          <div className="mn-section-tag">See It In Action</div>
-          <h2 className="mn-section-title">Watch Marnee work her magic</h2>
-        </div>
-
-        <div className="mn-demo-frame mn-fade-up" style={{ transitionDelay: '.1s' }}>
-          <div className="mn-demo-bar">
-            <div className="mn-demo-dot r" />
-            <div className="mn-demo-dot y" />
-            <div className="mn-demo-dot g" />
-            <div className="mn-demo-url">app.marnee.ai/creators</div>
-          </div>
-          <div className="mn-demo-body" style={{ position: 'relative', padding: 0, height: '500px' }}>
-            <video
-              src={demoVideo}
-              autoPlay
-              muted
-              loop
-              playsInline
-              style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                borderRadius: '0 0 12px 12px'
-              }}
-            />
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-const FeatureIcons = {
-  TrendDetection: () => (
+/* ── FEATURES ─────────────────────────────────────────────── */
+const Icons = {
+  Trends: () => (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
     </svg>
   ),
-  ContentIdeas: () => (
+  Ideas: () => (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <path d="M12 2a7 7 0 0 1 7 7c0 3-1.8 5.4-4.5 6.5V17h-5v-1.5C6.8 14.4 5 12 5 9a7 7 0 0 1 7-7z" />
       <rect x="9" y="17" width="6" height="2" rx="1" />
       <rect x="10" y="19" width="4" height="2" rx="1" />
     </svg>
   ),
-  VoiceMatch: () => (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
-      <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
-      <line x1="12" y1="19" x2="12" y2="23" />
-      <line x1="8" y1="23" x2="16" y2="23" />
-    </svg>
-  ),
   Calendar: () => (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+      <rect x="3" y="4" width="18" height="18" rx="2" />
       <line x1="16" y1="2" x2="16" y2="6" />
       <line x1="8" y1="2" x2="8" y2="6" />
       <line x1="3" y1="10" x2="21" y2="10" />
     </svg>
   ),
-  Hooks: () => (
+  Hook: () => (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
-      <line x1="4" y1="22" x2="4" y2="15" />
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
     </svg>
   ),
-  Analytics: () => (
+  Time: () => (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <line x1="12" y1="20" x2="12" y2="10" />
-      <line x1="18" y1="20" x2="18" y2="4" />
-      <line x1="6" y1="20" x2="6" y2="16" />
+      <circle cx="12" cy="12" r="10" />
+      <polyline points="12 6 12 12 16 14" />
+    </svg>
+  ),
+  Growth: () => (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+      <polyline points="17 6 23 6 23 12" />
     </svg>
   ),
 };
 
 function FeaturesSection() {
   const features = [
-    { Icon: FeatureIcons.TrendDetection, title: 'Real-Time Trend Tracking', body: 'Stay ahead with insights on what\'s trending in your niche across Instagram, TikTok, YouTube, and more.' },
-    { Icon: FeatureIcons.ContentIdeas, title: 'Endless Content Ideas', body: 'Never run out of ideas. Marnee generates content concepts based on what\'s working in your space.', delay: '.1s' },
-    { Icon: FeatureIcons.VoiceMatch, title: 'Your Voice, Amplified', body: 'Marnee learns your unique style and tone so every suggestion feels authentically you.', delay: '.2s' },
-    { Icon: FeatureIcons.Calendar, title: 'Smart Content Calendar', body: 'Organize your content pipeline with an intuitive calendar view. Plan weeks ahead in minutes.', delay: '.1s' },
-    { Icon: FeatureIcons.Hooks, title: 'Hook & Caption Generator', body: 'Generate attention-grabbing hooks and captions tailored to your audience and platform.', delay: '.2s' },
-    { Icon: FeatureIcons.Analytics, title: 'Performance Insights', body: 'Track what\'s working and refine your strategy based on real data, not guesswork.', delay: '.3s' },
+    { Icon: Icons.Trends, title: 'Niche Trend Detection', body: 'See what\'s trending in your exact niche right now — before your competitors do. Never run out of relevant, timely ideas.' },
+    { Icon: Icons.Ideas, title: 'Unlimited Content Ideas', body: 'Marnee generates hooks, angles, formats, and content briefs tailored to your brand voice and audience.', delay: '.1s' },
+    { Icon: Icons.Calendar, title: 'Full Content Calendar', body: 'A complete month of content, organized by date, format, and platform. No more last-minute posting.', delay: '.2s' },
+    { Icon: Icons.Hook, title: 'Hook & Copy Generator', body: 'Scroll-stopping hooks and captions written for your niche. Built for short-form: Reels, TikTok, Shorts.', delay: '.1s' },
+    { Icon: Icons.Time, title: 'Save 10+ Hours a Week', body: 'Cut content planning from a full week\'s headache to under 2 hours. More time creating, less time overthinking.', delay: '.2s' },
+    { Icon: Icons.Growth, title: 'Strategy That Compounds', body: 'Marnee learns what works for your audience and keeps improving your strategy over time. Growth that stacks.', delay: '.3s' },
   ];
 
   return (
@@ -410,7 +392,7 @@ function FeaturesSection() {
       <div className="mn-section-wrap">
         <div className="mn-fade-up">
           <div className="mn-section-tag">Features</div>
-          <h2 className="mn-section-title">Everything creators need<br />in one platform</h2>
+          <h2 className="mn-section-title">Everything you need to grow,<br />nothing you don't</h2>
         </div>
 
         <div className="mn-grid-3" style={{ marginTop: 56 }}>
@@ -431,92 +413,15 @@ function FeaturesSection() {
   );
 }
 
-function MarneeSection() {
-  return (
-    <section className="mn-marnee-section">
-      <div className="mn-marnee-inner">
-
-        <div className="mn-fade-up">
-          <div className="mn-section-tag">Your AI Creative Partner</div>
-          <h2 className="mn-section-title">
-            Meet<br /><em>Marnee.</em>
-          </h2>
-          <div className="mn-marnee-role">AI Content Strategist for Creators</div>
-          <p className="mn-marnee-desc">
-            Marnee doesn't just generate content—she understands your creative vision and helps you
-            turn it into a sustainable strategy. She's like having a content strategist and creative
-            director in your pocket.
-          </p>
-          <div className="mn-marnee-asks">
-            <div className="mn-marnee-ask">
-              <div className="mn-ask-dot" />
-              "What should I post this week to grow my audience?"
-            </div>
-            <div className="mn-marnee-ask">
-              <div className="mn-ask-dot" />
-              "Give me 10 hooks for my next video series"
-            </div>
-            <div className="mn-marnee-ask">
-              <div className="mn-ask-dot" />
-              "What trends should I jump on right now?"
-            </div>
-          </div>
-          <div className="mn-marnee-quote">
-            "Create smarter,<br />not harder."
-          </div>
-        </div>
-
-        <div className="mn-fade-up" style={{ transitionDelay: '.15s' }}>
-          <div className="mn-chat-wrap">
-            <div className="mn-chat-header">
-              <div className="mn-chat-av">M</div>
-              <div>
-                <div className="mn-chat-name">Marnee</div>
-                <div className="mn-chat-status">AI Content Partner · Online</div>
-              </div>
-              <div className="mn-chat-online" />
-            </div>
-            <div className="mn-chat-body">
-              <div className="mn-msg-row">
-                <div className="mn-msg-av">M</div>
-                <div className="mn-bubble-ai">
-                  I've analyzed your niche and found 3 emerging trends that align perfectly
-                  with your brand. Here's what's gaining traction...
-                </div>
-              </div>
-              <div className="mn-msg-row">
-                <div className="mn-msg-av">M</div>
-                <div className="mn-bubble-ai">
-                  Based on your audience data, <strong>"How-to" style content</strong> gets
-                  <strong> 65% more engagement</strong> for your niche. Want me to generate some ideas?
-                </div>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <div className="mn-bubble-user">Yes! Give me 5 ideas for this week</div>
-              </div>
-              <div className="mn-typing-row">
-                <div className="mn-msg-av">M</div>
-                <div className="mn-typing-dots">
-                  <span /><span /><span />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </section>
-  );
-}
-
+/* ── WHO IT'S FOR ─────────────────────────────────────────── */
 function WhoSection() {
   const cards = [
-    { n: '01', title: 'Solo Creators', body: 'Perfect for YouTubers, TikTokers, and Instagram creators building their audience' },
-    { n: '02', title: 'Influencers', body: 'Manage multiple brand partnerships and keep your content strategy on point', delay: '.08s' },
-    { n: '03', title: 'Content Teams', body: 'Coordinate content across team members with shared calendars and strategies', delay: '.16s' },
-    { n: '04', title: 'Multi-Platform Creators', body: 'Create once, adapt for everywhere. Marnee helps you repurpose smartly', delay: '.08s' },
-    { n: '05', title: 'Niche Experts', body: 'Position yourself as the go-to voice in your space with consistent, strategic content', delay: '.16s' },
-    { n: '06', title: 'Growing Creators', body: 'Break through the noise and grow your audience with data-backed strategies', delay: '.24s' },
+    { n: '01', title: 'UGC Creators', body: 'Build a strategy that attracts brand deals and helps you charge what you\'re worth.' },
+    { n: '02', title: 'Beauty & Skincare', body: 'Stay on top of beauty trends and turn your passion into a consistent, growing channel.', delay: '.08s' },
+    { n: '03', title: 'Lifestyle Creators', body: 'Turn your everyday life into a content engine with a strategy that feels authentic.', delay: '.16s' },
+    { n: '04', title: 'Travel Creators', body: 'Plan your content ahead of every trip. Never leave a location without using it to grow.', delay: '.08s' },
+    { n: '05', title: 'Fitness & Wellness', body: 'Build authority in your niche with educational content that converts followers into clients.', delay: '.16s' },
+    { n: '06', title: 'Aspiring Influencers', body: 'Start with a real strategy from day one. No more random posting hoping something sticks.', delay: '.24s' },
   ];
 
   return (
@@ -525,8 +430,7 @@ function WhoSection() {
         <div className="mn-fade-up">
           <div className="mn-section-tag">Who it's for</div>
           <h2 className="mn-section-title">
-            Built for creators who want to<br />
-            grow without the burnout
+            Whatever you create,<br />Marnee makes it strategic
           </h2>
         </div>
 
@@ -548,36 +452,32 @@ function WhoSection() {
   );
 }
 
+/* ── FINAL CTA ────────────────────────────────────────────── */
 function CtaSection() {
   return (
     <section className="mn-cta-section" id="waitlist">
       <div className="mn-cta-inner">
-        <div className="mn-cta-tag mn-fade-up">Ready to level up?</div>
+        <div className="mn-cta-tag mn-fade-up">Early access</div>
         <h2 className="mn-cta-title mn-fade-up" style={{ transitionDelay: '.1s' }}>
-          Start creating with<br /><em>Marnee.</em>
+          Be the first creator<br />to get <em>Marnee.</em>
         </h2>
         <p className="mn-cta-sub mn-fade-up" style={{ transitionDelay: '.2s' }}>
-          Join the waitlist and be among the first creators to experience
-          AI-powered content strategy that actually gets you.
+          We're building Marnee for creators like you. Join the waitlist and get
+          early access, exclusive beta features, and a say in what we build next.
         </p>
-        <a
-          href={WAITLIST_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mn-cta-btn mn-fade-up"
-          style={{ transitionDelay: '.3s' }}
-        >
-          Join the Creators Waitlist
-        </a>
+        <div className="mn-fade-up" style={{ transitionDelay: '.3s' }}>
+          <WaitlistForm size="cta" />
+        </div>
         <div className="mn-cta-note mn-fade-up" style={{ transitionDelay: '.4s' }}>
-          Early access for creators. Limited spots available.
+          No spam, ever. Unsubscribe anytime.
         </div>
       </div>
     </section>
   );
 }
 
-function LandingFooter({ onLoginClick }) {
+/* ── FOOTER ───────────────────────────────────────────────── */
+function CreatorsFooter({ onLoginClick }) {
   return (
     <footer className="mn-footer">
       <div className="mn-footer-inner">
@@ -585,8 +485,8 @@ function LandingFooter({ onLoginClick }) {
           <div>
             <div className="mn-footer-brand">Marnee</div>
             <p className="mn-footer-desc">
-              Your AI content partner. Turning creative vision into strategic,
-              data-driven content that grows your audience.
+              Your AI content strategist. Built for creators who want to grow
+              with intention, not luck.
             </p>
           </div>
           <div>
@@ -594,27 +494,24 @@ function LandingFooter({ onLoginClick }) {
             <div className="mn-footer-links">
               <a href="#features">Features</a>
               <a href="#how">How it works</a>
-              <span>Pricing</span>
+              <a href="#waitlist">Join waitlist</a>
             </div>
           </div>
           <div>
-            <div className="mn-footer-col-title">Resources</div>
+            <div className="mn-footer-col-title">Company</div>
             <div className="mn-footer-links">
-              <span>Creator Stories</span>
+              <span>About</span>
               <span>Blog</span>
-              <span>Help Center</span>
+              <span>Contact</span>
               <span onClick={onLoginClick} style={{ cursor: 'pointer' }}>Login</span>
             </div>
           </div>
         </div>
         <div className="mn-footer-bottom">
-          <div className="mn-footer-copy">
-            © 2026 Marnee. All rights reserved. · <a href="https://lordicon.com/" target="_blank" rel="noopener noreferrer" className="hover:underline">Icons by Lordicon.com</a>
-          </div>
+          <div className="mn-footer-copy">© 2026 Marnee. All rights reserved.</div>
           <div className="mn-footer-legal">
             <span>Terms</span>
             <span>Privacy</span>
-            <span>Cookies</span>
           </div>
         </div>
       </div>
@@ -622,14 +519,13 @@ function LandingFooter({ onLoginClick }) {
   );
 }
 
-/* ── TYPEWRITER HOOK ─────────────────────────────────────── */
+/* ── TYPEWRITER ───────────────────────────────────────────── */
 function useTypewriter(titleRef, lines) {
   useEffect(() => {
     const titleEl = titleRef.current;
     if (!titleEl || !lines || lines.length === 0) return;
 
     titleEl.innerHTML = '';
-
     let cancelled = false;
     const delay = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -666,13 +562,10 @@ function useTypewriter(titleRef, lines) {
 
       if (cancelled) return;
       await delay(500);
-
       cursor.classList.remove('type-cursor');
       cursor.classList.add('cur-click');
-
       await delay(120);
       if (!cancelled) titleEl.classList.add('title-done');
-
       await delay(380);
       if (!cancelled) cursor.remove();
     })();
@@ -684,7 +577,7 @@ function useTypewriter(titleRef, lines) {
   }, [titleRef, lines]);
 }
 
-/* ── FADE-UP OBSERVER HOOK ───────────────────────────────── */
+/* ── FADE-UP OBSERVER ─────────────────────────────────────── */
 function useFadeUpObserver() {
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -700,21 +593,20 @@ function useFadeUpObserver() {
     );
 
     document.querySelectorAll('.mn-fade-up').forEach((el) => observer.observe(el));
-
     return () => observer.disconnect();
   }, []);
 }
 
-/* ── PAGE ────────────────────────────────────────────────── */
+/* ── PAGE ─────────────────────────────────────────────────── */
 export default function CreatorsLandingPage() {
   const navigate = useNavigate();
   const titleRef = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const typewriterLines = [
-    ['Turn your creative vision', false, false],
-    ['into consistent content', false, false],
-    ['strategy.', true, true],
+    ['Save your time and get direct', false, false],
+    ['recommendations ', false, false],
+    ['tailored to your niche & data.', true, true],
   ];
 
   useTypewriter(titleRef, typewriterLines);
@@ -722,26 +614,20 @@ export default function CreatorsLandingPage() {
 
   const handleLoginClick = () => {
     setIsLoading(true);
-    setTimeout(() => {
-      navigate('/auth');
-    }, 800);
+    setTimeout(() => navigate('/auth'), 800);
   };
 
   return (
     <>
       <LoadingTransition isLoading={isLoading} message="Redirecting..." />
-      <LandingNav onLoginClick={handleLoginClick} />
+      <CreatorsNav onLoginClick={handleLoginClick} />
       <HeroSection titleRef={titleRef} />
-      <Ticker />
       <ProblemSection />
-      <SolutionSection />
       <HowSection />
-      <DemoSection />
       <FeaturesSection />
-      <MarneeSection />
       <WhoSection />
       <CtaSection />
-      <LandingFooter onLoginClick={handleLoginClick} />
+      <CreatorsFooter onLoginClick={handleLoginClick} />
     </>
   );
 }
