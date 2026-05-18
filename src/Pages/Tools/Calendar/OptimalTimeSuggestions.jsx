@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import API from "../../../config";
 import apiClient from "../../../core/services/ApiClient";
 import { useAuth } from "../../../context/AuthContext";
@@ -10,13 +10,7 @@ export default function OptimalTimeSuggestions({ platform, onSelectTime, current
   const [isExpanded, setIsExpanded] = useState(false);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    if (platform && founderId && isExpanded) {
-      fetchOptimalTimes();
-    }
-  }, [platform, founderId, isExpanded]);
-
-  const fetchOptimalTimes = async () => {
+  const fetchOptimalTimes = useCallback(async () => {
     if (!platform) return;
 
     setIsLoading(true);
@@ -37,7 +31,13 @@ export default function OptimalTimeSuggestions({ platform, onSelectTime, current
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [platform, founderId]);
+
+  useEffect(() => {
+    if (platform && founderId && isExpanded) {
+      fetchOptimalTimes();
+    }
+  }, [platform, founderId, isExpanded, fetchOptimalTimes]);
 
   const formatTime = (hour) => {
     const period = hour >= 12 ? "PM" : "AM";
