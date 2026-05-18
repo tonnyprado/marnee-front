@@ -126,6 +126,7 @@ function HeroSection({ titleRef }) {
           Built for content creators
         </div>
 
+        {/* eslint-disable-next-line jsx-a11y/heading-has-content */}
         <h1 className="mn-hero-title" ref={titleRef} id="hero-title" aria-label="Save your time and get direct recommendations tailored to your niche & data." style={{ fontSize: 'clamp(28px, 3.2vw, 50px)' }} />
 
         <p className="mn-hero-body mn-hero-anim" style={{ animationDelay: '.3s', maxWidth: 680 }}>
