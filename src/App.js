@@ -10,6 +10,7 @@ import { getAuthSession } from "./services/api";
 import BrainstormingNotification from "./Component/BrainstormingNotification";
 
 import PresentationPage from "./Pages/PresentationPage";
+import CreatorsLandingPage from "./Pages/CreatorsLandingPage";
 import AuthPage from "./Pages/AuthPage";
 import OAuth2CallbackPage from "./Pages/OAuth2CallbackPage";
 import VerifyEmailPage from "./Pages/VerifyEmailPage";
@@ -113,6 +114,7 @@ function AppContent() {
           <Routes>
         {/* públicas */}
         <Route path="/" element={<PresentationPage />} />
+        <Route path="/creators" element={<CreatorsLandingPage />} />
         <Route path="/presentation" element={<Navigate to="/" replace />} />
         <Route path="/auth" element={<AuthPage />} />
         <Route path="/auth/callback" element={<OAuth2CallbackPage />} />
