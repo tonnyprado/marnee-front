@@ -634,4 +634,42 @@ export const api = {
     apiClient.delete(`/campaigns/scripts/${scriptId}`, {
       baseUrl: API.MARNEE,
     }),
+
+  // =====================
+  // WAITLIST
+  // =====================
+
+  /**
+   * POST /waitlist - Submit email to waitlist (public endpoint, no auth)
+   */
+  submitWaitlist: (email) =>
+    apiClient.post('/waitlist', { email }, {
+      auth: false,
+      baseUrl: API.AUTH,
+    }),
+
+  /**
+   * GET /admin/waitlist - Get all waitlist emails (admin only)
+   */
+  getWaitlistEmails: (page = 0, size = 50) =>
+    apiClient.get(`/admin/waitlist?page=${page}&size=${size}`, {
+      baseUrl: API.AUTH,
+    }),
+
+  /**
+   * DELETE /admin/waitlist/{id} - Delete waitlist entry (admin only)
+   */
+  deleteWaitlistEntry: (id) =>
+    apiClient.delete(`/admin/waitlist/${id}`, {
+      baseUrl: API.AUTH,
+    }),
+
+  /**
+   * GET /admin/waitlist/export - Export waitlist as CSV (admin only)
+   */
+  exportWaitlist: () =>
+    apiClient.get('/admin/waitlist/export', {
+      baseUrl: API.AUTH,
+      responseType: 'blob',
+    }),
 };

@@ -48,6 +48,7 @@ import PromptManagement from "./admin/pages/PromptManagement";
 import RAGManagement from "./admin/pages/RAGManagement";
 import IntegrationsPage from "./admin/pages/IntegrationsPage";
 import LegalDocumentsPage from "./admin/pages/LegalDocumentsPage";
+import WaitlistManagement from "./admin/pages/WaitlistManagement";
 
 function RequireAuth({ children }) {
   const session = getAuthSession();
@@ -175,6 +176,7 @@ function AppContent() {
           <Route index element={<AdminDashboard />} />
           <Route path="users" element={<UserManagement />} />
           <Route path="subscriptions" element={<SubscriptionPlans />} />
+          <Route path="waitlist" element={<WaitlistManagement />} />
           <Route path="marnee-training" element={<PromptManagement />} />
           <Route path="rag" element={<RAGManagement />} />
           <Route path="seo" element={<SeoManagement />} />

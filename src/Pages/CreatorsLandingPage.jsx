@@ -2,12 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import marneeLogo from '../assets/marnee-logo.png';
 import LoadingTransition from '../Component/LoadingTransition';
-
-// ─── CONFIG ───────────────────────────────────────────────────────────────────
-// Replace with your Formspree form ID (formspree.io) or your own backend endpoint
-// e.g. 'https://formspree.io/f/YOUR_FORM_ID'  or  '/api/waitlist'
-const WAITLIST_ENDPOINT = 'https://formspree.io/f/YOUR_FORM_ID';
-// ──────────────────────────────────────────────────────────────────────────────
+import { api } from '../services/api';
 
 /* ── WAITLIST FORM ────────────────────────────────────────── */
 function WaitlistForm({ size = 'hero' }) {
@@ -22,17 +17,10 @@ function WaitlistForm({ size = 'hero' }) {
 
     setStatus('loading');
     try {
-      const res = await fetch(WAITLIST_ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({ email }),
-      });
-      if (res.ok) {
-        setStatus('success');
-      } else {
-        setStatus('error');
-      }
-    } catch {
+      await api.submitWaitlist(email);
+      setStatus('success');
+    } catch (error) {
+      console.error('Error submitting to waitlist:', error);
       setStatus('error');
     }
   };
