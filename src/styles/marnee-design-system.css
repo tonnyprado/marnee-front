@@ -1498,6 +1498,26 @@ h3 {
 /* ── CREATORS LANDING PAGE STYLES ──────────────────────── */
 .mn-hero--creators {
   padding-bottom: 0;
+  height: 100vh;
+  min-height: 600px;
+  padding-top: 80px;
+  justify-content: flex-start;
+  position: relative;
+}
+
+.mn-hero--creators .mn-hero-body {
+  margin-bottom: 0;
+}
+
+.mn-hero--creators .mn-hero-stats {
+  margin-top: 40px;
+  padding-top: 0;
+  width: 100%;
+}
+
+.mn-hero--creators .mn-hero-proof {
+  margin-top: 14px;
+  margin-bottom: 0;
 }
 
 .mn-hero-ticker-anchor {
@@ -1513,13 +1533,49 @@ h3 {
   to { opacity: 1; }
 }
 
+/* Hero Stats Styles */
+.mn-hero-stats {
+  display: flex;
+  gap: 12px;
+  margin: 32px 0 24px;
+}
+
+.mn-hero-stat {
+  flex: 1;
+  border-radius: 14px;
+  padding: 20px 24px;
+}
+
 .mn-hero-stat--hoverable {
-  transition: transform 0.2s ease;
+  background: var(--ice);
+  border: 1.5px solid var(--border);
   cursor: default;
+  transition: background 0.2s, border-color 0.2s, transform 0.2s;
 }
 
 .mn-hero-stat--hoverable:hover {
-  transform: scale(1.05);
+  background: var(--lilac-soft);
+  border-color: rgba(64, 8, 109, 0.2);
+  transform: scale(1.02);
+}
+
+.mn-hero-stat-num {
+  font-family: var(--font-display);
+  font-size: 40px;
+  font-weight: 300;
+  color: var(--deep-purple);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.mn-hero-stat-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  line-height: 1.4;
 }
 
 .mn-hero-founder-note {
@@ -1539,6 +1595,21 @@ h3 {
   color: var(--text-muted);
 }
 
+@media (max-width: 768px) {
+  .mn-hero-stats {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .mn-hero-stat-num {
+    font-size: 36px;
+  }
+
+  .mn-hero-stat-label {
+    font-size: 9px;
+  }
+}
+
 @media (max-width: 600px) {
   .mn-waitlist-form {
     flex-direction: column;
@@ -1554,5 +1625,13 @@ h3 {
   }
   .mn-hero-founder-note {
     text-align: center;
+  }
+
+  .mn-hero-stat {
+    padding: 18px 20px;
+  }
+
+  .mn-hero-stat-num {
+    font-size: 32px;
   }
 }
