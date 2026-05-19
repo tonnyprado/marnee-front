@@ -301,9 +301,17 @@ function SeoForm({ setting, onSave, onCancel }) {
           placeholder="/ruta/de/la/pagina"
           disabled={!!setting} // No editable if editing
         />
-        <p className="text-xs text-gray-500 mt-1">
-          Ejemplo: /, /presentation, /app/calendar
-        </p>
+        <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+          <p className="text-xs font-medium text-blue-900 mb-1">Rutas públicas disponibles:</p>
+          <div className="text-xs text-blue-700 space-y-0.5">
+            <div>• <code className="bg-blue-100 px-1 rounded">/</code> - Landing principal (Business)</div>
+            <div>• <code className="bg-blue-100 px-1 rounded">/creators</code> - Landing para creadores de contenido</div>
+            <div>• <code className="bg-blue-100 px-1 rounded">/presentation</code> - Página de presentación</div>
+            <div>• <code className="bg-blue-100 px-1 rounded">/auth</code> - Página de autenticación</div>
+            <div>• <code className="bg-blue-100 px-1 rounded">/terms</code> - Términos de servicio</div>
+            <div>• <code className="bg-blue-100 px-1 rounded">/privacy</code> - Política de privacidad</div>
+          </div>
+        </div>
       </div>
 
       {/* Basic Meta */}
