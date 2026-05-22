@@ -9,7 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion';
  * Features:
  * - Circle expansion animation from center covering the entire screen
  * - Content fades in after the circle animation
- * - Smooth fade out transition when navigating to the test
+ * - Reverse circle contraction when navigating to the test (reveals page underneath)
  */
 export default function BusinessTestRequiredModal({ isOpen }) {
   const navigate = useNavigate();
@@ -17,10 +17,10 @@ export default function BusinessTestRequiredModal({ isOpen }) {
 
   const handleStartTest = () => {
     setIsExiting(true);
-    // Wait for fade out animation before navigating
+    // Wait for circle contraction animation before navigating
     setTimeout(() => {
       navigate('/business-test/questions');
-    }, 500);
+    }, 800);
   };
 
   return (
@@ -28,51 +28,54 @@ export default function BusinessTestRequiredModal({ isOpen }) {
       {isOpen && (
         <motion.div
           className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden"
-          initial={{ opacity: 1 }}
-          animate={{ opacity: isExiting ? 0 : 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.3 }}
         >
-          {/* Expanding circle background */}
+          {/* Expanding/Contracting circle background */}
           <motion.div
             className="absolute bg-mn-purple"
             initial={{
               width: 0,
               height: 0,
-              borderRadius: '50%',
             }}
             animate={{
-              width: '300vmax',
-              height: '300vmax',
-              borderRadius: '50%',
+              width: isExiting ? 0 : '300vmax',
+              height: isExiting ? 0 : '300vmax',
             }}
             transition={{
               duration: 0.8,
-              ease: [0.22, 1, 0.36, 1], // Custom easing for smooth expansion
+              ease: isExiting
+                ? [0.36, 0, 0.66, -0.56] // Ease in for contraction (accelerating into center)
+                : [0.22, 1, 0.36, 1],     // Ease out for expansion
             }}
             style={{
               position: 'absolute',
               top: '50%',
               left: '50%',
               transform: 'translate(-50%, -50%)',
+              borderRadius: '50%',
             }}
           />
 
-          {/* Content container */}
+          {/* Content container - fades out quickly when exiting */}
           <motion.div
             className="relative z-10 flex flex-col items-center justify-center text-center px-6 max-w-lg"
             initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            animate={{
+              opacity: isExiting ? 0 : 1,
+              y: isExiting ? -20 : 0,
+              scale: isExiting ? 0.9 : 1,
+            }}
             transition={{
-              duration: 0.6,
-              delay: 0.6, // Start after circle animation
+              duration: isExiting ? 0.3 : 0.6,
+              delay: isExiting ? 0 : 0.6,
               ease: 'easeOut',
             }}
           >
             {/* Animated icon */}
             <motion.div
               className="mb-8"
-              animate={{
+              animate={isExiting ? {} : {
                 scale: [1, 1.1, 1],
                 rotate: [0, 5, -5, 0],
               }}
@@ -91,8 +94,8 @@ export default function BusinessTestRequiredModal({ isOpen }) {
             <motion.h1
               className="text-4xl md:text-5xl font-display font-semibold text-white mb-4"
               initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8, duration: 0.5 }}
+              animate={{ opacity: isExiting ? 0 : 1, y: isExiting ? -10 : 0 }}
+              transition={{ delay: isExiting ? 0 : 0.8, duration: isExiting ? 0.2 : 0.5 }}
             >
               Welcome to Marnee
             </motion.h1>
@@ -101,8 +104,8 @@ export default function BusinessTestRequiredModal({ isOpen }) {
             <motion.p
               className="text-lg md:text-xl text-white/80 mb-4 leading-relaxed"
               initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.9, duration: 0.5 }}
+              animate={{ opacity: isExiting ? 0 : 1, y: isExiting ? -10 : 0 }}
+              transition={{ delay: isExiting ? 0.05 : 0.9, duration: isExiting ? 0.2 : 0.5 }}
             >
               Before we create your personalized marketing strategy, we need to learn about your business.
             </motion.p>
@@ -111,8 +114,8 @@ export default function BusinessTestRequiredModal({ isOpen }) {
             <motion.p
               className="text-sm text-mn-lilac mb-10"
               initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1, duration: 0.5 }}
+              animate={{ opacity: isExiting ? 0 : 1 }}
+              transition={{ delay: isExiting ? 0.1 : 1, duration: isExiting ? 0.2 : 0.5 }}
             >
               This quick assessment helps Marnee understand your brand, goals, and audience.
             </motion.p>
@@ -120,10 +123,11 @@ export default function BusinessTestRequiredModal({ isOpen }) {
             {/* CTA Button */}
             <motion.button
               onClick={handleStartTest}
-              className="group relative bg-white text-mn-purple font-semibold py-4 px-10 rounded-full shadow-lg shadow-mn-night/30 transition-all duration-300 flex items-center gap-3 hover:shadow-xl hover:scale-105"
+              disabled={isExiting}
+              className="group relative bg-white text-mn-purple font-semibold py-4 px-10 rounded-full shadow-lg shadow-mn-night/30 transition-all duration-300 flex items-center gap-3 hover:shadow-xl hover:scale-105 disabled:pointer-events-none"
               initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.1, duration: 0.5 }}
+              animate={{ opacity: isExiting ? 0 : 1, y: isExiting ? -20 : 0 }}
+              transition={{ delay: isExiting ? 0.15 : 1.1, duration: isExiting ? 0.2 : 0.5 }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.98 }}
             >
@@ -135,25 +139,25 @@ export default function BusinessTestRequiredModal({ isOpen }) {
             <motion.p
               className="text-xs text-white/50 mt-6"
               initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1.3, duration: 0.5 }}
+              animate={{ opacity: isExiting ? 0 : 1 }}
+              transition={{ delay: isExiting ? 0.2 : 1.3, duration: isExiting ? 0.2 : 0.5 }}
             >
               Takes approximately 5-10 minutes
             </motion.p>
           </motion.div>
 
-          {/* Decorative elements */}
+          {/* Decorative elements - fade out when exiting */}
           <motion.div
-            className="absolute top-1/4 left-1/4 w-64 h-64 bg-white/5 rounded-full blur-3xl"
+            className="absolute top-1/4 left-1/4 w-64 h-64 bg-white/5 rounded-full blur-3xl pointer-events-none"
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.8, duration: 1 }}
+            animate={{ opacity: isExiting ? 0 : 1 }}
+            transition={{ delay: isExiting ? 0 : 0.8, duration: isExiting ? 0.3 : 1 }}
           />
           <motion.div
-            className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-mn-lilac/10 rounded-full blur-3xl"
+            className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-mn-lilac/10 rounded-full blur-3xl pointer-events-none"
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1, duration: 1 }}
+            animate={{ opacity: isExiting ? 0 : 1 }}
+            transition={{ delay: isExiting ? 0 : 1, duration: isExiting ? 0.3 : 1 }}
           />
         </motion.div>
       )}
