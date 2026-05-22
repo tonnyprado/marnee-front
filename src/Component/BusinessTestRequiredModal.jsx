@@ -1,104 +1,161 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Sparkles, AlertCircle } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 /**
- * BusinessTestRequiredModal - Modal that blocks the app until user completes business test
+ * BusinessTestRequiredModal - Full screen takeover that blocks the app until user completes business test
  *
- * This modal appears when a user hasn't completed the mandatory business test.
- * It prevents access to the app and guides users to complete the test first.
+ * Features:
+ * - Circle expansion animation from center covering the entire screen
+ * - Content fades in after the circle animation
+ * - Smooth fade out transition when navigating to the test
  */
 export default function BusinessTestRequiredModal({ isOpen }) {
   const navigate = useNavigate();
+  const [isExiting, setIsExiting] = useState(false);
 
   const handleStartTest = () => {
-    navigate('/business-test/questions');
+    setIsExiting(true);
+    // Wait for fade out animation before navigating
+    setTimeout(() => {
+      navigate('/business-test/questions');
+    }, 500);
   };
 
   return (
     <AnimatePresence>
       {isOpen && (
-        <>
-          {/* Backdrop with blur */}
+        <motion.div
+          className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden"
+          initial={{ opacity: 1 }}
+          animate={{ opacity: isExiting ? 0 : 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          {/* Expanding circle background */}
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="fixed inset-0 bg-black/30 backdrop-blur-md z-50"
-            style={{ backdropFilter: 'blur(8px)' }}
+            className="absolute bg-mn-purple"
+            initial={{
+              width: 0,
+              height: 0,
+              borderRadius: '50%',
+            }}
+            animate={{
+              width: '300vmax',
+              height: '300vmax',
+              borderRadius: '50%',
+            }}
+            transition={{
+              duration: 0.8,
+              ease: [0.22, 1, 0.36, 1], // Custom easing for smooth expansion
+            }}
+            style={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+            }}
           />
 
-          {/* Modal */}
-          <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
+          {/* Content container */}
+          <motion.div
+            className="relative z-10 flex flex-col items-center justify-center text-center px-6 max-w-lg"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: 0.6,
+              delay: 0.6, // Start after circle animation
+              ease: 'easeOut',
+            }}
+          >
+            {/* Animated icon */}
             <motion.div
-              initial={{ scale: 0.9, opacity: 0, y: 20 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              transition={{ type: "spring", duration: 0.5 }}
-              className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 relative"
+              className="mb-8"
+              animate={{
+                scale: [1, 1.1, 1],
+                rotate: [0, 5, -5, 0],
+              }}
+              transition={{
+                duration: 3,
+                repeat: Infinity,
+                repeatType: 'reverse',
+              }}
             >
-              {/* Icon */}
-              <div className="flex justify-center mb-6">
-                <motion.div
-                  animate={{
-                    rotate: [0, 5, -5, 0],
-                    scale: [1, 1.05, 1],
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    repeatType: "reverse"
-                  }}
-                  className="w-20 h-20 bg-gradient-to-br from-[#40086d] to-[#6b21a8] rounded-full flex items-center justify-center shadow-lg"
-                >
-                  <Sparkles className="w-10 h-10 text-white" />
-                </motion.div>
+              <div className="w-24 h-24 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/20">
+                <Sparkles className="w-12 h-12 text-white" />
               </div>
-
-              {/* Title */}
-              <h2 className="text-2xl font-bold text-center mb-3 bg-gradient-to-r from-[#40086d] via-[#6b21a8] to-[#9333ea] bg-clip-text text-transparent">
-                Welcome to Marnee!
-              </h2>
-
-              {/* Description */}
-              <p className="text-gray-600 text-center mb-6 leading-relaxed">
-                Before we begin creating your personalized marketing strategy, we need to learn about your business.
-              </p>
-
-              {/* Info box */}
-              <div className="bg-gradient-to-r from-[#ede0f8] to-purple-50 border border-[#dccaf4] rounded-lg p-4 mb-6">
-                <div className="flex items-start gap-3">
-                  <AlertCircle className="w-5 h-5 text-[#40086d] flex-shrink-0 mt-0.5" />
-                  <div className="text-sm text-gray-700">
-                    <p className="font-semibold text-[#40086d] mb-1">Business Test Required</p>
-                    <p>
-                      The Business Test helps Marnee understand your brand, goals, and target audience.
-                      This enables her to create a tailored content strategy just for you.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* CTA Button */}
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={handleStartTest}
-                className="w-full bg-gradient-to-r from-[#40086d] to-[#6b21a8] hover:from-[#2d0550] hover:to-[#40086d] text-white font-semibold py-4 px-6 rounded-xl shadow-lg shadow-purple-900/30 transition-all duration-300 flex items-center justify-center gap-2"
-              >
-                <Sparkles className="w-5 h-5" />
-                Start Business Test
-              </motion.button>
-
-              {/* Footer note */}
-              <p className="text-xs text-gray-400 text-center mt-4">
-                Takes approximately 5-10 minutes to complete
-              </p>
             </motion.div>
-          </div>
-        </>
+
+            {/* Title */}
+            <motion.h1
+              className="text-4xl md:text-5xl font-display font-semibold text-white mb-4"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8, duration: 0.5 }}
+            >
+              Welcome to Marnee
+            </motion.h1>
+
+            {/* Subtitle */}
+            <motion.p
+              className="text-lg md:text-xl text-white/80 mb-4 leading-relaxed"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.9, duration: 0.5 }}
+            >
+              Before we create your personalized marketing strategy, we need to learn about your business.
+            </motion.p>
+
+            {/* Info text */}
+            <motion.p
+              className="text-sm text-mn-lilac mb-10"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1, duration: 0.5 }}
+            >
+              This quick assessment helps Marnee understand your brand, goals, and audience.
+            </motion.p>
+
+            {/* CTA Button */}
+            <motion.button
+              onClick={handleStartTest}
+              className="group relative bg-white text-mn-purple font-semibold py-4 px-10 rounded-full shadow-lg shadow-mn-night/30 transition-all duration-300 flex items-center gap-3 hover:shadow-xl hover:scale-105"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.1, duration: 0.5 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <Sparkles className="w-5 h-5 transition-transform group-hover:rotate-12" />
+              <span>Start Business Test</span>
+            </motion.button>
+
+            {/* Time estimate */}
+            <motion.p
+              className="text-xs text-white/50 mt-6"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.3, duration: 0.5 }}
+            >
+              Takes approximately 5-10 minutes
+            </motion.p>
+          </motion.div>
+
+          {/* Decorative elements */}
+          <motion.div
+            className="absolute top-1/4 left-1/4 w-64 h-64 bg-white/5 rounded-full blur-3xl"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.8, duration: 1 }}
+          />
+          <motion.div
+            className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-mn-lilac/10 rounded-full blur-3xl"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1, duration: 1 }}
+          />
+        </motion.div>
       )}
     </AnimatePresence>
   );

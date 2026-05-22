@@ -30,7 +30,7 @@ export default function AppLayout() {
         }
       } catch (error) {
         // 404 means no business test exists
-        if (error.status === 404) {
+        if (error.statusCode === 404) {
           setHasBusinessTest(false);
           localStorage.setItem('hasBusinessTest', 'false');
         } else {
