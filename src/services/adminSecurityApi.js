@@ -147,3 +147,16 @@ export const getUserAuditLogs = async (userId, page = 0, size = 20) => {
 export const getUserSessions = async (userId, page = 0, size = 20) => {
   return authRequest(`/api/v1/admin/users/${userId}/sessions?page=${page}&size=${size}`);
 };
+
+// ==================== ADMIN TOOLS ====================
+
+export const verifyAdminPassword = async (password) => {
+  return authRequest('/api/v1/admin/tools/verify-password', {
+    method: 'POST',
+    body: JSON.stringify({ password }),
+  });
+};
+
+export const generateSecurePassword = async (length = 32, includeSymbols = true) => {
+  return authRequest(`/api/v1/admin/tools/generate-password?length=${length}&includeSymbols=${includeSymbols}`);
+};

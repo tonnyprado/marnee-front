@@ -49,6 +49,7 @@ import RAGManagement from "./admin/pages/RAGManagement";
 import IntegrationsPage from "./admin/pages/IntegrationsPage";
 import LegalDocumentsPage from "./admin/pages/LegalDocumentsPage";
 import WaitlistManagement from "./admin/pages/WaitlistManagement";
+import PasswordGeneratorPage from "./admin/pages/PasswordGeneratorPage";
 
 function RequireAuth({ children }) {
   const session = getAuthSession();
@@ -187,6 +188,7 @@ function AppContent() {
           <Route path="security/audit-logs" element={<AuditLogsPage />} />
           <Route path="security/sessions" element={<ActiveSessionsPage />} />
           <Route path="security/alerts" element={<SecurityAlertsPage />} />
+          <Route path="security/password-generator" element={<PasswordGeneratorPage />} />
         </Route>
 
         {/* fallback */}

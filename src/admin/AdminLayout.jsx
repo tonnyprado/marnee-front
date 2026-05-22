@@ -2,7 +2,7 @@ import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import {
   Users, LayoutDashboard, CreditCard, FileText,
-  BarChart3, LogOut, Settings, Shield, Lock, Activity, AlertTriangle, Sparkles, Brain, ChevronDown, Plug, Database, Mail
+  BarChart3, LogOut, Settings, Shield, Lock, Activity, AlertTriangle, Sparkles, Brain, ChevronDown, Plug, Database, Mail, Key
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getAuthSession, setAuthSession } from '../services/api';
@@ -38,6 +38,7 @@ export default function AdminLayout() {
     { path: '/admin/security/audit-logs', label: 'Audit Logs', icon: Activity },
     { path: '/admin/security/sessions', label: 'Active Sessions', icon: Lock },
     { path: '/admin/security/alerts', label: 'Security Alerts', icon: AlertTriangle },
+    { path: '/admin/security/password-generator', label: 'Password Generator', icon: Key },
   ];
 
   const isActive = (path, exact = false) => {
