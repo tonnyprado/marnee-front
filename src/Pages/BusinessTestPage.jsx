@@ -583,6 +583,10 @@ export default function BusinessTestPage() {
         console.warn('[BusinessTest] No founderId available after saveProgress');
       }
 
+      // Update localStorage to reflect that business test is now completed
+      // This prevents the BusinessTestRequiredModal from showing again
+      localStorage.setItem('hasBusinessTest', 'true');
+
       // Navigate to app where user can start chatting with Marnee or generate calendars
       navigate('/app');
     } catch (err) {
