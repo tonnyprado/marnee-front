@@ -1,10 +1,7 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useCallback } from "react";
 import { api } from "../services/api";
 import { useMarnee } from "../context/MarneeContext";
-import LoadingTransition from "../Component/LoadingTransition";
-import { Mic, MicOff } from 'lucide-react';
-import { useVoiceRecognition } from "./Tools/Chat/useVoiceRecognition";
+import InteractiveTest from "../Component/InteractiveTest/InteractiveTest";
 
 // Question types: radio, textarea, url, multiSelect (tags), select
 const STEPS = [
@@ -352,561 +349,122 @@ const STEPS = [
   },
 ];
 
-// Group steps by section for sidebar
-const SECTIONS = [...new Set(STEPS.map(s => s.section))];
-
 export default function BusinessTestPage() {
-  const navigate = useNavigate();
   const { founderId: contextFounderId, setFounderId: setContextFounderId } = useMarnee();
 
-  const [currentStep, setCurrentStep] = useState(0);
-  const [answers, setAnswers] = useState({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [founderId, setFounderId] = useState(contextFounderId || null);
-
-  // Voice recognition for textarea fields
-  const { isVoiceMode, toggleVoiceMode } = useVoiceRecognition({
-    onTranscriptChange: (transcript) => {
-      // Update the current step's field with the transcript
-      if (step && (step.type === 'textarea' || step.type === 'url')) {
-        setAnswers((prev) => ({
-          ...prev,
-          [step.field]: transcript,
-        }));
-      }
-    },
-    playSound: () => {}, // No sound for tests
-  });
-
-  const loadExistingData = useCallback(async () => {
+  // Load existing data
+  const handleLoadData = useCallback(async () => {
     try {
-      // Try to get founder ID
+      // Try to get founder ID first
       let founder = null;
       try {
         founder = await api.getMeFounder();
       } catch (error) {
         if (error.status === 404) {
           // No founder profile exists yet - this is OK!
-          // The Business Test can be taken before the Personal Test
-          // We'll create an empty founder profile when submitting
+          // Return empty answers, no error
           console.log("No founder profile found - will create one during business test submission");
-          setFounderId(null); // Will be created on submit
-          setLoading(false);
-          return;
+          return {};
         }
-        throw error; // Re-throw other errors
+        throw error;
       }
 
-      // Founder exists - validate it has an ID
-      if (!founder || !founder.id) {
-        console.error("Founder profile exists but has no ID:", founder);
-        setError("Invalid founder profile. Please contact support.");
-        setLoading(false);
-        return;
+      if (founder?.id) {
+        setContextFounderId(founder.id);
       }
-
-      setFounderId(founder.id);
-      setContextFounderId(founder.id); // Save to MarneeContext
 
       // Try to load existing business test
       try {
         const existingTest = await api.getBusinessTestMe();
         if (existingTest) {
-          // Pre-fill answers with existing data
           const prefilledAnswers = {};
           STEPS.forEach((step) => {
             const value = existingTest[step.field];
             if (value !== undefined && value !== null && value !== '') {
               // Convert boolean values back to "yes"/"no" for radio buttons
-              if (step.type === 'radio' && step.field === 'hasBrandGuidelines') {
-                prefilledAnswers[step.field] = value ? 'yes' : 'no';
-              } else if (step.type === 'radio' && step.field === 'teamContentCreator') {
-                prefilledAnswers[step.field] = value ? 'yes' : 'no';
-              } else if (step.type === 'radio' && step.field === 'interestedInPersonalBrand') {
+              if (step.type === 'radio' && ['hasBrandGuidelines', 'teamContentCreator', 'interestedInPersonalBrand'].includes(step.field)) {
                 prefilledAnswers[step.field] = value ? 'yes' : 'no';
               } else {
                 prefilledAnswers[step.field] = value;
               }
             }
           });
-          setAnswers(prefilledAnswers);
+          return prefilledAnswers;
         }
       } catch (error) {
         if (error.status === 404) {
-          // First-time users won't have a business test yet.
+          // No existing business test - this is OK, return empty answers
           console.log("No existing business test found, starting fresh");
-        } else {
-          throw error;
+          return {};
         }
+        throw error;
       }
+
+      return {};
     } catch (error) {
       console.error("Error loading data:", error);
-      setError("Failed to load data. Please try again.");
-    } finally {
-      setLoading(false);
+      // Only throw for real errors, not for missing data
+      if (error.status && error.status >= 500) {
+        throw error;
+      }
+      return {};
     }
-  }, [setContextFounderId]); // setContextFounderId from context is stable
+  }, [setContextFounderId]);
 
-  useEffect(() => {
-    loadExistingData();
-  }, [loadExistingData]);
+  // Submit the test
+  const handleSubmit = useCallback(async (answers) => {
+    // Ensure founder profile exists
+    let currentFounderId = contextFounderId;
 
-  const step = STEPS[currentStep];
-  const progress = Math.round(((currentStep + 1) / STEPS.length) * 100);
-
-  // Check if step should be shown based on showIf condition
-  const shouldShowStep = (step) => {
-    if (!step.showIf) return true;
-    return answers[step.showIf.field] === step.showIf.value;
-  };
-
-  // Handle radio selection
-  const handleRadioSelect = (value) => {
-    setAnswers((prev) => ({
-      ...prev,
-      [step.field]: value,
-    }));
-  };
-
-  // Handle multi-select toggle
-  const handleMultiSelect = (option) => {
-    const current = answers[step.field] || [];
-    const isSelected = current.includes(option);
-
-    if (isSelected) {
-      setAnswers((prev) => ({
-        ...prev,
-        [step.field]: current.filter((o) => o !== option),
-      }));
-    } else if (current.length < (step.maxSelect || 99)) {
-      setAnswers((prev) => ({
-        ...prev,
-        [step.field]: [...current, option],
-      }));
+    if (!currentFounderId) {
+      console.log("Creating empty founder profile for business test...");
+      try {
+        const response = await api.submitQuestionnaire({
+          teamDescriptionWords: [],
+          personalValues: [],
+          publicSpeakingComfort: 5,
+        });
+        if (response?.founderId) {
+          currentFounderId = response.founderId;
+          setContextFounderId(currentFounderId);
+        }
+      } catch (error) {
+        console.error("Error creating founder profile:", error);
+        throw new Error("Failed to create founder profile. Please try again.");
+      }
     }
-  };
 
-  // Handle textarea/url change
-  const handleTextChange = (value) => {
-    setAnswers((prev) => ({
-      ...prev,
-      [step.field]: value,
-    }));
-  };
-
-  // Build payload for API
-  const buildPayload = (currentFounderId) => {
-    // founderId will be provided after ensuring it exists
+    // Build payload
     const payload = { founderId: currentFounderId };
-
-    STEPS.forEach((s) => {
-      const value = answers[s.field];
+    STEPS.forEach((step) => {
+      const value = answers[step.field];
       if (value !== undefined && value !== null && value !== '') {
         // Convert "yes"/"no" back to boolean for specific fields
-        if (s.field === 'hasBrandGuidelines' && s.type === 'radio') {
-          payload[s.field] = value === 'yes';
-        } else if (s.field === 'teamContentCreator' && s.type === 'radio') {
-          payload[s.field] = value === 'yes';
-        } else if (s.field === 'interestedInPersonalBrand' && s.type === 'radio') {
-          payload[s.field] = value === 'yes';
+        if (['hasBrandGuidelines', 'teamContentCreator', 'interestedInPersonalBrand'].includes(step.field) && step.type === 'radio') {
+          payload[step.field] = value === 'yes';
         } else {
-          payload[s.field] = value;
+          payload[step.field] = value;
         }
       }
     });
 
-    return payload;
-  };
+    // Submit
+    await api.submitBusinessTest(payload);
 
-  // Ensure founder profile exists, create if necessary
-  const ensureFounderExists = async () => {
-    if (founderId) {
-      return founderId; // Already exists
-    }
+    // Update localStorage
+    localStorage.setItem('hasBusinessTest', 'true');
 
-    console.log("Creating empty founder profile for business test...");
-
-    try {
-      // Create minimal founder profile with empty data
-      // The questionnaire endpoint requires at least an empty object
-      const response = await api.submitQuestionnaire({
-        teamDescriptionWords: [],
-        personalValues: [],
-        publicSpeakingComfort: 5, // Default value
-      });
-
-      if (!response || !response.founderId) {
-        throw new Error("Failed to create founder profile - no ID returned");
-      }
-
-      const newFounderId = response.founderId;
-      setFounderId(newFounderId);
-      setContextFounderId(newFounderId); // Save to MarneeContext
-      console.log("Created founder profile with ID:", newFounderId);
-      return newFounderId;
-    } catch (error) {
-      console.error("Error creating founder profile:", error);
-      throw new Error("Failed to create founder profile. Please try again.");
-    }
-  };
-
-  // Save progress (can be called after each section or at the end)
-  const saveProgress = async () => {
-    try {
-      // Ensure founder profile exists before submitting business test
-      const currentFounderId = await ensureFounderExists();
-
-      const payload = buildPayload(currentFounderId);
-      await api.submitBusinessTest(payload);
-    } catch (error) {
-      console.error("Error saving progress:", error);
-      throw error;
-    }
-  };
-
-  // Submit questionnaire
-  const handleSubmit = async () => {
-    setIsSubmitting(true);
-    setError(null);
-
-    try {
-      await saveProgress();
-
-      // Ensure founderId is saved in context before navigating
-      // (saveProgress already creates/updates the founderId)
-      if (founderId) {
-        console.log('[BusinessTest] Saving founderId to context before navigation:', founderId);
-        setContextFounderId(founderId);
-      } else {
-        console.warn('[BusinessTest] No founderId available after saveProgress');
-      }
-
-      // Update localStorage to reflect that business test is now completed
-      // This prevents the BusinessTestRequiredModal from showing again
-      localStorage.setItem('hasBusinessTest', 'true');
-
-      // Navigate to app where user can start chatting with Marnee or generate calendars
-      navigate('/app');
-    } catch (err) {
-      console.error("Error submitting business test:", err);
-
-      // Provide detailed error message
-      let errorMessage = 'Failed to submit business test';
-      if (err.message) {
-        errorMessage = err.message;
-      } else if (err.body && err.body.detail) {
-        // Handle FastAPI validation errors
-        if (Array.isArray(err.body.detail)) {
-          const fieldErrors = err.body.detail.map(e => `${e.loc.join(' > ')}: ${e.msg}`).join('; ');
-          errorMessage = `Validation error: ${fieldErrors}`;
-        } else {
-          errorMessage = err.body.detail;
-        }
-      }
-
-      setError(errorMessage);
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleNext = () => {
-    if (currentStep === STEPS.length - 1) {
-      handleSubmit();
-      return;
-    }
-
-    // Move to next step (skip hidden steps)
-    let nextStep = currentStep + 1;
-    while (nextStep < STEPS.length && !shouldShowStep(STEPS[nextStep])) {
-      nextStep++;
-    }
-
-    if (nextStep < STEPS.length) {
-      setCurrentStep(nextStep);
-    } else {
-      handleSubmit();
-    }
-  };
-
-  const handleBack = () => {
-    if (currentStep === 0) {
-      navigate('/test-selection');
-      return;
-    }
-
-    // Move to previous step (skip hidden steps)
-    let prevStep = currentStep - 1;
-    while (prevStep >= 0 && !shouldShowStep(STEPS[prevStep])) {
-      prevStep--;
-    }
-
-    if (prevStep >= 0) {
-      setCurrentStep(prevStep);
-    }
-  };
-
-  // Render input based on type
-  const renderInput = () => {
-    switch (step.type) {
-      case 'radio':
-        return (
-          <div className="space-y-3">
-            {step.options.map((option) => {
-              const selected = answers[step.field] === option.value;
-              return (
-                <button
-                  key={option.value}
-                  type="button"
-                  onClick={() => handleRadioSelect(option.value)}
-                  className={`w-full text-left border rounded px-5 py-4 flex items-center gap-3 transition ${
-                    selected
-                      ? "border-violet-400 bg-[#ede0f8]"
-                      : "border-[rgba(30,30,30,0.1)] hover:border-violet-200 hover:bg-[#ede0f8]/50"
-                  }`}
-                >
-                  <span
-                    className={`w-5 h-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center ${
-                      selected ? "border-violet-500 bg-[#ede0f8]0" : "border-gray-300"
-                    }`}
-                  >
-                    {selected && <span className="w-2 h-2 bg-white rounded-full" />}
-                  </span>
-                  <span className="text-sm text-gray-700">{option.label}</span>
-                </button>
-              );
-            })}
-          </div>
-        );
-
-      case 'multiSelect':
-        const selectedItems = answers[step.field] || [];
-        return (
-          <div>
-            <div className="flex flex-wrap gap-2 mb-4">
-              {step.options.map((option) => {
-                const isSelected = selectedItems.includes(option);
-                return (
-                  <button
-                    key={option}
-                    type="button"
-                    onClick={() => handleMultiSelect(option)}
-                    className={`px-4 py-2 rounded-full border text-sm transition ${
-                      isSelected
-                        ? "border-violet-400 bg-[#ede0f8] text-[#40086d]"
-                        : "border-[rgba(30,30,30,0.1)] hover:border-violet-200 text-gray-600 hover:bg-[#ede0f8]"
-                    }`}
-                  >
-                    {option}
-                  </button>
-                );
-              })}
-            </div>
-            {step.maxSelect && (
-              <p className="text-xs text-gray-500">
-                Selected: {selectedItems.length}/{step.maxSelect}
-              </p>
-            )}
-          </div>
-        );
-
-      case 'textarea':
-      case 'url':
-        return (
-          <div className="relative">
-            <textarea
-              value={answers[step.field] || ''}
-              onChange={(e) => handleTextChange(e.target.value)}
-              placeholder={isVoiceMode ? "Listening... Speak now" : step.placeholder}
-              rows={step.type === 'url' ? 1 : 4}
-              className={`w-full bg-[#f6f6f6] border ${
-                isVoiceMode ? 'border-red-300 ring-2 ring-red-200' : 'border-[rgba(30,30,30,0.1)]'
-              } rounded px-4 py-3 pr-12 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#dccaf4] focus:border-transparent resize-none transition`}
-            />
-            {/* Voice button */}
-            <button
-              type="button"
-              onClick={toggleVoiceMode}
-              className={`absolute right-3 top-3 p-2 rounded-lg transition-all ${
-                isVoiceMode
-                  ? 'bg-red-500 text-white shadow-lg shadow-red-200'
-                  : 'hover:bg-gray-200 text-gray-600'
-              }`}
-              title={isVoiceMode ? "Stop recording" : "Start voice input"}
-            >
-              {isVoiceMode ? (
-                <MicOff className="w-4 h-4" />
-              ) : (
-                <Mic className="w-4 h-4" />
-              )}
-            </button>
-            {/* Voice mode indicator */}
-            {isVoiceMode && (
-              <div className="mt-2 flex items-center gap-2 text-xs text-red-600">
-                <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-                Recording... Click the microphone to stop
-              </div>
-            )}
-          </div>
-        );
-
-      default:
-        return null;
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-center max-w-md px-6">
-          {!error && (
-            <>
-              <div className="w-16 h-16 border-4 border-violet-200 border-t-violet-600 rounded-full animate-spin mx-auto mb-4"></div>
-              <p className="text-gray-600 mb-2">Loading your business test...</p>
-            </>
-          )}
-          {error && (
-            <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded text-red-600 text-sm">
-              <p className="font-semibold mb-2">Error loading test</p>
-              <p>{error}</p>
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  }
-
-  // Skip step if showIf condition is not met
-  if (!shouldShowStep(step)) {
-    // This shouldn't happen due to handleNext/handleBack logic, but as a safeguard
-    setTimeout(() => handleNext(), 0);
-    return null;
-  }
+    // Navigation will be handled by CompletionScreen
+  }, [contextFounderId, setContextFounderId]);
 
   return (
-    <div className="min-h-screen bg-white text-gray-900 flex">
-      <LoadingTransition isLoading={isSubmitting} message="Saving your business profile..." />
-      {/* Sidebar */}
-      <aside className="w-72 bg-[#f6f6f6] border-r border-[rgba(30,30,30,0.1)] p-6 flex flex-col">
-        {/* Back Button */}
-        <button
-          onClick={() => navigate('/test-selection')}
-          className="flex items-center gap-2 text-gray-600 hover:text-[#40086d] transition-colors mb-4"
-        >
-          <lord-icon
-            src="https://cdn.lordicon.com/zmkotitn.json"
-            trigger="hover"
-            colors="primary:#40086d,secondary:#ede0f8"
-            style={{width:'24px',height:'24px'}}
-          >
-          </lord-icon>
-          <span className="text-sm font-medium">Back</span>
-        </button>
-
-        <h2 className="text-lg font-semibold mb-1 text-gray-900">Business Test</h2>
-        <p className="text-xs text-gray-500 mb-6">
-          Complete all sections to unlock your personalized marketing campaign.
-        </p>
-
-        <p className="text-xs text-gray-400 mb-3 tracking-wide uppercase">Sections</p>
-        <div className="space-y-2 overflow-y-auto flex-1">
-          {SECTIONS.map((section) => {
-            const sectionSteps = STEPS.filter((s) => s.section === section);
-            const sectionStart = STEPS.findIndex((s) => s.section === section);
-            const isActive = step.section === section;
-            const completedInSection = sectionSteps.filter(
-              (s) => answers[s.field] !== undefined && answers[s.field] !== '' && answers[s.field] !== null
-            ).length;
-
-            return (
-              <div
-                key={section}
-                className={`rounded p-3 cursor-pointer transition ${
-                  isActive ? "bg-[#ede0f8] border border-violet-200" : "hover:bg-gray-100"
-                }`}
-                onClick={() => setCurrentStep(sectionStart)}
-              >
-                <div className="flex justify-between items-center">
-                  <p className={`text-sm ${isActive ? 'text-[#40086d] font-medium' : 'text-gray-600'}`}>
-                    {section}
-                  </p>
-                  <span className={`text-xs ${isActive ? 'text-[#40086d]' : 'text-gray-400'}`}>
-                    {completedInSection}/{sectionSteps.length}
-                  </span>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Progress */}
-        <div className="pt-6 border-t border-[rgba(30,30,30,0.1)] mt-4">
-          <div className="text-xs text-gray-500 mb-2">
-            Question {currentStep + 1} of {STEPS.length}
-          </div>
-          <div className="w-full h-2 bg-gray-200 rounded-full">
-            <div
-              className="h-2 bg-gradient-to-r from-violet-500 via-indigo-500 to-cyan-400 rounded-full transition-all"
-              style={{ width: `${progress}%` }}
-            />
-          </div>
-          <div className="text-right text-xs text-gray-500 mt-1">{progress}%</div>
-        </div>
-      </aside>
-
-      {/* Main content */}
-      <main className="flex-1 flex flex-col">
-        <div className="max-w-3xl mx-auto w-full pt-12 pb-32 px-6">
-          {/* Section tag */}
-          <div className="mb-4 flex items-center gap-2">
-            <span className="bg-[#ede0f8] text-[#40086d] px-3 py-1 rounded-full text-xs font-medium">
-              {step.section} · Question {currentStep + 1}
-            </span>
-            {step.required && (
-              <span className="text-xs text-red-500 font-medium">* Required</span>
-            )}
-          </div>
-
-          {/* Question */}
-          <h1 className="text-3xl md:text-4xl font-bold mb-2 text-gray-900">{step.question}</h1>
-          {step.subtitle && <p className="text-gray-500 mb-8">{step.subtitle}</p>}
-
-          {/* Input */}
-          <div className="mt-6">{renderInput()}</div>
-
-          {/* Error */}
-          {error && (
-            <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded text-red-600 text-sm">
-              {error}
-            </div>
-          )}
-        </div>
-
-        {/* Footer nav */}
-        <div className="fixed bottom-0 left-72 right-0 bg-white/80 backdrop-blur-sm border-t border-[rgba(30,30,30,0.1)] px-8 py-4 flex justify-between items-center">
-          <button
-            onClick={handleBack}
-            className="px-5 py-2.5 rounded border border-[rgba(30,30,30,0.1)] text-gray-700 hover:bg-[#f6f6f6] text-sm font-medium"
-          >
-            Back
-          </button>
-
-          <button
-            onClick={handleNext}
-            disabled={isSubmitting || (step.required && !answers[step.field])}
-            className={`px-6 py-2.5 rounded bg-[#1e1e1e] text-white font-medium text-sm hover:bg-[#dccaf4] hover:text-[#1a0530] transition shadow-sm ${
-              (isSubmitting || (step.required && !answers[step.field])) ? 'opacity-50 cursor-not-allowed' : ''
-            }`}
-          >
-            {isSubmitting
-              ? 'Submitting...'
-              : currentStep === STEPS.length - 1
-              ? 'Finish'
-              : 'Next'}
-          </button>
-        </div>
-      </main>
-    </div>
+    <InteractiveTest
+      steps={STEPS}
+      title="Business Test"
+      onSubmit={handleSubmit}
+      onLoadData={handleLoadData}
+      loadingMessage="Saving your business profile..."
+      backPath="/test-selection"
+    />
   );
 }

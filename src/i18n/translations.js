@@ -147,6 +147,28 @@ export const translations = {
       defaultPersonalDescription:
         "Optional deeper assessment about your leadership style, values, and personal brand. Helps Marnee create more personalized content recommendations.",
     },
+    interactiveTest: {
+      welcome: {
+        title: "Ready for the questions?",
+        subtitle: "Let's begin!",
+        startButton: "Start",
+      },
+      navigation: {
+        previous: "Previous",
+        next: "Next",
+        finish: "Finish",
+      },
+      completion: {
+        title: "Excellent!",
+        subtitle: "You've completed the test.",
+        message: "Let's start with your marketing strategy!",
+        continueButton: "Continue",
+        redirecting: "Redirecting automatically in a few seconds...",
+      },
+      progress: {
+        questionOf: "Question {current} of {total}",
+      },
+    },
     presentation: {
       nav: {
         how: "How it works",
@@ -421,6 +443,28 @@ export const translations = {
       defaultPersonalDescription:
         "Evaluación opcional más profunda sobre tu estilo de liderazgo, valores y marca personal. Ayuda a Marnee a crear recomendaciones de contenido más personalizadas.",
     },
+    interactiveTest: {
+      welcome: {
+        title: "¿Lista para las preguntas?",
+        subtitle: "¡Comencemos!",
+        startButton: "Comenzar",
+      },
+      navigation: {
+        previous: "Anterior",
+        next: "Siguiente",
+        finish: "Finalizar",
+      },
+      completion: {
+        title: "¡Excelente!",
+        subtitle: "Has completado el test.",
+        message: "¡Comencemos con tu estrategia de marketing!",
+        continueButton: "Continuar",
+        redirecting: "Redirigiendo automáticamente en unos segundos...",
+      },
+      progress: {
+        questionOf: "Pregunta {current} de {total}",
+      },
+    },
     presentation: {
       nav: {
         how: "Cómo funciona",
@@ -693,6 +737,28 @@ export const translations = {
       defaultPersonalName: "Personal Test",
       defaultPersonalDescription:
         "리더십 스타일, 가치관, 퍼스널 브랜드를 더 깊게 파악하는 선택형 평가입니다. Marnee가 더 개인화된 콘텐츠 추천을 만드는 데 도움이 됩니다.",
+    },
+    interactiveTest: {
+      welcome: {
+        title: "질문할 준비가 되셨나요?",
+        subtitle: "시작해 봅시다!",
+        startButton: "시작",
+      },
+      navigation: {
+        previous: "이전",
+        next: "다음",
+        finish: "완료",
+      },
+      completion: {
+        title: "훌륭합니다!",
+        subtitle: "테스트를 완료했습니다.",
+        message: "마케팅 전략을 시작해 봅시다!",
+        continueButton: "계속",
+        redirecting: "몇 초 후에 자동으로 리디렉션됩니다...",
+      },
+      progress: {
+        questionOf: "{total}개 중 {current}번째 질문",
+      },
     },
     presentation: {
       nav: {
