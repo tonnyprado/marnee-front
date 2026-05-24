@@ -293,6 +293,7 @@ export const api = {
 
   /**
    * POST /marnee/calendar/generate - Generate calendar
+   * Uses longer timeout (90s) because AI generation can take time
    */
   generateCalendar: ({ founderId, sessionId, weeks = 4, startDate }) =>
     apiClient.post('/marnee/calendar/generate', {
@@ -302,6 +303,7 @@ export const api = {
       ...(startDate && { startDate }),
     }, {
       baseUrl: API.MARNEE,
+      timeout: 90000, // 90 seconds for AI generation
     }),
 
   /**

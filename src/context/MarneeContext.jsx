@@ -190,12 +190,9 @@ export function MarneeProvider({ children }) {
     }
   };
 
-  // Clear session
-  const clearSession = useCallback(() => {
-    console.log('[MarneeContext] Clearing session and all data');
-
-    // Clear auth via AuthContext
-    auth.logout();
+  // Clear Marnee-specific data (called when logout event is received)
+  const clearMarneeData = useCallback(() => {
+    console.log('[MarneeContext] Clearing Marnee data');
 
     // Clear app-specific storage
     storage.removeMultiple([
@@ -212,15 +209,23 @@ export function MarneeProvider({ children }) {
     setMessages([]);
     setWelcomeMessage(null);
     setCalendar(null);
-  }, [auth]);
+  }, []);
 
+  // Full session clear (triggers logout)
+  const clearSession = useCallback(() => {
+    console.log('[MarneeContext] Clearing session and triggering logout');
+    clearMarneeData();
+    auth.logout();
+  }, [auth, clearMarneeData]);
+
+  // Listen for logout events - only clear Marnee data, don't call logout again
   useEffect(() => {
     const handleLogout = () => {
-      clearSession();
+      clearMarneeData();
     };
     window.addEventListener('app-logout', handleLogout);
     return () => window.removeEventListener('app-logout', handleLogout);
-  }, [clearSession]);
+  }, [clearMarneeData]);
 
   // Get messages in API format
   const getMessagesForApi = () => {
