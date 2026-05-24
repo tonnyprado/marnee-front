@@ -39,13 +39,6 @@ export default function Navbar({ active = "ai-content" }) {
 
   const navItems = [
     {
-      id: "branding-test",
-      label: t("navbar.brandingTest"),
-      icon: "sparkles",
-      path: "/test-selection",
-      useIrisTransition: true
-    },
-    {
       id: "ai-content",
       label: t("navbar.aiContent"),
       icon: "brain",

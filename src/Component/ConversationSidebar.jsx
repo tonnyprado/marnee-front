@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageCircle, Plus, X, Trash2, PanelLeftClose, PanelLeft } from 'lucide-react';
+import { MessageCircle, Plus, X, Trash2, PanelLeftClose, PanelLeft, Sparkles } from 'lucide-react';
 
 /**
  * ConversationSidebar - Sidebar showing list of conversations
@@ -27,6 +28,7 @@ export default function ConversationSidebar({
   isCollapsed = false,
   onToggleCollapse,
 }) {
+  const navigate = useNavigate();
   const [hoveredConvId, setHoveredConvId] = useState(null);
 
   // Generate title from first message or use default
@@ -62,7 +64,7 @@ export default function ConversationSidebar({
 
   // Collapsed thin bar view
   const collapsedBar = (
-    <div className="h-full w-12 flex flex-col items-center bg-white border-r border-gray-200 py-4 space-y-2">
+    <div className="h-full w-12 flex flex-col items-center bg-white border-r border-gray-200 py-4">
       <motion.button
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
@@ -74,6 +76,17 @@ export default function ConversationSidebar({
       </motion.button>
 
       <div className="flex-1" />
+
+      {/* Branding Test - Collapsed */}
+      <motion.button
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        onClick={() => navigate('/test-selection')}
+        className="p-2 mb-2 rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 text-white shadow-sm hover:shadow-md transition-shadow"
+        title="Branding Test"
+      >
+        <Sparkles className="w-5 h-5" />
+      </motion.button>
     </div>
   );
 
@@ -197,6 +210,28 @@ export default function ConversationSidebar({
             </AnimatePresence>
           </div>
         )}
+      </div>
+
+      {/* Branding Test Button - Bottom */}
+      <div className="p-3 border-t border-gray-100">
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          onClick={() => navigate('/test-selection')}
+          className="w-full group relative overflow-hidden rounded-xl p-3 bg-gradient-to-r from-violet-50 to-purple-50 border border-violet-200/50 hover:border-violet-300 transition-all"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shadow-sm group-hover:shadow-md transition-shadow">
+              <Sparkles className="w-4.5 h-4.5 text-white" />
+            </div>
+            <div className="text-left">
+              <p className="text-sm font-semibold text-gray-800">Branding Test</p>
+              <p className="text-xs text-gray-500">Refine your strategy</p>
+            </div>
+          </div>
+          {/* Subtle shine effect on hover */}
+          <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+        </motion.button>
       </div>
     </div>
   );

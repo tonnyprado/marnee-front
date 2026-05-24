@@ -3,7 +3,7 @@
  * Transforma datos de las APIs a formato de grafo para react-force-graph
  */
 
-import { NODE_COLORS, NODE_SIZES } from '../constants/graphConstants';
+import { NODE_COLORS, NODE_SIZES, NODE_SHAPES } from '../constants/graphConstants';
 
 /**
  * Transforma datos del usuario a estructura de grafo
@@ -24,12 +24,13 @@ export function transformToGraph({ founderProfile, businessTest, strategy, conve
     category: 'user',
     source: 'founder_profile',
     importance: 10,
+    shape: NODE_SHAPES.user,
     color: NODE_COLORS.user,
     size: NODE_SIZES.user
   });
 
   // Helper para agregar nodos conectados al usuario
-  const addConnectedNode = (id, label, category, source, importance = 6) => {
+  const addConnectedNode = (id, label, category, source, importance = 6, index = null) => {
     if (!label || typeof label !== 'string') return;
 
     const trimmedLabel = label.trim();
@@ -41,8 +42,10 @@ export function transformToGraph({ founderProfile, businessTest, strategy, conve
       category,
       source,
       importance,
-      color: NODE_COLORS[category] || '#9CA3AF',
-      size: NODE_SIZES[category] || 8
+      index, // Para mostrar número en hexágonos
+      shape: NODE_SHAPES[category] || 'circle',
+      color: NODE_COLORS[category] || '#1e1e1e',
+      size: NODE_SIZES[category] || 10
     });
 
     links.push({
@@ -55,14 +58,14 @@ export function transformToGraph({ founderProfile, businessTest, strategy, conve
   // 2. Expertise (topicsConfidentTeaching)
   if (founderProfile?.topicsConfidentTeaching?.length) {
     founderProfile.topicsConfidentTeaching.forEach((topic, i) => {
-      addConnectedNode(`expertise-${i}`, topic, 'expertise', 'founder_profile', 8);
+      addConnectedNode(`expertise-${i}`, topic, 'expertise', 'founder_profile', 8, i + 1);
     });
   }
 
   // 3. Audience Interest (topicsPeopleAskAbout)
   if (founderProfile?.topicsPeopleAskAbout?.length) {
     founderProfile.topicsPeopleAskAbout.forEach((topic, i) => {
-      addConnectedNode(`audience-${i}`, topic, 'audience_interest', 'founder_profile', 7);
+      addConnectedNode(`audience-${i}`, topic, 'audience_interest', 'founder_profile', 7, i + 1);
     });
   }
 

@@ -59,13 +59,13 @@ export function useKnowledgeGraph() {
         ? (strategyResult.value?.strategy || strategyResult.value)
         : null;
 
-      // Procesar conversaciones para extraer temas
+      // Procesar conversaciones para extraer temas (limitar a 5 para mejor rendimiento)
       let conversationTopics = [];
       if (conversationsResult.status === 'fulfilled' &&
           conversationsResult.value?.conversations?.length > 0) {
-        // Cargar últimas 10 conversaciones completas
+        // Solo cargar últimas 5 conversaciones para mejor rendimiento
         const conversationIds = conversationsResult.value.conversations
-          .slice(0, 10)
+          .slice(0, 5)
           .map(c => c.id);
 
         const fullConversations = await Promise.all(

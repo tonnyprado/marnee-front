@@ -220,50 +220,37 @@ function ChatPageContent() {
       try {
         console.log('[Chat] Initializing...');
 
-        // 1. Get founder
-        const founder = await api.getMeFounder();
+        // OPTIMIZED: Run independent requests in parallel
+        const [founder, sessions, conversationsResponse] = await Promise.all([
+          api.getMeFounder(),
+          api.getMeSessions(),
+          api.getConversationsWithMessages(20), // Single optimized request with messages included
+        ]);
+
+        // Set founder
         setFounderId(founder.id);
         console.log('[Chat] Founder loaded:', founder.id);
 
-        // 2. Get or create session
-        const sessions = await api.getMeSessions();
-        const latestSession = sessions && sessions.sessions && sessions.sessions.length > 0
-          ? sessions.sessions[0]
-          : null;
-
+        // Set session
+        const latestSession = sessions?.sessions?.[0] || null;
         if (latestSession) {
           setSessionId(latestSession.id);
           console.log('[Chat] Session loaded:', latestSession.id);
         }
 
-        // 3. Load all conversations
-        const conversationsResponse = await api.getConversations();
         console.log('[Chat] Conversations response:', conversationsResponse);
 
-        if (conversationsResponse && conversationsResponse.conversations && conversationsResponse.conversations.length > 0) {
-          // Load full conversation data for each
-          const conversationsWithMessages = await Promise.all(
-            conversationsResponse.conversations.map(async (conv) => {
-              try {
-                const fullConv = await api.getConversation(conv.id);
-                return {
-                  ...conv,
-                  messages: fullConv.messages || [],
-                };
-              } catch (err) {
-                console.error('[Chat] Error loading conversation:', conv.id, err);
-                return { ...conv, messages: [] };
-              }
-            })
-          );
+        if (conversationsResponse?.conversations?.length > 0) {
+          // Already have messages included - no need for N additional requests!
+          const conversationsWithMessages = conversationsResponse.conversations;
 
-          // Sort by most recent first
+          // Sort by most recent first (should already be sorted by backend)
           conversationsWithMessages.sort((a, b) =>
             new Date(b.updatedAt || b.createdAt) - new Date(a.updatedAt || a.createdAt)
           );
 
           setConversations(conversationsWithMessages);
-          console.log('[Chat] Loaded', conversationsWithMessages.length, 'conversations');
+          console.log('[Chat] Loaded', conversationsWithMessages.length, 'conversations in single request');
 
           // Auto-select most recent conversation
           if (conversationsWithMessages.length > 0) {
