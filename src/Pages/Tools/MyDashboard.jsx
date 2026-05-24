@@ -6,6 +6,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import PageTransition from "../../Component/PageTransition";
 import { TopTabs } from "../../Component/Dashboard";
+import KnowledgeGraphSection from "./MyDashboardSections/KnowledgeGraphSection";
 import ConnectionsHub from "./MyDashboardSections/ConnectionsHub";
 import ContentMarketingSection from "./MyDashboardSections/ContentMarketingSection";
 
@@ -49,7 +50,10 @@ export default function MyDashboard() {
                 exit="exit"
                 transition={{ duration: 0.18, ease: "easeOut" }}
               >
-                <ConnectionsHub />
+                <KnowledgeGraphSection />
+                <div className="mt-10">
+                  <ConnectionsHub />
+                </div>
               </motion.div>
             )}
             {activeTab === "instagram" && (

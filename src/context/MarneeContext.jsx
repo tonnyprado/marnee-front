@@ -14,9 +14,10 @@
  * AFTER: Uses StorageService from core + AuthContext (React Native ready)
  */
 
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import storage from '../core/services/StorageService';
 import { useAuth } from './AuthContext';
+import { api } from '../services/api';
 
 const MarneeContext = createContext(null);
 
@@ -80,6 +81,11 @@ export function MarneeProvider({ children }) {
     show: false,
     count: 0,
   });
+
+  // Chat state - persists across navigation
+  const [chatIsLoading, setChatIsLoading] = useState(false);
+  const [pendingUserMessage, setPendingUserMessage] = useState(null);
+  const abortControllerRef = useRef(null);
 
   // Persist to storage
   useEffect(() => {
@@ -237,6 +243,78 @@ export function MarneeProvider({ children }) {
     setBrainstormingNotification({ show: false, count: 0 });
   };
 
+  // Send chat message - persists across navigation
+  const sendChatMessage = useCallback(async ({
+    userMessage,
+    messagesHistory,
+    onSuccess,
+    onError,
+  }) => {
+    if (chatIsLoading || !userMessage?.trim()) return null;
+
+    // Cancel any pending request
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
+    // Create new abort controller
+    abortControllerRef.current = new AbortController();
+
+    setChatIsLoading(true);
+    setPendingUserMessage(userMessage);
+
+    try {
+      console.log('[MarneeContext] Sending chat message...');
+
+      const response = await api.sendMessage({
+        founderId: auth.founderId,
+        sessionId: auth.sessionId,
+        conversationId,
+        message: userMessage,
+        messages: messagesHistory,
+      });
+
+      console.log('[MarneeContext] Response received:', response);
+
+      // Success callback
+      if (onSuccess) {
+        onSuccess(response);
+      }
+
+      setChatIsLoading(false);
+      setPendingUserMessage(null);
+
+      return response;
+    } catch (error) {
+      // Don't report aborted requests as errors
+      if (error.name === 'AbortError') {
+        console.log('[MarneeContext] Request aborted');
+        return null;
+      }
+
+      console.error('[MarneeContext] Chat error:', error);
+
+      if (onError) {
+        onError(error);
+      }
+
+      setChatIsLoading(false);
+      setPendingUserMessage(null);
+
+      throw error;
+    }
+  }, [auth.founderId, auth.sessionId, conversationId, chatIsLoading]);
+
+  // Cancel pending chat request
+  const cancelChatRequest = useCallback(() => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
+    }
+    setChatIsLoading(false);
+    setPendingUserMessage(null);
+  }, []);
+
   const value = {
     // Session (delegated to AuthContext, kept for backward compatibility)
     founderId: auth.founderId,
@@ -260,6 +338,12 @@ export function MarneeProvider({ children }) {
     brainstormingNotification,
     showBrainstormingNotification,
     hideBrainstormingNotification,
+
+    // Chat state (persists across navigation)
+    chatIsLoading,
+    pendingUserMessage,
+    sendChatMessage,
+    cancelChatRequest,
 
     // Methods
     initSession,

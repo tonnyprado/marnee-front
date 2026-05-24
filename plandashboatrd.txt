@@ -1,0 +1,174 @@
+Here is Claude's plan:
+╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌
+ Plan: Grafo de Neuronas "Marnee Brain" para Dashboard
+
+ Resumen
+
+ Agregar una nueva sección al Dashboard que muestre un grafo interactivo tipo neuronas con todo el conocimiento que Marnee tiene del
+ usuario, derivado de su perfil, test de negocio, estrategia y conversaciones.
+
+ Dependencia a Instalar
+
+ npm install react-force-graph-2d
+
+ Archivos a Crear
+
+ 1. Constantes del Grafo
+
+ Archivo: src/constants/graphConstants.js
+ - Colores por categoría de nodo (expertise=verde, valores=rosa, pillars=teal, etc.)
+ - Tamaños de nodos por importancia
+ - Usuario central en morado Marnee (#40086d)
+
+ 2. Extractor de Temas de Conversaciones
+
+ Archivo: src/utils/topicExtractor.js
+ - Función extractTopicsFromConversations(conversations)
+ - Usa patrones regex para identificar frases clave de mensajes del usuario
+ - Retorna top 10 temas más mencionados con conteo
+
+ 3. Transformador de Datos a Grafo
+
+ Archivo: src/utils/graphTransformer.js
+ - Función transformToGraph({ founderProfile, businessTest, strategy, conversationTopics })
+ - Crea nodo central del usuario
+ - Mapea cada fuente de datos a nodos conectados al usuario:
+   - topicsConfidentTeaching[] → nodos expertise (verde)
+   - topicsPeopleAskAbout[] → nodos audience_interest (azul)
+   - personalValues[] → nodos value (rosa)
+   - otherPassions[] → nodos passion (naranja)
+   - associatedKeywords[] → nodos business_keyword (indigo)
+   - contentPillars[] → nodos content_pillar (teal)
+   - nicheKeywords[] → nodos niche_keyword (cyan)
+   - Temas de conversaciones → nodos conversation_topic (gris)
+
+ 4. Hook de Datos
+
+ Archivo: src/hooks/useKnowledgeGraph.js
+ - Carga datos en paralelo de 4 APIs existentes:
+   - api.getMeFounder()
+   - api.getBusinessTestMe()
+   - getStrategyByFounder(founderId)
+   - api.getConversations() + api.getConversation(id) para cada una
+ - Transforma datos usando graphTransformer
+ - Retorna { graph, loading, error, dataCompleteness, refresh }
+
+ 5. Componentes del Grafo
+
+ Carpeta: src/Component/Dashboard/KnowledgeGraph/
+ ┌───────────────────────────┬───────────────────────────────────────────────────────────────────────────┐
+ │          Archivo          │                                 Propósito                                 │
+ ├───────────────────────────┼───────────────────────────────────────────────────────────────────────────┤
+ │ index.js                  │ Exporta todos los componentes                                             │
+ ├───────────────────────────┼───────────────────────────────────────────────────────────────────────────┤
+ │ KnowledgeGraphSection.jsx │ Contenedor principal con PageHeader, maneja estados loading/error/empty   │
+ ├───────────────────────────┼───────────────────────────────────────────────────────────────────────────┤
+ │ ForceGraph.jsx            │ Wrapper de react-force-graph-2d con configuración de física y renderizado │
+ ├───────────────────────────┼───────────────────────────────────────────────────────────────────────────┤
+ │ GraphLegend.jsx           │ Leyenda de colores por categoría                                          │
+ ├───────────────────────────┼───────────────────────────────────────────────────────────────────────────┤
+ │ GraphControls.jsx         │ Botones de zoom y filtros por categoría                                   │
+ ├───────────────────────────┼───────────────────────────────────────────────────────────────────────────┤
+ │ NodeTooltip.jsx           │ Tooltip al hover mostrando detalles del nodo                              │
+ ├───────────────────────────┼───────────────────────────────────────────────────────────────────────────┤
+ │ EmptyGraphState.jsx       │ Estado vacío con call-to-action para completar perfil                     │
+ └───────────────────────────┴───────────────────────────────────────────────────────────────────────────┘
+ Archivos a Modificar
+
+ 1. MyDashboard.jsx
+
+ Archivo: src/Pages/Tools/MyDashboard.jsx
+
+ Cambios:
+ // Agregar import
+ import KnowledgeGraphSection from "./MyDashboardSections/KnowledgeGraphSection";
+
+ // Cambiar tabs array - agregar "Marnee Brain" al inicio
+ const tabs = [
+   "Marnee Brain",  // NUEVO
+   "Overview",
+   "Instagram",
+   "YouTube",
+   "Analytics"
+ ];
+
+ // Cambiar estado inicial
+ const [activeTab, setActiveTab] = useState("marnee-brain");
+
+ // Agregar renderizado condicional antes de overview
+ {activeTab === "marnee-brain" && (
+   <motion.div key="marnee-brain" variants={tabContentVariants} ...>
+     <KnowledgeGraphSection />
+   </motion.div>
+ )}
+
+ 2. Dashboard/index.js
+
+ Archivo: src/Component/Dashboard/index.js
+
+ Agregar exportación:
+ // Knowledge Graph
+ export { default as KnowledgeGraphSection } from './KnowledgeGraph/KnowledgeGraphSection';
+ export { default as ForceGraph } from './KnowledgeGraph/ForceGraph';
+ export { default as GraphLegend } from './KnowledgeGraph/GraphLegend';
+
+ Configuración de react-force-graph
+
+ <ForceGraph2D
+   graphData={{ nodes, links: edges }}
+   nodeLabel="label"
+   nodeColor={node => node.color}
+   nodeVal={node => node.size}
+   linkColor={() => '#dccaf4'}
+   linkWidth={link => link.strength * 0.3}
+   d3VelocityDecay={0.3}
+   cooldownTicks={100}
+   onNodeHover={handleNodeHover}
+   nodeCanvasObject={customNodeRenderer}
+ />
+
+ Paleta de Colores
+ ┌────────────────────┬─────────┬──────────────────────────┐
+ │     Categoría      │  Color  │           Uso            │
+ ├────────────────────┼─────────┼──────────────────────────┤
+ │ user               │ #40086d │ Nodo central del usuario │
+ ├────────────────────┼─────────┼──────────────────────────┤
+ │ expertise          │ #10B981 │ Temas que domina         │
+ ├────────────────────┼─────────┼──────────────────────────┤
+ │ audience_interest  │ #3B82F6 │ Lo que le preguntan      │
+ ├────────────────────┼─────────┼──────────────────────────┤
+ │ value              │ #EC4899 │ Valores personales       │
+ ├────────────────────┼─────────┼──────────────────────────┤
+ │ passion            │ #F59E0B │ Pasiones                 │
+ ├────────────────────┼─────────┼──────────────────────────┤
+ │ content_pillar     │ #14B8A6 │ Pilares de contenido     │
+ ├────────────────────┼─────────┼──────────────────────────┤
+ │ business_keyword   │ #6366F1 │ Keywords de negocio      │
+ ├────────────────────┼─────────┼──────────────────────────┤
+ │ niche_keyword      │ #06B6D4 │ Keywords de nicho        │
+ ├────────────────────┼─────────┼──────────────────────────┤
+ │ conversation_topic │ #9CA3AF │ Temas de chat            │
+ └────────────────────┴─────────┴──────────────────────────┘
+ Orden de Implementación
+
+ 1. npm install react-force-graph-2d
+ 2. Crear src/constants/graphConstants.js
+ 3. Crear src/utils/topicExtractor.js
+ 4. Crear src/utils/graphTransformer.js
+ 5. Crear src/hooks/useKnowledgeGraph.js
+ 6. Crear carpeta src/Component/Dashboard/KnowledgeGraph/ con componentes
+ 7. Crear src/Pages/Tools/MyDashboardSections/KnowledgeGraphSection.jsx (sección completa)
+ 8. Modificar src/Component/Dashboard/index.js - agregar exports
+ 9. Modificar src/Pages/Tools/MyDashboard.jsx - agregar tab y renderizado
+
+ Verificación
+
+ 1. Ejecutar npm start y navegar a /app/dashboard
+ 2. Verificar que "Marnee Brain" sea el primer tab activo
+ 3. Verificar que el grafo carga con el nodo del usuario al centro
+ 4. Verificar que los nodos de diferentes categorías tienen colores correctos
+ 5. Probar zoom/pan en el grafo
+ 6. Verificar tooltip al hover sobre nodos
+ 7. Probar filtros por categoría
+ 8. Verificar estado vacío cuando no hay datos
+╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌

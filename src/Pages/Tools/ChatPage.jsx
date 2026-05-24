@@ -10,6 +10,7 @@ import PromptSuggestions from '../../Component/PromptSuggestions';
 import ExportModal from '../../Component/ExportModal';
 import FavoritesModal from '../../Component/FavoritesModal';
 import { ChatThemeProvider, useChatTheme } from '../../context/ChatThemeContext';
+import { useMarnee } from '../../context/MarneeContext';
 
 // Markdown components for AI messages (formatted text)
 // eslint-disable-next-line jsx-a11y/heading-has-content
@@ -80,6 +81,13 @@ function ChatPageContent() {
   // Theme context
   const { theme, playSound } = useChatTheme();
 
+  // Marnee context - for persistent chat state
+  const {
+    chatIsLoading,
+    sendChatMessage,
+    setConversationId: setContextConversationId,
+  } = useMarnee();
+
   // State
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
@@ -123,6 +131,13 @@ function ChatPageContent() {
   useEffect(() => {
     localStorage.setItem('actions_bar_collapsed', isActionsBarCollapsed);
   }, [isActionsBarCollapsed]);
+
+  // Sync loading state with context (persists across navigation)
+  useEffect(() => {
+    if (chatIsLoading !== isLoading) {
+      setIsLoading(chatIsLoading);
+    }
+  }, [chatIsLoading, isLoading]);
 
   // Scroll to bottom
   const scrollToBottom = () => {
@@ -605,9 +620,9 @@ function ChatPageContent() {
     }
   };
 
-  // Send message
+  // Send message - uses MarneeContext for persistence across navigation
   const handleSend = async () => {
-    if (!input.trim() || isLoading) return;
+    if (!input.trim() || isLoading || chatIsLoading) return;
 
     const userMessage = input.trim();
     setInput('');
@@ -626,65 +641,69 @@ function ChatPageContent() {
 
     setIsLoading(true);
 
+    // Build messages history for API
+    const messagesForApi = messages.map(m => ({
+      role: m.role === 'assistant' ? 'assistant' : 'user',
+      content: m.content,
+    }));
+
+    // Use context to send message - this persists across navigation
     try {
-      console.log('[Chat] Sending message...');
+      const response = await sendChatMessage({
+        userMessage,
+        messagesHistory: messagesForApi,
+        onSuccess: (res) => {
+          console.log('[Chat] Response received via context:', res);
 
-      // Build messages history for API
-      const messagesForApi = messages.map(m => ({
-        role: m.role === 'assistant' ? 'assistant' : 'user',
-        content: m.content,
-      }));
+          // Update conversation ID if new
+          const finalConvId = res.conversationId || conversationId;
+          if (res.conversationId && !conversationId) {
+            setConversationId(res.conversationId);
+            setContextConversationId(res.conversationId);
+            console.log('[Chat] Conversation created:', res.conversationId);
+          }
 
-      // Send to API
-      const response = await api.sendMessage({
-        founderId: founderId,
-        sessionId: sessionId,
-        conversationId: conversationId,
-        message: userMessage,
-        messages: messagesForApi,
+          // Add AI response
+          const aiMessage = {
+            id: `ai-${Date.now()}`,
+            role: 'assistant',
+            content: res.reply,
+            timestamp: new Date().toISOString(),
+          };
+
+          // Play receive sound
+          playSound('receive');
+
+          // Replace temp message with confirmed ones
+          setMessages(prev => {
+            const withoutTemp = prev.filter(m => m.id !== tempUserMsg.id);
+            return [
+              ...withoutTemp,
+              { ...tempUserMsg, id: `user-${Date.now()}` },
+              aiMessage,
+            ];
+          });
+
+          console.log('[Chat] Messages updated successfully');
+
+          // Update conversations list
+          if (finalConvId) {
+            updateConversationsAfterMessage(finalConvId);
+          }
+        },
+        onError: (error) => {
+          console.error('[Chat] Send error:', error);
+          // Remove temp message on error
+          setMessages(prev => prev.filter(m => m.id !== tempUserMsg.id));
+        },
       });
 
-      console.log('[Chat] Response received:', response);
-
-      // Update conversation ID if new
-      const finalConvId = response.conversationId || conversationId;
-      if (response.conversationId && !conversationId) {
-        setConversationId(response.conversationId);
-        console.log('[Chat] Conversation created:', response.conversationId);
+      // If null response (e.g., aborted), just clean up
+      if (!response) {
+        setMessages(prev => prev.filter(m => m.id !== tempUserMsg.id));
       }
-
-      // Add AI response
-      const aiMessage = {
-        id: `ai-${Date.now()}`,
-        role: 'assistant',
-        content: response.reply,
-        timestamp: new Date().toISOString(),
-      };
-
-      // Play receive sound
-      playSound('receive');
-
-      // Replace temp message with confirmed ones
-      setMessages(prev => {
-        const withoutTemp = prev.filter(m => m.id !== tempUserMsg.id);
-        return [
-          ...withoutTemp,
-          { ...tempUserMsg, id: `user-${Date.now()}` }, // Replace temp ID
-          aiMessage,
-        ];
-      });
-
-      console.log('[Chat] Messages updated successfully');
-
-      // Update conversations list
-      if (finalConvId) {
-        await updateConversationsAfterMessage(finalConvId);
-      }
-
     } catch (error) {
-      console.error('[Chat] Send error:', error);
-
-      // Remove temp message on error
+      console.error('[Chat] Unexpected error:', error);
       setMessages(prev => prev.filter(m => m.id !== tempUserMsg.id));
     } finally {
       setIsLoading(false);

@@ -13,6 +13,7 @@ import SidebarLogo from "./SidebarLogo";
 import NavItem from "./NavItem";
 import UserMenu from "./UserMenu";
 import { getNavIcon } from "./NavIcons";
+import IrisWipeTransition, { useIrisWipeTransition } from "../IrisWipeTransition";
 
 export default function Navbar({ active = "ai-content" }) {
   const { t } = useLanguage();
@@ -20,6 +21,7 @@ export default function Navbar({ active = "ai-content" }) {
   const session = getAuthSession();
   const [collapsed, setCollapsed] = useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const { isTransitioning, startTransition, handleTransitionComplete } = useIrisWipeTransition();
 
   const displayName = session?.name || session?.email || t("common.userFallback");
   const initials = displayName
@@ -40,7 +42,8 @@ export default function Navbar({ active = "ai-content" }) {
       id: "branding-test",
       label: t("navbar.brandingTest"),
       icon: "sparkles",
-      path: "/brand-test/intro"
+      path: "/test-selection",
+      useIrisTransition: true
     },
     {
       id: "ai-content",
@@ -53,6 +56,12 @@ export default function Navbar({ active = "ai-content" }) {
       label: t("navbar.calendar"),
       icon: "calendar",
       path: "/app/calendar"
+    },
+    {
+      id: "brainstorming",
+      label: t("navbar.brainstorming"),
+      icon: "brainstorm",
+      path: "/app/brainstorming"
     },
     {
       id: "dashboard",
@@ -104,7 +113,13 @@ export default function Navbar({ active = "ai-content" }) {
               icon={getNavIcon(item.icon)}
               isActive={item.id === active}
               collapsed={collapsed}
-              onClick={() => navigate(item.path)}
+              onClick={() => {
+                if (item.useIrisTransition) {
+                  startTransition(navigate, item.path);
+                } else {
+                  navigate(item.path);
+                }
+              }}
             />
           ))}
         </nav>
@@ -136,6 +151,14 @@ export default function Navbar({ active = "ai-content" }) {
         isOpen={isLogoutModalOpen}
         onClose={() => setIsLogoutModalOpen(false)}
         onConfirm={handleLogout}
+      />
+
+      {/* Iris Wipe Transition for Branding Test */}
+      <IrisWipeTransition
+        isActive={isTransitioning}
+        onComplete={handleTransitionComplete}
+        duration={800}
+        color="#40086d"
       />
     </>
   );

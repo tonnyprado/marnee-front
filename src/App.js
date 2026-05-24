@@ -16,7 +16,6 @@ import OAuth2CallbackPage from "./Pages/OAuth2CallbackPage";
 import VerifyEmailPage from "./Pages/VerifyEmailPage";
 import ForgotPasswordPage from "./Pages/ForgotPasswordPage";
 import ResetPasswordPage from "./Pages/ResetPasswordPage";
-import BrandingTestIntro from "./Pages/BrandingTestIntro";
 import BrandTestPage from "./Pages/BrandTestPage";
 import TestSelectionPage from "./Pages/TestSelectionPage";
 import BusinessTestPage from "./Pages/BusinessTestPage";
@@ -27,6 +26,7 @@ import AppLayout from "./Layout/Layout";
 import IAWebPage from "./Pages/Tools/IAWebPage"; // Old chat - kept as backup
 import CalendarPage from "./Pages/Tools/CalendarPage";
 import ChatPage from "./Pages/Tools/ChatPage"; // Main chat with multiple conversations
+import BrainstormingPage from "./Pages/Tools/BrainstormingPage";
 import BillingPage from "./Pages/Tools/BillingPage";
 import ProfileSettingsPage from "./Pages/Tools/ProfileSettingsPage";
 import HelpSupportPage from "./Pages/Tools/HelpSupportPage";
@@ -77,7 +77,7 @@ function BrainstormingNotificationHandler() {
 
   const handleViewIdeas = () => {
     hideBrainstormingNotification();
-    navigate('/app/calendar', { state: { tab: 'brainstorming' } });
+    navigate('/app/brainstorming');
   };
 
   return (
@@ -123,7 +123,6 @@ function AppContent() {
         <Route path="/auth/verify-email" element={<VerifyEmailPage />} />
         <Route path="/auth/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
-        <Route path="/brand-test/intro" element={<BrandingTestIntro />} />
         <Route path="/test-selection" element={<TestSelectionPage />} />
         <Route path="/business-test/questions" element={<BusinessTestPage />} />
         <Route path="/brand-test/questions" element={<BrandTestPage />} />
@@ -153,6 +152,8 @@ function AppContent() {
           <Route index element={<ChatPage />} />
           {/* /app/calendar */}
           <Route path="calendar" element={<CalendarPage />} />
+          {/* /app/brainstorming */}
+          <Route path="brainstorming" element={<BrainstormingPage />} />
           {/* /app/billing */}
           <Route path="billing" element={<BillingPage />} />
           {/* /app/profile-settings */}

@@ -174,10 +174,20 @@ export const api = {
     }),
 
   /**
-   * GET /marnee/conversations - Get all conversations for current user
+   * GET /marnee/conversations - Get all conversations for current user (basic info only)
    */
   getConversations: () =>
     apiClient.get('/marnee/conversations', {
+      baseUrl: API.MARNEE,
+    }),
+
+  /**
+   * GET /marnee/conversations/with-messages - Get conversations WITH messages in one request
+   * This is the optimized endpoint that avoids N+1 queries.
+   * @param {number} limit - Max conversations to return (default 20, max 50)
+   */
+  getConversationsWithMessages: (limit = 20) =>
+    apiClient.get(`/marnee/conversations/with-messages?limit=${limit}`, {
       baseUrl: API.MARNEE,
     }),
 

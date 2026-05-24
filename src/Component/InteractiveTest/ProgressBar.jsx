@@ -32,14 +32,17 @@ export default function ProgressBar({
           const question = questions[index];
 
           return (
-            <div key={index} className="relative">
+            <div
+              key={index}
+              className="relative"
+              onMouseEnter={() => setHoveredIndex(index)}
+              onMouseLeave={() => setHoveredIndex(null)}
+            >
               <motion.button
-                onHoverStart={() => setHoveredIndex(index)}
-                onHoverEnd={() => setHoveredIndex(null)}
                 onClick={() => onNavigate(index)}
                 whileHover={{ scale: 1.3 }}
                 whileTap={{ scale: 0.9 }}
-                className={`relative w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center transition-all duration-200 ${
+                className={`relative w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center transition-colors duration-200 ${
                   isCurrent
                     ? "bg-violet-100 border-3 border-violet-500 shadow-lg shadow-violet-200"
                     : isCompleted

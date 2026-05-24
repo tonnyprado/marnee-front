@@ -14,41 +14,27 @@ export function useConversations() {
   const [isLoading, setIsLoading] = useState(false);
 
   /**
-   * Load all conversations from API
+   * Load all conversations from API (optimized - single request)
    */
   const loadConversations = useCallback(async () => {
     setIsLoading(true);
     try {
-      console.log('[useConversations] Loading conversations...');
+      console.log('[useConversations] Loading conversations with messages...');
 
-      const conversationsResponse = await api.getConversations();
+      // Use optimized endpoint that returns conversations WITH messages
+      // This avoids N+1 queries (was: 1 call + N calls for each conversation)
+      const response = await api.getConversationsWithMessages(20);
 
-      if (conversationsResponse && conversationsResponse.conversations && conversationsResponse.conversations.length > 0) {
-        // Load full conversation data for each
-        const conversationsWithMessages = await Promise.all(
-          conversationsResponse.conversations.map(async (conv) => {
-            try {
-              const fullConv = await api.getConversation(conv.id);
-              return {
-                ...conv,
-                messages: fullConv.messages || [],
-              };
-            } catch (err) {
-              console.error('[useConversations] Error loading conversation:', conv.id, err);
-              return { ...conv, messages: [] };
-            }
-          })
-        );
-
-        // Sort by most recent first
-        conversationsWithMessages.sort((a, b) =>
+      if (response?.conversations?.length > 0) {
+        // Already sorted by backend, but ensure order
+        const sortedConversations = response.conversations.sort((a, b) =>
           new Date(b.updatedAt || b.createdAt) - new Date(a.updatedAt || a.createdAt)
         );
 
-        setConversations(conversationsWithMessages);
-        console.log('[useConversations] Loaded', conversationsWithMessages.length, 'conversations');
+        setConversations(sortedConversations);
+        console.log('[useConversations] Loaded', sortedConversations.length, 'conversations in single request');
 
-        return conversationsWithMessages;
+        return sortedConversations;
       } else {
         console.log('[useConversations] No existing conversations found');
         setConversations([]);

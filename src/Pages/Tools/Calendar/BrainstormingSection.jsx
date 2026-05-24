@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { api } from "../../../services/api";
 import { useAuth } from "../../../context/AuthContext";
@@ -23,6 +23,12 @@ export default function BrainstormingSection({ calendarId }) {
   const [showNotification, setShowNotification] = useState(false);
   const [notificationCount, setNotificationCount] = useState(0);
 
+  // Ref to track current ideas without causing re-renders
+  const ideasRef = useRef(ideas);
+  useEffect(() => {
+    ideasRef.current = ideas;
+  }, [ideas]);
+
   const [form, setForm] = useState({
     title: "",
     description: "",
@@ -37,9 +43,9 @@ export default function BrainstormingSection({ calendarId }) {
       const data = await api.getBrainstormingIdeas(founderId, calendarId);
       const newIdeas = data.ideas || [];
 
-      // Detect newly added ideas if requested
-      if (detectNew && ideas.length > 0) {
-        const previousIds = new Set(ideas.map(i => i.id));
+      // Detect newly added ideas if requested (use ref to avoid dependency loop)
+      if (detectNew && ideasRef.current.length > 0) {
+        const previousIds = new Set(ideasRef.current.map(i => i.id));
         const freshIds = newIdeas
           .filter(idea => !previousIds.has(idea.id))
           .map(idea => idea.id);
@@ -62,7 +68,7 @@ export default function BrainstormingSection({ calendarId }) {
     } finally {
       setIsLoading(false);
     }
-  }, [founderId, calendarId, ideas]);
+  }, [founderId, calendarId]);
 
   useEffect(() => {
     if (founderId) {
