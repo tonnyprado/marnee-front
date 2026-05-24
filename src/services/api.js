@@ -445,17 +445,23 @@ export const api = {
     }),
 
   /**
-   * GET /brainstorming/founder/{founderId} - Get ideas for founder
+   * GET /brainstorming/founder/{founderId} - Get ideas for founder with pagination
+   * @param {string} founderId - The founder ID
+   * @param {Object} options - Optional parameters
+   * @param {string} options.calendarId - Optional calendar filter
+   * @param {number} options.limit - Number of items per page (default 100, max 500)
+   * @param {number} options.offset - Pagination offset
    */
-  getBrainstormingIdeas: (founderId, calendarId = null) =>
-    apiClient.get(
-      `/brainstorming/founder/${founderId}${
-        calendarId ? `?calendar_id=${calendarId}` : ''
-      }`,
-      {
-        baseUrl: API.MARNEE,
-      }
-    ),
+  getBrainstormingIdeas: (founderId, { calendarId = null, limit = 100, offset = 0 } = {}) => {
+    const params = new URLSearchParams();
+    if (calendarId) params.append('calendar_id', calendarId);
+    if (limit !== 100) params.append('limit', limit);
+    if (offset > 0) params.append('offset', offset);
+    const queryString = params.toString() ? `?${params.toString()}` : '';
+    return apiClient.get(`/brainstorming/founder/${founderId}${queryString}`, {
+      baseUrl: API.MARNEE,
+    });
+  },
 
   /**
    * GET /brainstorming/{ideaId} - Get single idea

@@ -40,7 +40,7 @@ export default function BrainstormingSection({ calendarId }) {
   const loadIdeas = useCallback(async (detectNew = false) => {
     setIsLoading(true);
     try {
-      const data = await api.getBrainstormingIdeas(founderId, calendarId);
+      const data = await api.getBrainstormingIdeas(founderId, { calendarId });
       const newIdeas = data.ideas || [];
 
       // Detect newly added ideas if requested (use ref to avoid dependency loop)
