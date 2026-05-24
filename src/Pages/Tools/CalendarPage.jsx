@@ -218,6 +218,7 @@ export default function CalendarPage() {
 
     autoGenerateAttemptedRef.current = true;
     handleGenerateCalendar(4);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [calendar, calendarId, currentStep, founderId, hasCheckedHistory, isGenerating, isLoading, sessionId]);
 
   // Get posts for a specific date
