@@ -3,13 +3,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { api } from "../../../services/api";
 import { useAuth } from "../../../context/AuthContext";
 
-const STATUS_COLORS = {
-  idea: "bg-gray-100 text-gray-700 border-gray-300",
-  approved: "bg-green-100 text-green-700 border-green-300",
-  converted_to_task: "bg-blue-100 text-blue-700 border-blue-300",
-  rejected: "bg-red-100 text-red-700 border-red-300",
-};
-
 const PLATFORMS = ["TikTok", "Instagram", "LinkedIn", "YouTube", "Twitter/X", "Facebook", "Pinterest"];
 
 export default function BrainstormingSection({ calendarId }) {
@@ -18,7 +11,6 @@ export default function BrainstormingSection({ calendarId }) {
   const [isLoading, setIsLoading] = useState(true);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingIdea, setEditingIdea] = useState(null);
-  const [statusFilter, setStatusFilter] = useState("idea");
   const [newlyAddedIds, setNewlyAddedIds] = useState([]); // Track new ideas for pulse animation
   const [showNotification, setShowNotification] = useState(false);
   const [notificationCount, setNotificationCount] = useState(0);
@@ -139,29 +131,6 @@ export default function BrainstormingSection({ calendarId }) {
     }
   };
 
-  const handleUpdateStatus = async (ideaId, newStatus) => {
-    try {
-      await api.updateBrainstormingIdea(ideaId, { status: newStatus });
-      await loadIdeas();
-    } catch (err) {
-      console.error("Failed to update status:", err);
-      alert("Failed to update status. Please try again.");
-    }
-  };
-
-  const handleConvertToTask = async (idea) => {
-    // This would open a modal or redirect to create a calendar post
-    // For now, just show an alert
-    alert("Convert to Task feature - Coming soon!\n\nThis will create a calendar post from this idea.");
-    // TODO: Implement conversion logic
-    // const postData = {
-    //   title: idea.title,
-    //   platform: idea.platform,
-    //   // ... map other fields
-    // };
-    // await api.convertIdeaToTask(idea.id, { calendarId, postData });
-  };
-
   const handleAddTag = (e) => {
     if (e.key === "Enter" && e.target.value.trim()) {
       e.preventDefault();
@@ -180,10 +149,6 @@ export default function BrainstormingSection({ calendarId }) {
     }));
   };
 
-  const filteredIdeas =
-    statusFilter === "all"
-      ? ideas
-      : ideas.filter((idea) => idea.status === statusFilter);
 
   if (isLoading) {
     return (
@@ -297,36 +262,9 @@ export default function BrainstormingSection({ calendarId }) {
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="flex items-center gap-2">
-        <span className="text-sm text-gray-600">Filter by:</span>
-        <div className="flex gap-2">
-          {[
-            { value: "all", label: "All" },
-            { value: "idea", label: "Ideas" },
-            { value: "approved", label: "Approved" },
-            { value: "converted_to_task", label: "Converted" },
-            { value: "rejected", label: "Rejected" },
-          ].map((filter) => (
-            <motion.button
-              key={filter.value}
-              onClick={() => setStatusFilter(filter.value)}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className={`px-3 py-1.5 rounded-lg text-sm border transition ${
-                statusFilter === filter.value
-                  ? "bg-[#ede0f8] text-[#40086d] border-violet-300 font-medium"
-                  : "bg-white border-[rgba(30,30,30,0.1)] text-gray-600 hover:bg-[#f6f6f6]"
-              }`}
-            >
-              {filter.label}
-            </motion.button>
-          ))}
-        </div>
-      </div>
 
       {/* Ideas Grid */}
-      {filteredIdeas.length === 0 ? (
+      {ideas.length === 0 ? (
         <div className="text-center py-16 bg-white rounded border border-[rgba(30,30,30,0.1)]">
           <svg
             className="w-16 h-16 mx-auto mb-4 text-gray-300"
@@ -357,7 +295,7 @@ export default function BrainstormingSection({ calendarId }) {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <AnimatePresence>
-            {filteredIdeas.map((idea, index) => {
+            {ideas.map((idea, index) => {
               const isNew = newlyAddedIds.includes(idea.id);
 
               return (
@@ -406,57 +344,46 @@ export default function BrainstormingSection({ calendarId }) {
                       }}
                     />
                   )}
-              {/* Status Badge */}
-              <div className="flex items-start justify-between mb-3">
-                <span
-                  className={`px-2 py-1 rounded text-xs font-medium border ${
-                    STATUS_COLORS[idea.status] || STATUS_COLORS.idea
-                  }`}
+              {/* Actions */}
+              <div className="flex justify-end gap-1 mb-3">
+                <button
+                  onClick={() => handleEdit(idea)}
+                  className="p-1 text-gray-400 hover:text-gray-600 transition"
+                  title="Edit"
                 >
-                  {idea.status === "converted_to_task"
-                    ? "Converted"
-                    : idea.status.charAt(0).toUpperCase() + idea.status.slice(1)}
-                </span>
-                <div className="flex gap-1">
-                  <button
-                    onClick={() => handleEdit(idea)}
-                    className="p-1 text-gray-400 hover:text-gray-600 transition"
-                    title="Edit"
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
                   >
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                      />
-                    </svg>
-                  </button>
-                  <button
-                    onClick={() => handleDelete(idea.id)}
-                    className="p-1 text-gray-400 hover:text-red-600 transition"
-                    title="Delete"
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                    />
+                  </svg>
+                </button>
+                <button
+                  onClick={() => handleDelete(idea.id)}
+                  className="p-1 text-gray-400 hover:text-red-600 transition"
+                  title="Delete"
+                >
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
                   >
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                      />
-                    </svg>
-                  </button>
-                </div>
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                    />
+                  </svg>
+                </button>
               </div>
 
               {/* Title */}
@@ -505,33 +432,6 @@ export default function BrainstormingSection({ calendarId }) {
                 </div>
               )}
 
-              {/* Actions */}
-              <div className="pt-3 border-t border-[rgba(30,30,30,0.1)] space-y-2">
-                {idea.status === "idea" && (
-                  <button
-                    onClick={() => handleUpdateStatus(idea.id, "approved")}
-                    className="w-full px-3 py-2 rounded-lg bg-green-50 text-green-700 text-sm font-medium hover:bg-green-100 transition"
-                  >
-                    Approve
-                  </button>
-                )}
-                {idea.status === "approved" && (
-                  <button
-                    onClick={() => handleConvertToTask(idea)}
-                    className="w-full px-3 py-2 rounded-lg bg-violet-600 text-white text-sm font-medium hover:bg-violet-700 transition"
-                  >
-                    Convert to Task
-                  </button>
-                )}
-                {idea.status === "idea" && (
-                  <button
-                    onClick={() => handleUpdateStatus(idea.id, "rejected")}
-                    className="w-full px-3 py-2 rounded-lg border border-[rgba(30,30,30,0.1)] text-gray-600 text-sm hover:bg-[#f6f6f6] transition"
-                  >
-                    Reject
-                  </button>
-                )}
-              </div>
             </motion.div>
           );
         })}

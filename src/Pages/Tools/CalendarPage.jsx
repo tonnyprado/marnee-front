@@ -465,6 +465,7 @@ export default function CalendarPage() {
           selectedDate={selectedDate}
           onDateSelect={handleDateSelect}
           onPostClick={handlePostClick}
+          onAddPost={handleAddPost}
           initialDate={new Date(currentYear, currentMonth, 1)}
         />
       </main>

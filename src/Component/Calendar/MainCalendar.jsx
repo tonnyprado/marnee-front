@@ -18,6 +18,7 @@ export default function MainCalendar({
   selectedDate,
   onDateSelect,
   onPostClick,
+  onAddPost,
   initialDate = new Date(),
 }) {
   // Internal state for uncontrolled mode
@@ -89,9 +90,9 @@ export default function MainCalendar({
 
     switch (viewMode) {
       case VIEW_MODES.WEEK:
-        return <WeekView {...commonProps} />;
+        return <WeekView {...commonProps} onAddPost={onAddPost} />;
       case VIEW_MODES.DAY:
-        return <DayView {...commonProps} />;
+        return <DayView {...commonProps} onAddPost={onAddPost} />;
       default:
         return <MonthView {...commonProps} />;
     }

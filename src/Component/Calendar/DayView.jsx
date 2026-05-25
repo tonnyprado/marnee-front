@@ -3,8 +3,9 @@
  * Detailed single day view with time slots
  */
 
-import React, { useMemo } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Plus } from 'lucide-react';
 import PostCard from './PostCard';
 import {
   TIME_SLOTS,
@@ -16,7 +17,9 @@ export default function DayView({
   currentDate,
   posts = [],
   onPostClick,
+  onAddPost,
 }) {
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
   // Get posts for this day
   const dayPosts = useMemo(() => {
     return posts.filter(post => {
@@ -76,22 +79,53 @@ export default function DayView({
         {TIME_SLOTS.map((timeSlot) => {
           const slotPosts = getPostsForTimeSlot(timeSlot);
           const hasContent = slotPosts.length > 0;
+          const isSelected = selectedTimeSlot === timeSlot;
 
           return (
             <motion.div
               key={timeSlot}
+              onClick={() => setSelectedTimeSlot(isSelected ? null : timeSlot)}
               className={`
-                flex border-b border-[#dccaf4]/30 last:border-b-0
-                ${hasContent ? 'bg-white' : 'bg-[#f6f6f6]/30'}
+                flex border-b border-[#dccaf4]/30 last:border-b-0 cursor-pointer
+                transition-colors duration-150
+                ${isSelected ? 'bg-[#ede0f8]/50' : hasContent ? 'bg-white hover:bg-[#f6f6f6]/50' : 'bg-[#f6f6f6]/30 hover:bg-[#ede0f8]/20'}
               `}
             >
               {/* Time label */}
-              <div className="w-20 flex-shrink-0 p-3 border-r border-[#dccaf4]/30 text-right">
-                <span className="text-sm text-gray-500">{timeSlot}</span>
+              <div className={`w-20 flex-shrink-0 p-3 border-r border-[#dccaf4]/30 text-right ${isSelected ? 'bg-[#40086d]/10' : ''}`}>
+                <span className={`text-sm ${isSelected ? 'text-[#40086d] font-medium' : 'text-gray-500'}`}>{timeSlot}</span>
               </div>
 
               {/* Content area */}
               <div className="flex-1 p-2 min-h-[70px]">
+                {/* Add task bar when selected */}
+                <AnimatePresence>
+                  {isSelected && onAddPost && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="mb-2"
+                    >
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          // Create a date with the selected time
+                          const dateWithTime = new Date(currentDate);
+                          const [hours] = timeSlot.split(':');
+                          dateWithTime.setHours(parseInt(hours), 0, 0, 0);
+                          onAddPost(dateWithTime, timeSlot);
+                          setSelectedTimeSlot(null);
+                        }}
+                        className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-lg bg-[#40086d] text-white font-medium hover:bg-[#350758] transition-colors shadow-sm"
+                      >
+                        <Plus className="w-4 h-4" />
+                        Add task at {timeSlot}
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
                 {slotPosts.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
                     {slotPosts.map((post, idx) => (
@@ -103,9 +137,9 @@ export default function DayView({
                       />
                     ))}
                   </div>
-                ) : (
+                ) : !isSelected && (
                   <div className="h-full flex items-center">
-                    <span className="text-xs text-gray-300">No posts</span>
+                    <span className="text-xs text-gray-300">Click to add task</span>
                   </div>
                 )}
               </div>

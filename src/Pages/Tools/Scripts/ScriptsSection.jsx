@@ -28,14 +28,17 @@ export default function ScriptsSection() {
     scriptsRef.current = scripts;
   }, [scripts]);
 
-  const loadScripts = useCallback(async (detectNew = false) => {
+  const loadScripts = useCallback(async (detectNew = false, silent = false) => {
     console.log('[ScriptsSection] loadScripts called, founderId:', founderId);
     if (!founderId) {
       console.log('[ScriptsSection] No founderId, setting loading to false');
       setIsLoading(false);
       return;
     }
-    setIsLoading(true);
+    // Only show loading spinner on initial load, not on background refresh
+    if (!silent) {
+      setIsLoading(true);
+    }
     try {
       console.log('[ScriptsSection] Fetching scripts...');
       const data = await api.getScripts(founderId, {});
@@ -62,9 +65,10 @@ export default function ScriptsSection() {
       console.error("[ScriptsSection] Failed to load scripts:", err);
       console.error("[ScriptsSection] Error details:", err.message, err.stack);
     } finally {
-      console.log('[ScriptsSection] Setting loading to false');
-
-      setIsLoading(false);
+      if (!silent) {
+        console.log('[ScriptsSection] Setting loading to false');
+        setIsLoading(false);
+      }
     }
   }, [founderId]);
 
@@ -78,15 +82,15 @@ export default function ScriptsSection() {
     }
   }, [founderId, loadScripts]);
 
-  // Polling for new scripts (every 30 seconds when tab is active)
+  // Polling for new scripts (every 2 minutes when tab is active) - silent refresh
   useEffect(() => {
     if (!founderId) return;
 
     const pollInterval = setInterval(() => {
       if (document.visibilityState === "visible") {
-        loadScripts(true);
+        loadScripts(true, true); // detectNew=true, silent=true
       }
-    }, 30000);
+    }, 120000); // 2 minutes
 
     return () => clearInterval(pollInterval);
   }, [founderId, loadScripts]);
