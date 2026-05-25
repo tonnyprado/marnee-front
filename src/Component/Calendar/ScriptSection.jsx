@@ -6,7 +6,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { api } from '../../services/api';
-import { FileText, Link2, Unlink, ChevronDown, Search, Loader2 } from 'lucide-react';
+import { FileText, Link2, Unlink, Search, Loader2 } from 'lucide-react';
 
 export default function ScriptSection({ form, onChange, postId }) {
   const [scripts, setScripts] = useState([]);
@@ -15,11 +15,6 @@ export default function ScriptSection({ form, onChange, postId }) {
   const [isLinking, setIsLinking] = useState(false);
   const [showScriptSelector, setShowScriptSelector] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-
-  // Load scripts on mount
-  useEffect(() => {
-    loadData();
-  }, [postId]);
 
   const loadData = async () => {
     try {
@@ -48,6 +43,12 @@ export default function ScriptSection({ form, onChange, postId }) {
       setIsLoading(false);
     }
   };
+
+  // Load scripts on mount
+  useEffect(() => {
+    loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [postId]);
 
   const handleLinkScript = async (scriptId) => {
     if (!postId) {
