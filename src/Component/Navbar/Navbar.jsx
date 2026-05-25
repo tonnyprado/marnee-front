@@ -83,10 +83,10 @@ export default function Navbar({ active = "ai-content" }) {
         max-lg:!w-[72px]
       `}
     >
-      {/* Pill: Logo */}
-      <div className="bg-[#1a0530] rounded-2xl p-3 flex items-center gap-3">
-        <div className="w-[34px] h-[34px] flex items-center justify-center flex-shrink-0">
-          <svg width="34" height="34" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      {/* Logo - Floating (no pill) */}
+      <div className="px-3 py-2 flex items-center gap-3">
+        <div className="w-[38px] h-[38px] flex items-center justify-center flex-shrink-0">
+          <svg width="38" height="38" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M16 30C24 30 29 24 29 17C29 10 24 6 16 6C8 6 3 10 3 17C3 24 8 30 16 30Z" fill="url(#navBody)" />
             <path d="M7 8C5 4 6 1 9 1C12 1 12 4 11 8" fill="url(#navBody)" />
             <path d="M25 8C27 4 26 1 23 1C20 1 20 4 21 8" fill="url(#navBody)" />
@@ -112,7 +112,7 @@ export default function Navbar({ active = "ai-content" }) {
           </svg>
         </div>
         {!collapsed && (
-          <span className="font-['Noto_Serif'] text-[18px] font-bold text-white tracking-tight whitespace-nowrap max-lg:hidden">
+          <span className="font-['Noto_Serif'] text-[20px] font-bold text-[#1a0530] tracking-tight whitespace-nowrap max-lg:hidden">
             Marnee
           </span>
         )}
