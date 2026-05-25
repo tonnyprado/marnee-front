@@ -29,10 +29,17 @@ export default function ScriptsSection() {
   }, [scripts]);
 
   const loadScripts = useCallback(async (detectNew = false) => {
-    if (!founderId) return;
+    console.log('[ScriptsSection] loadScripts called, founderId:', founderId);
+    if (!founderId) {
+      console.log('[ScriptsSection] No founderId, setting loading to false');
+      setIsLoading(false);
+      return;
+    }
     setIsLoading(true);
     try {
+      console.log('[ScriptsSection] Fetching scripts...');
       const data = await api.getScripts(founderId, {});
+      console.log('[ScriptsSection] API response:', data);
       const newScripts = data.scripts || [];
 
       if (detectNew && scriptsRef.current.length > 0) {
@@ -52,15 +59,22 @@ export default function ScriptsSection() {
 
       setScripts(newScripts);
     } catch (err) {
-      console.error("Failed to load scripts:", err);
+      console.error("[ScriptsSection] Failed to load scripts:", err);
+      console.error("[ScriptsSection] Error details:", err.message, err.stack);
     } finally {
+      console.log('[ScriptsSection] Setting loading to false');
+
       setIsLoading(false);
     }
   }, [founderId]);
 
   useEffect(() => {
+    console.log('[ScriptsSection] useEffect triggered, founderId:', founderId);
     if (founderId) {
       loadScripts();
+    } else {
+      console.log('[ScriptsSection] No founderId in useEffect, skipping load');
+      setIsLoading(false);
     }
   }, [founderId, loadScripts]);
 
