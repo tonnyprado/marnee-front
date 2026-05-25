@@ -10,7 +10,7 @@ import {
   SCRIPT_CONTENT_TYPES,
 } from "../../../constants/scriptConstants";
 import ScriptModal from "./ScriptModal";
-import { FileText, Plus, Trash2, Edit3, Link2, ExternalLink } from "lucide-react";
+import { FileText, Plus, Trash2, Link2, ExternalLink } from "lucide-react";
 
 export default function ScriptsSection() {
   const { founderId } = useAuth();
@@ -96,7 +96,7 @@ export default function ScriptsSection() {
     setIsModalOpen(true);
   };
 
-  const handleEdit = (script) => {
+  const handleViewScript = (script) => {
     setEditingScript(script);
     setIsModalOpen(true);
   };
@@ -126,16 +126,6 @@ export default function ScriptsSection() {
     } catch (err) {
       console.error("Failed to delete script:", err);
       alert("Failed to delete script. Please try again.");
-    }
-  };
-
-  const handleUpdateStatus = async (scriptId, newStatus) => {
-    try {
-      await api.updateScript(scriptId, { status: newStatus });
-      await loadScripts();
-    } catch (err) {
-      console.error("Failed to update status:", err);
-      alert("Failed to update status. Please try again.");
     }
   };
 
@@ -241,9 +231,8 @@ export default function ScriptsSection() {
               key={script.id}
               script={script}
               isNew={newlyAddedIds.includes(script.id)}
-              onEdit={() => handleEdit(script)}
+              onClick={() => handleViewScript(script)}
               onDelete={() => handleDelete(script.id)}
-              onUpdateStatus={handleUpdateStatus}
             />
           ))}
         </div>
@@ -263,7 +252,7 @@ export default function ScriptsSection() {
   );
 }
 
-function ScriptCard({ script, isNew, onEdit, onDelete, onUpdateStatus }) {
+function ScriptCard({ script, isNew, onClick, onDelete }) {
   const statusColor = SCRIPT_STATUS_COLORS[script.status] || SCRIPT_STATUS_COLORS.draft;
   const statusBg = SCRIPT_STATUS_BG_COLORS[script.status] || SCRIPT_STATUS_BG_COLORS.draft;
 
@@ -274,7 +263,7 @@ function ScriptCard({ script, isNew, onEdit, onDelete, onUpdateStatus }) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       whileHover={{ y: -4 }}
-      className={`relative bg-white border rounded-xl p-5 shadow-sm hover:shadow-md transition-all ${
+      className={`relative bg-white border rounded-xl shadow-sm hover:shadow-md transition-all cursor-pointer ${
         isNew ? "border-[#40086d] ring-2 ring-[#ede0f8]" : "border-gray-200"
       }`}
     >
@@ -283,88 +272,89 @@ function ScriptCard({ script, isNew, onEdit, onDelete, onUpdateStatus }) {
         <div className="absolute -top-1 -right-1 w-3 h-3 bg-[#40086d] rounded-full animate-ping" />
       )}
 
-      {/* Header */}
-      <div className="flex items-start justify-between mb-3">
-        <div
-          className="px-2 py-1 rounded-md text-xs font-medium"
-          style={{ backgroundColor: statusBg, color: statusColor }}
-        >
-          {script.status?.charAt(0).toUpperCase() + script.status?.slice(1)}
-        </div>
-        <div className="flex items-center gap-1">
-          <button
-            onClick={onEdit}
-            className="p-1.5 text-gray-400 hover:text-[#40086d] hover:bg-[#ede0f8] rounded-lg transition-colors"
-            title="Edit"
+      {/* Clickable Content Area */}
+      <div onClick={onClick} className="p-5 pb-3">
+        {/* Header */}
+        <div className="flex items-start justify-between mb-3">
+          <div
+            className="px-2 py-1 rounded-md text-xs font-medium"
+            style={{ backgroundColor: statusBg, color: statusColor }}
           >
-            <Edit3 className="w-4 h-4" />
-          </button>
+            {script.status?.charAt(0).toUpperCase() + script.status?.slice(1)}
+          </div>
           <button
-            onClick={onDelete}
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete();
+            }}
             className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
             title="Delete"
           >
             <Trash2 className="w-4 h-4" />
           </button>
         </div>
-      </div>
 
-      {/* Title */}
-      <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">{script.title}</h3>
+        {/* Title */}
+        <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">{script.title}</h3>
 
-      {/* Hook Preview */}
-      {script.hook && (
-        <p className="text-sm text-gray-600 mb-3 line-clamp-2">{script.hook}</p>
-      )}
-
-      {/* Badges */}
-      <div className="flex flex-wrap gap-2 mb-4">
-        {script.platform && (
-          <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-md">
-            {script.platform}
-          </span>
+        {/* Hook Preview */}
+        {script.hook && (
+          <p className="text-sm text-gray-600 mb-3 line-clamp-2">"{script.hook}"</p>
         )}
-        {script.format && (
-          <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-md">
-            {SCRIPT_FORMATS.find((f) => f.value === script.format)?.label || script.format}
-          </span>
-        )}
-        {script.contentType && (
-          <span
-            className="px-2 py-1 text-xs rounded-md"
-            style={{
-              backgroundColor: `${SCRIPT_CONTENT_TYPES.find((t) => t.value === script.contentType)?.color}20`,
-              color: SCRIPT_CONTENT_TYPES.find((t) => t.value === script.contentType)?.color,
-            }}
-          >
-            {script.contentType}
-          </span>
-        )}
-      </div>
 
-      {/* Linked Post Indicator */}
-      {script.postId ? (
-        <div className="flex items-center gap-2 text-sm text-green-600 bg-green-50 px-3 py-2 rounded-lg">
-          <Link2 className="w-4 h-4" />
-          <span>Linked to calendar post</span>
+        {/* Badges */}
+        <div className="flex flex-wrap gap-2">
+          {script.platform && (
+            <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-md">
+              {script.platform}
+            </span>
+          )}
+          {script.format && (
+            <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-md">
+              {SCRIPT_FORMATS.find((f) => f.value === script.format)?.label || script.format}
+            </span>
+          )}
+          {script.contentType && (
+            <span
+              className="px-2 py-1 text-xs rounded-md"
+              style={{
+                backgroundColor: `${SCRIPT_CONTENT_TYPES.find((t) => t.value === script.contentType)?.color}20`,
+                color: SCRIPT_CONTENT_TYPES.find((t) => t.value === script.contentType)?.color,
+              }}
+            >
+              {script.contentType}
+            </span>
+          )}
         </div>
-      ) : (
-        <button
-          onClick={() => {
-            // TODO: Open post selector modal
-            alert("Link to Calendar Post - Coming soon!");
-          }}
-          className="flex items-center gap-2 text-sm text-gray-500 hover:text-[#40086d] hover:bg-[#ede0f8] px-3 py-2 rounded-lg transition-colors w-full"
-        >
-          <ExternalLink className="w-4 h-4" />
-          <span>Link to Calendar Post</span>
-        </button>
-      )}
+      </div>
 
-      {/* Source indicator */}
-      {script.source === "chat" && (
-        <p className="text-xs text-gray-400 mt-3">Generated by Marnee</p>
-      )}
+      {/* Footer - Non-clickable area */}
+      <div className="px-5 pb-4 pt-2 border-t border-gray-100">
+        {/* Linked Post Indicator */}
+        {script.postId ? (
+          <div className="flex items-center gap-2 text-sm text-green-600 bg-green-50 px-3 py-2 rounded-lg">
+            <Link2 className="w-4 h-4" />
+            <span>Linked to calendar post</span>
+          </div>
+        ) : (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              // TODO: Open post selector modal
+              alert("Link to Calendar Post - Coming soon!");
+            }}
+            className="flex items-center gap-2 text-sm text-gray-500 hover:text-[#40086d] hover:bg-[#ede0f8] px-3 py-2 rounded-lg transition-colors w-full"
+          >
+            <ExternalLink className="w-4 h-4" />
+            <span>Link to Calendar Post</span>
+          </button>
+        )}
+
+        {/* Source indicator */}
+        {script.source === "chat" && (
+          <p className="text-xs text-gray-400 mt-2">Generated by Marnee</p>
+        )}
+      </div>
     </motion.div>
   );
 }
