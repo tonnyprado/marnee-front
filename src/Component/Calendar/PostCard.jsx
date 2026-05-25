@@ -7,7 +7,6 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import {
   CONTENT_TYPE_COLORS,
-  STATUS_COLORS,
   EFFORT_LEVELS,
 } from '../../constants/calendarViewConstants';
 
@@ -18,7 +17,6 @@ export default function PostCard({
   showTime = false,
 }) {
   const bgColor = CONTENT_TYPE_COLORS[post.contentType] || CONTENT_TYPE_COLORS.default;
-  const statusColor = STATUS_COLORS[post.status] || STATUS_COLORS.todo;
   const effort = EFFORT_LEVELS[post.effortLevel];
 
   if (compact) {
