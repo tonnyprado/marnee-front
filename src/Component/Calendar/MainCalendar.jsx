@@ -26,7 +26,18 @@ export default function MainCalendar({
 
   // Use controlled or internal state
   const viewMode = controlledViewMode ?? internalViewMode;
-  const handleViewModeChange = onViewModeChange ?? setInternalViewMode;
+
+  // Handle view mode change - navigate to today when switching to week view
+  const handleViewModeChange = useCallback((newMode) => {
+    if (newMode === VIEW_MODES.WEEK) {
+      setCurrentDate(new Date());
+    }
+    if (onViewModeChange) {
+      onViewModeChange(newMode);
+    } else {
+      setInternalViewMode(newMode);
+    }
+  }, [onViewModeChange]);
 
   // Navigate to next/prev period
   const handleNavigate = useCallback((direction) => {

@@ -146,7 +146,6 @@ function PostListItem({ post, onClick }) {
       whileHover={{ scale: 1.01, y: -2 }}
       whileTap={{ scale: 0.99 }}
       className="w-full text-left p-4 rounded-xl border border-[#dccaf4] bg-white hover:shadow-lg transition-all"
-      style={{ borderLeftWidth: 4, borderLeftColor: statusColor }}
     >
       {/* Time badge */}
       {post.scheduledTime && (

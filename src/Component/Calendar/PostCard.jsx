@@ -30,7 +30,6 @@ export default function PostCard({
         className="w-full text-left p-1.5 rounded mb-0.5 transition-shadow hover:shadow-md"
         style={{
           backgroundColor: bgColor,
-          borderLeft: `3px solid ${statusColor}`,
         }}
       >
         <p className="text-[10px] font-medium text-gray-800 line-clamp-1">
@@ -48,7 +47,6 @@ export default function PostCard({
       className="w-full text-left p-2 rounded-lg mb-1 transition-all"
       style={{
         backgroundColor: bgColor,
-        borderLeft: `3px solid ${statusColor}`,
       }}
     >
       {showTime && post.scheduledTime && (

@@ -17,15 +17,6 @@ const CONTENT_TYPE_COLORS = {
   Authority: "bg-purple-100 text-purple-700 border-purple-300",
 };
 
-const STATUS_COLORS = {
-  todo: "border-l-gray-400",
-  in_progress: "border-l-blue-500",
-  done: "border-l-green-500",
-  skipped: "border-l-gray-300",
-  draft: "border-l-yellow-500",
-  scheduled: "border-l-indigo-500",
-  published: "border-l-emerald-500",
-};
 
 export default function CalendarView({
   posts = [],
@@ -164,14 +155,13 @@ export default function CalendarView({
                       const contentColor = post.contentType
                         ? CONTENT_TYPE_COLORS[post.contentType] || PILLAR_COLORS.default
                         : PILLAR_COLORS[post.pillar] || PILLAR_COLORS.default;
-                      const statusColor = STATUS_COLORS[post.status] || "";
                       const postIndex = getPostIndex(post);
 
                       return (
                         <div
                           key={`${post.date}-${post.hook}`}
                           onClick={() => onPostClick(post, postIndex)}
-                          className={`text-[10px] px-2 py-1.5 rounded border border-l-2 cursor-pointer hover:shadow-sm transition ${contentColor} ${statusColor}`}
+                          className={`text-[10px] px-2 py-1.5 rounded border cursor-pointer hover:shadow-sm transition ${contentColor}`}
                         >
                           <div className="font-medium truncate">
                             {post.title || (post.hook?.length > 25
@@ -199,18 +189,6 @@ export default function CalendarView({
 
       {/* Legend */}
       <div className="px-4 py-4 border-t border-[rgba(30,30,30,0.1)] flex flex-wrap items-center gap-4 text-xs text-gray-600">
-        <div className="flex items-center gap-4">
-          <span className="font-medium">Status:</span>
-          <span className="flex items-center gap-1.5">
-            <span className="w-3 h-3 rounded bg-gray-100 border-l-2 border-gray-400" /> To Do
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="w-3 h-3 rounded bg-blue-100 border-l-2 border-blue-500" /> In Progress
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="w-3 h-3 rounded bg-green-100 border-l-2 border-green-500" /> Done
-          </span>
-        </div>
         <div className="flex items-center gap-4">
           <span className="font-medium">Content:</span>
           <span className="flex items-center gap-1.5">
