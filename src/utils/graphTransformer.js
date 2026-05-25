@@ -10,7 +10,7 @@ import { NODE_COLORS, NODE_SIZES, NODE_SHAPES } from '../constants/graphConstant
  * @param {Object} data - Datos de las diferentes fuentes
  * @returns {Object} - { nodes: [], links: [] }
  */
-export function transformToGraph({ founderProfile, businessTest, strategy, conversationTopics }) {
+export function transformToGraph({ founderProfile, businessTest, strategy, conversationTopics, brainstormingIdeas }) {
   const nodes = [];
   const links = [];
 
@@ -142,6 +142,7 @@ export function transformToGraph({ founderProfile, businessTest, strategy, conve
         source: 'conversations',
         importance,
         metadata: { mentionCount: item.count },
+        shape: NODE_SHAPES.conversation_topic,
         color: NODE_COLORS.conversation_topic,
         size: dynamicSize
       });
@@ -150,6 +151,36 @@ export function transformToGraph({ founderProfile, businessTest, strategy, conve
         source: userId,
         target: `conv-topic-${i}`,
         strength: Math.min(item.count + 2, 6)
+      });
+    });
+  }
+
+  // 12. Brainstorming Ideas
+  if (brainstormingIdeas?.length) {
+    brainstormingIdeas.forEach((idea, i) => {
+      const title = idea.title || idea.description?.slice(0, 30) || 'Idea';
+
+      nodes.push({
+        id: `brainstorm-${idea.id || i}`,
+        label: title.length > 25 ? title.slice(0, 23) + '...' : title,
+        category: 'brainstorming',
+        source: 'brainstorming',
+        importance: 6,
+        metadata: {
+          platform: idea.platform,
+          status: idea.status,
+          fullTitle: idea.title,
+          description: idea.description
+        },
+        shape: NODE_SHAPES.brainstorming,
+        color: NODE_COLORS.brainstorming,
+        size: NODE_SIZES.brainstorming
+      });
+
+      links.push({
+        source: userId,
+        target: `brainstorm-${idea.id || i}`,
+        strength: 5
       });
     });
   }

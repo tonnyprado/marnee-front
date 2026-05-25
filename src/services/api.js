@@ -628,6 +628,19 @@ export const api = {
     }),
 
   // =====================
+  // MARNEE BRAIN ENDPOINTS
+  // =====================
+
+  /**
+   * GET /marnee/brain/topics - Get ML-extracted topics for Marnee Brain
+   * Uses KeyBERT to extract keywords without OpenAI tokens
+   */
+  getBrainTopics: () =>
+    apiClient.get('/marnee/brain/topics', {
+      baseUrl: API.MARNEE,
+    }),
+
+  // =====================
   // CAMPAIGNS ENDPOINTS
   // =====================
 

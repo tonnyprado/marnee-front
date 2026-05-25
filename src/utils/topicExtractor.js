@@ -3,9 +3,9 @@
  * Extrae temas relevantes de las conversaciones con Marnee
  */
 
-// Stopwords en español e inglés para filtrar
+// Stopwords extendidas para filtrar mejor
 const STOPWORDS = new Set([
-  // Español
+  // Español - palabras funcionales
   'el', 'la', 'los', 'las', 'un', 'una', 'unos', 'unas', 'de', 'del', 'que', 'y', 'en',
   'es', 'por', 'con', 'para', 'al', 'se', 'su', 'sus', 'lo', 'como', 'más', 'pero',
   'muy', 'sin', 'sobre', 'también', 'me', 'hasta', 'hay', 'donde', 'quien', 'desde',
@@ -18,6 +18,12 @@ const STOPWORDS = new Set([
   'hola', 'gracias', 'por favor', 'ok', 'okay', 'si', 'sí', 'no', 'quiero', 'necesito',
   'puedo', 'puede', 'podemos', 'hacer', 'hago', 'hace', 'tengo', 'tiene', 'tienen',
   'ser', 'soy', 'eres', 'somos', 'son', 'estar', 'estoy', 'está', 'estamos', 'están',
+  'ahora', 'aquí', 'allí', 'así', 'bien', 'bueno', 'buena', 'mejor', 'peor', 'cada',
+  'cómo', 'cuál', 'cuándo', 'cuánto', 'dónde', 'momento', 'vez', 'veces', 'manera',
+  'forma', 'parte', 'cosa', 'cosas', 'tipo', 'tipos', 'ejemplo', 'vez', 'caso',
+  // Verbos comunes
+  'crear', 'creo', 'crea', 'creamos', 'ayuda', 'ayudar', 'dame', 'dar', 'doy', 'das',
+  'usar', 'uso', 'usas', 'utilizar', 'poner', 'pongo', 'ver', 'veo', 'ves', 'vemos',
   // Inglés
   'the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with',
   'by', 'from', 'as', 'is', 'was', 'are', 'were', 'been', 'be', 'have', 'has', 'had',
@@ -25,7 +31,34 @@ const STOPWORDS = new Set([
   'shall', 'can', 'need', 'dare', 'ought', 'used', 'i', 'you', 'he', 'she', 'it',
   'we', 'they', 'what', 'which', 'who', 'whom', 'this', 'that', 'these', 'those',
   'am', 'is', 'are', 'was', 'were', 'being', 'been', 'have', 'has', 'had', 'having',
-  'hi', 'hello', 'thanks', 'thank', 'please', 'yes', 'no', 'okay', 'ok'
+  'hi', 'hello', 'thanks', 'thank', 'please', 'yes', 'no', 'okay', 'ok',
+  'just', 'like', 'get', 'make', 'know', 'think', 'want', 'see', 'look', 'use',
+  'find', 'give', 'tell', 'work', 'seem', 'feel', 'try', 'leave', 'call', 'good',
+  'new', 'first', 'last', 'long', 'great', 'little', 'own', 'other', 'old', 'right',
+  'big', 'high', 'different', 'small', 'large', 'next', 'early', 'young', 'important'
+]);
+
+// Palabras clave de interés para contenido/marketing
+const INTEREST_KEYWORDS = new Set([
+  // Plataformas
+  'instagram', 'tiktok', 'youtube', 'linkedin', 'twitter', 'facebook', 'pinterest',
+  'reels', 'stories', 'shorts', 'posts', 'feed', 'carrusel', 'carousel',
+  // Contenido
+  'contenido', 'content', 'video', 'videos', 'podcast', 'blog', 'newsletter',
+  'guión', 'script', 'guion', 'copy', 'copywriting', 'hooks', 'hook', 'cta',
+  'thumbnail', 'miniaturas', 'edición', 'editing',
+  // Marketing
+  'marketing', 'branding', 'marca', 'brand', 'audiencia', 'audience', 'nicho', 'niche',
+  'engagement', 'alcance', 'reach', 'viral', 'tendencias', 'trends', 'estrategia',
+  'strategy', 'monetización', 'monetization', 'ventas', 'sales', 'leads', 'funnel',
+  'embudo', 'conversión', 'conversion', 'cliente', 'clientes', 'customers',
+  // Formatos
+  'tutorial', 'educativo', 'educational', 'entretenimiento', 'entertainment',
+  'behind', 'scenes', 'lifestyle', 'storytelling', 'personal', 'profesional',
+  // Temas de negocio
+  'emprendimiento', 'entrepreneurship', 'startup', 'negocio', 'business',
+  'productividad', 'productivity', 'liderazgo', 'leadership', 'coaching',
+  'consultoría', 'consulting', 'freelance', 'agencia', 'agency'
 ]);
 
 /**
@@ -126,8 +159,9 @@ function isValidTopic(topic) {
 
 /**
  * Extrae temas de múltiples conversaciones
+ * Analiza tanto mensajes del usuario como temas clave mencionados por la IA
  * @param {Array} conversations - Array de conversaciones con mensajes
- * @returns {Array<{topic: string, count: number}>} - Top temas con conteo
+ * @returns {Array<{topic: string, count: number, source: string}>} - Top temas con conteo
  */
 export function extractTopicsFromConversations(conversations) {
   if (!conversations || !Array.isArray(conversations)) {
@@ -139,25 +173,49 @@ export function extractTopicsFromConversations(conversations) {
   conversations.forEach(conv => {
     if (!conv?.messages || !Array.isArray(conv.messages)) return;
 
-    // Solo mensajes del usuario (no del asistente)
-    const userMessages = conv.messages
-      .filter(m => m.role === 'user' && m.content)
-      .map(m => m.content);
+    conv.messages.forEach(msg => {
+      if (!msg.content) return;
 
-    userMessages.forEach(content => {
-      const topics = extractKeyPhrases(content);
+      const content = msg.content;
 
-      topics.forEach(topic => {
-        topicCounts.set(topic, (topicCounts.get(topic) || 0) + 1);
-      });
+      // Extraer temas de mensajes del usuario
+      if (msg.role === 'user') {
+        const topics = extractKeyPhrases(content);
+        topics.forEach(topic => {
+          const existing = topicCounts.get(topic) || { count: 0, fromUser: 0, fromAI: 0 };
+          existing.count += 2; // Peso mayor para temas del usuario
+          existing.fromUser += 1;
+          topicCounts.set(topic, existing);
+        });
+      }
+
+      // Extraer keywords de interés de respuestas de la IA
+      if (msg.role === 'assistant') {
+        const words = content.toLowerCase().split(/[\s,.:;!?()]+/);
+        words.forEach(word => {
+          if (INTEREST_KEYWORDS.has(word) && word.length > 3) {
+            const normalizedTopic = word.charAt(0).toUpperCase() + word.slice(1);
+            const existing = topicCounts.get(normalizedTopic) || { count: 0, fromUser: 0, fromAI: 0 };
+            existing.count += 1;
+            existing.fromAI += 1;
+            topicCounts.set(normalizedTopic, existing);
+          }
+        });
+      }
     });
   });
 
-  // Retornar top 10 temas más mencionados
+  // Retornar top 15 temas más mencionados
   return Array.from(topicCounts.entries())
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 10)
-    .map(([topic, count]) => ({ topic, count }));
+    .filter(([topic, data]) => data.count >= 2) // Al menos 2 menciones
+    .sort((a, b) => b[1].count - a[1].count)
+    .slice(0, 15)
+    .map(([topic, data]) => ({
+      topic,
+      count: data.count,
+      fromUser: data.fromUser,
+      fromAI: data.fromAI
+    }));
 }
 
 export default extractTopicsFromConversations;

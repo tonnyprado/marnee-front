@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, FileText, Edit3, Clock, Monitor, Film, Tag, Calendar, Link2, Unlink, Loader2 } from "lucide-react";
 import { api } from "../../../services/api";
+import CustomSelect from "../../../Component/ui/CustomSelect";
 import {
   SCRIPT_STATUS,
   SCRIPT_PLATFORMS,
@@ -14,9 +15,24 @@ import {
 import PostSelectorModal from "./PostSelectorModal";
 
 // Shared styles matching Calendar form components
-const inputStyles = "w-full bg-white border border-[rgba(30,30,30,0.1)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#40086d]";
+const inputStyles = "w-full bg-white border border-[#dccaf4] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#40086d]/20 focus:border-[#40086d] transition-all";
 const labelStyles = "text-sm font-medium text-gray-700 block mb-1.5";
-const textareaStyles = "w-full bg-white border border-[rgba(30,30,30,0.1)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#40086d] resize-none";
+const textareaStyles = "w-full bg-white border border-[#dccaf4] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#40086d]/20 focus:border-[#40086d] resize-none transition-all";
+
+// Convert constants to CustomSelect options format
+const platformOptions = SCRIPT_PLATFORMS.map(p => ({ value: p, label: p }));
+const formatOptions = SCRIPT_FORMATS.map(f => ({ value: f.value, label: f.label }));
+const contentTypeOptions = SCRIPT_CONTENT_TYPES.map(ct => ({
+  value: ct.value,
+  label: ct.label,
+  description: ct.desc,
+  color: ct.color,
+}));
+const statusOptions = SCRIPT_STATUS.filter(s => s.value !== "all").map(s => ({
+  value: s.value,
+  label: s.label,
+  color: SCRIPT_STATUS_COLORS[s.value],
+}));
 
 export default function ScriptModal({ isOpen, script, onClose, onSave, onLinkChange }) {
   const [form, setForm] = useState(INITIAL_SCRIPT_STATE);
@@ -42,11 +58,11 @@ export default function ScriptModal({ isOpen, script, onClose, onSave, onLinkCha
         notes: script.notes || "",
       });
       setLinkedPost(script.linkedPost || null);
-      setIsEditing(false); // Start in view mode for existing scripts
+      setIsEditing(false);
     } else {
       setForm(INITIAL_SCRIPT_STATE);
       setLinkedPost(null);
-      setIsEditing(true); // Start in edit mode for new scripts
+      setIsEditing(true);
     }
   }, [script, isOpen]);
 
@@ -78,7 +94,6 @@ export default function ScriptModal({ isOpen, script, onClose, onSave, onLinkCha
 
   const handleLinkPost = async (postId, post) => {
     if (!script?.id) {
-      // Script not saved yet, just store locally
       setLinkedPost(post);
       return;
     }
@@ -186,7 +201,7 @@ export default function ScriptModal({ isOpen, script, onClose, onSave, onLinkCha
           <button
             onClick={() => setShowPostSelector(true)}
             disabled={isLinking}
-            className="w-full flex items-center justify-center gap-2 px-4 py-3 border-2 border-dashed border-gray-200 rounded-xl text-gray-500 hover:text-[#40086d] hover:border-[#40086d] hover:bg-[#ede0f8]/30 transition-all disabled:opacity-50"
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-[#40086d] text-white rounded-xl font-medium text-sm hover:bg-[#350758] transition-all disabled:opacity-50 shadow-sm"
           >
             {isLinking ? (
               <Loader2 className="w-4 h-4 animate-spin" />
@@ -246,7 +261,7 @@ export default function ScriptModal({ isOpen, script, onClose, onSave, onLinkCha
               {/* Content */}
               {isEditing ? (
                 /* Edit Mode - Form */
-                <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-4">
+                <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-5">
                   {/* Title */}
                   <div>
                     <label className={labelStyles}>
@@ -310,81 +325,44 @@ export default function ScriptModal({ isOpen, script, onClose, onSave, onLinkCha
                     />
                   </div>
 
-                  {/* Metadata Row */}
-                  <div className="grid grid-cols-2 gap-3">
-                    {/* Platform */}
-                    <div>
-                      <label className={labelStyles}>Platform</label>
-                      <select
-                        value={form.platform}
-                        onChange={(e) => handleChange("platform", e.target.value)}
-                        className={inputStyles}
-                      >
-                        <option value="">Select...</option>
-                        {SCRIPT_PLATFORMS.map((platform) => (
-                          <option key={platform} value={platform}>
-                            {platform}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
+                  {/* Metadata Row - Platform & Format */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <CustomSelect
+                      label="Platform"
+                      value={form.platform}
+                      onChange={(val) => handleChange("platform", val)}
+                      options={platformOptions}
+                      placeholder="Select platform..."
+                    />
 
-                    {/* Format */}
-                    <div>
-                      <label className={labelStyles}>Format</label>
-                      <select
-                        value={form.format}
-                        onChange={(e) => handleChange("format", e.target.value)}
-                        className={inputStyles}
-                      >
-                        <option value="">Select...</option>
-                        {SCRIPT_FORMATS.map((format) => (
-                          <option key={format.value} value={format.value}>
-                            {format.label}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
+                    <CustomSelect
+                      label="Format"
+                      value={form.format}
+                      onChange={(val) => handleChange("format", val)}
+                      options={formatOptions}
+                      placeholder="Select format..."
+                    />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3">
-                    {/* Content Type */}
-                    <div>
-                      <label className={labelStyles}>Content Type</label>
-                      <select
-                        value={form.contentType}
-                        onChange={(e) => handleChange("contentType", e.target.value)}
-                        className={inputStyles}
-                      >
-                        <option value="">Select...</option>
-                        {SCRIPT_CONTENT_TYPES.map((type) => (
-                          <option key={type.value} value={type.value}>
-                            {type.label}
-                          </option>
-                        ))}
-                      </select>
-                      {form.contentType && (
-                        <p className="text-xs text-gray-500 mt-1">
-                          {SCRIPT_CONTENT_TYPES.find((t) => t.value === form.contentType)?.desc}
-                        </p>
-                      )}
-                    </div>
+                  {/* Metadata Row - Content Type & Status */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <CustomSelect
+                      label="Content Type"
+                      value={form.contentType}
+                      onChange={(val) => handleChange("contentType", val)}
+                      options={contentTypeOptions}
+                      placeholder="Select type..."
+                      showColorDot
+                    />
 
-                    {/* Status */}
-                    <div>
-                      <label className={labelStyles}>Status</label>
-                      <select
-                        value={form.status}
-                        onChange={(e) => handleChange("status", e.target.value)}
-                        className={inputStyles}
-                      >
-                        {SCRIPT_STATUS.filter((s) => s.value !== "all").map((status) => (
-                          <option key={status.value} value={status.value}>
-                            {status.label}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
+                    <CustomSelect
+                      label="Status"
+                      value={form.status}
+                      onChange={(val) => handleChange("status", val)}
+                      options={statusOptions}
+                      placeholder="Select status..."
+                      showColorDot
+                    />
                   </div>
 
                   {/* Duration Estimate */}

@@ -37,12 +37,14 @@ export function useKnowledgeGraph() {
         founderResult,
         businessTestResult,
         strategyResult,
-        conversationsResult
+        conversationsResult,
+        brainstormingResult
       ] = await Promise.allSettled([
         api.getMeFounder(),
         api.getBusinessTestMe(),
         getStrategyByFounder(founderId),
-        api.getConversations()
+        api.getConversations(),
+        api.getBrainstormingIdeas(founderId, { limit: 20 })
       ]);
 
       // Extraer resultados (manejar errores individuales gracefully)
@@ -59,13 +61,37 @@ export function useKnowledgeGraph() {
         ? (strategyResult.value?.strategy || strategyResult.value)
         : null;
 
-      // Procesar conversaciones para extraer temas (limitar a 5 para mejor rendimiento)
+      // Brainstorming ideas
+      const brainstormingData = brainstormingResult.status === 'fulfilled'
+        ? brainstormingResult.value?.ideas || []
+        : [];
+
+      // Intentar obtener temas usando ML del backend (0 tokens)
+      // Fallback a extracción básica en frontend si falla
       let conversationTopics = [];
-      if (conversationsResult.status === 'fulfilled' &&
+      let mlTopics = null;
+
+      try {
+        const brainTopicsResult = await api.getBrainTopics();
+        if (brainTopicsResult?.topics) {
+          mlTopics = brainTopicsResult.topics;
+          // Usar los keywords combinados del ML
+          conversationTopics = (mlTopics.combined_keywords || []).map(item => ({
+            topic: item.topic,
+            count: item.total_count || 1,
+            sources: item.sources || ['ml']
+          }));
+          console.log('[useKnowledgeGraph] ML topics loaded:', conversationTopics.length);
+        }
+      } catch (mlError) {
+        console.warn('[useKnowledgeGraph] ML topics unavailable, using frontend extraction');
+      }
+
+      // Fallback: extracción básica en frontend si ML no está disponible
+      if (!conversationTopics.length && conversationsResult.status === 'fulfilled' &&
           conversationsResult.value?.conversations?.length > 0) {
-        // Solo cargar últimas 5 conversaciones para mejor rendimiento
         const conversationIds = conversationsResult.value.conversations
-          .slice(0, 5)
+          .slice(0, 8)
           .map(c => c.id);
 
         const fullConversations = await Promise.all(
@@ -84,7 +110,9 @@ export function useKnowledgeGraph() {
         founderProfile: founderData,
         businessTest: businessData,
         strategy: strategyData,
-        conversationTopics
+        conversationTopics,
+        brainstormingIdeas: brainstormingData,
+        mlTopics // ML-extracted topics from backend (if available)
       });
 
       // Transformar a estructura de grafo
@@ -92,7 +120,8 @@ export function useKnowledgeGraph() {
         founderProfile: founderData,
         businessTest: businessData,
         strategy: strategyData,
-        conversationTopics
+        conversationTopics,
+        brainstormingIdeas: brainstormingData
       });
 
       setGraph(graphData);

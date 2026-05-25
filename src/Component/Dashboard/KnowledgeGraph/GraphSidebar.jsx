@@ -63,7 +63,8 @@ const CATEGORY_DESCRIPTIONS = {
   niche_keyword: 'Palabras clave específicas de tu nicho.',
   benefit: 'El beneficio principal que ofreces.',
   differentiator: 'Lo que te hace único en el mercado.',
-  conversation_topic: 'Temas extraídos de tus conversaciones.'
+  conversation_topic: 'Temas extraídos de tus conversaciones con Marnee.',
+  brainstorming: 'Ideas de contenido guardadas en tu brainstorming.'
 };
 
 export default function GraphSidebar({ graph, activeCategories, onCategoryToggle }) {
