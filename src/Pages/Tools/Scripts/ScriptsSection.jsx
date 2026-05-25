@@ -251,6 +251,7 @@ export default function ScriptsSection() {
           setEditingScript(null);
         }}
         onSave={handleSave}
+        onLinkChange={() => loadScripts(false, true)}
       />
     </div>
   );
@@ -332,26 +333,19 @@ function ScriptCard({ script, isNew, onClick, onDelete }) {
         </div>
       </div>
 
-      {/* Footer - Non-clickable area */}
-      <div className="px-5 pb-4 pt-2 border-t border-gray-100">
+      {/* Footer */}
+      <div className="px-5 pb-4 pt-2 border-t border-gray-100" onClick={onClick}>
         {/* Linked Post Indicator */}
         {script.postId ? (
           <div className="flex items-center gap-2 text-sm text-green-600 bg-green-50 px-3 py-2 rounded-lg">
             <Link2 className="w-4 h-4" />
-            <span>Linked to calendar post</span>
+            <span>Linked to calendar</span>
           </div>
         ) : (
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              // TODO: Open post selector modal
-              alert("Link to Calendar Post - Coming soon!");
-            }}
-            className="flex items-center gap-2 text-sm text-gray-500 hover:text-[#40086d] hover:bg-[#ede0f8] px-3 py-2 rounded-lg transition-colors w-full"
-          >
+          <div className="flex items-center gap-2 text-sm text-gray-400 px-3 py-2">
             <ExternalLink className="w-4 h-4" />
-            <span>Link to Calendar Post</span>
-          </button>
+            <span>Not linked</span>
+          </div>
         )}
 
         {/* Source indicator */}
