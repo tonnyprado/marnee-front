@@ -1,0 +1,382 @@
+Resumen del Plan
+
+  Nueva sección "Scripts" (/app/scripts)
+
+  - Página dedicada para ver y gestionar todos los scripts generados
+  - Cards con preview del hook, status (Draft/Ready/Used), plataforma
+  - Modal para editar scripts completos
+  - Botón para vincular scripts a posts del calendario
+
+  Auto-detección y guardado desde el chat
+
+  - Por intención: Cuando el usuario pide explícitamente un script
+  - Por estructura: Cuando la respuesta contiene Hook/Body/CTA
+  - Notificación "Script saved!" con link para ver
+
+  Auto-vinculación inteligente (AI Matching)
+
+  - Cuando se genera un calendario, Marnee busca scripts existentes
+  - Los vincula automáticamente a posts relevantes (>70% similitud)
+  - Criterios: plataforma, tema, keywords, content type
+
+  Integración con Calendario
+
+  - Nueva pestaña "Script" en el modal de edición de posts
+  - Ver el script vinculado o vincular uno existente
+
+  Archivos principales a crear/modificar
+
+  - Backend: Nuevo modelo Script, router /scripts, modificar chat para auto-save
+  - Frontend: ScriptsPage, ScriptsSection, ScriptCard, ScriptModal, notificaciones
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ Ready to code?
+
+ Here is Claude's plan:
+╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌
+ Plan: Sistema de Scripts y Sincronización para Marnee
+
+ Resumen
+
+ Crear una nueva sección "Scripts" en Marnee que:
+ 1. Liste todos los scripts generados automáticamente desde el chat
+ 2. Permita relacionar scripts con posts del calendario
+ 3. Mantenga sincronización completa entre Chat → Scripts → Calendario
+
+ ---
+ Arquitectura Propuesta
+
+ Chat (usuario pide script)
+     ↓
+ Backend detecta script_generation
+     ↓
+ Extrae hook/body/cta de respuesta → Guarda en tabla "scripts"
+     ↓
+ Respuesta incluye { savedScript: { id, title } }
+     ↓
+ Frontend muestra notificación "Script saved!"
+     ↓
+ Usuario puede ver en /app/scripts
+     ↓
+ Vincular script a post del calendario
+
+ ---
+ FASE 1: Backend - Modelo y Endpoints
+
+ 1.1 Nuevo modelo Script
+
+ Crear: /app/models/script.py (dnhubAI)
+
+ class Script:
+     id: UUID
+     founder_id: UUID
+     conversation_id: UUID (opcional)
+     message_id: UUID (opcional)
+
+     # Contenido
+     title: str
+     hook: str
+     body: str
+     cta: str
+     visual_guidance: str
+
+     # Metadata
+     platform: str  # TikTok, Instagram, etc.
+     content_type: str  # Viral, Educational, Authority
+     format: str  # talking_head, voiceover, carousel
+     duration_estimate: str
+
+     # Relación con calendario
+     post_id: UUID (nullable)
+     calendar_id: UUID (nullable)
+
+     # Estado
+     status: str = "draft"  # draft, ready, used
+     source: str = "chat"  # chat, manual
+
+     created_at, updated_at
+
+ 1.2 Nuevo router de scripts
+
+ Crear: /app/routers/scripts.py
+ ┌────────┬───────────────────────────┬────────────────────────────────┐
+ │ Método │         Endpoint          │          Descripción           │
+ ├────────┼───────────────────────────┼────────────────────────────────┤
+ │ POST   │ /scripts                  │ Crear script manualmente       │
+ ├────────┼───────────────────────────┼────────────────────────────────┤
+ │ GET    │ /scripts/founder/{id}     │ Listar scripts del founder     │
+ ├────────┼───────────────────────────┼────────────────────────────────┤
+ │ GET    │ /scripts/{id}             │ Obtener script                 │
+ ├────────┼───────────────────────────┼────────────────────────────────┤
+ │ PUT    │ /scripts/{id}             │ Actualizar script              │
+ ├────────┼───────────────────────────┼────────────────────────────────┤
+ │ DELETE │ /scripts/{id}             │ Eliminar script                │
+ ├────────┼───────────────────────────┼────────────────────────────────┤
+ │ POST   │ /scripts/{id}/link-post   │ Vincular a post del calendario │
+ ├────────┼───────────────────────────┼────────────────────────────────┤
+ │ DELETE │ /scripts/{id}/unlink-post │ Desvincular de post            │
+ ├────────┼───────────────────────────┼────────────────────────────────┤
+ │ GET    │ /scripts/post/{postId}    │ Scripts de un post específico  │
+ └────────┴───────────────────────────┴────────────────────────────────┘
+ 1.3 Modificar lógica de chat
+
+ Modificar: /app/routers/marnee.py
+
+ En la función de chat, después de detectar script_generation:
+
+ if request_type == "script_generation":
+     script_data = extract_script_from_response(ai_response)
+     if script_data:
+         saved = await save_script_from_chat(founder_id, conversation_id, script_data)
+         response["savedScript"] = {"id": saved.id, "title": saved.title}
+
+ Nueva función extract_script_from_response():
+ - Método 1 - Por intención: Si detect_request_type() retorna script_generation
+ - Método 2 - Por estructura: Detectar patrones: **Hook:**, **Body:**, **CTA:** en la respuesta
+ - Usar AMBOS métodos para máxima cobertura
+ - Extraer estructura del markdown
+ - Generar título automático basado en el hook si no existe
+
+ ---
+ FASE 2: Frontend - Nueva Página de Scripts
+
+ 2.1 Estructura de archivos a crear
+
+ src/Pages/Tools/
+ ├── ScriptsPage.jsx              # Página principal
+ └── Scripts/
+     ├── ScriptsSection.jsx       # Grid de scripts + filtros
+     ├── ScriptCard.jsx           # Tarjeta individual
+     ├── ScriptModal.jsx          # Modal editar/ver script
+     └── PostSelectorModal.jsx    # Modal para vincular a post
+
+ 2.2 ScriptsPage.jsx
+
+ Crear: /src/Pages/Tools/ScriptsPage.jsx
+
+ Similar a BrainstormingPage pero para scripts.
+
+ 2.3 ScriptsSection.jsx
+
+ Crear: /src/Pages/Tools/Scripts/ScriptsSection.jsx
+
+ Features:
+ - Grid de scripts con ScriptCard
+ - Filtros: All / Draft / Ready / Used
+ - Notificación animada cuando se guardan nuevos scripts
+ - Polling para detectar nuevos scripts (cada 30s si la pestaña está activa)
+
+ 2.4 ScriptCard.jsx
+
+ Muestra:
+ - Título y preview del hook
+ - Badge de status (Draft/Ready/Used)
+ - Badge de plataforma
+ - Indicador si está vinculado a post
+ - Acciones: Edit, Delete, Link to Post
+
+ 2.5 ScriptModal.jsx
+
+ Formulario completo:
+ - Title, Hook, Body, CTA, Visual Guidance
+ - Platform selector, Format selector
+ - Status selector
+ - Botón "Link to Calendar Post"
+
+ ---
+ FASE 3: Integración con Navegación
+
+ 3.1 Actualizar rutas
+
+ Modificar: /src/App.js
+
+ <Route path="scripts" element={<ScriptsPage />} />
+
+ 3.2 Actualizar Navbar
+
+ Modificar: /src/Component/Navbar/Navbar.jsx
+
+ Agregar item:
+ { id: "scripts", label: "Scripts", icon: "script", path: "/app/scripts" }
+
+ 3.3 Agregar icono
+
+ Modificar: /src/Component/Navbar/NavIcons.jsx
+
+ Agregar ScriptIcon (documento con líneas de texto)
+
+ 3.4 Traducciones
+
+ Modificar: /src/i18n/translations.js
+
+ - en: scripts: "Scripts"
+ - es: scripts: "Guiones"
+
+ ---
+ FASE 4: API Service Frontend
+
+ Modificar: /src/services/api.js
+
+ Agregar endpoints:
+ // Scripts
+ createScript: (data) => apiClient.post('/scripts', data),
+ getScripts: (founderId, filters) => apiClient.get(`/scripts/founder/${founderId}`),
+ getScript: (scriptId) => apiClient.get(`/scripts/${scriptId}`),
+ updateScript: (scriptId, data) => apiClient.put(`/scripts/${scriptId}`, data),
+ deleteScript: (scriptId) => apiClient.delete(`/scripts/${scriptId}`),
+ linkScriptToPost: (scriptId, postId) => apiClient.post(`/scripts/${scriptId}/link-post`, { postId }),
+ unlinkScriptFromPost: (scriptId) => apiClient.delete(`/scripts/${scriptId}/unlink-post`),
+ getScriptsForPost: (postId) => apiClient.get(`/scripts/post/${postId}`),
+
+ ---
+ FASE 5: Integración Chat → Scripts
+
+ 5.1 Notificación en ChatPage
+
+ Modificar: /src/Pages/Tools/ChatPage.jsx
+
+ // En handleSend, después de recibir respuesta:
+ if (res.savedScript) {
+     showScriptNotification(res.savedScript);
+ }
+
+ 5.2 Componente de notificación
+
+ Crear: /src/Component/ScriptSavedNotification.jsx
+
+ Toast animado similar a BrainstormingNotification:
+ - "Script saved! [View]"
+ - Auto-dismiss en 5 segundos
+ - Click para ir a /app/scripts
+
+ ---
+ FASE 6: Integración con Calendario
+
+ 6.1 Nueva sección en PostFormModal
+
+ Modificar: /src/Component/Calendar/PostFormModal.jsx
+
+ Agregar tab "Script" en las secciones del modal.
+
+ 6.2 Componente ScriptSection
+
+ Crear: /src/Component/Calendar/ScriptSection.jsx
+
+ Dentro del PostFormModal:
+ - Si tiene script vinculado → Mostrar contenido del script (hook, body, cta)
+ - Si no tiene → Botón "Link Existing Script" → Abre selector
+
+ 6.3 Script Selector Modal
+
+ Permite seleccionar de scripts existentes que no estén vinculados a otros posts.
+
+ ---
+ FASE 7: Auto-vinculación Inteligente (AI Matching)
+
+ Lógica de auto-vinculación
+
+ Modificar: /app/routers/marnee.py
+
+ Cuando se genera un calendario, Marnee debe:
+ 1. Buscar scripts existentes del founder
+ 2. Analizar contenido de cada script vs. cada post
+ 3. Si hay match (>70% relevancia), auto-vincular
+
+ async def auto_link_scripts_to_calendar(founder_id, calendar_posts):
+     scripts = await get_unlinked_scripts(founder_id)
+     for post in calendar_posts:
+         best_match = find_best_script_match(post, scripts)
+         if best_match and best_match.score > 0.7:
+             await link_script_to_post(best_match.script_id, post.id)
+
+ Criterios de matching
+
+ - Coincidencia de plataforma
+ - Similitud de tema/pillar
+ - Keywords comunes entre hook del script y título/hook del post
+ - Content type compatible
+
+ ---
+ Archivos Críticos a Modificar/Crear
+
+ Backend (dnhubAI)
+ ┌───────────┬───────────────────────────────────────────────────────┐
+ │  Acción   │                        Archivo                        │
+ ├───────────┼───────────────────────────────────────────────────────┤
+ │ Crear     │ /app/models/script.py                                 │
+ ├───────────┼───────────────────────────────────────────────────────┤
+ │ Crear     │ /app/routers/scripts.py                               │
+ ├───────────┼───────────────────────────────────────────────────────┤
+ │ Crear     │ /app/services/script_service.py                       │
+ ├───────────┼───────────────────────────────────────────────────────┤
+ │ Crear     │ /app/database/script_repository.py                    │
+ ├───────────┼───────────────────────────────────────────────────────┤
+ │ Modificar │ /app/routers/marnee.py (agregar auto-save de scripts) │
+ ├───────────┼───────────────────────────────────────────────────────┤
+ │ Modificar │ /app/main.py (registrar router)                       │
+ └───────────┴───────────────────────────────────────────────────────┘
+ Frontend (marnee-front)
+ ┌───────────┬────────────────────────────────────────────────┐
+ │  Acción   │                    Archivo                     │
+ ├───────────┼────────────────────────────────────────────────┤
+ │ Crear     │ /src/Pages/Tools/ScriptsPage.jsx               │
+ ├───────────┼────────────────────────────────────────────────┤
+ │ Crear     │ /src/Pages/Tools/Scripts/ScriptsSection.jsx    │
+ ├───────────┼────────────────────────────────────────────────┤
+ │ Crear     │ /src/Pages/Tools/Scripts/ScriptCard.jsx        │
+ ├───────────┼────────────────────────────────────────────────┤
+ │ Crear     │ /src/Pages/Tools/Scripts/ScriptModal.jsx       │
+ ├───────────┼────────────────────────────────────────────────┤
+ │ Crear     │ /src/Pages/Tools/Scripts/PostSelectorModal.jsx │
+ ├───────────┼────────────────────────────────────────────────┤
+ │ Crear     │ /src/Component/ScriptSavedNotification.jsx     │
+ ├───────────┼────────────────────────────────────────────────┤
+ │ Crear     │ /src/Component/Calendar/ScriptSection.jsx      │
+ ├───────────┼────────────────────────────────────────────────┤
+ │ Crear     │ /src/constants/scriptConstants.js              │
+ ├───────────┼────────────────────────────────────────────────┤
+ │ Modificar │ /src/App.js (agregar ruta)                     │
+ ├───────────┼────────────────────────────────────────────────┤
+ │ Modificar │ /src/services/api.js (agregar endpoints)       │
+ ├───────────┼────────────────────────────────────────────────┤
+ │ Modificar │ /src/Component/Navbar/Navbar.jsx               │
+ ├───────────┼────────────────────────────────────────────────┤
+ │ Modificar │ /src/Component/Navbar/NavIcons.jsx             │
+ ├───────────┼────────────────────────────────────────────────┤
+ │ Modificar │ /src/Pages/Tools/ChatPage.jsx (notificación)   │
+ ├───────────┼────────────────────────────────────────────────┤
+ │ Modificar │ /src/Component/Calendar/PostFormModal.jsx      │
+ ├───────────┼────────────────────────────────────────────────┤
+ │ Modificar │ /src/i18n/translations.js                      │
+ └───────────┴────────────────────────────────────────────────┘
+ ---
+ Verificación
+
+ Tests manuales
+
+ 1. Chat → Script auto-guardado:
+   - Pedir a Marnee "Write a script for my next TikTok"
+   - Verificar notificación "Script saved!"
+   - Ir a /app/scripts y ver el nuevo script
+ 2. Gestión de scripts:
+   - Crear script manual desde la página
+   - Editar script existente
+   - Eliminar script
+   - Filtrar por status
+ 3. Vincular a calendario:
+   - Abrir un post en el calendario
+   - Ir a la sección "Script"
+   - Vincular script existente
+   - Verificar que el script muestra "Linked to post"
+ 4. Sincronización:
+   - Generar calendario desde chat
+   - Verificar que posts se crean basados en conversación
+   - Vincular scripts relevantes a posts
+
+ ---
+ Decisiones Tomadas
+
+ 1. Content Insights: Ya está incluido en el Dashboard existente (no crear sección separada)
+ 2. Auto-vinculación: Sí, Marnee auto-vinculará scripts a posts usando AI matching (>70% relevancia)
+ 3. Detección de scripts: Usar AMBOS métodos (intención del usuario + estructura Hook/Body/CTA)
+╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌

@@ -1,12 +1,22 @@
 import React, { useState } from "react";
-import { User, Lock, Bell, Globe, Trash2, Save, Camera } from "lucide-react";
-import { getAuthSession } from "../../services/api";
+import { useNavigate } from "react-router-dom";
+import { User, Lock, Bell, Globe, Trash2, Save, Camera, LogOut } from "lucide-react";
+import { getAuthSession, setAuthSession } from "../../services/api";
 import PageTransition from "../../Component/PageTransition";
 import { useLanguage } from "../../context/LanguageContext";
+import LogoutConfirmationModal from "../../Component/LogoutConfirmationModal";
 
 export default function ProfileSettingsPage() {
+  const navigate = useNavigate();
   const session = getAuthSession();
   const { language, setLanguage, languages } = useLanguage();
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+
+  const handleLogout = () => {
+    setAuthSession(null);
+    window.dispatchEvent(new CustomEvent("app-logout"));
+    navigate("/auth");
+  };
 
   // Hardcoded data - will be replaced with real data later
   const [profileData, setProfileData] = useState({
@@ -279,6 +289,27 @@ export default function ProfileSettingsPage() {
             </button>
           </div>
 
+          {/* Sign Out */}
+          <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
+                  <LogOut className="w-5 h-5 text-gray-600" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-gray-900">Sign Out</h2>
+                  <p className="text-sm text-gray-500">Log out of your account on this device</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setIsLogoutModalOpen(true)}
+                className="px-6 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+              >
+                Sign Out
+              </button>
+            </div>
+          </div>
+
           {/* Danger Zone */}
           <div className="bg-white rounded-2xl p-6 border border-red-200 shadow-sm">
             <div className="flex items-center gap-3 mb-4">
@@ -303,6 +334,13 @@ export default function ProfileSettingsPage() {
           </div>
         </div>
       </div>
+
+      {/* Logout Confirmation Modal */}
+      <LogoutConfirmationModal
+        isOpen={isLogoutModalOpen}
+        onClose={() => setIsLogoutModalOpen(false)}
+        onConfirm={handleLogout}
+      />
     </PageTransition>
   );
 }

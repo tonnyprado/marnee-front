@@ -82,6 +82,12 @@ export function MarneeProvider({ children }) {
     count: 0,
   });
 
+  // Script notification state
+  const [scriptNotification, setScriptNotification] = useState({
+    show: false,
+    title: null,
+  });
+
   // Chat state - persists across navigation
   const [chatIsLoading, setChatIsLoading] = useState(false);
   const [pendingUserMessage, setPendingUserMessage] = useState(null);
@@ -248,6 +254,19 @@ export function MarneeProvider({ children }) {
     setBrainstormingNotification({ show: false, count: 0 });
   };
 
+  // Script notification methods
+  const showScriptNotification = (title) => {
+    setScriptNotification({ show: true, title });
+    // Auto-dismiss after 5 seconds
+    setTimeout(() => {
+      hideScriptNotification();
+    }, 5000);
+  };
+
+  const hideScriptNotification = () => {
+    setScriptNotification({ show: false, title: null });
+  };
+
   // Send chat message - persists across navigation
   const sendChatMessage = useCallback(async ({
     userMessage,
@@ -343,6 +362,11 @@ export function MarneeProvider({ children }) {
     brainstormingNotification,
     showBrainstormingNotification,
     hideBrainstormingNotification,
+
+    // Script notifications
+    scriptNotification,
+    showScriptNotification,
+    hideScriptNotification,
 
     // Chat state (persists across navigation)
     chatIsLoading,

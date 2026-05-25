@@ -1,27 +1,30 @@
 /**
- * Navbar Component - Premium Dark Sidebar
- * Main navigation sidebar with elegant dark theme
- * Features: collapsible, responsive, smooth transitions
+ * Navbar Component - Pills Design
+ * Sidebar with pill-shaped sections that expands on hover
+ * Background adapts to current page color
  */
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getAuthSession, setAuthSession } from "../../services/api";
+import { getAuthSession } from "../../services/api";
 import { useLanguage } from "../../context/LanguageContext";
-import LogoutConfirmationModal from "../LogoutConfirmationModal";
 import InstagramConnectionButton from "../../components/InstagramConnectionButton";
-import SidebarLogo from "./SidebarLogo";
 import NavItem from "./NavItem";
-import UserMenu from "./UserMenu";
 import { getNavIcon } from "./NavIcons";
-import IrisWipeTransition, { useIrisWipeTransition } from "../IrisWipeTransition";
+
+// Page background colors mapping
+const PAGE_BACKGROUNDS = {
+  "ai-content": "#f8f7fc",      // Chat page - light purple/gray
+  "calendar": "#f9fafb",         // Calendar - light gray
+  "brainstorming": "#faf5ff",    // Brainstorming - light violet
+  "scripts": "#f8fafc",          // Scripts - slate
+  "dashboard": "#fafafa",        // Dashboard - neutral
+};
 
 export default function Navbar({ active = "ai-content" }) {
   const { t } = useLanguage();
   const navigate = useNavigate();
   const session = getAuthSession();
-  const [collapsed, setCollapsed] = useState(false);
-  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
-  const { isTransitioning, startTransition, handleTransitionComplete } = useIrisWipeTransition();
+  const [collapsed, setCollapsed] = useState(true);
 
   const displayName = session?.name || session?.email || t("common.userFallback");
   const initials = displayName
@@ -30,12 +33,6 @@ export default function Navbar({ active = "ai-content" }) {
     .slice(0, 2)
     .map((part) => part[0].toUpperCase())
     .join("");
-
-  const handleLogout = () => {
-    setAuthSession(null);
-    window.dispatchEvent(new CustomEvent("app-logout"));
-    navigate("/auth");
-  };
 
   const navItems = [
     {
@@ -57,6 +54,12 @@ export default function Navbar({ active = "ai-content" }) {
       path: "/app/brainstorming"
     },
     {
+      id: "scripts",
+      label: t("navbar.scripts"),
+      icon: "script",
+      path: "/app/scripts"
+    },
+    {
       id: "dashboard",
       label: t("navbar.dashboard"),
       icon: "dashboard",
@@ -64,40 +67,60 @@ export default function Navbar({ active = "ai-content" }) {
     },
   ];
 
+  // Get current page background color
+  const bgColor = PAGE_BACKGROUNDS[active] || "#f8f7fc";
+
   return (
-    <>
-      {/* Premium Dark Sidebar */}
-      <aside
-        className={`
-          ${collapsed ? 'w-20' : 'w-64'}
-          bg-[#1a0530] flex flex-col h-dvh shrink-0
-          transition-all duration-300 ease-in-out
-          font-['DM_Sans']
-          max-lg:!w-20
-        `}
-      >
-        {/* Logo Section */}
-        <SidebarLogo
-          collapsed={collapsed}
-          onToggleCollapse={() => setCollapsed(!collapsed)}
-        />
-
-        {/* Expand button when collapsed - desktop only */}
-        {collapsed && (
-          <div className="px-3 py-2 border-b border-[rgba(220,202,244,0.15)] max-lg:hidden">
-            <button
-              onClick={() => setCollapsed(false)}
-              className="w-full flex items-center justify-center text-[rgba(246,246,246,0.3)] hover:text-[rgba(246,246,246,0.7)] transition-colors duration-150"
-            >
-              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 5l7 7-7 7M5 5l7 7-7 7" />
-              </svg>
-            </button>
-          </div>
+    <aside
+      onMouseEnter={() => setCollapsed(false)}
+      onMouseLeave={() => setCollapsed(true)}
+      style={{ backgroundColor: bgColor }}
+      className={`
+        ${collapsed ? 'w-[72px]' : 'w-[260px]'}
+        flex flex-col h-dvh shrink-0 p-2.5 gap-2.5
+        transition-all duration-300 ease-in-out
+        font-['DM_Sans']
+        max-lg:!w-[72px]
+      `}
+    >
+      {/* Pill: Logo */}
+      <div className="bg-[#1a0530] rounded-2xl p-3 flex items-center gap-3">
+        <div className="w-[34px] h-[34px] flex items-center justify-center flex-shrink-0">
+          <svg width="34" height="34" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M16 30C24 30 29 24 29 17C29 10 24 6 16 6C8 6 3 10 3 17C3 24 8 30 16 30Z" fill="url(#navBody)" />
+            <path d="M7 8C5 4 6 1 9 1C12 1 12 4 11 8" fill="url(#navBody)" />
+            <path d="M25 8C27 4 26 1 23 1C20 1 20 4 21 8" fill="url(#navBody)" />
+            <path d="M5 13C5 8 9 4 16 4C23 4 27 8 27 13" stroke="url(#navHeadset)" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+            <rect x="1" y="11" width="5" height="7" rx="2" fill="url(#navHeadset)" />
+            <rect x="26" y="11" width="5" height="7" rx="2" fill="url(#navHeadset)" />
+            <path d="M6 16C6 16 8 18 10 22" stroke="url(#navHeadset)" strokeWidth="2" strokeLinecap="round" fill="none" />
+            <circle cx="11" cy="23" r="2.5" fill="url(#navMic)" />
+            <defs>
+              <linearGradient id="navBody" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#A855F7" />
+                <stop offset="100%" stopColor="#8B5CF6" />
+              </linearGradient>
+              <linearGradient id="navHeadset" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#7C3AED" />
+                <stop offset="100%" stopColor="#6D28D9" />
+              </linearGradient>
+              <linearGradient id="navMic" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#EC4899" />
+                <stop offset="100%" stopColor="#DB2777" />
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        {!collapsed && (
+          <span className="font-['Noto_Serif'] text-[18px] font-bold text-white tracking-tight whitespace-nowrap max-lg:hidden">
+            Marnee
+          </span>
         )}
+      </div>
 
-        {/* Navigation Menu */}
-        <nav className="flex-1 px-2.5 py-4 overflow-y-auto space-y-0.5">
+      {/* Pill: Navigation */}
+      <nav className="bg-[#1a0530] rounded-2xl p-2 flex-1 overflow-y-auto">
+        <div className="space-y-1">
           {navItems.map((item) => (
             <NavItem
               key={item.id}
@@ -106,53 +129,63 @@ export default function Navbar({ active = "ai-content" }) {
               icon={getNavIcon(item.icon)}
               isActive={item.id === active}
               collapsed={collapsed}
-              onClick={() => {
-                if (item.useIrisTransition) {
-                  startTransition(navigate, item.path);
-                } else {
-                  navigate(item.path);
-                }
-              }}
+              onClick={() => navigate(item.path)}
             />
           ))}
-        </nav>
-
-        {/* Instagram Connection - Premium Integration */}
-        <div className={`px-3 pb-4 ${collapsed ? 'flex justify-center' : ''} max-lg:flex max-lg:justify-center`}>
-          <InstagramConnectionButton collapsed={collapsed} />
         </div>
+      </nav>
 
-        {/* User Menu Section */}
-        <div className="
-          mt-auto border-t border-[rgba(220,202,244,0.12)]
-          px-4 py-3.5
-        ">
-          <UserMenu
-            displayName={displayName}
-            email={session?.email || t("common.freePlan")}
-            initials={initials}
-            collapsed={collapsed}
-            onNavigate={navigate}
-            onLogout={() => setIsLogoutModalOpen(true)}
-            t={t}
-          />
+      {/* Pill: Connect Networks */}
+      <div className="bg-[#1a0530] rounded-2xl p-2.5">
+        <InstagramConnectionButton collapsed={collapsed} />
+      </div>
+
+      {/* Pill: User */}
+      <div className="bg-[#1a0530] rounded-2xl p-2.5">
+        <div
+          onClick={() => navigate("/app/profile-settings")}
+          className={`
+            flex items-center gap-3 cursor-pointer
+            hover:opacity-80 transition-opacity
+            ${collapsed ? 'justify-center' : ''}
+            max-lg:justify-center
+          `}
+        >
+          {/* Avatar */}
+          <div className="
+            w-9 h-9 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600
+            text-white flex items-center justify-center
+            text-[12px] font-semibold font-['DM_Sans']
+            flex-shrink-0 shadow-sm
+          ">
+            {initials}
+          </div>
+
+          {/* User Info - hidden when collapsed */}
+          {!collapsed && (
+            <div className="flex-1 min-w-0 max-lg:hidden">
+              <p className="text-[13px] font-medium text-white truncate">
+                {displayName}
+              </p>
+              <p className="text-[11px] text-[rgba(255,255,255,0.5)] truncate">
+                {session?.email || t("common.freePlan")}
+              </p>
+            </div>
+          )}
+
+          {/* Settings icon - only when expanded */}
+          {!collapsed && (
+            <svg
+              className="w-4 h-4 text-[rgba(255,255,255,0.4)] flex-shrink-0 max-lg:hidden"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          )}
         </div>
-      </aside>
-
-      {/* Logout Confirmation Modal */}
-      <LogoutConfirmationModal
-        isOpen={isLogoutModalOpen}
-        onClose={() => setIsLogoutModalOpen(false)}
-        onConfirm={handleLogout}
-      />
-
-      {/* Iris Wipe Transition for Branding Test */}
-      <IrisWipeTransition
-        isActive={isTransitioning}
-        onComplete={handleTransitionComplete}
-        duration={800}
-        color="#40086d"
-      />
-    </>
+      </div>
+    </aside>
   );
 }

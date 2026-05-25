@@ -8,6 +8,7 @@ import { AuthProvider } from "./context/AuthContext";
 import { ChatThemeProvider } from "./context/ChatThemeContext";
 import { getAuthSession } from "./services/api";
 import BrainstormingNotification from "./Component/BrainstormingNotification";
+import ScriptSavedNotification from "./Component/ScriptSavedNotification";
 
 import PresentationPage from "./Pages/PresentationPage";
 import CreatorsLandingPage from "./Pages/CreatorsLandingPage";
@@ -27,6 +28,7 @@ import IAWebPage from "./Pages/Tools/IAWebPage"; // Old chat - kept as backup
 import CalendarPage from "./Pages/Tools/CalendarPage";
 import ChatPage from "./Pages/Tools/ChatPage"; // Main chat with multiple conversations
 import BrainstormingPage from "./Pages/Tools/BrainstormingPage";
+import ScriptsPage from "./Pages/Tools/ScriptsPage";
 import BillingPage from "./Pages/Tools/BillingPage";
 import ProfileSettingsPage from "./Pages/Tools/ProfileSettingsPage";
 import HelpSupportPage from "./Pages/Tools/HelpSupportPage";
@@ -86,6 +88,29 @@ function BrainstormingNotificationHandler() {
       count={brainstormingNotification.count}
       onClose={hideBrainstormingNotification}
       onViewIdeas={handleViewIdeas}
+    />
+  );
+}
+
+// Component to handle script saved notifications (needs to be inside MarneeProvider)
+function ScriptNotificationHandler() {
+  const navigate = useNavigate();
+  const {
+    scriptNotification,
+    hideScriptNotification,
+  } = useMarnee();
+
+  const handleViewScripts = () => {
+    hideScriptNotification();
+    navigate('/app/scripts');
+  };
+
+  return (
+    <ScriptSavedNotification
+      show={scriptNotification.show}
+      scriptTitle={scriptNotification.title}
+      onClose={hideScriptNotification}
+      onViewScripts={handleViewScripts}
     />
   );
 }
@@ -154,6 +179,8 @@ function AppContent() {
           <Route path="calendar" element={<CalendarPage />} />
           {/* /app/brainstorming */}
           <Route path="brainstorming" element={<BrainstormingPage />} />
+          {/* /app/scripts */}
+          <Route path="scripts" element={<ScriptsPage />} />
           {/* /app/billing */}
           <Route path="billing" element={<BillingPage />} />
           {/* /app/profile-settings */}
@@ -197,6 +224,8 @@ function AppContent() {
           </Routes>
           {/* Brainstorming notification (global) */}
           <BrainstormingNotificationHandler />
+          {/* Script saved notification (global) */}
+          <ScriptNotificationHandler />
 
           {globalError && (
         <div className="fixed bottom-6 right-6 z-50 max-w-sm rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800 shadow-lg">

@@ -496,6 +496,101 @@ export const api = {
     }),
 
   // =====================
+  // SCRIPTS ENDPOINTS
+  // =====================
+
+  /**
+   * POST /scripts - Create script manually
+   */
+  createScript: (data) =>
+    apiClient.post('/scripts', data, {
+      baseUrl: API.MARNEE,
+    }),
+
+  /**
+   * GET /scripts/founder/{founderId} - Get scripts for founder with pagination
+   * @param {string} founderId - The founder ID
+   * @param {Object} options - Optional parameters
+   * @param {string} options.status - Filter by status (draft, ready, used)
+   * @param {number} options.limit - Number of items per page (default 100, max 500)
+   * @param {number} options.offset - Pagination offset
+   */
+  getScripts: (founderId, { status = null, limit = 100, offset = 0 } = {}) => {
+    const params = new URLSearchParams();
+    if (status) params.append('status', status);
+    if (limit !== 100) params.append('limit', limit);
+    if (offset > 0) params.append('offset', offset);
+    const queryString = params.toString() ? `?${params.toString()}` : '';
+    return apiClient.get(`/scripts/founder/${founderId}${queryString}`, {
+      baseUrl: API.MARNEE,
+    });
+  },
+
+  /**
+   * GET /scripts/founder/{founderId}/unlinked - Get scripts not linked to any post
+   */
+  getUnlinkedScripts: (founderId) =>
+    apiClient.get(`/scripts/founder/${founderId}/unlinked`, {
+      baseUrl: API.MARNEE,
+    }),
+
+  /**
+   * GET /scripts/{scriptId} - Get single script
+   */
+  getScript: (scriptId) =>
+    apiClient.get(`/scripts/${scriptId}`, {
+      baseUrl: API.MARNEE,
+    }),
+
+  /**
+   * PUT /scripts/{scriptId} - Update script
+   */
+  updateScript: (scriptId, data) =>
+    apiClient.put(`/scripts/${scriptId}`, data, {
+      baseUrl: API.MARNEE,
+    }),
+
+  /**
+   * DELETE /scripts/{scriptId} - Delete script
+   */
+  deleteScript: (scriptId) =>
+    apiClient.delete(`/scripts/${scriptId}`, {
+      baseUrl: API.MARNEE,
+    }),
+
+  /**
+   * POST /scripts/{scriptId}/link-post - Link script to calendar post
+   */
+  linkScriptToPost: (scriptId, postId) =>
+    apiClient.post(`/scripts/${scriptId}/link-post`, { postId }, {
+      baseUrl: API.MARNEE,
+    }),
+
+  /**
+   * DELETE /scripts/{scriptId}/unlink-post - Unlink script from post
+   */
+  unlinkScriptFromPost: (scriptId) =>
+    apiClient.delete(`/scripts/${scriptId}/unlink-post`, {
+      baseUrl: API.MARNEE,
+    }),
+
+  /**
+   * GET /scripts/post/{postId} - Get scripts for a specific post
+   */
+  getScriptsForPost: (postId) =>
+    apiClient.get(`/scripts/post/${postId}`, {
+      baseUrl: API.MARNEE,
+    }),
+
+  /**
+   * GET /scripts/calendar/{calendarId} - Get scripts for a calendar
+   */
+  getScriptsForCalendar: (calendarId) =>
+    apiClient.get(`/scripts/calendar/${calendarId}`, {
+      baseUrl: API.MARNEE,
+    }),
+
+  // =====================
   // BUSINESS TEST ENDPOINTS
   // =====================
 

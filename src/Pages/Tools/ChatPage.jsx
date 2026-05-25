@@ -86,6 +86,7 @@ function ChatPageContent() {
     chatIsLoading,
     sendChatMessage,
     setConversationId: setContextConversationId,
+    showScriptNotification,
   } = useMarnee();
 
   // State
@@ -672,6 +673,12 @@ function ChatPageContent() {
           });
 
           console.log('[Chat] Messages updated successfully');
+
+          // Check if a script was saved from the response
+          if (res.scriptSaved && res.savedScript) {
+            console.log('[Chat] Script saved:', res.savedScript);
+            showScriptNotification(res.savedScript.title);
+          }
 
           // Update conversations list
           if (finalConvId) {

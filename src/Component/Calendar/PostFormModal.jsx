@@ -17,6 +17,7 @@ import {
   CONTENT_TYPE_COLORS,
   STATUS_COLORS,
 } from '../../constants/calendarViewConstants';
+import ScriptSection from './ScriptSection';
 
 // Convert constants to select options format
 const platformOptions = PLATFORMS.map(p => ({ value: p, label: p }));
@@ -84,6 +85,7 @@ export default function PostFormModal({
   const sections = [
     { id: 'basic', label: 'Basic Info', icon: 'info' },
     { id: 'content', label: 'Content', icon: 'edit' },
+    { id: 'script', label: 'Script', icon: 'file' },
     { id: 'schedule', label: 'Schedule', icon: 'calendar' },
     { id: 'status', label: 'Status', icon: 'check' },
   ];
@@ -170,6 +172,9 @@ export default function PostFormModal({
                 )}
                 {activeSection === 'content' && (
                   <ContentSection form={form} onChange={handleChange} />
+                )}
+                {activeSection === 'script' && (
+                  <ScriptSection form={form} onChange={handleChange} postId={post?.id} />
                 )}
                 {activeSection === 'schedule' && (
                   <ScheduleSection form={form} onChange={handleChange} />
