@@ -86,7 +86,7 @@ export default function Navbar({ active = "ai-content" }) {
       {/* Single Pill containing everything */}
       <div className="bg-[#1a0530] rounded-2xl p-2.5 flex-1 flex flex-col overflow-hidden">
         {/* Logo */}
-        <div className="px-1 py-2 flex items-center gap-3 mb-2">
+        <div className={`py-2 flex items-center gap-3 mb-2 ${collapsed ? 'justify-center' : 'px-1'} max-lg:justify-center`}>
           <div className="w-[38px] h-[38px] flex items-center justify-center flex-shrink-0">
             <svg width="38" height="38" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M16 30C24 30 29 24 29 17C29 10 24 6 16 6C8 6 3 10 3 17C3 24 8 30 16 30Z" fill="url(#navBody)" />
