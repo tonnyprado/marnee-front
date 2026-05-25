@@ -20,6 +20,7 @@ import ResetPasswordPage from "./Pages/ResetPasswordPage";
 import BrandTestPage from "./Pages/BrandTestPage";
 import TestSelectionPage from "./Pages/TestSelectionPage";
 import BusinessTestPage from "./Pages/BusinessTestPage";
+import SocialConnectionsWizard from "./Component/InteractiveTest/SocialConnectionsWizard";
 import TermsOfServicePage from "./Pages/Legal/TermsOfServicePage";
 import PrivacyPolicyPage from "./Pages/Legal/PrivacyPolicyPage";
 
@@ -151,6 +152,14 @@ function AppContent() {
         <Route path="/test-selection" element={<TestSelectionPage />} />
         <Route path="/business-test/questions" element={<BusinessTestPage />} />
         <Route path="/brand-test/questions" element={<BrandTestPage />} />
+        <Route
+          path="/connect-accounts"
+          element={
+            <RequireAuth>
+              <SocialConnectionsWizard />
+            </RequireAuth>
+          }
+        />
         <Route path="/terms" element={<TermsOfServicePage />} />
         <Route path="/privacy" element={<PrivacyPolicyPage />} />
 

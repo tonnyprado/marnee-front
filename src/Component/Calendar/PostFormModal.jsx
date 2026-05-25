@@ -177,7 +177,7 @@ export default function PostFormModal({
                   <ScriptSection form={form} onChange={handleChange} postId={post?.id} />
                 )}
                 {activeSection === 'schedule' && (
-                  <ScheduleSection form={form} onChange={handleChange} />
+                  <ScheduleSection form={form} onChange={handleChange} platform={form.platform} />
                 )}
                 {activeSection === 'status' && (
                   <StatusSection form={form} onChange={handleChange} />
@@ -377,7 +377,46 @@ function ContentSection({ form, onChange }) {
 }
 
 // Schedule Section
-function ScheduleSection({ form, onChange }) {
+function ScheduleSection({ form, onChange, platform }) {
+  const [suggestion, setSuggestion] = useState(null);
+  const [isLoadingSuggestion, setIsLoadingSuggestion] = useState(false);
+
+  // Fetch suggested time when platform and date change
+  useEffect(() => {
+    const fetchSuggestion = async () => {
+      if (!platform || !form.scheduledDate) {
+        setSuggestion(null);
+        return;
+      }
+
+      setIsLoadingSuggestion(true);
+      try {
+        const { api } = await import('../../services/api');
+        const response = await api.getSuggestedPostingTime(platform, form.scheduledDate);
+        if (response.success) {
+          setSuggestion({
+            time: response.suggestedTime,
+            dayOfWeek: response.dayOfWeek,
+            reason: response.reason,
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching time suggestion:', error);
+        setSuggestion(null);
+      } finally {
+        setIsLoadingSuggestion(false);
+      }
+    };
+
+    fetchSuggestion();
+  }, [platform, form.scheduledDate]);
+
+  const applySuggestion = () => {
+    if (suggestion?.time) {
+      onChange('scheduledTime', suggestion.time);
+    }
+  };
+
   return (
     <div className="space-y-5">
       {/* Scheduled Date */}
@@ -404,6 +443,82 @@ function ScheduleSection({ form, onChange }) {
           onChange={(e) => onChange('scheduledTime', e.target.value)}
           className="w-full px-4 py-3 bg-white border border-[#dccaf4] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#40086d]/20 focus:border-[#40086d] transition"
         />
+
+        {/* Marnee Suggestion */}
+        <AnimatePresence mode="wait">
+          {isLoadingSuggestion ? (
+            <motion.div
+              key="loading"
+              initial={{ opacity: 0, y: -5 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -5 }}
+              className="mt-2 flex items-center gap-2 text-sm text-gray-400"
+            >
+              <span className="w-3 h-3 border-2 border-[#40086d]/30 border-t-[#40086d] rounded-full animate-spin" />
+              Getting suggestion...
+            </motion.div>
+          ) : suggestion && (
+            <motion.div
+              key="suggestion"
+              initial={{ opacity: 0, y: -5 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -5 }}
+              className="mt-3"
+            >
+              <motion.button
+                type="button"
+                onClick={applySuggestion}
+                whileHover={{ scale: 1.01 }}
+                whileTap={{ scale: 0.99 }}
+                className={`
+                  w-full p-3 rounded-xl border-2 transition-all text-left
+                  ${form.scheduledTime === suggestion.time
+                    ? 'bg-[#ede0f8] border-[#40086d] text-[#40086d]'
+                    : 'bg-gradient-to-r from-[#f8f4fc] to-[#ede0f8]/50 border-[#dccaf4] hover:border-[#40086d]/50'
+                  }
+                `}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-[#40086d] rounded-lg flex items-center justify-center flex-shrink-0">
+                    <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-semibold text-[#40086d] uppercase tracking-wide">Marnee suggests</span>
+                      <span className="text-lg font-bold text-[#1e1e1e]">{suggestion.time}</span>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-0.5 truncate">
+                      {suggestion.reason}
+                    </p>
+                  </div>
+                  {form.scheduledTime !== suggestion.time && (
+                    <span className="text-xs font-medium text-[#40086d] bg-[#40086d]/10 px-2 py-1 rounded-lg whitespace-nowrap">
+                      Apply
+                    </span>
+                  )}
+                  {form.scheduledTime === suggestion.time && (
+                    <svg className="w-5 h-5 text-[#40086d]" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                  )}
+                </div>
+              </motion.button>
+              {/* Future: This will show personalized suggestions when social accounts are connected */}
+              <p className="text-[10px] text-gray-400 mt-1.5 text-center">
+                Based on general best practices • Connect your accounts for personalized insights
+              </p>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* No platform selected hint */}
+        {!platform && form.scheduledDate && (
+          <p className="mt-2 text-xs text-gray-400">
+            Select a platform in Basic Info to get time suggestions
+          </p>
+        )}
       </div>
 
       {/* Quick time presets */}
@@ -430,23 +545,6 @@ function ScheduleSection({ form, onChange }) {
               {time}
             </motion.button>
           ))}
-        </div>
-      </div>
-
-      {/* Reminder */}
-      <div className="p-4 bg-[#ede0f8]/50 rounded-xl">
-        <div className="flex items-start gap-3">
-          <div className="w-10 h-10 bg-[#40086d] rounded-full flex items-center justify-center flex-shrink-0">
-            <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-            </svg>
-          </div>
-          <div>
-            <h4 className="font-medium text-[#1e1e1e]">Best posting times</h4>
-            <p className="text-sm text-gray-500 mt-1">
-              Based on your audience, the best times to post are 9 AM, 12 PM, and 6 PM.
-            </p>
-          </div>
         </div>
       </div>
     </div>

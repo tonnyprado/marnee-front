@@ -4,12 +4,9 @@ import { X, FileText, Edit3, Clock, Monitor, Film, Tag, Calendar, Link2, Unlink,
 import { api } from "../../../services/api";
 import CustomSelect from "../../../Component/ui/CustomSelect";
 import {
-  SCRIPT_STATUS,
   SCRIPT_PLATFORMS,
   SCRIPT_FORMATS,
   SCRIPT_CONTENT_TYPES,
-  SCRIPT_STATUS_COLORS,
-  SCRIPT_STATUS_BG_COLORS,
   INITIAL_SCRIPT_STATE,
 } from "../../../constants/scriptConstants";
 import PostSelectorModal from "./PostSelectorModal";
@@ -27,11 +24,6 @@ const contentTypeOptions = SCRIPT_CONTENT_TYPES.map(ct => ({
   label: ct.label,
   description: ct.desc,
   color: ct.color,
-}));
-const statusOptions = SCRIPT_STATUS.filter(s => s.value !== "all").map(s => ({
-  value: s.value,
-  label: s.label,
-  color: SCRIPT_STATUS_COLORS[s.value],
 }));
 
 export default function ScriptModal({ isOpen, script, onClose, onSave, onLinkChange }) {
@@ -54,7 +46,6 @@ export default function ScriptModal({ isOpen, script, onClose, onSave, onLinkCha
         contentType: script.contentType || "",
         format: script.format || "",
         durationEstimate: script.durationEstimate || "",
-        status: script.status || "draft",
         notes: script.notes || "",
       });
       setLinkedPost(script.linkedPost || null);
@@ -139,9 +130,6 @@ export default function ScriptModal({ isOpen, script, onClose, onSave, onLinkCha
       day: 'numeric'
     });
   };
-
-  const statusColor = SCRIPT_STATUS_COLORS[form.status] || SCRIPT_STATUS_COLORS.draft;
-  const statusBg = SCRIPT_STATUS_BG_COLORS[form.status] || SCRIPT_STATUS_BG_COLORS.draft;
 
   // Linked Post Section Component
   const LinkedPostSection = ({ inEditMode = false }) => {
@@ -344,23 +332,14 @@ export default function ScriptModal({ isOpen, script, onClose, onSave, onLinkCha
                     />
                   </div>
 
-                  {/* Metadata Row - Content Type & Status */}
-                  <div className="grid grid-cols-2 gap-4">
+                  {/* Metadata Row - Content Type */}
+                  <div>
                     <CustomSelect
                       label="Content Type"
                       value={form.contentType}
                       onChange={(val) => handleChange("contentType", val)}
                       options={contentTypeOptions}
                       placeholder="Select type..."
-                      showColorDot
-                    />
-
-                    <CustomSelect
-                      label="Status"
-                      value={form.status}
-                      onChange={(val) => handleChange("status", val)}
-                      options={statusOptions}
-                      placeholder="Select status..."
                       showColorDot
                     />
                   </div>
@@ -397,12 +376,6 @@ export default function ScriptModal({ isOpen, script, onClose, onSave, onLinkCha
                 <div className="flex-1 overflow-y-auto p-6">
                   {/* Metadata Badges */}
                   <div className="flex flex-wrap items-center gap-2 mb-6">
-                    <span
-                      className="px-3 py-1 rounded-full text-xs font-medium"
-                      style={{ backgroundColor: statusBg, color: statusColor }}
-                    >
-                      {form.status?.charAt(0).toUpperCase() + form.status?.slice(1)}
-                    </span>
                     {form.platform && (
                       <span className="flex items-center gap-1.5 px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
                         <Monitor className="w-3 h-3" />

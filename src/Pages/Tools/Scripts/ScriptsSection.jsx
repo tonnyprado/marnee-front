@@ -3,14 +3,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { api } from "../../../services/api";
 import { useAuth } from "../../../context/AuthContext";
 import {
-  SCRIPT_STATUS,
-  SCRIPT_STATUS_COLORS,
-  SCRIPT_STATUS_BG_COLORS,
   SCRIPT_FORMATS,
   SCRIPT_CONTENT_TYPES,
 } from "../../../constants/scriptConstants";
+import { CONTENT_TYPE_COLORS } from "../../../constants/calendarViewConstants";
 import ScriptModal from "./ScriptModal";
-import { FileText, Plus, Trash2, Link2, ExternalLink } from "lucide-react";
+import { FileText, Plus, Trash2, Link2, ExternalLink, Calendar } from "lucide-react";
 
 export default function ScriptsSection() {
   const { founderId } = useAuth();
@@ -18,7 +16,6 @@ export default function ScriptsSection() {
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingScript, setEditingScript] = useState(null);
-  const [statusFilter, setStatusFilter] = useState("all");
   const [newlyAddedIds, setNewlyAddedIds] = useState([]);
   const [showNotification, setShowNotification] = useState(false);
   const [notificationCount, setNotificationCount] = useState(0);
@@ -133,11 +130,6 @@ export default function ScriptsSection() {
     }
   };
 
-  const filteredScripts =
-    statusFilter === "all"
-      ? scripts
-      : scripts.filter((script) => script.status === statusFilter);
-
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-20">
@@ -190,30 +182,8 @@ export default function ScriptsSection() {
         </button>
       </div>
 
-      {/* Status Filters */}
-      <div className="flex items-center gap-2">
-        {SCRIPT_STATUS.map((status) => (
-          <button
-            key={status.value}
-            onClick={() => setStatusFilter(status.value)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition border ${
-              statusFilter === status.value
-                ? "bg-[#ede0f8] text-[#40086d] border-[#c9b8e0]"
-                : "bg-white text-gray-600 hover:bg-[#f6f6f6] border-[rgba(30,30,30,0.1)]"
-            }`}
-          >
-            {status.label}
-            {status.value !== "all" && (
-              <span className="ml-2 text-xs opacity-70">
-                ({scripts.filter((s) => s.status === status.value).length})
-              </span>
-            )}
-          </button>
-        ))}
-      </div>
-
       {/* Scripts Grid */}
-      {filteredScripts.length === 0 ? (
+      {scripts.length === 0 ? (
         <div className="text-center py-16 bg-white rounded-xl border border-gray-200">
           <FileText className="w-12 h-12 mx-auto text-gray-300 mb-4" />
           <h3 className="text-lg font-medium text-gray-700 mb-2">No scripts yet</h3>
@@ -230,7 +200,7 @@ export default function ScriptsSection() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredScripts.map((script) => (
+          {scripts.map((script) => (
             <ScriptCard
               key={script.id}
               script={script}
@@ -258,9 +228,6 @@ export default function ScriptsSection() {
 }
 
 function ScriptCard({ script, isNew, onClick, onDelete }) {
-  const statusColor = SCRIPT_STATUS_COLORS[script.status] || SCRIPT_STATUS_COLORS.draft;
-  const statusBg = SCRIPT_STATUS_BG_COLORS[script.status] || SCRIPT_STATUS_BG_COLORS.draft;
-
   return (
     <motion.div
       layout
@@ -281,18 +248,12 @@ function ScriptCard({ script, isNew, onClick, onDelete }) {
       <div onClick={onClick} className="p-5 pb-3">
         {/* Header */}
         <div className="flex items-start justify-between mb-3">
-          <div
-            className="px-2 py-1 rounded-md text-xs font-medium"
-            style={{ backgroundColor: statusBg, color: statusColor }}
-          >
-            {script.status?.charAt(0).toUpperCase() + script.status?.slice(1)}
-          </div>
           <button
             onClick={(e) => {
               e.stopPropagation();
               onDelete();
             }}
-            className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+            className="ml-auto p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
             title="Delete"
           >
             <Trash2 className="w-4 h-4" />
@@ -335,8 +296,30 @@ function ScriptCard({ script, isNew, onClick, onDelete }) {
 
       {/* Footer */}
       <div className="px-5 pb-4 pt-2 border-t border-gray-100" onClick={onClick}>
-        {/* Linked Post Indicator */}
-        {script.postId ? (
+        {/* Linked Post Card */}
+        {script.postId && script.linkedPost ? (
+          <div
+            className="rounded-lg p-2.5 transition-all hover:shadow-sm"
+            style={{
+              backgroundColor: CONTENT_TYPE_COLORS[script.linkedPost.contentType] || CONTENT_TYPE_COLORS.default,
+            }}
+          >
+            <div className="flex items-center gap-2">
+              <Calendar className="w-3.5 h-3.5 text-gray-600 flex-shrink-0" />
+              <p className="text-xs font-medium text-gray-800 line-clamp-1">
+                {script.linkedPost.title || script.linkedPost.hook || "Calendar Post"}
+              </p>
+            </div>
+            {script.linkedPost.scheduledDate && (
+              <p className="text-[10px] text-gray-500 mt-1 ml-5">
+                {new Date(script.linkedPost.scheduledDate).toLocaleDateString('en-US', {
+                  month: 'short',
+                  day: 'numeric'
+                })}
+              </p>
+            )}
+          </div>
+        ) : script.postId ? (
           <div className="flex items-center gap-2 text-sm text-green-600 bg-green-50 px-3 py-2 rounded-lg">
             <Link2 className="w-4 h-4" />
             <span>Linked to calendar</span>

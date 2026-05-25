@@ -347,6 +347,15 @@ export const api = {
       baseUrl: API.MARNEE,
     }),
 
+  /**
+   * GET /calendar/suggest-time - Get Marnee's suggested posting time
+   * Returns optimal time based on platform and date
+   */
+  getSuggestedPostingTime: (platform, date) =>
+    apiClient.get(`/calendar/suggest-time?platform=${encodeURIComponent(platform)}&date=${date}`, {
+      baseUrl: API.MARNEE,
+    }),
+
   // =====================
   // WAITLIST ENDPOINTS
   // =====================
@@ -587,6 +596,14 @@ export const api = {
    */
   getScriptsForCalendar: (calendarId) =>
     apiClient.get(`/scripts/calendar/${calendarId}`, {
+      baseUrl: API.MARNEE,
+    }),
+
+  /**
+   * POST /scripts/generate-from-post - Generate script from calendar post using AI
+   */
+  generateScriptFromPost: (postId, founderId) =>
+    apiClient.post('/scripts/generate-from-post', { postId, founderId }, {
       baseUrl: API.MARNEE,
     }),
 

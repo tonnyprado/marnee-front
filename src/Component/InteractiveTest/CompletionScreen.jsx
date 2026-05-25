@@ -8,17 +8,17 @@ export default function CompletionScreen() {
   const navigate = useNavigate();
   const { t } = useLanguage();
 
-  // Auto-navigate after a delay
+  // Auto-navigate to social connections wizard after a delay
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigate("/app");
+      navigate("/connect-accounts");
     }, 5000); // 5 seconds delay
 
     return () => clearTimeout(timer);
   }, [navigate]);
 
   const handleContinue = () => {
-    navigate("/app");
+    navigate("/connect-accounts");
   };
 
   return (

@@ -1,13 +1,14 @@
 /**
  * ScriptSection Component
- * Allows linking scripts to calendar posts
+ * Allows linking scripts to calendar posts and creating new scripts
  */
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { api } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
-import { FileText, Link2, Unlink, Search, Loader2 } from 'lucide-react';
+import { FileText, Link2, Unlink, Search, Loader2, Plus, Sparkles, PenLine, ChevronDown } from 'lucide-react';
+import ScriptModal from '../../Pages/Tools/Scripts/ScriptModal';
 
 export default function ScriptSection({ form, onChange, postId }) {
   const { founderId } = useAuth();
@@ -17,6 +18,11 @@ export default function ScriptSection({ form, onChange, postId }) {
   const [isLinking, setIsLinking] = useState(false);
   const [showScriptSelector, setShowScriptSelector] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+
+  // New script creation states
+  const [showCreateOptions, setShowCreateOptions] = useState(false);
+  const [showScriptModal, setShowScriptModal] = useState(false);
+  const [isGeneratingScript, setIsGeneratingScript] = useState(false);
 
   const loadData = async () => {
     if (!founderId) {
@@ -118,6 +124,81 @@ export default function ScriptSection({ form, onChange, postId }) {
     script.hook?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Handle creating script manually
+  const handleCreateManually = () => {
+    setShowCreateOptions(false);
+    setShowScriptModal(true);
+  };
+
+  // Handle generating script with Marnee
+  const handleGenerateWithMarnee = async () => {
+    if (!postId || !founderId) {
+      alert('Please save the post first before generating a script.');
+      return;
+    }
+
+    setShowCreateOptions(false);
+    setIsGeneratingScript(true);
+
+    try {
+      const response = await api.generateScriptFromPost(postId, founderId);
+
+      if (response.script) {
+        // Script was generated and saved
+        const newScript = response.script;
+        setLinkedScript(newScript);
+        onChange('scriptId', newScript.id);
+
+        // Refresh scripts list
+        await loadData();
+      }
+    } catch (error) {
+      console.error('[ScriptSection] Error generating script:', error);
+      alert('Failed to generate script. Please try again.');
+    } finally {
+      setIsGeneratingScript(false);
+    }
+  };
+
+  // Handle saving script from modal
+  const handleSaveScript = async (scriptData) => {
+    try {
+      // Add founderId to script data
+      const dataWithFounder = {
+        ...scriptData,
+        founderId,
+        postId: postId || undefined, // Link to post if exists
+      };
+
+      let savedScript;
+      if (postId) {
+        // Create and link in one go
+        const response = await api.createScript(dataWithFounder);
+        savedScript = response.script || response;
+
+        // Link to post
+        if (savedScript.id) {
+          await api.linkScriptToPost(savedScript.id, postId);
+        }
+      } else {
+        // Just create the script
+        const response = await api.createScript(dataWithFounder);
+        savedScript = response.script || response;
+      }
+
+      // Update UI
+      setLinkedScript(savedScript);
+      onChange('scriptId', savedScript.id);
+      setShowScriptModal(false);
+
+      // Refresh scripts list
+      await loadData();
+    } catch (error) {
+      console.error('[ScriptSection] Error saving script:', error);
+      alert('Failed to save script. Please try again.');
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -194,22 +275,98 @@ export default function ScriptSection({ form, onChange, postId }) {
         </div>
       ) : (
         <>
-          {/* No Script Linked - Show Selector */}
+          {/* No Script Linked - Show Options */}
           <div className="text-center py-8 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200">
-            <FileText className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-            <h4 className="font-medium text-gray-600 mb-1">No Script Linked</h4>
-            <p className="text-sm text-gray-400 mb-4">
-              Link a script to see it here when creating content
-            </p>
-            <motion.button
-              onClick={() => setShowScriptSelector(true)}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#40086d] text-white rounded-xl font-medium text-sm hover:bg-[#350758] transition-colors"
-            >
-              <Link2 className="w-4 h-4" />
-              Link Existing Script
-            </motion.button>
+            {isGeneratingScript ? (
+              // Generating script loading state
+              <div className="py-4">
+                <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-[#40086d] to-[#7c3aed] rounded-2xl flex items-center justify-center animate-pulse">
+                  <Sparkles className="w-8 h-8 text-white animate-spin" />
+                </div>
+                <h4 className="font-medium text-gray-700 mb-1">Marnee is creating your script...</h4>
+                <p className="text-sm text-gray-400">
+                  This may take a few seconds
+                </p>
+              </div>
+            ) : (
+              <>
+                <FileText className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                <h4 className="font-medium text-gray-600 mb-1">No Script Linked</h4>
+                <p className="text-sm text-gray-400 mb-4">
+                  Link an existing script or create a new one
+                </p>
+
+                {/* Action Buttons */}
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                  {/* Link Existing Script */}
+                  <motion.button
+                    onClick={() => setShowScriptSelector(true)}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#40086d] text-white rounded-xl font-medium text-sm hover:bg-[#350758] transition-colors"
+                  >
+                    <Link2 className="w-4 h-4" />
+                    Link Existing Script
+                  </motion.button>
+
+                  {/* Create Script Dropdown */}
+                  <div className="relative">
+                    <motion.button
+                      onClick={() => setShowCreateOptions(!showCreateOptions)}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="inline-flex items-center gap-2 px-5 py-2.5 bg-white border-2 border-[#40086d] text-[#40086d] rounded-xl font-medium text-sm hover:bg-[#ede0f8] transition-colors"
+                    >
+                      <Plus className="w-4 h-4" />
+                      Create Script
+                      <ChevronDown className={`w-4 h-4 transition-transform ${showCreateOptions ? 'rotate-180' : ''}`} />
+                    </motion.button>
+
+                    {/* Dropdown Options */}
+                    <AnimatePresence>
+                      {showCreateOptions && (
+                        <motion.div
+                          initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                          className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl border border-gray-200 shadow-lg overflow-hidden z-10"
+                        >
+                          {/* Create Manually */}
+                          <motion.button
+                            onClick={handleCreateManually}
+                            whileHover={{ backgroundColor: 'rgba(237, 224, 248, 0.5)' }}
+                            className="w-full px-4 py-3 text-left flex items-center gap-3 border-b border-gray-100"
+                          >
+                            <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
+                              <PenLine className="w-4 h-4 text-gray-600" />
+                            </div>
+                            <div>
+                              <p className="font-medium text-gray-900 text-sm">Create Manually</p>
+                              <p className="text-xs text-gray-500">Write your own script</p>
+                            </div>
+                          </motion.button>
+
+                          {/* Generate with Marnee */}
+                          <motion.button
+                            onClick={handleGenerateWithMarnee}
+                            whileHover={{ backgroundColor: 'rgba(237, 224, 248, 0.5)' }}
+                            className="w-full px-4 py-3 text-left flex items-center gap-3"
+                          >
+                            <div className="w-8 h-8 bg-gradient-to-br from-[#40086d] to-[#7c3aed] rounded-lg flex items-center justify-center">
+                              <Sparkles className="w-4 h-4 text-white" />
+                            </div>
+                            <div>
+                              <p className="font-medium text-gray-900 text-sm">Generate with Marnee</p>
+                              <p className="text-xs text-gray-500">AI-powered script creation</p>
+                            </div>
+                          </motion.button>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
 
           {/* Script Selector Dropdown */}
@@ -313,12 +470,20 @@ export default function ScriptSection({ form, onChange, postId }) {
           <div>
             <h4 className="font-medium text-[#40086d] text-sm">Pro Tip</h4>
             <p className="text-xs text-[#5a0f99] mt-1">
-              Scripts are automatically saved when Marnee generates them in the chat.
-              You can also create scripts manually from the Scripts page.
+              Use "Generate with Marnee" to create a script based on this post's content,
+              or create one manually with your own ideas.
             </p>
           </div>
         </div>
       </div>
+
+      {/* Script Modal for Manual Creation */}
+      <ScriptModal
+        isOpen={showScriptModal}
+        script={null}
+        onClose={() => setShowScriptModal(false)}
+        onSave={handleSaveScript}
+      />
     </div>
   );
 }

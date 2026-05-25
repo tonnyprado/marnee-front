@@ -7,7 +7,6 @@ import { useNavigate } from "react-router-dom";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { getAuthSession } from "../../services/api";
 import { useLanguage } from "../../context/LanguageContext";
-import InstagramConnectionButton from "../../components/InstagramConnectionButton";
 import NavItem from "./NavItem";
 import { getNavIcon } from "./NavIcons";
 
@@ -144,14 +143,6 @@ export default function Navbar({ active = "ai-content" }) {
           ))}
         </div>
       </nav>
-
-      {/* Divider */}
-      <div className="h-px bg-white/10 mx-3" />
-
-      {/* Connect Networks */}
-      <div className="p-2">
-        <InstagramConnectionButton collapsed={collapsed} />
-      </div>
 
       {/* Divider */}
       <div className="h-px bg-white/10 mx-3" />

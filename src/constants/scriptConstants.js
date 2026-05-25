@@ -3,25 +3,6 @@
  * Constants for the Scripts section
  */
 
-export const SCRIPT_STATUS = [
-  { value: "all", label: "All", color: "gray" },
-  { value: "draft", label: "Draft", color: "gray" },
-  { value: "ready", label: "Ready", color: "green" },
-  { value: "used", label: "Used", color: "blue" },
-];
-
-export const SCRIPT_STATUS_COLORS = {
-  draft: "#6B7280",
-  ready: "#10B981",
-  used: "#3B82F6",
-};
-
-export const SCRIPT_STATUS_BG_COLORS = {
-  draft: "#F3F4F6",
-  ready: "#D1FAE5",
-  used: "#DBEAFE",
-};
-
 export const SCRIPT_PLATFORMS = [
   "TikTok",
   "Instagram",
@@ -58,6 +39,5 @@ export const INITIAL_SCRIPT_STATE = {
   contentType: "",
   format: "",
   durationEstimate: "",
-  status: "draft",
   notes: "",
 };
