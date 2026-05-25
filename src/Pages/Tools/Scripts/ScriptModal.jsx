@@ -9,6 +9,11 @@ import {
   INITIAL_SCRIPT_STATE,
 } from "../../../constants/scriptConstants";
 
+// Shared styles matching Calendar form components
+const inputStyles = "w-full bg-white border border-[rgba(30,30,30,0.1)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#40086d]";
+const labelStyles = "text-sm font-medium text-gray-700 block mb-1.5";
+const textareaStyles = "w-full bg-white border border-[rgba(30,30,30,0.1)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#40086d] resize-none";
+
 export default function ScriptModal({ isOpen, script, onClose, onSave }) {
   const [form, setForm] = useState(INITIAL_SCRIPT_STATE);
   const [isSaving, setIsSaving] = useState(false);
@@ -70,10 +75,10 @@ export default function ScriptModal({ isOpen, script, onClose, onSave }) {
             className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col"
           >
             {/* Header */}
-            <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between bg-gradient-to-r from-violet-50 to-purple-50">
+            <div className="px-6 py-5 border-b border-[rgba(30,30,30,0.1)] flex items-center justify-between bg-gradient-to-r from-[#f8f4fc] to-[#f3e8ff]">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-violet-100 rounded-xl flex items-center justify-center">
-                  <FileText className="w-5 h-5 text-violet-600" />
+                <div className="w-10 h-10 bg-[#ede0f8] rounded-xl flex items-center justify-center">
+                  <FileText className="w-5 h-5 text-[#40086d]" />
                 </div>
                 <div>
                   <h2 className="text-lg font-semibold text-gray-900">
@@ -86,17 +91,17 @@ export default function ScriptModal({ isOpen, script, onClose, onSave }) {
               </div>
               <button
                 onClick={onClose}
-                className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                className="p-2 text-gray-400 hover:text-gray-600 hover:bg-[rgba(30,30,30,0.05)] rounded-lg transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Form */}
-            <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-5">
+            <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-4">
               {/* Title */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                <label className={labelStyles}>
                   Title <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -104,80 +109,70 @@ export default function ScriptModal({ isOpen, script, onClose, onSave }) {
                   value={form.title}
                   onChange={(e) => handleChange("title", e.target.value)}
                   placeholder="Enter script title..."
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-colors"
+                  className={inputStyles}
                   required
                 />
               </div>
 
               {/* Hook */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  Hook
-                </label>
+                <label className={labelStyles}>Hook</label>
                 <textarea
                   value={form.hook}
                   onChange={(e) => handleChange("hook", e.target.value)}
                   placeholder="The opening line that grabs attention..."
                   rows={3}
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-colors resize-none"
+                  className={textareaStyles}
                 />
               </div>
 
               {/* Body */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  Body
-                </label>
+                <label className={labelStyles}>Body</label>
                 <textarea
                   value={form.body}
                   onChange={(e) => handleChange("body", e.target.value)}
                   placeholder="The main content of your script..."
                   rows={5}
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-colors resize-none"
+                  className={textareaStyles}
                 />
               </div>
 
               {/* CTA */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  Call to Action (CTA)
-                </label>
+                <label className={labelStyles}>Call to Action (CTA)</label>
                 <textarea
                   value={form.cta}
                   onChange={(e) => handleChange("cta", e.target.value)}
                   placeholder="What you want viewers to do..."
                   rows={2}
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-colors resize-none"
+                  className={textareaStyles}
                 />
               </div>
 
               {/* Visual Guidance */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  Visual Guidance
-                </label>
+                <label className={labelStyles}>Visual Guidance</label>
                 <textarea
                   value={form.visualGuidance}
                   onChange={(e) => handleChange("visualGuidance", e.target.value)}
                   placeholder="Camera angles, b-roll, text overlays..."
                   rows={3}
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-colors resize-none"
+                  className={textareaStyles}
                 />
               </div>
 
               {/* Metadata Row */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3">
                 {/* Platform */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                    Platform
-                  </label>
+                  <label className={labelStyles}>Platform</label>
                   <select
                     value={form.platform}
                     onChange={(e) => handleChange("platform", e.target.value)}
-                    className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-colors bg-white"
+                    className={inputStyles}
                   >
-                    <option value="">Select platform...</option>
+                    <option value="">Select...</option>
                     {SCRIPT_PLATFORMS.map((platform) => (
                       <option key={platform} value={platform}>
                         {platform}
@@ -188,15 +183,13 @@ export default function ScriptModal({ isOpen, script, onClose, onSave }) {
 
                 {/* Format */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                    Format
-                  </label>
+                  <label className={labelStyles}>Format</label>
                   <select
                     value={form.format}
                     onChange={(e) => handleChange("format", e.target.value)}
-                    className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-colors bg-white"
+                    className={inputStyles}
                   >
-                    <option value="">Select format...</option>
+                    <option value="">Select...</option>
                     {SCRIPT_FORMATS.map((format) => (
                       <option key={format.value} value={format.value}>
                         {format.label}
@@ -206,35 +199,36 @@ export default function ScriptModal({ isOpen, script, onClose, onSave }) {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3">
                 {/* Content Type */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                    Content Type
-                  </label>
+                  <label className={labelStyles}>Content Type</label>
                   <select
                     value={form.contentType}
                     onChange={(e) => handleChange("contentType", e.target.value)}
-                    className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-colors bg-white"
+                    className={inputStyles}
                   >
-                    <option value="">Select type...</option>
+                    <option value="">Select...</option>
                     {SCRIPT_CONTENT_TYPES.map((type) => (
                       <option key={type.value} value={type.value}>
                         {type.label}
                       </option>
                     ))}
                   </select>
+                  {form.contentType && (
+                    <p className="text-xs text-gray-500 mt-1">
+                      {SCRIPT_CONTENT_TYPES.find((t) => t.value === form.contentType)?.desc}
+                    </p>
+                  )}
                 </div>
 
                 {/* Status */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                    Status
-                  </label>
+                  <label className={labelStyles}>Status</label>
                   <select
                     value={form.status}
                     onChange={(e) => handleChange("status", e.target.value)}
-                    className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-colors bg-white"
+                    className={inputStyles}
                   >
                     {SCRIPT_STATUS.filter((s) => s.value !== "all").map((status) => (
                       <option key={status.value} value={status.value}>
@@ -247,46 +241,42 @@ export default function ScriptModal({ isOpen, script, onClose, onSave }) {
 
               {/* Duration Estimate */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  Duration Estimate
-                </label>
+                <label className={labelStyles}>Duration Estimate</label>
                 <input
                   type="text"
                   value={form.durationEstimate}
                   onChange={(e) => handleChange("durationEstimate", e.target.value)}
                   placeholder="e.g., 30-60 seconds"
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-colors"
+                  className={inputStyles}
                 />
               </div>
 
               {/* Notes */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  Notes
-                </label>
+                <label className={labelStyles}>Notes</label>
                 <textarea
                   value={form.notes}
                   onChange={(e) => handleChange("notes", e.target.value)}
                   placeholder="Any additional notes..."
                   rows={2}
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-colors resize-none"
+                  className={textareaStyles}
                 />
               </div>
             </form>
 
             {/* Footer */}
-            <div className="px-6 py-4 border-t border-gray-100 flex justify-end gap-3 bg-gray-50">
+            <div className="px-6 py-4 border-t border-[rgba(30,30,30,0.1)] flex justify-end gap-3 bg-[#f9fafb]">
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+                className="px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-[rgba(30,30,30,0.05)] rounded-lg transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSubmit}
                 disabled={isSaving}
-                className="px-6 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                className="px-6 py-2 bg-[#40086d] text-white rounded-lg hover:bg-[#350758] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               >
                 {isSaving ? (
                   <>

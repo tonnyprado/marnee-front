@@ -6,9 +6,11 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { api } from '../../services/api';
+import { useAuth } from '../../context/AuthContext';
 import { FileText, Link2, Unlink, Search, Loader2 } from 'lucide-react';
 
 export default function ScriptSection({ form, onChange, postId }) {
+  const { founderId } = useAuth();
   const [scripts, setScripts] = useState([]);
   const [linkedScript, setLinkedScript] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -17,12 +19,16 @@ export default function ScriptSection({ form, onChange, postId }) {
   const [searchTerm, setSearchTerm] = useState('');
 
   const loadData = async () => {
+    if (!founderId) {
+      setIsLoading(false);
+      return;
+    }
+
     try {
       setIsLoading(true);
-      const founder = await api.getMeFounder();
 
-      // Load all scripts for this founder
-      const response = await api.getScripts(founder.id);
+      // Load all scripts for this founder (single API call)
+      const response = await api.getScripts(founderId);
       const allScripts = response.scripts || [];
 
       // Filter to get unlinked scripts (available for linking)
@@ -44,11 +50,11 @@ export default function ScriptSection({ form, onChange, postId }) {
     }
   };
 
-  // Load scripts on mount
+  // Load scripts on mount or when founderId/postId changes
   useEffect(() => {
     loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [postId]);
+  }, [founderId, postId]);
 
   const handleLinkScript = async (scriptId) => {
     if (!postId) {
@@ -115,7 +121,7 @@ export default function ScriptSection({ form, onChange, postId }) {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="w-8 h-8 text-violet-600 animate-spin" />
+        <Loader2 className="w-8 h-8 text-[#40086d] animate-spin" />
       </div>
     );
   }
@@ -124,11 +130,11 @@ export default function ScriptSection({ form, onChange, postId }) {
     <div className="space-y-5">
       {/* Linked Script Display */}
       {linkedScript ? (
-        <div className="bg-gradient-to-r from-violet-50 to-purple-50 rounded-xl p-5 border border-violet-200">
+        <div className="bg-gradient-to-r from-[#f8f4fc] to-[#f3e8ff] rounded-xl p-5 border border-[#c9b8e0]">
           <div className="flex items-start justify-between mb-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-violet-100 rounded-xl flex items-center justify-center">
-                <FileText className="w-5 h-5 text-violet-600" />
+              <div className="w-10 h-10 bg-[#ede0f8] rounded-xl flex items-center justify-center">
+                <FileText className="w-5 h-5 text-[#40086d]" />
               </div>
               <div>
                 <h4 className="font-semibold text-gray-900">{linkedScript.title}</h4>
@@ -152,7 +158,7 @@ export default function ScriptSection({ form, onChange, postId }) {
           {/* Script Content Preview */}
           {linkedScript.hook && (
             <div className="mb-3">
-              <label className="block text-xs font-medium text-violet-600 mb-1">Hook</label>
+              <label className="block text-xs font-medium text-[#40086d] mb-1">Hook</label>
               <p className="text-sm text-gray-700 bg-white/60 rounded-lg p-3">
                 {linkedScript.hook}
               </p>
@@ -161,7 +167,7 @@ export default function ScriptSection({ form, onChange, postId }) {
 
           {linkedScript.body && (
             <div className="mb-3">
-              <label className="block text-xs font-medium text-violet-600 mb-1">Body</label>
+              <label className="block text-xs font-medium text-[#40086d] mb-1">Body</label>
               <p className="text-sm text-gray-700 bg-white/60 rounded-lg p-3 max-h-32 overflow-y-auto">
                 {linkedScript.body}
               </p>
@@ -170,7 +176,7 @@ export default function ScriptSection({ form, onChange, postId }) {
 
           {linkedScript.cta && (
             <div>
-              <label className="block text-xs font-medium text-violet-600 mb-1">CTA</label>
+              <label className="block text-xs font-medium text-[#40086d] mb-1">CTA</label>
               <p className="text-sm text-gray-700 bg-white/60 rounded-lg p-3">
                 {linkedScript.cta}
               </p>
@@ -178,8 +184,8 @@ export default function ScriptSection({ form, onChange, postId }) {
           )}
 
           {linkedScript.visualGuidance && (
-            <div className="mt-3 pt-3 border-t border-violet-200/50">
-              <label className="block text-xs font-medium text-violet-600 mb-1">Visual Guidance</label>
+            <div className="mt-3 pt-3 border-t border-[#c9b8e0]/50">
+              <label className="block text-xs font-medium text-[#40086d] mb-1">Visual Guidance</label>
               <p className="text-sm text-gray-600 italic">
                 {linkedScript.visualGuidance}
               </p>
@@ -199,7 +205,7 @@ export default function ScriptSection({ form, onChange, postId }) {
               onClick={() => setShowScriptSelector(true)}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-violet-600 text-white rounded-xl font-medium text-sm hover:bg-violet-700 transition-colors"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#40086d] text-white rounded-xl font-medium text-sm hover:bg-[#350758] transition-colors"
             >
               <Link2 className="w-4 h-4" />
               Link Existing Script
@@ -224,7 +230,7 @@ export default function ScriptSection({ form, onChange, postId }) {
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                       placeholder="Search scripts..."
-                      className="w-full pl-9 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500"
+                      className="w-full pl-9 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#40086d]/20 focus:border-[#40086d]"
                     />
                   </div>
                 </div>
@@ -244,12 +250,12 @@ export default function ScriptSection({ form, onChange, postId }) {
                         key={script.id}
                         onClick={() => handleLinkScript(script.id)}
                         disabled={isLinking}
-                        whileHover={{ backgroundColor: 'rgba(139, 92, 246, 0.05)' }}
-                        className="w-full p-4 text-left border-b border-gray-50 last:border-b-0 hover:bg-violet-50/50 transition-colors disabled:opacity-50"
+                        whileHover={{ backgroundColor: 'rgba(64, 8, 109, 0.05)' }}
+                        className="w-full p-4 text-left border-b border-gray-50 last:border-b-0 hover:bg-[#ede0f8]/50 transition-colors disabled:opacity-50"
                       >
                         <div className="flex items-start gap-3">
-                          <div className="w-8 h-8 bg-violet-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                            <FileText className="w-4 h-4 text-violet-600" />
+                          <div className="w-8 h-8 bg-[#ede0f8] rounded-lg flex items-center justify-center flex-shrink-0">
+                            <FileText className="w-4 h-4 text-[#40086d]" />
                           </div>
                           <div className="flex-1 min-w-0">
                             <h5 className="font-medium text-gray-900 truncate">
@@ -299,14 +305,14 @@ export default function ScriptSection({ form, onChange, postId }) {
       )}
 
       {/* Tip */}
-      <div className="p-4 bg-violet-50/50 rounded-xl border border-violet-100">
+      <div className="p-4 bg-[#ede0f8]/50 rounded-xl border border-[#c9b8e0]">
         <div className="flex items-start gap-3">
-          <div className="w-8 h-8 bg-violet-100 rounded-full flex items-center justify-center flex-shrink-0">
-            <span className="text-violet-600 text-lg">i</span>
+          <div className="w-8 h-8 bg-[#ede0f8] rounded-full flex items-center justify-center flex-shrink-0">
+            <span className="text-[#40086d] text-lg">i</span>
           </div>
           <div>
-            <h4 className="font-medium text-violet-900 text-sm">Pro Tip</h4>
-            <p className="text-xs text-violet-600 mt-1">
+            <h4 className="font-medium text-[#40086d] text-sm">Pro Tip</h4>
+            <p className="text-xs text-[#5a0f99] mt-1">
               Scripts are automatically saved when Marnee generates them in the chat.
               You can also create scripts manually from the Scripts page.
             </p>

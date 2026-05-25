@@ -16,7 +16,7 @@ export default function ScriptSavedNotification({ show, scriptTitle, onClose, on
           transition={{ type: "spring", stiffness: 300, damping: 25 }}
           className="fixed top-0 left-1/2 -translate-x-1/2 z-[9999] max-w-md w-full px-4"
         >
-          <div className="bg-gradient-to-r from-violet-600 to-purple-600 text-white rounded-2xl shadow-2xl p-5 flex items-start gap-4">
+          <div className="bg-gradient-to-r from-[#40086d] to-[#5a0f99] text-white rounded-2xl shadow-2xl p-5 flex items-start gap-4">
             {/* Animated Icon */}
             <motion.div
               animate={{
@@ -48,7 +48,7 @@ export default function ScriptSavedNotification({ show, scriptTitle, onClose, on
                   <p className="font-bold text-lg leading-tight">
                     Script Saved!
                   </p>
-                  <p className="text-sm text-violet-100 mt-1 truncate">
+                  <p className="text-sm text-purple-200 mt-1 truncate">
                     {scriptTitle ? `"${scriptTitle}"` : "Your script has been saved"}
                   </p>
                 </div>
@@ -80,7 +80,7 @@ export default function ScriptSavedNotification({ show, scriptTitle, onClose, on
                   onClick={onViewScripts}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="mt-3 w-full bg-white text-violet-600 font-semibold px-4 py-2.5 rounded-lg text-sm hover:bg-violet-50 transition-colors shadow-md"
+                  className="mt-3 w-full bg-white text-[#40086d] font-semibold px-4 py-2.5 rounded-lg text-sm hover:bg-[#ede0f8] transition-colors shadow-md"
                 >
                   View Scripts
                 </motion.button>
@@ -92,9 +92,9 @@ export default function ScriptSavedNotification({ show, scriptTitle, onClose, on
           <motion.div
             animate={{
               boxShadow: [
-                "0 0 0 0 rgba(139, 92, 246, 0.7)",
-                "0 0 0 20px rgba(139, 92, 246, 0)",
-                "0 0 0 0 rgba(139, 92, 246, 0)"
+                "0 0 0 0 rgba(64, 8, 109, 0.7)",
+                "0 0 0 20px rgba(64, 8, 109, 0)",
+                "0 0 0 0 rgba(64, 8, 109, 0)"
               ]
             }}
             transition={{ duration: 2, repeat: 1 }}
