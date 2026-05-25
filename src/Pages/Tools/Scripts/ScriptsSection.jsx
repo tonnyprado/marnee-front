@@ -6,6 +6,8 @@ import {
   SCRIPT_STATUS,
   SCRIPT_STATUS_COLORS,
   SCRIPT_STATUS_BG_COLORS,
+  SCRIPT_FORMATS,
+  SCRIPT_CONTENT_TYPES,
 } from "../../../constants/scriptConstants";
 import ScriptModal from "./ScriptModal";
 import { FileText, Plus, Trash2, Edit3, Link2, ExternalLink } from "lucide-react";
