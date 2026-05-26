@@ -9,6 +9,7 @@ import { getAuthSession } from "../../services/api";
 import { useLanguage } from "../../context/LanguageContext";
 import NavItem from "./NavItem";
 import { getNavIcon } from "./NavIcons";
+import marneeLogo from "../../assets/marnee-logo-512.png";
 
 export default function Navbar({ active = "ai-content" }) {
   const { t } = useLanguage();
@@ -70,32 +71,11 @@ export default function Navbar({ active = "ai-content" }) {
       {/* Logo + Toggle */}
       <div className={`p-4 flex items-center ${collapsed ? 'justify-center' : 'justify-between'} max-lg:justify-center`}>
         <div className={`flex items-center gap-3 ${collapsed ? 'justify-center' : ''}`}>
-          <div className="w-[38px] h-[38px] flex items-center justify-center flex-shrink-0">
-            <svg width="38" height="38" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M16 30C24 30 29 24 29 17C29 10 24 6 16 6C8 6 3 10 3 17C3 24 8 30 16 30Z" fill="url(#navBody)" />
-              <path d="M7 8C5 4 6 1 9 1C12 1 12 4 11 8" fill="url(#navBody)" />
-              <path d="M25 8C27 4 26 1 23 1C20 1 20 4 21 8" fill="url(#navBody)" />
-              <path d="M5 13C5 8 9 4 16 4C23 4 27 8 27 13" stroke="url(#navHeadset)" strokeWidth="2.5" strokeLinecap="round" fill="none" />
-              <rect x="1" y="11" width="5" height="7" rx="2" fill="url(#navHeadset)" />
-              <rect x="26" y="11" width="5" height="7" rx="2" fill="url(#navHeadset)" />
-              <path d="M6 16C6 16 8 18 10 22" stroke="url(#navHeadset)" strokeWidth="2" strokeLinecap="round" fill="none" />
-              <circle cx="11" cy="23" r="2.5" fill="url(#navMic)" />
-              <defs>
-                <linearGradient id="navBody" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#A855F7" />
-                  <stop offset="100%" stopColor="#8B5CF6" />
-                </linearGradient>
-                <linearGradient id="navHeadset" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#7C3AED" />
-                  <stop offset="100%" stopColor="#6D28D9" />
-                </linearGradient>
-                <linearGradient id="navMic" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#EC4899" />
-                  <stop offset="100%" stopColor="#DB2777" />
-                </linearGradient>
-              </defs>
-            </svg>
-          </div>
+          <img
+            src={marneeLogo}
+            alt="Marnee"
+            className="w-[38px] h-[38px] object-contain flex-shrink-0"
+          />
           {!collapsed && (
             <span className="font-['Noto_Serif'] text-[20px] font-bold text-white tracking-tight whitespace-nowrap max-lg:hidden">
               Marnee
