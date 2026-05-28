@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { api } from '../../services/api';
 import { Send, Loader2, MessageCircle, Search, X, Menu, Mic, MicOff, Copy, Check, Star, Sparkles } from 'lucide-react';

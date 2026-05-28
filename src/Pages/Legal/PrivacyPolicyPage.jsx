@@ -94,9 +94,37 @@ export default function PrivacyPolicyPage() {
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">2.4 Cookies and Tracking Technologies</h3>
                 <p>
                   We use cookies, web beacons, and similar tracking technologies to collect information
-                  about your browsing activities and to remember your preferences. You can control cookies
-                  through your browser settings, but disabling cookies may affect your ability to use
+                  about your browsing activities and to remember your preferences. The types of cookies we use include:
+                </p>
+                <ul className="list-disc pl-6 space-y-1 mt-2">
+                  <li><strong>Essential Cookies:</strong> Required for the Service to function properly, including authentication and security</li>
+                  <li><strong>Functional Cookies:</strong> Remember your preferences and settings to personalize your experience</li>
+                  <li><strong>Analytics Cookies:</strong> Help us understand how you use the Service to improve performance</li>
+                  <li><strong>Marketing Cookies:</strong> Used to deliver relevant advertising (only with your consent)</li>
+                </ul>
+                <p className="mt-3">
+                  You can control cookies through your browser settings, but disabling cookies may affect your ability to use
                   certain features of our Service.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">2.5 Social Media Integration Data</h3>
+                <p>
+                  When you connect third-party social media accounts to Marnee (such as Instagram, Facebook,
+                  TikTok, or Google Analytics), we may collect:
+                </p>
+                <ul className="list-disc pl-6 space-y-1 mt-2">
+                  <li>Your social media profile information (name, profile picture, account ID)</li>
+                  <li>Analytics and performance data from your connected accounts</li>
+                  <li>Content engagement metrics (likes, comments, shares, reach)</li>
+                  <li>Audience insights and demographic information</li>
+                  <li>Post history and scheduled content</li>
+                </ul>
+                <p className="mt-3">
+                  This data is collected only with your explicit authorization through OAuth connections and is used
+                  to provide our unified social media management features. You can disconnect these integrations
+                  at any time through your account settings.
                 </p>
               </div>
             </div>
@@ -209,13 +237,23 @@ export default function PrivacyPolicyPage() {
             <div className="space-y-3 text-gray-700">
               <p>
                 We retain your information for as long as necessary to provide you with our Service and
-                fulfill the purposes described in this Privacy Policy. When you delete your account, we
-                will delete your personal information within a reasonable timeframe, except where we are
-                required or permitted by law to retain it.
+                fulfill the purposes described in this Privacy Policy. Here are our general retention periods:
+              </p>
+              <ul className="list-disc pl-6 space-y-2 mt-2">
+                <li><strong>Account Information:</strong> Retained while your account is active and for 30 days after deletion request</li>
+                <li><strong>Generated Content:</strong> Retained while your account is active; deleted within 30 days of account deletion</li>
+                <li><strong>Chat History:</strong> Retained for 12 months or until you manually delete conversations</li>
+                <li><strong>Usage Analytics:</strong> Retained in aggregated, anonymized form indefinitely</li>
+                <li><strong>Payment Records:</strong> Retained for 7 years as required for tax and legal compliance</li>
+                <li><strong>Security Logs:</strong> Retained for 12 months for fraud prevention and security purposes</li>
+              </ul>
+              <p className="mt-3">
+                When you delete your account, we will delete your personal information within 30 days,
+                except where we are required or permitted by law to retain it.
               </p>
               <p>
-                Some information may be retained in backup systems for a limited period or as required
-                for legal, tax, or accounting purposes.
+                Some information may be retained in backup systems for up to 90 days after deletion.
+                Social media integration data is deleted immediately when you disconnect an account.
               </p>
             </div>
           </section>
@@ -329,17 +367,51 @@ export default function PrivacyPolicyPage() {
             <h2 className="text-2xl font-bold text-gray-900 mb-4">11. AI and Machine Learning</h2>
             <div className="space-y-3 text-gray-700">
               <p>
-                Our Service uses artificial intelligence and machine learning to provide personalized
-                experiences and generate content. We may use your interactions with our AI to improve
-                our models and Service.
+                Marnee uses artificial intelligence and machine learning technologies to provide our core services.
+                Here's how we use AI with your data:
               </p>
-              <p>
-                Content you create using our AI may be used in anonymized and aggregated form to train
-                and improve our models. We implement measures to ensure your personal information is
-                not identifiable in this training data.
-              </p>
-              <p>
-                You can request that specific content not be used for training purposes by contacting us.
+
+              <div className="space-y-3">
+                <div>
+                  <p className="font-semibold">AI Content Generation:</p>
+                  <p>
+                    When you use our AI chat assistant, content generator, or brainstorming tools, your prompts
+                    and inputs are processed by AI models to generate marketing copy, social media posts, scripts,
+                    and campaign ideas. Your brand profile information may be used to personalize generated content.
+                  </p>
+                </div>
+
+                <div>
+                  <p className="font-semibold">AI Image Generation:</p>
+                  <p>
+                    Our image generation features use AI models to create visual content based on your descriptions.
+                    The prompts and generated images are stored in your account for future reference.
+                  </p>
+                </div>
+
+                <div>
+                  <p className="font-semibold">Personalization and Recommendations:</p>
+                  <p>
+                    We may analyze your usage patterns and content preferences to provide personalized recommendations
+                    for marketing strategies and content optimization.
+                  </p>
+                </div>
+
+                <div>
+                  <p className="font-semibold">Model Training and Improvement:</p>
+                  <p>
+                    Content you create using our AI may be used in anonymized and aggregated form to train
+                    and improve our models. We implement strict measures to ensure your personal information and
+                    proprietary business data is not identifiable in this training data. You can opt out of having
+                    your content used for model training by contacting us at privacy@marnee.com.
+                  </p>
+                </div>
+              </div>
+
+              <p className="mt-4">
+                <strong>Important:</strong> AI-generated content should be reviewed before publication. We do not
+                guarantee the accuracy, appropriateness, or originality of AI-generated content. You retain
+                responsibility for all content you publish using our Service.
               </p>
             </div>
           </section>

@@ -48,15 +48,28 @@ export default function TermsOfServicePage() {
             <h2 className="text-2xl font-bold text-gray-900 mb-4">2. Description of Service</h2>
             <div className="space-y-3 text-gray-700">
               <p>
-                Marnee is an AI-powered marketing assistant platform that provides content creation,
-                strategy planning, campaign management, and other marketing-related services. The Service
-                uses artificial intelligence to help businesses and individuals create and manage their
-                marketing efforts.
+                Marnee is an AI-powered marketing assistant platform that provides comprehensive digital
+                marketing solutions including:
+              </p>
+              <ul className="list-disc pl-6 space-y-2">
+                <li><strong>AI Content Generation:</strong> Automated creation of marketing copy, social media posts, scripts, and campaign materials using artificial intelligence</li>
+                <li><strong>Content Calendar:</strong> Visual planning and scheduling tools for organizing your marketing content across platforms</li>
+                <li><strong>Social Media Integration:</strong> Direct connection with Instagram, Facebook, TikTok, and Google Analytics for unified management</li>
+                <li><strong>Brand Profile Management:</strong> Tools to define, develop, and maintain consistent brand identity</li>
+                <li><strong>Image Generation & Editing:</strong> AI-powered image creation and professional editing capabilities</li>
+                <li><strong>Analytics Dashboard:</strong> Performance metrics and insights across all connected platforms</li>
+                <li><strong>Strategy Planning:</strong> AI-assisted marketing strategy development and campaign optimization</li>
+              </ul>
+              <p className="mt-4">
+                The Service utilizes advanced artificial intelligence models to generate content and provide
+                recommendations. While we strive for accuracy and quality, AI-generated content should be
+                reviewed by humans before publication.
               </p>
               <p>
                 We reserve the right to modify, suspend, or discontinue any part of the Service at any
-                time without notice. We will not be liable to you or any third party for any modification,
-                suspension, or discontinuance of the Service.
+                time. For material changes, we will provide at least 14 days' notice when possible.
+                We will not be liable to you or any third party for any modification, suspension, or
+                discontinuance of the Service.
               </p>
             </div>
           </section>

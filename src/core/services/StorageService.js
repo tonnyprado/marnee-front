@@ -43,7 +43,7 @@ class StorageService {
       return false;
     }
     // Only allow alphanumeric, dash, underscore, and dot
-    return /^[a-zA-Z0-9_\-\.]+$/.test(key);
+    return /^[a-zA-Z0-9_\-.]+$/.test(key);
   }
 
   /**

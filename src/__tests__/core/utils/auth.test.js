@@ -2,14 +2,53 @@
  * Auth utilities tests
  */
 import {
+  AUTH_STORAGE_KEY,
+  getAuthSession,
+  setAuthSession,
+  clearAuthSession,
+  isAuthenticated,
   decodeJWT,
   isValidSession,
   isTokenExpired,
   getTokenExpiration,
   hasRole,
+  isAdmin,
   getUserRole,
   getUserId,
+  getUserClaims,
+  getAuthHeader,
 } from '../../../core/utils/auth';
+
+// Mock dependencies
+jest.mock('../../../core/services/StorageService', () => ({
+  getItem: jest.fn(),
+  setItem: jest.fn(),
+  removeItem: jest.fn(),
+  default: {
+    getItem: jest.fn(),
+    setItem: jest.fn(),
+    removeItem: jest.fn(),
+  },
+}));
+
+jest.mock('../../../core/utils/logger', () => ({
+  createContextLogger: () => ({
+    debug: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+  }),
+  default: {
+    createContextLogger: () => ({
+      debug: jest.fn(),
+      info: jest.fn(),
+      warn: jest.fn(),
+      error: jest.fn(),
+    }),
+  },
+}));
+
+import storage from '../../../core/services/StorageService';
 
 // Sample valid JWT (header.payload.signature)
 // Payload: { "sub": "user123", "role": "ADMIN", "exp": 9999999999, "userId": "uuid-123" }

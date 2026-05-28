@@ -134,7 +134,7 @@ export function MarneeProvider({ children }) {
   }, [calendar]);
 
   // Initialize session after questionnaire
-  const initSession = ({ founderId: fId, sessionId: sId, welcomeMessage: wMsg, conversationId: cId, clearMessages = true }) => {
+  const initSession = useCallback(({ founderId: fId, sessionId: sId, welcomeMessage: wMsg, conversationId: cId, clearMessages = true }) => {
     // Use AuthContext for session
     auth.login({ founderId: fId, sessionId: sId });
 
@@ -146,7 +146,7 @@ export function MarneeProvider({ children }) {
     if (clearMessages) {
       setMessages([]);
     }
-  };
+  }, [auth]);
 
   // Generate unique ID for messages
   const generateUniqueId = () => {
@@ -154,18 +154,18 @@ export function MarneeProvider({ children }) {
   };
 
   // Add message to chat
-  const addMessage = (message) => {
+  const addMessage = useCallback((message) => {
     setMessages((prev) => [...prev, { ...message, id: message.id || generateUniqueId() }]);
-  };
+  }, []);
 
   // Update step
-  const updateStep = (step) => {
+  const updateStep = useCallback((step) => {
     setCurrentStep(step);
     setStepName(STEP_NAMES[step] || '');
-  };
+  }, []);
 
   // Load conversation from backend
-  const loadConversation = async (conversation) => {
+  const loadConversation = useCallback(async (conversation) => {
     console.log('[MarneeContext] Loading conversation:', conversation.id);
     console.log('[MarneeContext] Conversation has', conversation.messages?.length || 0, 'messages');
 
@@ -198,7 +198,7 @@ export function MarneeProvider({ children }) {
     } else {
       console.warn('[MarneeContext] WARNING: Conversation has no messages, keeping existing messages');
     }
-  };
+  }, [auth, currentStep]);
 
   // Clear Marnee-specific data (called when logout event is received)
   const clearMarneeData = useCallback(() => {
@@ -238,12 +238,12 @@ export function MarneeProvider({ children }) {
   }, [clearMarneeData]);
 
   // Get messages in API format
-  const getMessagesForApi = () => {
+  const getMessagesForApi = useCallback(() => {
     return messages.map((m) => ({
       role: m.from === 'ai' ? 'assistant' : 'user',
       content: m.text,
     }));
-  };
+  }, [messages]);
 
   // Brainstorming notification methods
   const showBrainstormingNotification = useCallback((count) => {

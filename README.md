@@ -1,70 +1,319 @@
-# Getting Started with Create React App
+# Marnee Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+AI-powered marketing assistant platform that helps businesses create content, plan strategies, and manage campaigns.
 
-## Available Scripts
+## Table of Contents
 
-In the project directory, you can run:
+- [Overview](#overview)
+- [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
+- [Getting Started](#getting-started)
+- [Architecture](#architecture)
+- [Features](#features)
+- [Testing](#testing)
+- [Scripts](#scripts)
+- [Environment Variables](#environment-variables)
 
-### `npm start`
+## Overview
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Marnee is an intelligent marketing assistant that combines AI-powered content generation with social media management tools. The platform helps founders and marketers:
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- Generate marketing content with AI assistance
+- Plan and schedule social media posts
+- Analyze performance metrics
+- Connect multiple social platforms
+- Manage brand identity and strategy
 
-### `npm test`
+## Tech Stack
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Core
+- **React** 19.x - UI framework
+- **React Router** 7.x - Client-side routing
+- **Context API** - State management
 
-### `npm run build`
+### UI & Styling
+- **Material-UI (MUI)** 9.x - Component library
+- **Tailwind CSS** 3.x - Utility-first CSS
+- **Framer Motion** - Animations
+- **Lucide React** - Icons
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Features
+- **Chart.js** - Data visualization
+- **Fabric.js** - Canvas/image editing
+- **React Force Graph** - Knowledge graph visualization
+- **jsPDF** - PDF generation
+- **React Markdown** - Markdown rendering
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Testing
+- **React Testing Library** - Component testing
+- **Playwright** - E2E testing
+- **Jest** - Test runner
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Project Structure
 
-### `npm run eject`
+```
+src/
+├── admin/                    # Admin panel (13 pages)
+│   ├── components/          # Admin-specific components
+│   └── pages/               # Admin pages (users, security, analytics)
+│
+├── Component/               # Main application components
+│   ├── Calendar/           # Content calendar
+│   ├── Chat/               # AI chat interface
+│   ├── Dashboard/          # Analytics dashboard
+│   ├── ImageGenerator/     # Image creation/editing
+│   ├── InteractiveTest/    # Onboarding tests
+│   ├── Navbar/             # Navigation
+│   └── ui/                 # Reusable UI components
+│
+├── Pages/                   # Application pages
+│   ├── Tools/              # Main features (Chat, Calendar, etc.)
+│   └── Legal/              # Terms & Privacy pages
+│
+├── context/                 # React Context providers
+│   ├── AuthContext.jsx     # Authentication state
+│   ├── MarneeContext.jsx   # Application state
+│   ├── LanguageContext.jsx # i18n
+│   └── ChatThemeContext.jsx
+│
+├── hooks/                   # Custom React hooks (14 total)
+│   ├── useChat.js          # Chat functionality
+│   ├── useBrandProfile.js  # Brand profile management
+│   ├── useImageGenerator.js
+│   └── ... (11 more)
+│
+├── core/                    # Core utilities
+│   ├── services/
+│   │   ├── ApiClient.js    # HTTP client
+│   │   ├── StorageService.js # Local storage abstraction
+│   │   ├── ErrorHandler.js
+│   │   └── RateLimiter.js
+│   └── utils/
+│       ├── auth.js         # Auth utilities
+│       ├── logger.js       # Logging
+│       └── transformers.js
+│
+├── services/                # API services (18 files)
+│   ├── api.js              # Main API (chat, messages)
+│   ├── adminApi.js         # Admin endpoints
+│   ├── instagramApi.js     # Instagram integration
+│   ├── metaAdsApi.js       # Meta Ads
+│   └── ... (14 more)
+│
+├── guards/                  # Route protection
+├── i18n/                    # Internationalization
+├── constants/               # App constants
+├── assets/                  # Images, videos
+└── __tests__/              # Test files
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Getting Started
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Prerequisites
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+- Node.js 18+
+- npm 9+
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Installation
 
-## Learn More
+```bash
+# Clone the repository
+git clone <repository-url>
+cd marnee-front
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+# Install dependencies
+npm install
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+# Start development server
+npm start
+```
 
-### Code Splitting
+The app will be available at `http://localhost:3000`
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### Environment Setup
 
-### Analyzing the Bundle Size
+Create a `.env` file in the root directory:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+```env
+REACT_APP_API_URL=http://localhost:8000
+REACT_APP_GOOGLE_CLIENT_ID=your-google-client-id
+REACT_APP_FACEBOOK_APP_ID=your-facebook-app-id
+```
 
-### Making a Progressive Web App
+## Architecture
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+### State Management (3 Layers)
 
-### Advanced Configuration
+```
+┌─────────────────────────────────────────────────────────┐
+│                    Context Layer                         │
+│  AuthContext │ MarneeContext │ LanguageContext │ Theme  │
+└─────────────────────────────────────────────────────────┘
+                            │
+┌─────────────────────────────────────────────────────────┐
+│                    Hooks Layer                           │
+│  useChat │ useBrandProfile │ useImageGenerator │ ...    │
+└─────────────────────────────────────────────────────────┘
+                            │
+┌─────────────────────────────────────────────────────────┐
+│                   Services Layer                         │
+│  ApiClient │ api.js │ instagramApi │ metaAdsApi │ ...   │
+└─────────────────────────────────────────────────────────┘
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+### Component Hierarchy
 
-### Deployment
+```
+App.js
+├── LanguageProvider
+│   └── ChatThemeProvider
+│       └── AuthProvider
+│           └── MarneeProvider
+│               ├── Public Routes
+│               │   ├── PresentationPage
+│               │   ├── AuthPage
+│               │   └── TestPages
+│               │
+│               ├── Protected Routes (/app)
+│               │   ├── ChatPage
+│               │   ├── CalendarPage
+│               │   ├── DashboardPage
+│               │   ├── BrainstormingPage
+│               │   └── ScriptsPage
+│               │
+│               └── Admin Routes (/admin)
+│                   ├── AdminDashboard
+│                   ├── UserManagement
+│                   └── SecurityDashboard
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+### Data Flow
 
-### `npm run build` fails to minify
+1. **User Action** → Component triggers hook method
+2. **Hook** → Calls service API
+3. **Service** → HTTP request via ApiClient
+4. **Response** → Updates Context state
+5. **Context** → Re-renders subscribed components
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Features
+
+### Core Features
+
+| Feature | Description |
+|---------|-------------|
+| **AI Chat** | Multi-conversation AI assistant for content creation |
+| **Content Calendar** | Visual calendar for planning and scheduling posts |
+| **Image Generator** | AI image generation + Fabric.js editor |
+| **Brainstorming** | Idea storage and organization |
+| **Scripts** | Content script management |
+| **Dashboard** | Analytics with knowledge graph visualization |
+
+### Social Integrations
+
+- **Google Analytics** - Traffic and conversion tracking
+- **Instagram Business** - Posting and analytics
+- **Meta Ads** - Ad campaign management
+- **TikTok** - Content distribution
+
+### Admin Panel
+
+- User management (CRUD, roles)
+- Subscription plans
+- Security dashboard (audit logs, sessions, alerts)
+- AI prompt management
+- RAG (Retrieval Augmented Generation) management
+- SEO management
+
+## Testing
+
+### Running Tests
+
+```bash
+# Run all tests
+npm test
+
+# Run with coverage
+npm test -- --coverage
+
+# Run specific test file
+npm test -- --testPathPattern="ApiClient"
+
+# Run E2E tests
+npm run test:e2e
+
+# Run E2E with UI
+npm run test:e2e:ui
+```
+
+### Test Structure
+
+```
+src/__tests__/
+├── core/
+│   ├── services/       # ApiClient, ErrorHandler, RateLimiter
+│   └── utils/          # auth, logger, transformers
+├── hooks/              # Custom hook tests
+├── components/         # Component tests
+│   └── ui/            # UI component tests
+└── context/           # Context tests
+```
+
+### Coverage Goals
+
+- Current: ~10% line coverage
+- Target: 30%+ line coverage
+
+## Scripts
+
+| Script | Description |
+|--------|-------------|
+| `npm start` | Start development server |
+| `npm run build` | Build for production |
+| `npm test` | Run tests |
+| `npm run test:e2e` | Run Playwright E2E tests |
+| `npm run test:e2e:ui` | E2E tests with Playwright UI |
+| `npm run test:e2e:headed` | E2E tests in headed mode |
+| `npm run analyze` | Analyze bundle size |
+
+## Environment Variables
+
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `REACT_APP_API_URL` | Backend API URL | Yes |
+| `REACT_APP_GOOGLE_CLIENT_ID` | Google OAuth client ID | For Google integration |
+| `REACT_APP_FACEBOOK_APP_ID` | Facebook App ID | For Meta integrations |
+| `REACT_APP_INSTAGRAM_CLIENT_ID` | Instagram client ID | For Instagram integration |
+
+## Performance Optimizations
+
+- **Code Splitting**: Lazy loading for non-critical pages
+- **Memoization**: useMemo in contexts for expensive computations
+- **Image Optimization**: Fabric.js for client-side image processing
+- **Rate Limiting**: Client-side request throttling
+- **Storage Abstraction**: React Native-ready StorageService
+
+## Security Features
+
+- JWT token management with expiration handling
+- Session storage encryption
+- Rate limiting (client + server)
+- XSS prevention with SafeText component
+- Input sanitization in StorageService
+- Admin role verification (RequireAdmin guard)
+- Audit logging
+
+## Contributing
+
+1. Create a feature branch
+2. Make your changes
+3. Run tests: `npm test`
+4. Run linter: `npm run lint`
+5. Submit a pull request
+
+## License
+
+Proprietary - All rights reserved
+
+---
+
+Built with React by the Marnee Team
