@@ -16,7 +16,7 @@ export const getGoogleStatus = async () => {
     const response = await apiClient.get(`${API_BASE_URL}/google/status`);
     return response.data;
   } catch (error) {
-    console.error('Error fetching Google status:', error);
+    if (process.env.NODE_ENV === 'development') console.error('Error fetching Google status:', error.message);
     throw error;
   }
 };
@@ -44,7 +44,7 @@ export const connectGoogle = async (services = ['youtube'], redirectTo = null) =
       window.location.href = response.oauthUrl;
     }
   } catch (error) {
-    console.error('Error getting Google OAuth URL:', error);
+    if (process.env.NODE_ENV === 'development') console.error('Error getting Google OAuth URL:', error.message);
     throw error;
   }
 };
@@ -70,7 +70,7 @@ export const addGoogleService = async (service, redirectTo = null) => {
       window.location.href = response.oauthUrl;
     }
   } catch (error) {
-    console.error('Error getting Google OAuth URL:', error);
+    if (process.env.NODE_ENV === 'development') console.error('Error getting Google OAuth URL:', error.message);
     throw error;
   }
 };
@@ -83,7 +83,7 @@ export const disconnectGoogle = async () => {
     const response = await apiClient.post(`${API_BASE_URL}/google/disconnect`);
     return response.data;
   } catch (error) {
-    console.error('Error disconnecting Google:', error);
+    if (process.env.NODE_ENV === 'development') console.error('Error disconnecting Google:', error.message);
     throw error;
   }
 };
@@ -97,7 +97,7 @@ export const disconnectGoogleService = async (service) => {
     const response = await apiClient.post(`${API_BASE_URL}/google/disconnect/${service}`);
     return response.data;
   } catch (error) {
-    console.error(`Error disconnecting Google ${service}:`, error);
+    if (process.env.NODE_ENV === 'development') console.error(`Error disconnecting Google ${service}:`, error.message);
     throw error;
   }
 };
@@ -110,7 +110,7 @@ export const refreshGoogleToken = async () => {
     const response = await apiClient.post(`${API_BASE_URL}/google/refresh-token`);
     return response.data;
   } catch (error) {
-    console.error('Error refreshing Google token:', error);
+    if (process.env.NODE_ENV === 'development') console.error('Error refreshing Google token:', error.message);
     throw error;
   }
 };
@@ -127,7 +127,7 @@ export const getYouTubeChannel = async () => {
     const response = await apiClient.get(`${API_BASE_URL}/youtube/channel`);
     return response.data;
   } catch (error) {
-    console.error('Error fetching YouTube channel:', error);
+    if (process.env.NODE_ENV === 'development') console.error('Error fetching YouTube channel:', error.message);
     throw error;
   }
 };
@@ -143,7 +143,7 @@ export const getYouTubeAnalytics = async (days = 30) => {
     });
     return response.data;
   } catch (error) {
-    console.error('Error fetching YouTube analytics:', error);
+    if (process.env.NODE_ENV === 'development') console.error('Error fetching YouTube analytics:', error.message);
     throw error;
   }
 };
@@ -156,7 +156,7 @@ export const getYouTubeDemographics = async () => {
     const response = await apiClient.get(`${API_BASE_URL}/youtube/demographics`);
     return response.data;
   } catch (error) {
-    console.error('Error fetching YouTube demographics:', error);
+    if (process.env.NODE_ENV === 'development') console.error('Error fetching YouTube demographics:', error.message);
     throw error;
   }
 };
@@ -172,7 +172,7 @@ export const getYouTubeTrafficSources = async (days = 30) => {
     });
     return response.data;
   } catch (error) {
-    console.error('Error fetching YouTube traffic sources:', error);
+    if (process.env.NODE_ENV === 'development') console.error('Error fetching YouTube traffic sources:', error.message);
     throw error;
   }
 };
@@ -188,7 +188,7 @@ export const getYouTubeVideos = async (limit = 25) => {
     });
     return response.data;
   } catch (error) {
-    console.error('Error fetching YouTube videos:', error);
+    if (process.env.NODE_ENV === 'development') console.error('Error fetching YouTube videos:', error.message);
     throw error;
   }
 };
@@ -204,7 +204,7 @@ export const getYouTubeAnalysis = async (days = 30) => {
     });
     return response.data;
   } catch (error) {
-    console.error('Error fetching YouTube analysis:', error);
+    if (process.env.NODE_ENV === 'development') console.error('Error fetching YouTube analysis:', error.message);
     throw error;
   }
 };

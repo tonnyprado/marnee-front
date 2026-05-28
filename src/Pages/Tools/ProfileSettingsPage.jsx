@@ -108,7 +108,9 @@ export default function ProfileSettingsPage() {
       setGoogleStatus(googleData.status === "fulfilled" ? googleData.value : null);
       setTiktokStatus(tiktokData.status === "fulfilled" ? tiktokData.value : null);
     } catch (error) {
-      console.error("Error fetching connection statuses:", error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error("Error fetching connection statuses:", error.message);
+      }
     } finally {
       setConnectionsLoading(false);
     }
@@ -121,7 +123,9 @@ export default function ProfileSettingsPage() {
       trackSocialConnect("instagram");
       await connectInstagram();
     } catch (error) {
-      console.error("Error connecting Instagram:", error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error("Error connecting Instagram:", error.message);
+      }
       setActionLoading(null);
     }
   };
@@ -136,7 +140,9 @@ export default function ProfileSettingsPage() {
       trackSocialDisconnect("instagram");
       await fetchConnectionStatuses();
     } catch (error) {
-      console.error("Error disconnecting Instagram:", error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error("Error disconnecting Instagram:", error.message);
+      }
     } finally {
       setActionLoading(null);
     }
@@ -152,7 +158,9 @@ export default function ProfileSettingsPage() {
         await connectGoogle(["youtube"]);
       }
     } catch (error) {
-      console.error("Error connecting YouTube:", error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error("Error connecting YouTube:", error.message);
+      }
       setActionLoading(null);
     }
   };
@@ -167,7 +175,9 @@ export default function ProfileSettingsPage() {
       trackSocialDisconnect("youtube");
       await fetchConnectionStatuses();
     } catch (error) {
-      console.error("Error disconnecting YouTube:", error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error("Error disconnecting YouTube:", error.message);
+      }
     } finally {
       setActionLoading(null);
     }
@@ -183,7 +193,9 @@ export default function ProfileSettingsPage() {
         await connectGoogle(["analytics"]);
       }
     } catch (error) {
-      console.error("Error connecting Google Analytics:", error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error("Error connecting Google Analytics:", error.message);
+      }
       setActionLoading(null);
     }
   };
@@ -198,7 +210,9 @@ export default function ProfileSettingsPage() {
       trackSocialDisconnect("analytics");
       await fetchConnectionStatuses();
     } catch (error) {
-      console.error("Error disconnecting Analytics:", error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error("Error disconnecting Analytics:", error.message);
+      }
     } finally {
       setActionLoading(null);
     }
@@ -220,7 +234,9 @@ export default function ProfileSettingsPage() {
       trackSocialDisconnect("tiktok");
       await fetchConnectionStatuses();
     } catch (error) {
-      console.error("Error disconnecting TikTok:", error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error("Error disconnecting TikTok:", error.message);
+      }
     } finally {
       setActionLoading(null);
     }
@@ -296,17 +312,23 @@ export default function ProfileSettingsPage() {
 
   const handleSaveProfile = () => {
     // TODO: API call to save profile
-    console.log("Saving profile:", profileData);
+    if (process.env.NODE_ENV === 'development') {
+      console.log("Saving profile");
+    }
   };
 
   const handleChangePassword = () => {
     // TODO: API call to change password
-    console.log("Changing password");
+    if (process.env.NODE_ENV === 'development') {
+      console.log("Changing password");
+    }
   };
 
   const handleSavePreferences = () => {
     // TODO: API call to save preferences
-    console.log("Saving preferences:", preferences);
+    if (process.env.NODE_ENV === 'development') {
+      console.log("Saving preferences");
+    }
   };
 
   return (

@@ -17,6 +17,7 @@
 import { getAuthHeader } from '../utils/auth';
 import errorHandler from './ErrorHandler';
 import logger from '../utils/logger';
+import rateLimiter from './RateLimiter';
 
 const log = logger.createContextLogger('ApiClient');
 
@@ -61,6 +62,15 @@ class ApiClient {
 
     // Build full URL
     const url = `${baseUrl}${endpoint}`;
+
+    // Check rate limit before making request
+    const rateLimitCheck = rateLimiter.checkLimit(endpoint, method);
+    if (!rateLimitCheck.allowed) {
+      const error = new Error(rateLimitCheck.reason || 'Rate limit exceeded');
+      error.name = 'RateLimitError';
+      error.retryAfter = rateLimitCheck.retryAfter;
+      throw error;
+    }
 
     // Build headers
     const requestHeaders = {
@@ -108,8 +118,22 @@ class ApiClient {
     }
 
     try {
+      // Record the request for rate limiting
+      rateLimiter.recordRequest(endpoint, method);
+
       // Make request with timeout
       const response = await this.fetchWithTimeout(url, fetchOptions, timeout);
+
+      // Handle 429 Too Many Requests from server
+      if (response.status === 429) {
+        const retryAfter = parseInt(response.headers.get('Retry-After') || '60', 10);
+        rateLimiter.handleTooManyRequests(endpoint, method, retryAfter);
+
+        const error = new Error('Too many requests. Please try again later.');
+        error.name = 'RateLimitError';
+        error.retryAfter = retryAfter;
+        throw error;
+      }
 
       // Handle error responses
       if (!response.ok) {

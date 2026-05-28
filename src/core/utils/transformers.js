@@ -342,3 +342,50 @@ export function throttle(func, limit = 300) {
     }
   };
 }
+
+/**
+ * SECURITY: Convert text with newlines to React elements safely
+ * This replaces dangerous dangerouslySetInnerHTML usage for simple \n to <br /> conversions
+ *
+ * @param {string} text - Text that may contain \n
+ * @returns {Array} Array of React elements (strings and <br /> elements)
+ */
+export function textWithLineBreaks(text) {
+  if (typeof text !== 'string') {
+    return '';
+  }
+
+  return text.split('\n').reduce((acc, line, index, array) => {
+    acc.push(line);
+    if (index < array.length - 1) {
+      acc.push({ type: 'br', key: `br-${index}` });
+    }
+    return acc;
+  }, []);
+}
+
+/**
+ * SECURITY: Safely highlight a specific word in text without using innerHTML
+ * Returns an array of text and highlighted elements
+ *
+ * @param {string} text - Full text
+ * @param {string} highlight - Word to highlight
+ * @returns {Array} Array with text parts and highlighted spans
+ */
+export function textWithHighlight(text, highlight) {
+  if (typeof text !== 'string' || !highlight) {
+    return [text];
+  }
+
+  const parts = text.split(highlight);
+  const result = [];
+
+  parts.forEach((part, index) => {
+    result.push(part);
+    if (index < parts.length - 1) {
+      result.push({ type: 'strong', content: highlight, key: `hl-${index}` });
+    }
+  });
+
+  return result;
+}

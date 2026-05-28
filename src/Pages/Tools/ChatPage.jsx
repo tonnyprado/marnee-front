@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { api } from '../../services/api';
 import { Send, Loader2, MessageCircle, Search, X, Menu, Mic, MicOff, Copy, Check, Star, Sparkles } from 'lucide-react';
@@ -180,8 +180,8 @@ function ChatPageContent() {
     }
   }, [searchTerm, messages]);
 
-  // Navigate between search results
-  const goToNextResult = () => {
+  // Navigate between search results - memoized to prevent re-renders
+  const goToNextResult = useCallback(() => {
     if (searchResults.length === 0) return;
     const nextIndex = (currentResultIndex + 1) % searchResults.length;
     setCurrentResultIndex(nextIndex);
@@ -190,9 +190,9 @@ function ChatPageContent() {
     if (resultElement) {
       resultElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
-  };
+  }, [searchResults.length, currentResultIndex]);
 
-  const goToPrevResult = () => {
+  const goToPrevResult = useCallback(() => {
     if (searchResults.length === 0) return;
     const prevIndex = (currentResultIndex - 1 + searchResults.length) % searchResults.length;
     setCurrentResultIndex(prevIndex);
@@ -201,19 +201,19 @@ function ChatPageContent() {
     if (resultElement) {
       resultElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
-  };
+  }, [searchResults.length, currentResultIndex]);
 
-  // Highlight text function
-  const highlightText = (text, searchTerm) => {
-    if (!searchTerm.trim()) return text;
+  // Highlight text function - memoized
+  const highlightText = useCallback((text, term) => {
+    if (!term.trim()) return text;
 
-    const parts = text.split(new RegExp(`(${searchTerm})`, 'gi'));
-    return parts.map((part, index) =>
-      part.toLowerCase() === searchTerm.toLowerCase()
+    const parts = text.split(new RegExp(`(${term})`, 'gi'));
+    return parts.map((part) =>
+      part.toLowerCase() === term.toLowerCase()
         ? `**${part}**`
         : part
     ).join('');
-  };
+  }, []);
 
   // Initialize: Load founder, conversations
   useEffect(() => {

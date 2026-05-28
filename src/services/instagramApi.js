@@ -16,7 +16,7 @@ export const getInstagramStatus = async () => {
     const response = await apiClient.get(`${API_BASE_URL}/meta/status`);
     return response.data;
   } catch (error) {
-    console.error('Error fetching Instagram status:', error);
+    if (process.env.NODE_ENV === 'development') console.error('Error fetching Instagram status:', error.message);
     throw error;
   }
 };
@@ -41,7 +41,7 @@ export const connectInstagram = async () => {
       window.location.href = response.oauthUrl;
     }
   } catch (error) {
-    console.error('Error getting Instagram OAuth URL:', error);
+    if (process.env.NODE_ENV === 'development') console.error('Error getting Instagram OAuth URL:', error.message);
     throw error;
   }
 };
@@ -54,7 +54,7 @@ export const disconnectInstagram = async () => {
     const response = await apiClient.post(`${API_BASE_URL}/meta/disconnect`);
     return response.data;
   } catch (error) {
-    console.error('Error disconnecting Instagram:', error);
+    if (process.env.NODE_ENV === 'development') console.error('Error disconnecting Instagram:', error.message);
     throw error;
   }
 };
@@ -67,7 +67,7 @@ export const refreshInstagramToken = async () => {
     const response = await apiClient.post(`${API_BASE_URL}/meta/refresh-token`);
     return response.data;
   } catch (error) {
-    console.error('Error refreshing Instagram token:', error);
+    if (process.env.NODE_ENV === 'development') console.error('Error refreshing Instagram token:', error.message);
     throw error;
   }
 };
@@ -80,7 +80,7 @@ export const getInstagramProfile = async () => {
     const response = await apiClient.get(`${API_BASE_URL}/instagram/profile`);
     return response.data;
   } catch (error) {
-    console.error('Error fetching Instagram profile:', error);
+    if (process.env.NODE_ENV === 'development') console.error('Error fetching Instagram profile:', error.message);
     throw error;
   }
 };
@@ -95,7 +95,7 @@ export const getInstagramInsights = async (period = 'day') => {
     });
     return response.data;
   } catch (error) {
-    console.error('Error fetching Instagram insights:', error);
+    if (process.env.NODE_ENV === 'development') console.error('Error fetching Instagram insights:', error.message);
     throw error;
   }
 };
@@ -108,7 +108,7 @@ export const getAudienceDemographics = async () => {
     const response = await apiClient.get(`${API_BASE_URL}/instagram/demographics`);
     return response.data;
   } catch (error) {
-    console.error('Error fetching audience demographics:', error);
+    if (process.env.NODE_ENV === 'development') console.error('Error fetching audience demographics:', error.message);
     throw error;
   }
 };
@@ -123,7 +123,7 @@ export const getInstagramMedia = async (limit = 25) => {
     });
     return response.data;
   } catch (error) {
-    console.error('Error fetching Instagram media:', error);
+    if (process.env.NODE_ENV === 'development') console.error('Error fetching Instagram media:', error.message);
     throw error;
   }
 };
@@ -138,7 +138,7 @@ export const getInstagramAnalysis = async (days = 30) => {
     });
     return response.data;
   } catch (error) {
-    console.error('Error fetching Instagram analysis:', error);
+    if (process.env.NODE_ENV === 'development') console.error('Error fetching Instagram analysis:', error.message);
     throw error;
   }
 };
@@ -153,7 +153,7 @@ export const getContentPerformance = async (limit = 10) => {
     });
     return response.data;
   } catch (error) {
-    console.error('Error fetching content performance:', error);
+    if (process.env.NODE_ENV === 'development') console.error('Error fetching content performance:', error.message);
     throw error;
   }
 };
@@ -169,7 +169,7 @@ export const getInstagramStories = async (limit = 10) => {
     });
     return response.data;
   } catch (error) {
-    console.error('Error fetching Instagram stories:', error);
+    if (process.env.NODE_ENV === 'development') console.error('Error fetching Instagram stories:', error.message);
     throw error;
   }
 };
@@ -184,7 +184,7 @@ export const getInstagramReels = async (limit = 10) => {
     });
     return response.data;
   } catch (error) {
-    console.error('Error fetching Instagram reels:', error);
+    if (process.env.NODE_ENV === 'development') console.error('Error fetching Instagram reels:', error.message);
     throw error;
   }
 };

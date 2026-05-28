@@ -19,7 +19,7 @@ export const getTikTokStatus = async () => {
     const response = await apiClient.get(`${API_BASE_URL}/tiktok/status`);
     return response.data;
   } catch (error) {
-    console.error('Error fetching TikTok status:', error);
+    if (process.env.NODE_ENV === 'development') console.error('Error fetching TikTok status:', error.message);
     // Return disconnected status if endpoint doesn't exist yet
     if (error.response?.status === 404) {
       return { connected: false };
@@ -46,7 +46,7 @@ export const disconnectTikTok = async () => {
     const response = await apiClient.post(`${API_BASE_URL}/tiktok/disconnect`);
     return response.data;
   } catch (error) {
-    console.error('Error disconnecting TikTok:', error);
+    if (process.env.NODE_ENV === 'development') console.error('Error disconnecting TikTok:', error.message);
     throw error;
   }
 };
@@ -59,7 +59,7 @@ export const refreshTikTokToken = async () => {
     const response = await apiClient.post(`${API_BASE_URL}/tiktok/refresh-token`);
     return response.data;
   } catch (error) {
-    console.error('Error refreshing TikTok token:', error);
+    if (process.env.NODE_ENV === 'development') console.error('Error refreshing TikTok token:', error.message);
     throw error;
   }
 };
@@ -76,7 +76,7 @@ export const getTikTokProfile = async () => {
     const response = await apiClient.get(`${API_BASE_URL}/tiktok/profile`);
     return response.data;
   } catch (error) {
-    console.error('Error fetching TikTok profile:', error);
+    if (process.env.NODE_ENV === 'development') console.error('Error fetching TikTok profile:', error.message);
     throw error;
   }
 };
@@ -92,7 +92,7 @@ export const getTikTokAnalytics = async (days = 30) => {
     });
     return response.data;
   } catch (error) {
-    console.error('Error fetching TikTok analytics:', error);
+    if (process.env.NODE_ENV === 'development') console.error('Error fetching TikTok analytics:', error.message);
     throw error;
   }
 };
@@ -108,7 +108,7 @@ export const getTikTokVideos = async (limit = 25) => {
     });
     return response.data;
   } catch (error) {
-    console.error('Error fetching TikTok videos:', error);
+    if (process.env.NODE_ENV === 'development') console.error('Error fetching TikTok videos:', error.message);
     throw error;
   }
 };
@@ -121,7 +121,7 @@ export const getTikTokDemographics = async () => {
     const response = await apiClient.get(`${API_BASE_URL}/tiktok/demographics`);
     return response.data;
   } catch (error) {
-    console.error('Error fetching TikTok demographics:', error);
+    if (process.env.NODE_ENV === 'development') console.error('Error fetching TikTok demographics:', error.message);
     throw error;
   }
 };
@@ -137,7 +137,7 @@ export const getTikTokAnalysis = async (days = 30) => {
     });
     return response.data;
   } catch (error) {
-    console.error('Error fetching TikTok analysis:', error);
+    if (process.env.NODE_ENV === 'development') console.error('Error fetching TikTok analysis:', error.message);
     throw error;
   }
 };

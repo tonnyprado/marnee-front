@@ -14,7 +14,7 @@
  * AFTER: Uses StorageService from core + AuthContext (React Native ready)
  */
 
-import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import storage from '../core/services/StorageService';
 import { useAuth } from './AuthContext';
 import { api } from '../services/api';
@@ -87,6 +87,10 @@ export function MarneeProvider({ children }) {
     show: false,
     title: null,
   });
+
+  // Refs for notification timeout cleanup (prevent memory leaks)
+  const brainstormingTimeoutRef = useRef(null);
+  const scriptTimeoutRef = useRef(null);
 
   // Chat state - persists across navigation
   const [chatIsLoading, setChatIsLoading] = useState(false);
@@ -242,30 +246,58 @@ export function MarneeProvider({ children }) {
   };
 
   // Brainstorming notification methods
-  const showBrainstormingNotification = (count) => {
+  const showBrainstormingNotification = useCallback((count) => {
+    // Clear any existing timeout to prevent memory leaks
+    if (brainstormingTimeoutRef.current) {
+      clearTimeout(brainstormingTimeoutRef.current);
+    }
     setBrainstormingNotification({ show: true, count });
     // Auto-dismiss after 5 seconds
-    setTimeout(() => {
-      hideBrainstormingNotification();
+    brainstormingTimeoutRef.current = setTimeout(() => {
+      setBrainstormingNotification({ show: false, count: 0 });
     }, 5000);
-  };
+  }, []);
 
-  const hideBrainstormingNotification = () => {
+  const hideBrainstormingNotification = useCallback(() => {
+    if (brainstormingTimeoutRef.current) {
+      clearTimeout(brainstormingTimeoutRef.current);
+      brainstormingTimeoutRef.current = null;
+    }
     setBrainstormingNotification({ show: false, count: 0 });
-  };
+  }, []);
 
   // Script notification methods
-  const showScriptNotification = (title) => {
+  const showScriptNotification = useCallback((title) => {
+    // Clear any existing timeout to prevent memory leaks
+    if (scriptTimeoutRef.current) {
+      clearTimeout(scriptTimeoutRef.current);
+    }
     setScriptNotification({ show: true, title });
     // Auto-dismiss after 5 seconds
-    setTimeout(() => {
-      hideScriptNotification();
+    scriptTimeoutRef.current = setTimeout(() => {
+      setScriptNotification({ show: false, title: null });
     }, 5000);
-  };
+  }, []);
 
-  const hideScriptNotification = () => {
+  const hideScriptNotification = useCallback(() => {
+    if (scriptTimeoutRef.current) {
+      clearTimeout(scriptTimeoutRef.current);
+      scriptTimeoutRef.current = null;
+    }
     setScriptNotification({ show: false, title: null });
-  };
+  }, []);
+
+  // Cleanup notification timeouts on unmount
+  useEffect(() => {
+    return () => {
+      if (brainstormingTimeoutRef.current) {
+        clearTimeout(brainstormingTimeoutRef.current);
+      }
+      if (scriptTimeoutRef.current) {
+        clearTimeout(scriptTimeoutRef.current);
+      }
+    };
+  }, []);
 
   // Send chat message - persists across navigation
   const sendChatMessage = useCallback(async ({
@@ -339,7 +371,8 @@ export function MarneeProvider({ children }) {
     setPendingUserMessage(null);
   }, []);
 
-  const value = {
+  // Memoize context value to prevent unnecessary re-renders of consumers
+  const value = useMemo(() => ({
     // Session (delegated to AuthContext, kept for backward compatibility)
     founderId: auth.founderId,
     setFounderId: auth.setFounderId,
@@ -385,7 +418,15 @@ export function MarneeProvider({ children }) {
     loadConversation,
     clearSession,
     getMessagesForApi,
-  };
+  }), [
+    auth.founderId, auth.setFounderId, auth.sessionId, auth.setSessionId, auth.hasSession,
+    conversationId, calendarId, calendar, currentStep, stepName,
+    messages, welcomeMessage,
+    brainstormingNotification, showBrainstormingNotification, hideBrainstormingNotification,
+    scriptNotification, showScriptNotification, hideScriptNotification,
+    chatIsLoading, pendingUserMessage, sendChatMessage, cancelChatRequest,
+    initSession, addMessage, updateStep, loadConversation, clearSession, getMessagesForApi,
+  ]);
 
   return (
     <MarneeContext.Provider value={value}>

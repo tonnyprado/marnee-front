@@ -3,7 +3,7 @@
  * Star Wars style iris wipe transition effect
  */
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { createPortal } from 'react-dom';
 
 export default function IrisWipeTransition({
@@ -79,6 +79,16 @@ export default function IrisWipeTransition({
 export function useIrisWipeTransition() {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [pendingNavigation, setPendingNavigation] = useState(null);
+  const cleanupTimeoutRef = useRef(null);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (cleanupTimeoutRef.current) {
+        clearTimeout(cleanupTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const startTransition = useCallback((navigateFn, path) => {
     setIsTransitioning(true);
@@ -89,8 +99,12 @@ export function useIrisWipeTransition() {
     if (pendingNavigation) {
       pendingNavigation.navigateFn(pendingNavigation.path);
     }
+    // Clear any existing timeout
+    if (cleanupTimeoutRef.current) {
+      clearTimeout(cleanupTimeoutRef.current);
+    }
     // Keep visible briefly while page loads
-    setTimeout(() => {
+    cleanupTimeoutRef.current = setTimeout(() => {
       setIsTransitioning(false);
       setPendingNavigation(null);
     }, 100);

@@ -1,5 +1,5 @@
 // src/App.js
-import React from "react";
+import React, { Suspense, lazy } from "react";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 
 import { MarneeProvider, useMarnee } from "./context/MarneeContext";
@@ -10,49 +10,63 @@ import { getAuthSession } from "./services/api";
 import BrainstormingNotification from "./Component/BrainstormingNotification";
 import ScriptSavedNotification from "./Component/ScriptSavedNotification";
 
+// Critical pages - loaded immediately
 import PresentationPage from "./Pages/PresentationPage";
-import CreatorsLandingPage from "./Pages/CreatorsLandingPage";
 import AuthPage from "./Pages/AuthPage";
 import OAuth2CallbackPage from "./Pages/OAuth2CallbackPage";
-import VerifyEmailPage from "./Pages/VerifyEmailPage";
-import ForgotPasswordPage from "./Pages/ForgotPasswordPage";
-import ResetPasswordPage from "./Pages/ResetPasswordPage";
-import BrandTestPage from "./Pages/BrandTestPage";
-import TestSelectionPage from "./Pages/TestSelectionPage";
-import BusinessTestPage from "./Pages/BusinessTestPage";
-import SocialConnectionsWizard from "./Component/InteractiveTest/SocialConnectionsWizard";
-import TermsOfServicePage from "./Pages/Legal/TermsOfServicePage";
-import PrivacyPolicyPage from "./Pages/Legal/PrivacyPolicyPage";
-
 import AppLayout from "./Layout/Layout";
-import IAWebPage from "./Pages/Tools/IAWebPage"; // Old chat - kept as backup
-import CalendarPage from "./Pages/Tools/CalendarPage";
-import ChatPage from "./Pages/Tools/ChatPage"; // Main chat with multiple conversations
-import BrainstormingPage from "./Pages/Tools/BrainstormingPage";
-import ScriptsPage from "./Pages/Tools/ScriptsPage";
-import BillingPage from "./Pages/Tools/BillingPage";
-import ProfileSettingsPage from "./Pages/Tools/ProfileSettingsPage";
-import HelpSupportPage from "./Pages/Tools/HelpSupportPage";
-import MyDashboard from "./Pages/Tools/MyDashboard";
-
-// Admin pages
 import RequireAdmin from "./guards/RequireAdmin";
-import AdminLayout from "./admin/AdminLayout";
-import AdminDashboard from "./admin/pages/AdminDashboard";
-import UserManagement from "./admin/pages/UserManagement";
-import SubscriptionPlans from "./admin/pages/SubscriptionPlans";
-import SeoManagement from "./admin/pages/SeoManagement";
-import AnalyticsDashboard from "./admin/pages/AnalyticsDashboard";
-import SecurityDashboard from "./admin/pages/SecurityDashboard";
-import AuditLogsPage from "./admin/pages/AuditLogsPage";
-import ActiveSessionsPage from "./admin/pages/ActiveSessionsPage";
-import SecurityAlertsPage from "./admin/pages/SecurityAlertsPage";
-import PromptManagement from "./admin/pages/PromptManagement";
-import RAGManagement from "./admin/pages/RAGManagement";
-import IntegrationsPage from "./admin/pages/IntegrationsPage";
-import LegalDocumentsPage from "./admin/pages/LegalDocumentsPage";
-import WaitlistManagement from "./admin/pages/WaitlistManagement";
-import PasswordGeneratorPage from "./admin/pages/PasswordGeneratorPage";
+
+// Lazy loaded pages - loaded on demand for smaller initial bundle
+const CreatorsLandingPage = lazy(() => import("./Pages/CreatorsLandingPage"));
+const VerifyEmailPage = lazy(() => import("./Pages/VerifyEmailPage"));
+const ForgotPasswordPage = lazy(() => import("./Pages/ForgotPasswordPage"));
+const ResetPasswordPage = lazy(() => import("./Pages/ResetPasswordPage"));
+const BrandTestPage = lazy(() => import("./Pages/BrandTestPage"));
+const TestSelectionPage = lazy(() => import("./Pages/TestSelectionPage"));
+const BusinessTestPage = lazy(() => import("./Pages/BusinessTestPage"));
+const SocialConnectionsWizard = lazy(() => import("./Component/InteractiveTest/SocialConnectionsWizard"));
+const TermsOfServicePage = lazy(() => import("./Pages/Legal/TermsOfServicePage"));
+const PrivacyPolicyPage = lazy(() => import("./Pages/Legal/PrivacyPolicyPage"));
+
+// Lazy loaded tool pages
+const IAWebPage = lazy(() => import("./Pages/Tools/IAWebPage")); // Old chat - kept as backup
+const CalendarPage = lazy(() => import("./Pages/Tools/CalendarPage"));
+const ChatPage = lazy(() => import("./Pages/Tools/ChatPage")); // Main chat with multiple conversations
+const BrainstormingPage = lazy(() => import("./Pages/Tools/BrainstormingPage"));
+const ScriptsPage = lazy(() => import("./Pages/Tools/ScriptsPage"));
+const BillingPage = lazy(() => import("./Pages/Tools/BillingPage"));
+const ProfileSettingsPage = lazy(() => import("./Pages/Tools/ProfileSettingsPage"));
+const HelpSupportPage = lazy(() => import("./Pages/Tools/HelpSupportPage"));
+const MyDashboard = lazy(() => import("./Pages/Tools/MyDashboard"));
+
+// Admin pages - all lazy loaded since admin is rarely accessed
+const AdminLayout = lazy(() => import("./admin/AdminLayout"));
+const AdminDashboard = lazy(() => import("./admin/pages/AdminDashboard"));
+const UserManagement = lazy(() => import("./admin/pages/UserManagement"));
+const SubscriptionPlans = lazy(() => import("./admin/pages/SubscriptionPlans"));
+const SeoManagement = lazy(() => import("./admin/pages/SeoManagement"));
+const AnalyticsDashboard = lazy(() => import("./admin/pages/AnalyticsDashboard"));
+const SecurityDashboard = lazy(() => import("./admin/pages/SecurityDashboard"));
+const AuditLogsPage = lazy(() => import("./admin/pages/AuditLogsPage"));
+const ActiveSessionsPage = lazy(() => import("./admin/pages/ActiveSessionsPage"));
+const SecurityAlertsPage = lazy(() => import("./admin/pages/SecurityAlertsPage"));
+const PromptManagement = lazy(() => import("./admin/pages/PromptManagement"));
+const RAGManagement = lazy(() => import("./admin/pages/RAGManagement"));
+const IntegrationsPage = lazy(() => import("./admin/pages/IntegrationsPage"));
+const LegalDocumentsPage = lazy(() => import("./admin/pages/LegalDocumentsPage"));
+const WaitlistManagement = lazy(() => import("./admin/pages/WaitlistManagement"));
+const PasswordGeneratorPage = lazy(() => import("./admin/pages/PasswordGeneratorPage"));
+
+// Loading fallback component
+const PageLoader = () => (
+  <div className="flex h-screen items-center justify-center bg-[#f6f6f6]">
+    <div className="text-center">
+      <div className="w-12 h-12 border-4 border-[#40086d] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+      <p className="text-gray-600 text-sm">Loading...</p>
+    </div>
+  </div>
+);
 
 function RequireAuth({ children }) {
   const session = getAuthSession();
@@ -139,6 +153,7 @@ function AppContent() {
     <ChatThemeProvider>
       <AuthProvider>
         <MarneeProvider>
+          <Suspense fallback={<PageLoader />}>
           <Routes>
         {/* públicas */}
         <Route path="/" element={<PresentationPage />} />
@@ -231,6 +246,7 @@ function AppContent() {
         {/* fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
+          </Suspense>
           {/* Brainstorming notification (global) */}
           <BrainstormingNotificationHandler />
           {/* Script saved notification (global) */}

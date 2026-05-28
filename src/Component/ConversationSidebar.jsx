@@ -1,7 +1,104 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle, Plus, X, Trash2, PanelLeftClose, PanelLeft, Sparkles } from 'lucide-react';
+
+// Helper functions moved outside component for performance
+const getConversationTitle = (conversation) => {
+  if (conversation.title) return conversation.title;
+
+  const firstUserMessage = conversation.messages?.find(m => m.role === 'user');
+  if (firstUserMessage) {
+    const title = firstUserMessage.content.slice(0, 40);
+    return title.length < firstUserMessage.content.length ? `${title}...` : title;
+  }
+
+  return 'New Conversation';
+};
+
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffMs = now - date;
+  const diffMins = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMs / 3600000);
+  const diffDays = Math.floor(diffMs / 86400000);
+
+  if (diffMins < 1) return 'Just now';
+  if (diffMins < 60) return `${diffMins}m ago`;
+  if (diffHours < 24) return `${diffHours}h ago`;
+  if (diffDays === 1) return 'Yesterday';
+  if (diffDays < 7) return `${diffDays}d ago`;
+
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+};
+
+// Memoized conversation item to prevent re-renders when other items change
+const ConversationItem = memo(function ConversationItem({
+  conv,
+  isActive,
+  isHovered,
+  onSelect,
+  onDelete,
+  onMouseEnter,
+  onMouseLeave,
+}) {
+  const title = getConversationTitle(conv);
+  const date = formatDate(conv.createdAt || conv.updatedAt);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: -20 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -20 }}
+      whileHover={{ scale: 1.01 }}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      className="relative"
+    >
+      <button
+        onClick={onSelect}
+        className={`w-full text-left rounded-xl p-3 transition-all ${
+          isActive
+            ? 'bg-gradient-to-r from-[#40086d]/10 to-[#2d0550]/10 border-2 border-[#40086d]/30'
+            : 'bg-gray-50 hover:bg-gray-100 border-2 border-transparent'
+        }`}
+      >
+        <div className="flex items-start justify-between gap-2 mb-1">
+          <h3 className={`text-sm font-semibold line-clamp-2 pr-6 ${
+            isActive ? 'text-[#40086d]' : 'text-gray-900'
+          }`}>
+            {title}
+          </h3>
+          {isActive && !isHovered && (
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              className="w-2 h-2 bg-[#40086d] rounded-full flex-shrink-0 mt-1"
+            />
+          )}
+        </div>
+        <p className="text-xs text-gray-500">{date}</p>
+      </button>
+
+      {/* Delete button - appears on hover */}
+      <AnimatePresence>
+        {isHovered && (
+          <motion.button
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            onClick={onDelete}
+            className="absolute top-3 right-3 p-1.5 bg-red-500 hover:bg-red-600 text-white rounded-lg shadow-md transition-colors"
+            title="Delete conversation"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
+          </motion.button>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  );
+});
 
 /**
  * ConversationSidebar - Sidebar showing list of conversations
@@ -31,36 +128,15 @@ export default function ConversationSidebar({
   const navigate = useNavigate();
   const [hoveredConvId, setHoveredConvId] = useState(null);
 
-  // Generate title from first message or use default
-  const getConversationTitle = (conversation) => {
-    if (conversation.title) return conversation.title;
-
-    const firstUserMessage = conversation.messages?.find(m => m.role === 'user');
-    if (firstUserMessage) {
-      const title = firstUserMessage.content.slice(0, 40);
-      return title.length < firstUserMessage.content.length ? `${title}...` : title;
+  // Memoized callbacks to prevent re-creating functions on each render
+  const handleMouseEnter = useCallback((id) => () => setHoveredConvId(id), []);
+  const handleMouseLeave = useCallback(() => setHoveredConvId(null), []);
+  const handleDelete = useCallback((id) => (e) => {
+    e.stopPropagation();
+    if (window.confirm('Delete this conversation? This action cannot be undone.')) {
+      onDeleteConversation(id);
     }
-
-    return 'New Conversation';
-  };
-
-  // Format date
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffMs = now - date;
-    const diffMins = Math.floor(diffMs / 60000);
-    const diffHours = Math.floor(diffMs / 3600000);
-    const diffDays = Math.floor(diffMs / 86400000);
-
-    if (diffMins < 1) return 'Just now';
-    if (diffMins < 60) return `${diffMins}m ago`;
-    if (diffHours < 24) return `${diffHours}h ago`;
-    if (diffDays === 1) return 'Yesterday';
-    if (diffDays < 7) return `${diffDays}d ago`;
-
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-  };
+  }, [onDeleteConversation]);
 
   // Collapsed thin bar view
   const collapsedBar = (
@@ -143,70 +219,18 @@ export default function ConversationSidebar({
         ) : (
           <div className="p-2 space-y-1">
             <AnimatePresence>
-              {conversations.map((conv) => {
-                const isActive = conv.id === activeConversationId;
-                const title = getConversationTitle(conv);
-                const date = formatDate(conv.createdAt || conv.updatedAt);
-
-                return (
-                  <motion.div
-                    key={conv.id}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
-                    whileHover={{ scale: 1.01 }}
-                    onMouseEnter={() => setHoveredConvId(conv.id)}
-                    onMouseLeave={() => setHoveredConvId(null)}
-                    className="relative"
-                  >
-                    <button
-                      onClick={() => onSelectConversation(conv.id)}
-                      className={`w-full text-left rounded-xl p-3 transition-all ${
-                        isActive
-                          ? 'bg-gradient-to-r from-[#40086d]/10 to-[#2d0550]/10 border-2 border-[#40086d]/30'
-                          : 'bg-gray-50 hover:bg-gray-100 border-2 border-transparent'
-                      }`}
-                    >
-                      <div className="flex items-start justify-between gap-2 mb-1">
-                        <h3 className={`text-sm font-semibold line-clamp-2 pr-6 ${
-                          isActive ? 'text-[#40086d]' : 'text-gray-900'
-                        }`}>
-                          {title}
-                        </h3>
-                        {isActive && !hoveredConvId && (
-                          <motion.div
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1 }}
-                            className="w-2 h-2 bg-[#40086d] rounded-full flex-shrink-0 mt-1"
-                          />
-                        )}
-                      </div>
-                      <p className="text-xs text-gray-500">{date}</p>
-                    </button>
-
-                    {/* Delete button - appears on hover */}
-                    <AnimatePresence>
-                      {hoveredConvId === conv.id && (
-                        <motion.button
-                          initial={{ opacity: 0, scale: 0.8 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          exit={{ opacity: 0, scale: 0.8 }}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            if (window.confirm('Delete this conversation? This action cannot be undone.')) {
-                              onDeleteConversation(conv.id);
-                            }
-                          }}
-                          className="absolute top-3 right-3 p-1.5 bg-red-500 hover:bg-red-600 text-white rounded-lg shadow-md transition-colors"
-                          title="Delete conversation"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </motion.button>
-                      )}
-                    </AnimatePresence>
-                  </motion.div>
-                );
-              })}
+              {conversations.map((conv) => (
+                <ConversationItem
+                  key={conv.id}
+                  conv={conv}
+                  isActive={conv.id === activeConversationId}
+                  isHovered={hoveredConvId === conv.id}
+                  onSelect={() => onSelectConversation(conv.id)}
+                  onDelete={handleDelete(conv.id)}
+                  onMouseEnter={handleMouseEnter(conv.id)}
+                  onMouseLeave={handleMouseLeave}
+                />
+              ))}
             </AnimatePresence>
           </div>
         )}

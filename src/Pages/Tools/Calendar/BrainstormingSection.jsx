@@ -17,9 +17,20 @@ export default function BrainstormingSection({ calendarId }) {
 
   // Ref to track current ideas without causing re-renders
   const ideasRef = useRef(ideas);
+  const newlyAddedTimeoutRef = useRef(null);
+  const notificationTimeoutRef = useRef(null);
+
   useEffect(() => {
     ideasRef.current = ideas;
   }, [ideas]);
+
+  // Cleanup timeouts on unmount
+  useEffect(() => {
+    return () => {
+      if (newlyAddedTimeoutRef.current) clearTimeout(newlyAddedTimeoutRef.current);
+      if (notificationTimeoutRef.current) clearTimeout(notificationTimeoutRef.current);
+    };
+  }, []);
 
   const [form, setForm] = useState({
     title: "",
@@ -47,10 +58,13 @@ export default function BrainstormingSection({ calendarId }) {
           setNotificationCount(freshIds.length);
           setShowNotification(true);
 
+          // Clear previous timeouts before setting new ones
+          if (newlyAddedTimeoutRef.current) clearTimeout(newlyAddedTimeoutRef.current);
+          if (notificationTimeoutRef.current) clearTimeout(notificationTimeoutRef.current);
           // Remove pulse effect after 3 seconds
-          setTimeout(() => setNewlyAddedIds([]), 3000);
+          newlyAddedTimeoutRef.current = setTimeout(() => setNewlyAddedIds([]), 3000);
           // Hide notification after 5 seconds
-          setTimeout(() => setShowNotification(false), 5000);
+          notificationTimeoutRef.current = setTimeout(() => setShowNotification(false), 5000);
         }
       }
 

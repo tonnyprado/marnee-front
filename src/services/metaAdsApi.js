@@ -27,7 +27,7 @@ export const getMetaAdsStatus = async () => {
     const response = await apiClient.get(`${API_BASE_URL}/meta-ads/status`);
     return response.data;
   } catch (error) {
-    console.error('Error fetching Meta Ads status:', error);
+    if (process.env.NODE_ENV === 'development') console.error('Error fetching Meta Ads status:', error.message);
     throw error;
   }
 };
@@ -55,7 +55,7 @@ export const disconnectMetaAds = async () => {
     const response = await apiClient.post(`${API_BASE_URL}/meta-ads/disconnect`);
     return response.data;
   } catch (error) {
-    console.error('Error disconnecting Meta Ads:', error);
+    if (process.env.NODE_ENV === 'development') console.error('Error disconnecting Meta Ads:', error.message);
     throw error;
   }
 };
@@ -71,7 +71,7 @@ export const refreshMetaAdsToken = async () => {
     const response = await apiClient.post(`${API_BASE_URL}/meta-ads/refresh-token`);
     return response.data;
   } catch (error) {
-    console.error('Error refreshing Meta Ads token:', error);
+    if (process.env.NODE_ENV === 'development') console.error('Error refreshing Meta Ads token:', error.message);
     throw error;
   }
 };
@@ -107,7 +107,7 @@ export const getMetaAdsOverview = async (days = 30) => {
     });
     return response.data;
   } catch (error) {
-    console.error('Error fetching Meta Ads overview:', error);
+    if (process.env.NODE_ENV === 'development') console.error('Error fetching Meta Ads overview:', error.message);
     throw error;
   }
 };
@@ -145,7 +145,7 @@ export const getMetaAdsCampaigns = async (days = 30, status = 'ALL') => {
     });
     return response.data;
   } catch (error) {
-    console.error('Error fetching Meta Ads campaigns:', error);
+    if (process.env.NODE_ENV === 'development') console.error('Error fetching Meta Ads campaigns:', error.message);
     throw error;
   }
 };
@@ -164,7 +164,7 @@ export const getMetaAdsCampaign = async (campaignId, days = 30) => {
     });
     return response.data;
   } catch (error) {
-    console.error('Error fetching Meta Ads campaign:', error);
+    if (process.env.NODE_ENV === 'development') console.error('Error fetching Meta Ads campaign:', error.message);
     throw error;
   }
 };
@@ -183,7 +183,7 @@ export const getMetaAdsAdSets = async (campaignId, days = 30) => {
     });
     return response.data;
   } catch (error) {
-    console.error('Error fetching Meta Ads ad sets:', error);
+    if (process.env.NODE_ENV === 'development') console.error('Error fetching Meta Ads ad sets:', error.message);
     throw error;
   }
 };
@@ -202,7 +202,7 @@ export const getMetaAdsAds = async (adSetId, days = 30) => {
     });
     return response.data;
   } catch (error) {
-    console.error('Error fetching Meta Ads ads:', error);
+    if (process.env.NODE_ENV === 'development') console.error('Error fetching Meta Ads ads:', error.message);
     throw error;
   }
 };
@@ -229,7 +229,7 @@ export const getMetaAdsAudience = async (days = 30) => {
     });
     return response.data;
   } catch (error) {
-    console.error('Error fetching Meta Ads audience:', error);
+    if (process.env.NODE_ENV === 'development') console.error('Error fetching Meta Ads audience:', error.message);
     throw error;
   }
 };
@@ -249,7 +249,7 @@ export const getMetaAdsCreativePerformance = async (days = 30, limit = 10) => {
     });
     return response.data;
   } catch (error) {
-    console.error('Error fetching Meta Ads creative performance:', error);
+    if (process.env.NODE_ENV === 'development') console.error('Error fetching Meta Ads creative performance:', error.message);
     throw error;
   }
 };
@@ -265,7 +265,7 @@ export const getMetaAdsAccount = async () => {
     const response = await apiClient.get(`${API_BASE_URL}/meta-ads/account`);
     return response.data;
   } catch (error) {
-    console.error('Error fetching Meta Ads account:', error);
+    if (process.env.NODE_ENV === 'development') console.error('Error fetching Meta Ads account:', error.message);
     throw error;
   }
 };

@@ -5,6 +5,7 @@ import demoVideo from '../assets/videos/0207.mp4';
 import LanguageSwitcher from '../Component/LanguageSwitcher';
 import LoadingTransition from '../Component/LoadingTransition';
 import { useLanguage } from '../context/LanguageContext';
+import { SafeDiv, SafeText, SafeH2, SafeP } from '../Component/ui/SafeText';
 
 const WAITLIST_URL = 'https://tally.so/r/D4NkGl';
 
@@ -69,16 +70,16 @@ function HeroSection({ titleRef }) {
         <div className="mn-hero-stats mn-fade-up" style={{ transitionDelay: '.2s' }}>
           <div className="mn-stat-t">
             <div className="mn-stat-t-num">{t('presentation.hero.stat1Num')}</div>
-            <div className="mn-stat-t-label" dangerouslySetInnerHTML={{ __html: t('presentation.hero.stat1Label').replace(/\n/g, '<br />') }} />
+            <SafeDiv className="mn-stat-t-label" text={t('presentation.hero.stat1Label')} />
           </div>
           <div className="mn-stat-divider" />
           <div className="mn-stat-t">
             <div className="mn-stat-t-num">{t('presentation.hero.stat2Num')}</div>
-            <div className="mn-stat-t-label" dangerouslySetInnerHTML={{ __html: t('presentation.hero.stat2Label').replace(/\n/g, '<br />') }} />
+            <SafeDiv className="mn-stat-t-label" text={t('presentation.hero.stat2Label')} />
           </div>
         </div>
 
-        <p className="mn-hero-body mn-fade-up" style={{ transitionDelay: '.3s' }} dangerouslySetInnerHTML={{ __html: t('presentation.hero.body').replace(/\n/g, '<br />') }} />
+        <SafeP className="mn-hero-body mn-fade-up" style={{ transitionDelay: '.3s' }} text={t('presentation.hero.body')} />
 
         <div className="mn-hero-cta mn-fade-up" style={{ transitionDelay: '.4s' }}>
           <a href={WAITLIST_URL} target="_blank" rel="noopener noreferrer" className="mn-btn-primary">
@@ -97,7 +98,7 @@ function HeroSection({ titleRef }) {
             <div className="mn-proof-av">J</div>
             <div className="mn-proof-av">M</div>
           </div>
-          <span dangerouslySetInnerHTML={{ __html: t('presentation.hero.proofText').replace('20+', '<strong>20+</strong>') }} />
+          <SafeText text={t('presentation.hero.proofText')} highlight="20+" />
         </div>
 
       </div>
@@ -130,7 +131,7 @@ function ProblemSection() {
       <div className="mn-section-wrap">
         <div className="mn-problem-head mn-fade-up">
           <div className="mn-section-tag">{t('presentation.problem.tag')}</div>
-          <h2 className="mn-section-title" dangerouslySetInnerHTML={{ __html: t('presentation.problem.title').replace(/\n/g, '<br />') }} />
+          <SafeH2 className="mn-section-title" text={t('presentation.problem.title')} />
         </div>
 
         <div className="mn-grid-3" style={{ marginBottom: 1 }}>
@@ -190,7 +191,7 @@ function SolutionSection() {
       <div className="mn-section-wrap">
         <div className="mn-fade-up">
           <div className="mn-section-tag">{t('presentation.solution.tag')}</div>
-          <h2 className="mn-section-title" dangerouslySetInnerHTML={{ __html: t('presentation.solution.title').replace(/\n/g, '<br />') }} />
+          <SafeH2 className="mn-section-title" text={t('presentation.solution.title')} />
           <p className="mn-section-sub">{t('presentation.solution.subtitle')}</p>
         </div>
 

@@ -21,9 +21,20 @@ export default function ScriptsSection() {
   const [notificationCount, setNotificationCount] = useState(0);
 
   const scriptsRef = useRef(scripts);
+  const newlyAddedTimeoutRef = useRef(null);
+  const notificationTimeoutRef = useRef(null);
+
   useEffect(() => {
     scriptsRef.current = scripts;
   }, [scripts]);
+
+  // Cleanup timeouts on unmount
+  useEffect(() => {
+    return () => {
+      if (newlyAddedTimeoutRef.current) clearTimeout(newlyAddedTimeoutRef.current);
+      if (notificationTimeoutRef.current) clearTimeout(notificationTimeoutRef.current);
+    };
+  }, []);
 
   const loadScripts = useCallback(async (detectNew = false, silent = false) => {
     console.log('[ScriptsSection] loadScripts called, founderId:', founderId);
@@ -52,8 +63,11 @@ export default function ScriptsSection() {
           setNewlyAddedIds(freshIds);
           setNotificationCount(freshIds.length);
           setShowNotification(true);
-          setTimeout(() => setNewlyAddedIds([]), 3000);
-          setTimeout(() => setShowNotification(false), 5000);
+          // Clear previous timeouts before setting new ones
+          if (newlyAddedTimeoutRef.current) clearTimeout(newlyAddedTimeoutRef.current);
+          if (notificationTimeoutRef.current) clearTimeout(notificationTimeoutRef.current);
+          newlyAddedTimeoutRef.current = setTimeout(() => setNewlyAddedIds([]), 3000);
+          notificationTimeoutRef.current = setTimeout(() => setShowNotification(false), 5000);
         }
       }
 

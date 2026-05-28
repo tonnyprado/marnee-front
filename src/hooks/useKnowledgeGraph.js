@@ -88,21 +88,20 @@ export function useKnowledgeGraph() {
       }
 
       // Fallback: extracción básica en frontend si ML no está disponible
+      // OPTIMIZED: Use single request with messages instead of N+1 pattern
       if (!conversationTopics.length && conversationsResult.status === 'fulfilled' &&
           conversationsResult.value?.conversations?.length > 0) {
-        const conversationIds = conversationsResult.value.conversations
-          .slice(0, 8)
-          .map(c => c.id);
+        try {
+          // Single optimized request that includes messages
+          const fullConversationsResponse = await api.getConversationsWithMessages(8);
+          const fullConversations = fullConversationsResponse?.conversations || [];
 
-        const fullConversations = await Promise.all(
-          conversationIds.map(id =>
-            api.getConversation(id).catch(() => null)
-          )
-        );
-
-        conversationTopics = extractTopicsFromConversations(
-          fullConversations.filter(Boolean)
-        );
+          conversationTopics = extractTopicsFromConversations(
+            fullConversations.filter(Boolean)
+          );
+        } catch (convError) {
+          console.warn('[useKnowledgeGraph] Failed to load conversations with messages:', convError);
+        }
       }
 
       // Guardar datos raw para debugging
