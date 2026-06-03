@@ -43,48 +43,51 @@ export default function QuestionView({
 }) {
   const [uploadError, setUploadError] = useState(null);
 
+  // Get conditional upload config (for radio questions with file upload)
+  const conditionalUpload = question?.conditionalUpload;
+  const showUpload = conditionalUpload && answer === conditionalUpload?.showWhen;
+
+  // File drop handler - must be at component level
+  const onDrop = useCallback((acceptedFiles, rejectedFiles) => {
+    setUploadError(null);
+    if (rejectedFiles.length > 0) {
+      const error = rejectedFiles[0].errors[0];
+      if (error.code === 'file-too-large') {
+        setUploadError('File is too large. Maximum size is 10MB.');
+      } else if (error.code === 'file-invalid-type') {
+        setUploadError('Invalid file type. Please upload PDF, PNG, or JPG.');
+      } else {
+        setUploadError(error.message);
+      }
+      return;
+    }
+    if (acceptedFiles.length > 0 && onFileChange && conditionalUpload) {
+      const file = acceptedFiles[0];
+      onFileChange(conditionalUpload.field, file);
+    }
+  }, [onFileChange, conditionalUpload]);
+
+  // Dropzone hook - must be at component level
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: conditionalUpload?.accept || {},
+    maxSize: conditionalUpload?.maxSize || 10 * 1024 * 1024,
+    maxFiles: 1,
+    disabled: !showUpload,
+  });
+
+  const removeFile = useCallback(() => {
+    if (onFileChange && conditionalUpload) {
+      onFileChange(conditionalUpload.field, null);
+    }
+    setUploadError(null);
+  }, [onFileChange, conditionalUpload]);
+
   if (!question) return null;
 
   const renderInput = () => {
     switch (question.type) {
       case "radio":
-        const { conditionalUpload } = question;
-        const showUpload = conditionalUpload && answer === conditionalUpload.showWhen;
-
-        const onDrop = useCallback((acceptedFiles, rejectedFiles) => {
-          setUploadError(null);
-          if (rejectedFiles.length > 0) {
-            const error = rejectedFiles[0].errors[0];
-            if (error.code === 'file-too-large') {
-              setUploadError('File is too large. Maximum size is 10MB.');
-            } else if (error.code === 'file-invalid-type') {
-              setUploadError('Invalid file type. Please upload PDF, PNG, or JPG.');
-            } else {
-              setUploadError(error.message);
-            }
-            return;
-          }
-          if (acceptedFiles.length > 0 && onFileChange && conditionalUpload) {
-            const file = acceptedFiles[0];
-            onFileChange(conditionalUpload.field, file);
-          }
-        }, [onFileChange, conditionalUpload]);
-
-        const { getRootProps, getInputProps, isDragActive } = useDropzone({
-          onDrop,
-          accept: conditionalUpload?.accept || {},
-          maxSize: conditionalUpload?.maxSize || 10 * 1024 * 1024,
-          maxFiles: 1,
-          disabled: !showUpload,
-        });
-
-        const removeFile = () => {
-          if (onFileChange && conditionalUpload) {
-            onFileChange(conditionalUpload.field, null);
-          }
-          setUploadError(null);
-        };
-
         return (
           <div className="mt-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
