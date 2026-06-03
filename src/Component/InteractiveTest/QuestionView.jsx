@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useCallback, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Mic, MicOff } from "lucide-react";
+import { Mic, MicOff, Upload, FileText, X, CheckCircle } from "lucide-react";
+import { useDropzone } from "react-dropzone";
 
 // Animation variants for question transitions
 const questionVariants = {
@@ -33,59 +34,203 @@ export default function QuestionView({
   direction,
   isVoiceMode,
   toggleVoiceMode,
+  onNext,
+  isAnswered,
+  isSubmitting,
+  isLastQuestion,
+  uploadedFile,
+  onFileChange,
 }) {
+  const [uploadError, setUploadError] = useState(null);
+
   if (!question) return null;
 
   const renderInput = () => {
     switch (question.type) {
       case "radio":
+        const { conditionalUpload } = question;
+        const showUpload = conditionalUpload && answer === conditionalUpload.showWhen;
+
+        const onDrop = useCallback((acceptedFiles, rejectedFiles) => {
+          setUploadError(null);
+          if (rejectedFiles.length > 0) {
+            const error = rejectedFiles[0].errors[0];
+            if (error.code === 'file-too-large') {
+              setUploadError('File is too large. Maximum size is 10MB.');
+            } else if (error.code === 'file-invalid-type') {
+              setUploadError('Invalid file type. Please upload PDF, PNG, or JPG.');
+            } else {
+              setUploadError(error.message);
+            }
+            return;
+          }
+          if (acceptedFiles.length > 0 && onFileChange && conditionalUpload) {
+            const file = acceptedFiles[0];
+            onFileChange(conditionalUpload.field, file);
+          }
+        }, [onFileChange, conditionalUpload]);
+
+        const { getRootProps, getInputProps, isDragActive } = useDropzone({
+          onDrop,
+          accept: conditionalUpload?.accept || {},
+          maxSize: conditionalUpload?.maxSize || 10 * 1024 * 1024,
+          maxFiles: 1,
+          disabled: !showUpload,
+        });
+
+        const removeFile = () => {
+          if (onFileChange && conditionalUpload) {
+            onFileChange(conditionalUpload.field, null);
+          }
+          setUploadError(null);
+        };
+
         return (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-8">
-            {question.options.map((option, index) => {
-              const isSelected = answer === option.value;
-              return (
-                <motion.button
-                  key={option.value}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  type="button"
-                  onClick={() => onAnswerChange(option.value)}
-                  className={`text-left border-2 rounded-xl px-6 py-5 transition-all duration-200 ${
-                    isSelected
-                      ? "border-violet-500 bg-violet-50 shadow-lg shadow-violet-100"
-                      : "border-gray-200 hover:border-violet-200 hover:bg-violet-50/50"
-                  }`}
+          <div className="mt-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {question.options.map((option, index) => {
+                const isSelected = answer === option.value;
+                return (
+                  <motion.button
+                    key={option.value}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    type="button"
+                    onClick={() => onAnswerChange(option.value)}
+                    className={`text-left border-2 rounded-xl px-6 py-5 transition-all duration-200 ${
+                      isSelected
+                        ? "border-violet-500 bg-violet-50 shadow-lg shadow-violet-100"
+                        : "border-gray-200 hover:border-violet-200 hover:bg-violet-50/50"
+                    }`}
+                  >
+                    <div className="flex items-center gap-4">
+                      <span
+                        className={`w-6 h-6 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition-all ${
+                          isSelected
+                            ? "border-violet-500 bg-violet-500"
+                            : "border-gray-300"
+                        }`}
+                      >
+                        {isSelected && (
+                          <motion.span
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            className="w-2.5 h-2.5 bg-white rounded-full"
+                          />
+                        )}
+                      </span>
+                      <span
+                        className={`text-base font-medium ${
+                          isSelected ? "text-violet-900" : "text-gray-700"
+                        }`}
+                      >
+                        {option.label}
+                      </span>
+                    </div>
+                  </motion.button>
+                );
+              })}
+            </div>
+
+            {/* Conditional File Upload */}
+            <AnimatePresence>
+              {showUpload && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                  animate={{ opacity: 1, height: "auto", marginTop: 24 }}
+                  exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                  className="overflow-hidden"
                 >
-                  <div className="flex items-center gap-4">
-                    <span
-                      className={`w-6 h-6 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition-all ${
-                        isSelected
-                          ? "border-violet-500 bg-violet-500"
-                          : "border-gray-300"
-                      }`}
-                    >
-                      {isSelected && (
-                        <motion.span
-                          initial={{ scale: 0 }}
-                          animate={{ scale: 1 }}
-                          className="w-2.5 h-2.5 bg-white rounded-full"
-                        />
+                  <div className="bg-gray-50 rounded-xl p-6 border-2 border-gray-200">
+                    <p className="text-sm font-medium text-gray-700 mb-1">
+                      {conditionalUpload.label}
+                    </p>
+                    <p className="text-xs text-gray-500 mb-4">
+                      {conditionalUpload.description}
+                    </p>
+
+                    {!uploadedFile ? (
+                      <div
+                        {...getRootProps()}
+                        className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-all ${
+                          isDragActive
+                            ? "border-violet-500 bg-violet-50"
+                            : "border-gray-300 hover:border-violet-400 hover:bg-white"
+                        }`}
+                      >
+                        <input {...getInputProps()} />
+                        <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                        {isDragActive ? (
+                          <p className="text-sm text-violet-600 font-medium">
+                            Drop your file here...
+                          </p>
+                        ) : (
+                          <>
+                            <p className="text-sm text-gray-600">
+                              <span className="text-violet-600 font-medium">
+                                Click to upload
+                              </span>{" "}
+                              or drag and drop
+                            </p>
+                            <p className="text-xs text-gray-400 mt-1">
+                              PDF, PNG, JPG (max 10MB)
+                            </p>
+                          </>
+                        )}
+                      </div>
+                    ) : (
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="flex items-center justify-between bg-white border-2 border-green-200 rounded-lg p-4"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                            <FileText className="w-5 h-5 text-green-600" />
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-gray-900 truncate max-w-[200px]">
+                              {uploadedFile.name}
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              {(uploadedFile.size / 1024 / 1024).toFixed(2)} MB
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="w-5 h-5 text-green-500" />
+                          <button
+                            type="button"
+                            onClick={removeFile}
+                            className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+                          >
+                            <X className="w-4 h-4 text-gray-500" />
+                          </button>
+                        </div>
+                      </motion.div>
+                    )}
+
+                    {/* Error Message */}
+                    <AnimatePresence>
+                      {uploadError && (
+                        <motion.p
+                          initial={{ opacity: 0, y: -10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -10 }}
+                          className="text-xs text-red-600 mt-2"
+                        >
+                          {uploadError}
+                        </motion.p>
                       )}
-                    </span>
-                    <span
-                      className={`text-base font-medium ${
-                        isSelected ? "text-violet-900" : "text-gray-700"
-                      }`}
-                    >
-                      {option.label}
-                    </span>
+                    </AnimatePresence>
                   </div>
-                </motion.button>
-              );
-            })}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         );
 
@@ -132,11 +277,33 @@ export default function QuestionView({
                 Selected: {selectedItems.length}/{question.maxSelect}
               </p>
             )}
+            {/* Continue button */}
+            <motion.button
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              type="button"
+              onClick={onNext}
+              disabled={!isAnswered || isSubmitting}
+              className={`mt-6 w-full py-4 rounded-xl font-semibold text-base transition-all duration-200 ${
+                isAnswered && !isSubmitting
+                  ? "bg-violet-600 text-white hover:bg-violet-700 shadow-lg shadow-violet-200 hover:shadow-xl"
+                  : "bg-gray-200 text-gray-400 cursor-not-allowed"
+              }`}
+            >
+              {isLastQuestion ? "Finish" : "Continue"}
+            </motion.button>
           </div>
         );
 
       case "textarea":
       case "url":
+        const handleKeyDown = (e) => {
+          if (e.key === "Enter" && !e.shiftKey && isAnswered && onNext) {
+            e.preventDefault();
+            onNext();
+          }
+        };
         return (
           <div className="mt-8 relative">
             <motion.div
@@ -147,6 +314,7 @@ export default function QuestionView({
               <textarea
                 value={answer || ""}
                 onChange={(e) => onAnswerChange(e.target.value)}
+                onKeyDown={handleKeyDown}
                 placeholder={
                   isVoiceMode ? "Listening... Speak now" : question.placeholder
                 }
@@ -186,6 +354,22 @@ export default function QuestionView({
                 Recording... Click the microphone to stop
               </motion.div>
             )}
+            {/* Continue button */}
+            <motion.button
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              type="button"
+              onClick={onNext}
+              disabled={!isAnswered || isSubmitting}
+              className={`mt-6 w-full py-4 rounded-xl font-semibold text-base transition-all duration-200 ${
+                isAnswered && !isSubmitting
+                  ? "bg-violet-600 text-white hover:bg-violet-700 shadow-lg shadow-violet-200 hover:shadow-xl"
+                  : "bg-gray-200 text-gray-400 cursor-not-allowed"
+              }`}
+            >
+              {isLastQuestion ? "Finish" : "Continue"}
+            </motion.button>
           </div>
         );
 
@@ -230,6 +414,22 @@ export default function QuestionView({
                 <span>{question.max || 10}</span>
               </div>
             </motion.div>
+            {/* Continue button */}
+            <motion.button
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              type="button"
+              onClick={onNext}
+              disabled={!isAnswered || isSubmitting}
+              className={`mt-6 w-full py-4 rounded-xl font-semibold text-base transition-all duration-200 ${
+                isAnswered && !isSubmitting
+                  ? "bg-violet-600 text-white hover:bg-violet-700 shadow-lg shadow-violet-200 hover:shadow-xl"
+                  : "bg-gray-200 text-gray-400 cursor-not-allowed"
+              }`}
+            >
+              {isLastQuestion ? "Finish" : "Continue"}
+            </motion.button>
           </div>
         );
 

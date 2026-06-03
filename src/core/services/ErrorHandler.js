@@ -249,8 +249,10 @@ class ErrorHandler {
       });
     }
 
-    // Handle authentication errors
-    if (response.status === 401 || response.status === 403) {
+    // Handle authentication errors (only 401, not 403)
+    // 401 = Unauthorized (not logged in)
+    // 403 = Forbidden (logged in but no permission) - should NOT logout
+    if (response.status === 401) {
       this.handleAuthError(message);
     }
 

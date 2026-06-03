@@ -629,6 +629,30 @@ export const api = {
     }),
 
   /**
+   * POST /business-test/process-brand-guidelines - Process brand guidelines file with AI
+   * @param {File} file - The file to process (PDF, PNG, JPG)
+   * @returns {Promise<{content: string, filename: string, contentType: string, processed: boolean}>}
+   */
+  processBrandGuidelines: async (file) => {
+    const { getAuthHeader } = await import('../core/utils/auth');
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const response = await fetch(`${API.MARNEE}/business-test/process-brand-guidelines`, {
+      method: 'POST',
+      headers: getAuthHeader(),
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.detail || `HTTP ${response.status}`);
+    }
+
+    return response.json();
+  },
+
+  /**
    * GET /business-test/me - Get my business test
    */
   getBusinessTestMe: () =>

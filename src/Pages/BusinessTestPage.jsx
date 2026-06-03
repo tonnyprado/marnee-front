@@ -247,6 +247,17 @@ const STEPS = [
       { value: "yes", label: "Yes, I have brand guidelines" },
       { value: "no", label: "No, I don't have brand guidelines" },
     ],
+    conditionalUpload: {
+      showWhen: "yes",
+      field: "brandGuidelinesFile",
+      label: "Upload your brand guidelines (optional)",
+      description: "Marnee will analyze your brand guidelines to better understand your brand identity",
+      accept: {
+        'application/pdf': ['.pdf'],
+        'image/*': ['.png', '.jpg', '.jpeg'],
+      },
+      maxSize: 10 * 1024 * 1024, // 10MB
+    },
   },
 
   // =====================
@@ -412,10 +423,33 @@ export default function BusinessTestPage() {
   }, [setContextFounderId]);
 
   // Submit the test
-  const handleSubmit = useCallback(async (answers) => {
+  const handleSubmit = useCallback(async (answers, uploadedFiles = {}) => {
     // Ensure founder profile exists
-    let currentFounderId = contextFounderId;
+    // First, try to get the founder from the backend (to ensure we have the correct one for this user)
+    let currentFounderId = null;
 
+    try {
+      console.log("Checking for existing founder profile...");
+      const myFounder = await api.getMeFounder();
+      if (myFounder?.id) {
+        currentFounderId = myFounder.id;
+        console.log("Found existing founder profile:", currentFounderId);
+        // Update context if different
+        if (currentFounderId !== contextFounderId) {
+          setContextFounderId(currentFounderId);
+        }
+      }
+    } catch (error) {
+      // 404 means no founder exists yet - this is OK
+      if (error.statusCode === 404) {
+        console.log("No existing founder profile found");
+      } else {
+        console.error("Error checking founder profile:", error);
+        // Continue anyway - we'll try to create one
+      }
+    }
+
+    // If no founder found, create one
     if (!currentFounderId) {
       console.log("Creating empty founder profile for business test...");
       try {
@@ -434,6 +468,21 @@ export default function BusinessTestPage() {
       }
     }
 
+    // Process brand guidelines file if provided
+    let brandGuidelinesContent = null;
+    if (uploadedFiles.brandGuidelinesFile) {
+      try {
+        console.log("Processing brand guidelines file with AI...");
+        const processResult = await api.processBrandGuidelines(uploadedFiles.brandGuidelinesFile);
+        brandGuidelinesContent = processResult.content;
+        console.log("Brand guidelines processed successfully");
+      } catch (error) {
+        console.error("Error processing brand guidelines:", error);
+        // Don't fail the whole submission, just log the error
+        // The user can continue without processed guidelines
+      }
+    }
+
     // Build payload
     const payload = { founderId: currentFounderId };
     STEPS.forEach((step) => {
@@ -447,6 +496,11 @@ export default function BusinessTestPage() {
         }
       }
     });
+
+    // Add processed brand guidelines content
+    if (brandGuidelinesContent) {
+      payload.brandGuidelinesContent = brandGuidelinesContent;
+    }
 
     // Submit
     await api.submitBusinessTest(payload);

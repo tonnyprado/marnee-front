@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import PageTransition from '../../Component/PageTransition';
 import ConversationSidebar from '../../Component/ConversationSidebar';
 import QuickActionsBar from '../../Component/QuickActionsBar';
+import BrandGuidelinesPreview from '../../Component/BrandGuidelinesPreview';
 import PromptSuggestions from '../../Component/PromptSuggestions';
 import ExportModal from '../../Component/ExportModal';
 import FavoritesModal from '../../Component/FavoritesModal';
@@ -118,6 +119,7 @@ function ChatPageContent() {
   const [copiedMessageId, setCopiedMessageId] = useState(null);
   const [hoveredMessageId, setHoveredMessageId] = useState(null);
   const [favoriteMessageIds, setFavoriteMessageIds] = useState(new Set());
+  const [brandGuidelinesContent, setBrandGuidelinesContent] = useState(null);
 
   const messagesEndRef = useRef(null);
   const recognitionRef = useRef(null);
@@ -222,15 +224,22 @@ function ChatPageContent() {
         console.log('[Chat] Initializing...');
 
         // OPTIMIZED: Run independent requests in parallel
-        const [founder, sessions, conversationsResponse] = await Promise.all([
+        const [founder, sessions, conversationsResponse, businessTest] = await Promise.all([
           api.getMeFounder(),
           api.getMeSessions(),
           api.getConversationsWithMessages(20), // Single optimized request with messages included
+          api.getBusinessTestMe().catch(() => null), // Don't fail if no business test
         ]);
 
         // Set founder
         setFounderId(founder.id);
         console.log('[Chat] Founder loaded:', founder.id);
+
+        // Load brand guidelines content if available
+        if (businessTest?.brandGuidelinesContent) {
+          setBrandGuidelinesContent(businessTest.brandGuidelinesContent);
+          console.log('[Chat] Brand guidelines loaded');
+        }
 
         // Set session
         const latestSession = sessions?.sessions?.[0] || null;
@@ -730,6 +739,7 @@ function ChatPageContent() {
           onClose={() => setIsSidebarOpen(false)}
           isCollapsed={isSidebarCollapsed}
           onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+          onBrandGuidelinesUpdate={setBrandGuidelinesContent}
         />
 
         {/* Main chat area */}
@@ -838,6 +848,13 @@ function ChatPageContent() {
               )}
             </div>
           </div>
+
+          {/* Brand Guidelines Preview - Shows extracted colors/fonts */}
+          {brandGuidelinesContent && (
+            <div className="mt-3 max-w-md">
+              <BrandGuidelinesPreview content={brandGuidelinesContent} isCollapsible={true} />
+            </div>
+          )}
         </motion.div>
 
         {/* Messages */}

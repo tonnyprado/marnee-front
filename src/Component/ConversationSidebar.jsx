@@ -1,7 +1,9 @@
 import React, { useState, useCallback, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageCircle, Plus, X, Trash2, PanelLeftClose, PanelLeft, Sparkles } from 'lucide-react';
+import { MessageCircle, Plus, X, Trash2, PanelLeftClose, PanelLeft, Sparkles, Palette } from 'lucide-react';
+import BrandGuidelinesModal from './BrandGuidelinesModal';
+import { api } from '../services/api';
 
 // Helper functions moved outside component for performance
 const getConversationTitle = (conversation) => {
@@ -124,9 +126,29 @@ export default function ConversationSidebar({
   onClose,
   isCollapsed = false,
   onToggleCollapse,
+  onBrandGuidelinesUpdate,
 }) {
   const navigate = useNavigate();
   const [hoveredConvId, setHoveredConvId] = useState(null);
+  const [showBrandGuidelinesModal, setShowBrandGuidelinesModal] = useState(false);
+
+  // Handle brand guidelines processed
+  const handleBrandGuidelinesSuccess = useCallback(async (content) => {
+    try {
+      // Get current business test and update with brand guidelines content
+      const businessTest = await api.getBusinessTestMe();
+      if (businessTest) {
+        await api.submitBusinessTest({
+          founderId: businessTest.founderId,
+          brandGuidelinesContent: content,
+          hasBrandGuidelines: true,
+        });
+        onBrandGuidelinesUpdate?.(content);
+      }
+    } catch (error) {
+      console.error('Error saving brand guidelines:', error);
+    }
+  }, [onBrandGuidelinesUpdate]);
 
   // Memoized callbacks to prevent re-creating functions on each render
   const handleMouseEnter = useCallback((id) => () => setHoveredConvId(id), []);
@@ -152,6 +174,17 @@ export default function ConversationSidebar({
       </motion.button>
 
       <div className="flex-1" />
+
+      {/* Brand Guidelines - Collapsed */}
+      <motion.button
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        onClick={() => setShowBrandGuidelinesModal(true)}
+        className="p-2 mb-2 rounded-lg bg-gradient-to-br from-pink-500 to-rose-600 text-white shadow-sm hover:shadow-md transition-shadow"
+        title="Brand Guidelines"
+      >
+        <Palette className="w-5 h-5" />
+      </motion.button>
 
       {/* Branding Test - Collapsed */}
       <motion.button
@@ -236,8 +269,28 @@ export default function ConversationSidebar({
         )}
       </div>
 
-      {/* Branding Test Button - Bottom */}
-      <div className="p-3 border-t border-gray-100">
+      {/* Bottom Buttons */}
+      <div className="p-3 border-t border-gray-100 space-y-2">
+        {/* Brand Guidelines Button */}
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          onClick={() => setShowBrandGuidelinesModal(true)}
+          className="w-full group relative overflow-hidden rounded-xl p-3 bg-gradient-to-r from-pink-50 to-rose-50 border border-pink-200/50 hover:border-pink-300 transition-all"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center shadow-sm group-hover:shadow-md transition-shadow">
+              <Palette className="w-4.5 h-4.5 text-white" />
+            </div>
+            <div className="text-left">
+              <p className="text-sm font-semibold text-gray-800">Brand Guidelines</p>
+              <p className="text-xs text-gray-500">Upload your brand identity</p>
+            </div>
+          </div>
+          <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+        </motion.button>
+
+        {/* Branding Test Button */}
         <motion.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
@@ -253,7 +306,6 @@ export default function ConversationSidebar({
               <p className="text-xs text-gray-500">Refine your strategy</p>
             </div>
           </div>
-          {/* Subtle shine effect on hover */}
           <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
         </motion.button>
       </div>
@@ -293,6 +345,13 @@ export default function ConversationSidebar({
           </>
         )}
       </AnimatePresence>
+
+      {/* Brand Guidelines Modal */}
+      <BrandGuidelinesModal
+        isOpen={showBrandGuidelinesModal}
+        onClose={() => setShowBrandGuidelinesModal(false)}
+        onSuccess={handleBrandGuidelinesSuccess}
+      />
     </>
   );
 }

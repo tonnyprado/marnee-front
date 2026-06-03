@@ -31,6 +31,7 @@ export default function InteractiveTest({
   const [phase, setPhase] = useState("welcome"); // welcome, questions, completed
   const [currentStep, setCurrentStep] = useState(0);
   const [answers, setAnswers] = useState({});
+  const [uploadedFiles, setUploadedFiles] = useState({}); // For file uploads
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -85,6 +86,14 @@ export default function InteractiveTest({
     }));
   }, []);
 
+  // Handle file change for conditional uploads
+  const handleFileChange = useCallback((field, file) => {
+    setUploadedFiles((prev) => ({
+      ...prev,
+      [field]: file,
+    }));
+  }, []);
+
   // Navigate to specific question
   const goToQuestion = useCallback((index) => {
     if (index >= 0 && index < visibleSteps.length) {
@@ -100,7 +109,7 @@ export default function InteractiveTest({
       setIsSubmitting(true);
       setError(null);
       try {
-        await onSubmit(answers);
+        await onSubmit(answers, uploadedFiles);
         setPhase("completed");
       } catch (err) {
         setError(err.message || "Failed to submit");
@@ -111,7 +120,7 @@ export default function InteractiveTest({
       setDirection(1);
       setCurrentStep((prev) => prev + 1);
     }
-  }, [currentStep, visibleSteps.length, answers, onSubmit]);
+  }, [currentStep, visibleSteps.length, answers, uploadedFiles, onSubmit]);
 
   // Handle previous
   const handlePrevious = useCallback(() => {
@@ -212,6 +221,12 @@ export default function InteractiveTest({
                   direction={direction}
                   isVoiceMode={isVoiceMode}
                   toggleVoiceMode={toggleVoiceMode}
+                  onNext={handleNext}
+                  isAnswered={isCurrentAnswered()}
+                  isSubmitting={isSubmitting}
+                  isLastQuestion={currentStep === visibleSteps.length - 1}
+                  uploadedFile={currentQuestion.conditionalUpload ? uploadedFiles[currentQuestion.conditionalUpload.field] : null}
+                  onFileChange={handleFileChange}
                 />
 
                 {/* Error message */}
