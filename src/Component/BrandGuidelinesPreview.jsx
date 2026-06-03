@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Palette, ChevronDown, ChevronUp, CheckCircle, ExternalLink } from 'lucide-react';
+import { Palette, ChevronDown, CheckCircle } from 'lucide-react';
 
 /**
  * Extracts color codes from brand guidelines content
@@ -78,8 +78,6 @@ export default function BrandGuidelinesPreview({ content, isCollapsible = true }
   }, [content]);
 
   if (!content) return null;
-
-  const hasVisualData = colors.length > 0 || fonts.length > 0;
 
   return (
     <motion.div
