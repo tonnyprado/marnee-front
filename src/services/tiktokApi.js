@@ -1,7 +1,19 @@
 // src/services/tiktokApi.js
 import apiClient from '../core/services/ApiClient';
+import {
+  isTikTokDemoMode,
+  MOCK_TIKTOK_STATUS,
+  MOCK_TIKTOK_ANALYTICS,
+  MOCK_TIKTOK_VIDEOS,
+  MOCK_TIKTOK_PROFILE,
+  MOCK_TIKTOK_DEMOGRAPHICS,
+  MOCK_TIKTOK_ANALYSIS
+} from './mockData/tiktokMockData';
 
 const API_BASE_URL = process.env.REACT_APP_API_MARNEE || 'http://127.0.0.1:8000/api/v1';
+
+// Helper para simular delay de API
+const mockDelay = () => new Promise(resolve => setTimeout(resolve, 300));
 
 /**
  * TikTok API service
@@ -15,6 +27,12 @@ const API_BASE_URL = process.env.REACT_APP_API_MARNEE || 'http://127.0.0.1:8000/
  * Get TikTok connection status
  */
 export const getTikTokStatus = async () => {
+  // Modo demo para review
+  if (isTikTokDemoMode()) {
+    await mockDelay();
+    return MOCK_TIKTOK_STATUS;
+  }
+
   try {
     const response = await apiClient.get(`${API_BASE_URL}/tiktok/status`);
     return response.data;
@@ -72,6 +90,12 @@ export const refreshTikTokToken = async () => {
  * Get TikTok user profile data
  */
 export const getTikTokProfile = async () => {
+  // Modo demo para review
+  if (isTikTokDemoMode()) {
+    await mockDelay();
+    return MOCK_TIKTOK_PROFILE;
+  }
+
   try {
     const response = await apiClient.get(`${API_BASE_URL}/tiktok/profile`);
     return response.data;
@@ -86,6 +110,12 @@ export const getTikTokProfile = async () => {
  * @param {number} days - Number of days to analyze (7-30)
  */
 export const getTikTokAnalytics = async (days = 30) => {
+  // Modo demo para review
+  if (isTikTokDemoMode()) {
+    await mockDelay();
+    return MOCK_TIKTOK_ANALYTICS;
+  }
+
   try {
     const response = await apiClient.get(`${API_BASE_URL}/tiktok/analytics`, {
       params: { days }
@@ -102,6 +132,12 @@ export const getTikTokAnalytics = async (days = 30) => {
  * @param {number} limit - Number of videos to fetch (1-50)
  */
 export const getTikTokVideos = async (limit = 25) => {
+  // Modo demo para review
+  if (isTikTokDemoMode()) {
+    await mockDelay();
+    return MOCK_TIKTOK_VIDEOS;
+  }
+
   try {
     const response = await apiClient.get(`${API_BASE_URL}/tiktok/videos`, {
       params: { limit }
@@ -117,6 +153,12 @@ export const getTikTokVideos = async (limit = 25) => {
  * Get audience demographics
  */
 export const getTikTokDemographics = async () => {
+  // Modo demo para review
+  if (isTikTokDemoMode()) {
+    await mockDelay();
+    return MOCK_TIKTOK_DEMOGRAPHICS;
+  }
+
   try {
     const response = await apiClient.get(`${API_BASE_URL}/tiktok/demographics`);
     return response.data;
@@ -131,6 +173,12 @@ export const getTikTokDemographics = async () => {
  * @param {number} days - Number of days to analyze (7-30)
  */
 export const getTikTokAnalysis = async (days = 30) => {
+  // Modo demo para review
+  if (isTikTokDemoMode()) {
+    await mockDelay();
+    return MOCK_TIKTOK_ANALYSIS;
+  }
+
   try {
     const response = await apiClient.get(`${API_BASE_URL}/tiktok/analysis`, {
       params: { days }

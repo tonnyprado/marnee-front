@@ -9,6 +9,7 @@ import { TopTabs } from "../../Component/Dashboard";
 import KnowledgeGraphSection from "./MyDashboardSections/KnowledgeGraphSection";
 import ConnectionsHub from "./MyDashboardSections/ConnectionsHub";
 import ContentMarketingSection from "./MyDashboardSections/ContentMarketingSection";
+import TikTokSection from "./MyDashboardSections/TikTokSection";
 
 // Tab content animation variants
 const tabContentVariants = {
@@ -23,6 +24,7 @@ export default function MyDashboard() {
   const tabs = [
     "Overview",
     "Instagram",
+    "TikTok",
     "YouTube",
     "Analytics"
   ];
@@ -66,6 +68,18 @@ export default function MyDashboard() {
                 transition={{ duration: 0.18, ease: "easeOut" }}
               >
                 <ContentMarketingSection />
+              </motion.div>
+            )}
+            {activeTab === "tiktok" && (
+              <motion.div
+                key="tiktok"
+                variants={tabContentVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                transition={{ duration: 0.18, ease: "easeOut" }}
+              >
+                <TikTokSection />
               </motion.div>
             )}
             {activeTab === "youtube" && (
