@@ -288,7 +288,7 @@ export default function TikTokSection() {
               <ReachOverTimeChart
                 data={viewsChartData}
                 title="Views Over Time"
-                badgeLabel="Views"
+                badge="7 Days"
               />
               <BestPostingHoursChart data={postingHoursData} />
             </div>
