@@ -182,6 +182,12 @@ export const getYouTubeAnalytics = async (days = 30) => {
  * Get YouTube audience demographics
  */
 export const getYouTubeDemographics = async () => {
+  // Modo demo para review
+  if (isYouTubeDemoMode()) {
+    await mockDelay();
+    return MOCK_YOUTUBE_DEMOGRAPHICS;
+  }
+
   try {
     const response = await apiClient.get(`${API_BASE_URL}/youtube/demographics`);
     return response.data;
@@ -234,6 +240,12 @@ export const getYouTubeVideos = async (limit = 25) => {
  * @param {number} days - Number of days to analyze (7-90)
  */
 export const getYouTubeAnalysis = async (days = 30) => {
+  // Modo demo para review
+  if (isYouTubeDemoMode()) {
+    await mockDelay();
+    return MOCK_YOUTUBE_ANALYSIS;
+  }
+
   try {
     const response = await apiClient.get(`${API_BASE_URL}/youtube/analysis`, {
       params: { days }
@@ -241,6 +253,92 @@ export const getYouTubeAnalysis = async (days = 30) => {
     return response.data;
   } catch (error) {
     if (process.env.NODE_ENV === 'development') console.error('Error fetching YouTube analysis:', error.message);
+    throw error;
+  }
+};
+
+// ============================================
+// Google Analytics Data APIs
+// ============================================
+
+/**
+ * Get Google Analytics property status
+ */
+export const getAnalyticsStatus = async () => {
+  // Modo demo para review
+  if (isAnalyticsDemoMode()) {
+    await mockDelay();
+    return MOCK_ANALYTICS_STATUS;
+  }
+
+  try {
+    const response = await apiClient.get(`${API_BASE_URL}/analytics/status`);
+    return response.data;
+  } catch (error) {
+    if (process.env.NODE_ENV === 'development') console.error('Error fetching Analytics status:', error.message);
+    throw error;
+  }
+};
+
+/**
+ * Get Google Analytics data
+ * @param {number} days - Number of days to analyze (7-90)
+ */
+export const getAnalyticsData = async (days = 30) => {
+  // Modo demo para review
+  if (isAnalyticsDemoMode()) {
+    await mockDelay();
+    return MOCK_ANALYTICS_DATA;
+  }
+
+  try {
+    const response = await apiClient.get(`${API_BASE_URL}/analytics/data`, {
+      params: { days }
+    });
+    return response.data;
+  } catch (error) {
+    if (process.env.NODE_ENV === 'development') console.error('Error fetching Analytics data:', error.message);
+    throw error;
+  }
+};
+
+/**
+ * Get Google Analytics demographics
+ */
+export const getAnalyticsDemographics = async () => {
+  // Modo demo para review
+  if (isAnalyticsDemoMode()) {
+    await mockDelay();
+    return MOCK_ANALYTICS_DEMOGRAPHICS;
+  }
+
+  try {
+    const response = await apiClient.get(`${API_BASE_URL}/analytics/demographics`);
+    return response.data;
+  } catch (error) {
+    if (process.env.NODE_ENV === 'development') console.error('Error fetching Analytics demographics:', error.message);
+    throw error;
+  }
+};
+
+/**
+ * Get Marnee's AI analysis of Google Analytics
+ * @param {number} days - Number of days to analyze (7-90)
+ */
+export const getAnalyticsAnalysis = async (days = 30) => {
+  // Modo demo para review
+  if (isAnalyticsDemoMode()) {
+    await mockDelay();
+    return MOCK_ANALYTICS_ANALYSIS;
+  }
+
+  try {
+    const response = await apiClient.get(`${API_BASE_URL}/analytics/analysis`, {
+      params: { days }
+    });
+    return response.data;
+  } catch (error) {
+    if (process.env.NODE_ENV === 'development') console.error('Error fetching Analytics analysis:', error.message);
     throw error;
   }
 };
