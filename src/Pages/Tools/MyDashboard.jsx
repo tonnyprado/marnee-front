@@ -6,6 +6,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import PageTransition from "../../Component/PageTransition";
 import { TopTabs } from "../../Component/Dashboard";
+import ErrorBoundary from "../../Component/ErrorBoundary";
 import KnowledgeGraphSection from "./MyDashboardSections/KnowledgeGraphSection";
 import ConnectionsHub from "./MyDashboardSections/ConnectionsHub";
 import ContentMarketingSection from "./MyDashboardSections/ContentMarketingSection";
@@ -67,7 +68,9 @@ export default function MyDashboard() {
                 exit="exit"
                 transition={{ duration: 0.18, ease: "easeOut" }}
               >
-                <ContentMarketingSection />
+                <ErrorBoundary>
+                  <ContentMarketingSection />
+                </ErrorBoundary>
               </motion.div>
             )}
             {activeTab === "tiktok" && (
@@ -79,7 +82,9 @@ export default function MyDashboard() {
                 exit="exit"
                 transition={{ duration: 0.18, ease: "easeOut" }}
               >
-                <TikTokSection />
+                <ErrorBoundary>
+                  <TikTokSection />
+                </ErrorBoundary>
               </motion.div>
             )}
             {activeTab === "youtube" && (

@@ -81,7 +81,7 @@ export default function InteractiveCard({
                 animate={{ scale: 1 }}
                 transition={{ delay: 0.2, type: 'spring' }}
               >
-                {badge}
+                {typeof badge === 'string' ? badge : String(badge)}
               </motion.span>
             )}
           </div>
