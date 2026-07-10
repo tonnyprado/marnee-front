@@ -1,7 +1,25 @@
 // src/services/googleApi.js
 import apiClient from '../core/services/ApiClient';
+import {
+  isYouTubeDemoMode,
+  MOCK_YOUTUBE_STATUS,
+  MOCK_YOUTUBE_ANALYTICS,
+  MOCK_YOUTUBE_VIDEOS,
+  MOCK_YOUTUBE_DEMOGRAPHICS,
+  MOCK_YOUTUBE_ANALYSIS
+} from './mockData/youtubeMockData';
+import {
+  isAnalyticsDemoMode,
+  MOCK_ANALYTICS_STATUS,
+  MOCK_ANALYTICS_DATA,
+  MOCK_ANALYTICS_DEMOGRAPHICS,
+  MOCK_ANALYTICS_ANALYSIS
+} from './mockData/analyticsMockData';
 
 const API_BASE_URL = process.env.REACT_APP_API_MARNEE || 'http://127.0.0.1:8000/api/v1';
+
+// Helper para simular delay de API
+const mockDelay = () => new Promise(resolve => setTimeout(resolve, 300));
 
 /**
  * Google Services API
@@ -123,6 +141,12 @@ export const refreshGoogleToken = async () => {
  * Get YouTube channel data
  */
 export const getYouTubeChannel = async () => {
+  // Modo demo para review
+  if (isYouTubeDemoMode()) {
+    await mockDelay();
+    return MOCK_YOUTUBE_STATUS;
+  }
+
   try {
     const response = await apiClient.get(`${API_BASE_URL}/youtube/channel`);
     return response.data;
@@ -137,6 +161,12 @@ export const getYouTubeChannel = async () => {
  * @param {number} days - Number of days to analyze (7-90)
  */
 export const getYouTubeAnalytics = async (days = 30) => {
+  // Modo demo para review
+  if (isYouTubeDemoMode()) {
+    await mockDelay();
+    return MOCK_YOUTUBE_ANALYTICS;
+  }
+
   try {
     const response = await apiClient.get(`${API_BASE_URL}/youtube/analytics`, {
       params: { days }
@@ -182,6 +212,12 @@ export const getYouTubeTrafficSources = async (days = 30) => {
  * @param {number} limit - Number of videos to fetch (1-50)
  */
 export const getYouTubeVideos = async (limit = 25) => {
+  // Modo demo para review
+  if (isYouTubeDemoMode()) {
+    await mockDelay();
+    return MOCK_YOUTUBE_VIDEOS;
+  }
+
   try {
     const response = await apiClient.get(`${API_BASE_URL}/youtube/videos`, {
       params: { limit }
