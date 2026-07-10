@@ -1,7 +1,20 @@
 // src/services/instagramApi.js
 import apiClient from '../core/services/ApiClient';
+import {
+  isInstagramDemoMode,
+  MOCK_INSTAGRAM_STATUS,
+  MOCK_INSTAGRAM_INSIGHTS,
+  MOCK_INSTAGRAM_MEDIA,
+  MOCK_INSTAGRAM_PROFILE,
+  MOCK_AUDIENCE_DEMOGRAPHICS,
+  MOCK_CONTENT_PERFORMANCE,
+  MOCK_INSTAGRAM_ANALYSIS
+} from './mockData/instagramMockData';
 
 const API_BASE_URL = process.env.REACT_APP_API_MARNEE || 'http://127.0.0.1:8000/api/v1';
+
+// Helper para simular delay de API
+const mockDelay = () => new Promise(resolve => setTimeout(resolve, 300));
 
 /**
  * Instagram API service
@@ -12,6 +25,12 @@ const API_BASE_URL = process.env.REACT_APP_API_MARNEE || 'http://127.0.0.1:8000/
  * Get Instagram connection status
  */
 export const getInstagramStatus = async () => {
+  // Modo demo para review de Meta
+  if (isInstagramDemoMode()) {
+    await mockDelay();
+    return MOCK_INSTAGRAM_STATUS;
+  }
+
   try {
     const response = await apiClient.get(`${API_BASE_URL}/meta/status`);
     return response.data;
@@ -76,6 +95,12 @@ export const refreshInstagramToken = async () => {
  * Get Instagram profile data
  */
 export const getInstagramProfile = async () => {
+  // Modo demo para review de Meta
+  if (isInstagramDemoMode()) {
+    await mockDelay();
+    return MOCK_INSTAGRAM_PROFILE;
+  }
+
   try {
     const response = await apiClient.get(`${API_BASE_URL}/instagram/profile`);
     return response.data;
@@ -89,6 +114,12 @@ export const getInstagramProfile = async () => {
  * Get Instagram insights
  */
 export const getInstagramInsights = async (period = 'day') => {
+  // Modo demo para review de Meta
+  if (isInstagramDemoMode()) {
+    await mockDelay();
+    return MOCK_INSTAGRAM_INSIGHTS;
+  }
+
   try {
     const response = await apiClient.get(`${API_BASE_URL}/instagram/insights`, {
       params: { period }
@@ -104,6 +135,12 @@ export const getInstagramInsights = async (period = 'day') => {
  * Get audience demographics
  */
 export const getAudienceDemographics = async () => {
+  // Modo demo para review de Meta
+  if (isInstagramDemoMode()) {
+    await mockDelay();
+    return MOCK_AUDIENCE_DEMOGRAPHICS;
+  }
+
   try {
     const response = await apiClient.get(`${API_BASE_URL}/instagram/demographics`);
     return response.data;
@@ -117,6 +154,12 @@ export const getAudienceDemographics = async () => {
  * Get recent Instagram media
  */
 export const getInstagramMedia = async (limit = 25) => {
+  // Modo demo para review de Meta
+  if (isInstagramDemoMode()) {
+    await mockDelay();
+    return MOCK_INSTAGRAM_MEDIA;
+  }
+
   try {
     const response = await apiClient.get(`${API_BASE_URL}/instagram/media`, {
       params: { limit }
@@ -132,6 +175,12 @@ export const getInstagramMedia = async (limit = 25) => {
  * Get Marnee's AI analysis of Instagram account
  */
 export const getInstagramAnalysis = async (days = 30) => {
+  // Modo demo para review de Meta
+  if (isInstagramDemoMode()) {
+    await mockDelay();
+    return MOCK_INSTAGRAM_ANALYSIS;
+  }
+
   try {
     const response = await apiClient.get(`${API_BASE_URL}/instagram/analysis`, {
       params: { days }
@@ -147,6 +196,12 @@ export const getInstagramAnalysis = async (days = 30) => {
  * Get content performance analysis
  */
 export const getContentPerformance = async (limit = 10) => {
+  // Modo demo para review de Meta
+  if (isInstagramDemoMode()) {
+    await mockDelay();
+    return MOCK_CONTENT_PERFORMANCE;
+  }
+
   try {
     const response = await apiClient.get(`${API_BASE_URL}/instagram/content-performance`, {
       params: { limit }
