@@ -39,6 +39,7 @@ const BillingPage = lazy(() => import("./Pages/Tools/BillingPage"));
 const ProfileSettingsPage = lazy(() => import("./Pages/Tools/ProfileSettingsPage"));
 const HelpSupportPage = lazy(() => import("./Pages/Tools/HelpSupportPage"));
 const MyDashboard = lazy(() => import("./Pages/Tools/MyDashboard"));
+const ReportsPage = lazy(() => import("./Pages/Tools/ReportsPage"));
 
 // Admin pages - all lazy loaded since admin is rarely accessed
 const AdminLayout = lazy(() => import("./admin/AdminLayout"));
@@ -213,6 +214,8 @@ function AppContent() {
           <Route path="help-support" element={<HelpSupportPage />} />
           {/* /app/dashboard */}
           <Route path="dashboard" element={<MyDashboard />} />
+          {/* /app/reports */}
+          <Route path="reports" element={<ReportsPage />} />
         </Route>
 
         {/* Admin panel - Only for ADMIN role */}
