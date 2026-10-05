@@ -4,7 +4,7 @@
  * Muestra métricas lado a lado con ganador y recomendaciones
  */
 import { motion } from 'framer-motion';
-import { Instagram, Facebook, TrendingUp, TrendingDown, Award } from 'lucide-react';
+import { Camera, Share2, TrendingUp, TrendingDown, Award } from 'lucide-react';
 
 export default function ComparisonCard({
   instagramData = {},
@@ -27,13 +27,13 @@ export default function ComparisonCard({
     instagram: {
       color: '#C13584',
       gradient: 'from-[#C13584] to-[#E1306C]',
-      Icon: Instagram,
+      Icon: Camera,
       name: 'Instagram'
     },
     facebook: {
       color: '#1877F2',
       gradient: 'from-[#1877F2] to-[#0D65D9]',
-      Icon: Facebook,
+      Icon: Share2,
       name: 'Facebook'
     }
   };
@@ -211,7 +211,7 @@ export default function ComparisonCard({
           }}
           whileHover={{ scale: 1.05 }}
         >
-          <Instagram className="w-3.5 h-3.5" />
+          <Camera className="w-3.5 h-3.5" />
           <span className="text-[10px] font-semibold">Instagram</span>
         </motion.div>
         <motion.div
@@ -222,7 +222,7 @@ export default function ComparisonCard({
           }}
           whileHover={{ scale: 1.05 }}
         >
-          <Facebook className="w-3.5 h-3.5" />
+          <Share2 className="w-3.5 h-3.5" />
           <span className="text-[10px] font-semibold">Facebook</span>
         </motion.div>
       </div>
