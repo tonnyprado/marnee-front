@@ -3,16 +3,12 @@
  * Página completa de reportes y analytics cross-platform
  * Incluye: métricas unificadas, forecasts, comparaciones y recomendaciones
  */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import PageTransition from "../../Component/PageTransition";
 import { TopTabs } from "../../Component/Dashboard";
 import ErrorBoundary from "../../Component/ErrorBoundary";
 import {
-  LineChart,
-  BarChart,
-  PieChart,
-  AreaChart,
   MetricCard,
   ForecastCard,
   ComparisonCard,
@@ -67,11 +63,7 @@ export default function ReportsPage() {
   ];
 
   // Fetch report data
-  useEffect(() => {
-    fetchReportData();
-  }, [selectedPeriod]);
-
-  const fetchReportData = async () => {
+  const fetchReportData = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(null);
@@ -86,7 +78,11 @@ export default function ReportsPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [selectedPeriod]);
+
+  useEffect(() => {
+    fetchReportData();
+  }, [fetchReportData]);
 
   // Handle export
   const handleExport = async (format) => {

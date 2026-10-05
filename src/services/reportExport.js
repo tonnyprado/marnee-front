@@ -174,14 +174,14 @@ export const exportToPDF = async (reportData) => {
   }
 
   // Dynamic import for jsPDF (si no está instalado, fallback a descarga HTML)
-  let jsPDF, autoTable;
+  let jsPDF;
 
   try {
     const jsPDFModule = await import('jspdf');
     jsPDF = jsPDFModule.default;
 
-    const autoTableModule = await import('jspdf-autotable');
-    autoTable = autoTableModule.default;
+    // Import jspdf-autotable to extend jsPDF with autoTable method
+    await import('jspdf-autotable');
   } catch (error) {
     console.warn('jsPDF no está instalado. Usando fallback HTML.');
     return exportToHTMLPrint(reportData);

@@ -4,7 +4,7 @@
  * Muestra métricas lado a lado con ganador y recomendaciones
  */
 import { motion } from 'framer-motion';
-import { Camera, Share2, TrendingUp, TrendingDown, Award } from 'lucide-react';
+import { Camera, Share2, TrendingUp, Award } from 'lucide-react';
 
 export default function ComparisonCard({
   instagramData = {},
