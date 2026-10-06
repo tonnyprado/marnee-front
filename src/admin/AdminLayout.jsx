@@ -2,7 +2,8 @@ import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import {
   Users, LayoutDashboard, CreditCard, FileText,
-  BarChart3, LogOut, Settings, Shield, Lock, Activity, AlertTriangle, Sparkles, Brain, ChevronDown, Plug, Database, Mail, Key
+  BarChart3, LogOut, Settings, Shield, Lock, Activity, AlertTriangle, Sparkles, Brain, ChevronDown, Plug, Database, Mail, Key,
+  Zap, Bot, Cpu, Building2
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getAuthSession, setAuthSession } from '../services/api';
@@ -14,6 +15,7 @@ export default function AdminLayout() {
   const navigate = useNavigate();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [securityExpanded, setSecurityExpanded] = useState(true);
+  const [platformExpanded, setPlatformExpanded] = useState(true);
 
   const handleLogout = () => {
     setAuthSession(null);
@@ -39,6 +41,13 @@ export default function AdminLayout() {
     { path: '/admin/security/sessions', label: 'Active Sessions', icon: Lock },
     { path: '/admin/security/alerts', label: 'Security Alerts', icon: AlertTriangle },
     { path: '/admin/security/password-generator', label: 'Password Generator', icon: Key },
+  ];
+
+  const platformItems = [
+    { path: '/admin/platform/usage', label: 'Usage Dashboard', icon: Zap },
+    { path: '/admin/platform/agents', label: 'AI Agents', icon: Bot },
+    { path: '/admin/platform/api-keys', label: 'API Keys', icon: Key },
+    { path: '/admin/platform/tenants', label: 'Tenants', icon: Building2 },
   ];
 
   const isActive = (path, exact = false) => {
@@ -150,6 +159,67 @@ export default function AdminLayout() {
                 >
                   <div className="pl-2">
                     {securityItems.map((item) => {
+                      const Icon = item.icon;
+                      const active = isActive(item.path, item.exact);
+
+                      return (
+                        <Link
+                          key={item.path}
+                          to={item.path}
+                          className={`
+                            flex items-center gap-3 px-4 py-3 rounded-xl mb-2
+                            transition-all duration-300 transform
+                            ${active
+                              ? 'bg-white/20 text-white shadow-lg backdrop-blur-sm scale-105 border border-white/20'
+                              : 'text-mn-lilac hover:bg-white/10 hover:text-white hover:scale-102 hover:translate-x-1'
+                            }
+                          `}
+                        >
+                          <Icon size={18} />
+                          <span className="font-medium text-sm">{item.label}</span>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Platform Section - Collapsible */}
+          <div className="mt-6">
+            {/* Platform Header Button */}
+            <button
+              onClick={() => setPlatformExpanded(!platformExpanded)}
+              className="w-full flex items-center gap-2 px-4 py-3 rounded-xl mb-2 transition-all duration-300 hover:bg-white/10 group"
+            >
+              <Cpu className="w-5 h-5 text-mn-lilac group-hover:text-white transition-colors" />
+              <span className="flex-1 text-left text-sm font-semibold text-mn-lilac group-hover:text-white uppercase tracking-wider transition-colors">
+                Platform
+              </span>
+              <motion.div
+                animate={{ rotate: platformExpanded ? 180 : 0 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+              >
+                <ChevronDown className="w-4 h-4 text-mn-lilac group-hover:text-white transition-colors" />
+              </motion.div>
+            </button>
+
+            {/* Platform Items - Animated */}
+            <AnimatePresence>
+              {platformExpanded && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{
+                    height: { duration: 0.3, ease: "easeInOut" },
+                    opacity: { duration: 0.2, ease: "easeInOut" }
+                  }}
+                  className="overflow-hidden"
+                >
+                  <div className="pl-2">
+                    {platformItems.map((item) => {
                       const Icon = item.icon;
                       const active = isActive(item.path, item.exact);
 

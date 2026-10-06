@@ -1,0 +1,143 @@
+.platform-tenants {
+  padding: 24px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.platform-tenants h1 {
+  margin: 0 0 24px 0;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.tenant-card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.tenant-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.tenant-header h2 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.tenant-slug {
+  color: #6b7280;
+  font-family: monospace;
+  margin: 4px 0 0 0;
+}
+
+.tier-badge {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+.tier-badge--free {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.tier-badge--starter {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.tier-badge--professional {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.tier-badge--enterprise {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.tenant-description {
+  color: #6b7280;
+  margin: 0 0 24px 0;
+  line-height: 1.6;
+}
+
+.tenant-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin: 24px 0;
+}
+
+.tenant-features {
+  margin: 24px 0;
+}
+
+.tenant-features h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 16px 0;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.feature-item {
+  padding: 12px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.feature-item.enabled {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.feature-item.disabled {
+  background: #f3f4f6;
+  color: #9ca3af;
+}
+
+.feature-icon {
+  font-size: 16px;
+}
+
+.tenant-info {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  font-size: 14px;
+}
+
+.info-label {
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.loading,
+.error {
+  text-align: center;
+  padding: 60px;
+  color: #6b7280;
+}

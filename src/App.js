@@ -59,6 +59,12 @@ const LegalDocumentsPage = lazy(() => import("./admin/pages/LegalDocumentsPage")
 const WaitlistManagement = lazy(() => import("./admin/pages/WaitlistManagement"));
 const PasswordGeneratorPage = lazy(() => import("./admin/pages/PasswordGeneratorPage"));
 
+// Platform pages
+const PlatformUsageDashboard = lazy(() => import("./admin/pages/PlatformUsageDashboard"));
+const PlatformAgentsPage = lazy(() => import("./admin/pages/PlatformAgentsPage"));
+const PlatformAPIKeysPage = lazy(() => import("./admin/pages/PlatformAPIKeysPage"));
+const PlatformTenantsPage = lazy(() => import("./admin/pages/PlatformTenantsPage"));
+
 // Loading fallback component
 const PageLoader = () => (
   <div className="flex h-screen items-center justify-center bg-[#f6f6f6]">
@@ -244,6 +250,12 @@ function AppContent() {
           <Route path="security/sessions" element={<ActiveSessionsPage />} />
           <Route path="security/alerts" element={<SecurityAlertsPage />} />
           <Route path="security/password-generator" element={<PasswordGeneratorPage />} />
+
+          {/* Platform Management Routes */}
+          <Route path="platform/usage" element={<PlatformUsageDashboard />} />
+          <Route path="platform/agents" element={<PlatformAgentsPage />} />
+          <Route path="platform/api-keys" element={<PlatformAPIKeysPage />} />
+          <Route path="platform/tenants" element={<PlatformTenantsPage />} />
         </Route>
 
         {/* fallback */}
