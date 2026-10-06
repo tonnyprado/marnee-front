@@ -11,7 +11,7 @@
  * Follows Single Responsibility Principle: Only handles API calls
  */
 
-import apiClient from './apiClient';
+import apiClient from '../core/services/ApiClient';
 
 // ============================================================================
 // TENANTS
