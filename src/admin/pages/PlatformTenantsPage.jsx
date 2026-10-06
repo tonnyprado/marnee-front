@@ -3,7 +3,7 @@
  * View and manage tenant information
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import platformService from '../../services/platformService';
 import { MetricCard } from '../components/platform';
 import './PlatformTenantsPage.css';
@@ -12,11 +12,7 @@ const PlatformTenantsPage = () => {
   const [tenant, setTenant] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchTenant();
-  }, []);
-
-  const fetchTenant = async () => {
+  const fetchTenant = useCallback(async () => {
     try {
       setLoading(true);
       const data = await platformService.getCurrentTenant();
@@ -26,7 +22,11 @@ const PlatformTenantsPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchTenant();
+  }, [fetchTenant]);
 
   if (loading) {
     return <div className="loading">Cargando...</div>;

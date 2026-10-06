@@ -3,7 +3,7 @@
  * Manage API keys for programmatic access
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import platformService from '../../services/platformService';
 import './PlatformAPIKeysPage.css';
 
@@ -15,11 +15,7 @@ const PlatformAPIKeysPage = () => {
   const [newKeyScopes, setNewKeyScopes] = useState(['read']);
   const [createdKey, setCreatedKey] = useState(null);
 
-  useEffect(() => {
-    fetchAPIKeys();
-  }, []);
-
-  const fetchAPIKeys = async () => {
+  const fetchAPIKeys = useCallback(async () => {
     try {
       setLoading(true);
       const data = await platformService.listAPIKeys();
@@ -29,7 +25,11 @@ const PlatformAPIKeysPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchAPIKeys();
+  }, [fetchAPIKeys]);
 
   const createAPIKey = async () => {
     try {

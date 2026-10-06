@@ -13,7 +13,7 @@
  * Follows Single Responsibility: Displays usage metrics only
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import platformService from '../../services/platformService';
 import { MetricCard, UsageProgressBar } from '../components/platform';
 import './PlatformUsageDashboard.css';
@@ -26,11 +26,7 @@ const PlatformUsageDashboard = () => {
   const [error, setError] = useState(null);
   const [period, setPeriod] = useState('current_month');
 
-  useEffect(() => {
-    fetchData();
-  }, [period]);
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -50,7 +46,11 @@ const PlatformUsageDashboard = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [period]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('en-US', {

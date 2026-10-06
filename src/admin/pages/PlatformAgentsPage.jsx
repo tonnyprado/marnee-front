@@ -11,7 +11,7 @@
  * Follows Single Responsibility: Agent execution UI
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import platformService from '../../services/platformService';
 import { AgentCard } from '../components/platform';
 import './PlatformAgentsPage.css';
@@ -26,11 +26,7 @@ const PlatformAgentsPage = () => {
   const [executing, setExecuting] = useState(false);
   const [executionResult, setExecutionResult] = useState(null);
 
-  useEffect(() => {
-    fetchAgents();
-  }, []);
-
-  const fetchAgents = async () => {
+  const fetchAgents = useCallback(async () => {
     try {
       setLoading(true);
       const data = await platformService.listAgents();
@@ -41,7 +37,11 @@ const PlatformAgentsPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchAgents();
+  }, [fetchAgents]);
 
   const handleExecute = (agentRole) => {
     const agent = agents.find((a) => a.role === agentRole);
