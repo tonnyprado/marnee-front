@@ -1,10 +1,36 @@
 import React from "react";
 import { Shield, Calendar } from "lucide-react";
 import PageTransition from "../../Component/PageTransition";
+import SEO from "../../components/SEO";
 
 export default function PrivacyPolicyPage() {
+  const privacySchema = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Privacy Policy",
+    "description": "Privacy Policy for Marnee - Learn how we collect, use, and protect your personal information.",
+    "url": "https://www.dn-hub.com/privacy-policy",
+    "datePublished": "2026-05-12",
+    "dateModified": "2026-05-12",
+    "publisher": {
+      "@type": "Organization",
+      "name": "Marnee",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://www.dn-hub.com/logo512.png"
+      }
+    }
+  };
+
   return (
-    <PageTransition className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <>
+      <SEO
+        title="Privacy Policy"
+        description="Learn how Marnee collects, uses, and protects your personal information. Your privacy is important to us."
+        url="https://www.dn-hub.com/privacy-policy"
+        schema={privacySchema}
+      />
+      <PageTransition className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="bg-white rounded-2xl p-8 border border-gray-200 shadow-sm mb-6">
@@ -478,5 +504,6 @@ export default function PrivacyPolicyPage() {
         </div>
       </div>
     </PageTransition>
+    </>
   );
 }

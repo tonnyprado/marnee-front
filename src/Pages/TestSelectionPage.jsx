@@ -4,6 +4,7 @@ import { Star, Lightbulb } from "lucide-react";
 import { api } from "../services/api";
 import { useLanguage } from "../context/LanguageContext";
 import LoadingTransition from "../Component/LoadingTransition";
+import SEO from "../components/SEO";
 
 export default function TestSelectionPage() {
   const { t } = useLanguage();
@@ -136,8 +137,14 @@ export default function TestSelectionPage() {
   const sortedTests = [...testTypes].sort((a, b) => (a.priority || 0) - (b.priority || 0));
 
   return (
-    <div className="min-h-screen bg-[#f6f6f6] relative">
-      <LoadingTransition isLoading={isNavigating} message="Loading test..." />
+    <>
+      <SEO
+        title="Test Selection"
+        description="Choose your marketing assessment test. Discover your brand personality and business strategy with Marnee's AI-powered tests."
+        url="https://www.dn-hub.com/test-selection"
+      />
+      <div className="min-h-screen bg-[#f6f6f6] relative">
+        <LoadingTransition isLoading={isNavigating} message="Loading test..." />
       {/* Back Button */}
       <button
         onClick={() => navigate('/app')}
@@ -276,5 +283,6 @@ export default function TestSelectionPage() {
         </div>
       </div>
     </div>
+    </>
   );
 }

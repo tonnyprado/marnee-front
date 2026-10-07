@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 
   <!-- Main Landing Page -->
   <url>
     <loc>https://www.dn-hub.com/</loc>
+    <lastmod>2026-10-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
@@ -11,46 +13,68 @@
   <!-- Intro Page -->
   <url>
     <loc>https://www.dn-hub.com/intro-page</loc>
+    <lastmod>2026-10-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
-  <!-- Authentication Pages -->
+  <!-- Authentication Pages (Public) -->
   <url>
     <loc>https://www.dn-hub.com/auth</loc>
+    <lastmod>2026-10-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://www.dn-hub.com/auth/forgot-password</loc>
+    <lastmod>2026-10-06</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
 
-  <!-- Test Selection & Brand Test Pages -->
+  <!-- Test Selection & Brand Test Pages (Public) -->
   <url>
     <loc>https://www.dn-hub.com/test-selection</loc>
+    <lastmod>2026-10-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://www.dn-hub.com/brand-test/intro</loc>
+    <lastmod>2026-10-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://www.dn-hub.com/brand-test/questions</loc>
+    <lastmod>2026-10-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <url>
     <loc>https://www.dn-hub.com/business-test/questions</loc>
+    <lastmod>2026-10-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
+  </url>
+
+  <!-- Legal Pages (Public) -->
+  <url>
+    <loc>https://www.dn-hub.com/privacy-policy</loc>
+    <lastmod>2026-10-06</lastmod>
+    <changefreq>quarterly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <url>
+    <loc>https://www.dn-hub.com/terms-of-service</loc>
+    <lastmod>2026-10-06</lastmod>
+    <changefreq>quarterly</changefreq>
+    <priority>0.5</priority>
   </url>
 
 </urlset>

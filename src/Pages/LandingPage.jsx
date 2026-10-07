@@ -1,12 +1,47 @@
 import React from "react";
 import Logo from "../Component/Logo";
 import { useLanguage } from "../context/LanguageContext";
+import SEO from "../components/SEO";
 
 export default function LandingPage() {
   const { t } = useLanguage();
 
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Marnee",
+    "url": "https://www.dn-hub.com",
+    "logo": "https://www.dn-hub.com/logo512.png",
+    "description": "AI-powered marketing strategy platform that helps businesses transform social signals into actionable marketing strategies",
+    "sameAs": [
+      "https://www.facebook.com/marnee",
+      "https://twitter.com/marnee",
+      "https://www.linkedin.com/company/marnee"
+    ]
+  };
+
+  const websiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Marnee",
+    "url": "https://www.dn-hub.com",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://www.dn-hub.com/search?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-white text-gray-900 flex flex-col items-center justify-center px-6 relative overflow-hidden">
+    <>
+      <SEO
+        title="AI-Powered Marketing Strategy Platform"
+        description="Transform your marketing with AI. Marnee helps you turn social signals into actionable marketing strategies, optimize campaigns, and grow your brand with intelligent insights."
+        keywords="AI marketing, marketing strategy, social media analytics, marketing automation, brand strategy, content marketing, digital marketing, marketing insights"
+        url="https://www.dn-hub.com/"
+        schema={[organizationSchema, websiteSchema]}
+      />
+      <div className="min-h-screen bg-white text-gray-900 flex flex-col items-center justify-center px-6 relative overflow-hidden">
       {/* Decorative gradient blobs */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-violet-200 via-indigo-200 to-cyan-200 rounded-full blur-3xl opacity-40 -z-10" />
       <div className="absolute bottom-0 left-0 w-72 h-72 bg-gradient-to-br from-indigo-200 to-cyan-200 rounded-full blur-3xl opacity-30 -z-10" />
@@ -54,5 +89,6 @@ export default function LandingPage() {
         <p className="text-xs text-gray-400 mt-2 text-right">0%</p>
       </div>
     </div>
+    </>
   );
 }

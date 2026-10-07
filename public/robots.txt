@@ -1,11 +1,73 @@
 # https://www.robotstxt.org/robotstxt.html
+
+# Default crawlers - Allow public pages
 User-agent: *
 Allow: /
+Allow: /intro-page
+Allow: /auth
+Allow: /auth/forgot-password
+Allow: /test-selection
+Allow: /brand-test/
+Allow: /business-test/
+Allow: /privacy-policy
+Allow: /terms-of-service
 
-# Disallow private sections
+# Disallow private sections (subscriber-only)
 Disallow: /app/
 Disallow: /admin/
 Disallow: /chat-viejo
+
+# AI Crawlers - Allow for training and indexing
+# OpenAI GPT
+User-agent: GPTBot
+Allow: /
+Disallow: /app/
+Disallow: /admin/
+
+# ChatGPT User Plugin
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /app/
+Disallow: /admin/
+
+# Anthropic Claude
+User-agent: Claude-Web
+Allow: /
+Disallow: /app/
+Disallow: /admin/
+
+# Google Gemini
+User-agent: Google-Extended
+Allow: /
+Disallow: /app/
+Disallow: /admin/
+
+# Common Crawl (used by many AI models)
+User-agent: CCBot
+Allow: /
+Disallow: /app/
+Disallow: /admin/
+
+# Bing/Microsoft
+User-agent: Bingbot
+Allow: /
+Disallow: /app/
+Disallow: /admin/
+
+# Meta AI
+User-agent: FacebookBot
+Allow: /
+Disallow: /app/
+Disallow: /admin/
+
+# Perplexity AI
+User-agent: PerplexityBot
+Allow: /
+Disallow: /app/
+Disallow: /admin/
+
+# Crawl rate limits (be polite)
+Crawl-delay: 1
 
 # Sitemap location
 Sitemap: https://www.dn-hub.com/sitemap.xml

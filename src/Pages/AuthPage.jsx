@@ -4,6 +4,7 @@ import Logo from "../Component/Logo";
 import { api, getAuthSession, setAuthSession } from "../services/api";
 import { useLanguage } from "../context/LanguageContext";
 import { trackCompleteRegistration, trackLogin } from "../services/facebookPixel";
+import SEO from "../components/SEO";
 
 export default function AuthPage() {
   const { t } = useLanguage();
@@ -159,7 +160,13 @@ export default function AuthPage() {
   // };
 
   return (
-    <div className="min-h-screen bg-[#f6f6f6] relative flex items-center justify-center px-4">
+    <>
+      <SEO
+        title="Sign In"
+        description="Sign in to Marnee to access your AI-powered marketing strategy tools and grow your brand with intelligent insights."
+        url="https://www.dn-hub.com/auth"
+      />
+      <div className="min-h-screen bg-[#f6f6f6] relative flex items-center justify-center px-4">
       {/* Card */}
       <div className="relative z-10 w-full max-w-md bg-white border border-[rgba(30,30,30,0.1)] rounded p-8 shadow-sm">
         {/* Logo */}
@@ -391,5 +398,6 @@ export default function AuthPage() {
         </p> */}
       </div>
     </div>
+    </>
   );
 }

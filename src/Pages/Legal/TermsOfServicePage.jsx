@@ -1,10 +1,36 @@
 import React from "react";
 import { FileText, Calendar } from "lucide-react";
 import PageTransition from "../../Component/PageTransition";
+import SEO from "../../components/SEO";
 
 export default function TermsOfServicePage() {
+  const termsSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Terms of Service",
+    "description": "Terms of Service for Marnee - Understand your rights and responsibilities when using our platform.",
+    "url": "https://www.dn-hub.com/terms-of-service",
+    "datePublished": "2026-05-12",
+    "dateModified": "2026-05-12",
+    "publisher": {
+      "@type": "Organization",
+      "name": "Marnee",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://www.dn-hub.com/logo512.png"
+      }
+    }
+  };
+
   return (
-    <PageTransition className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <>
+      <SEO
+        title="Terms of Service"
+        description="Read the Terms of Service for Marnee. Understand your rights and responsibilities when using our AI-powered marketing platform."
+        url="https://www.dn-hub.com/terms-of-service"
+        schema={termsSchema}
+      />
+      <PageTransition className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="bg-white rounded-2xl p-8 border border-gray-200 shadow-sm mb-6">
@@ -340,5 +366,6 @@ export default function TermsOfServicePage() {
         </div>
       </div>
     </PageTransition>
+    </>
   );
 }
