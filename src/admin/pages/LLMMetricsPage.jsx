@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   BarChart3,
   TrendingUp,
@@ -21,13 +21,7 @@ const LLMMetricsPage = () => {
   const [costSummary, setCostSummary] = useState(null);
   const [errors, setErrors] = useState(null);
 
-  useEffect(() => {
-    fetchMetrics();
-    fetchCostSummary();
-    fetchErrors();
-  }, [dateRange, groupBy]);
-
-  const fetchMetrics = async () => {
+  const fetchMetrics = useCallback(async () => {
     setLoading(true);
     setError(null);
 
@@ -56,9 +50,9 @@ const LLMMetricsPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [dateRange, groupBy]);
 
-  const fetchCostSummary = async () => {
+  const fetchCostSummary = useCallback(async () => {
     try {
       const token = localStorage.getItem('token');
       const startDate = new Date();
@@ -81,9 +75,9 @@ const LLMMetricsPage = () => {
     } catch (err) {
       console.error('Failed to fetch cost summary:', err);
     }
-  };
+  }, [dateRange]);
 
-  const fetchErrors = async () => {
+  const fetchErrors = useCallback(async () => {
     try {
       const token = localStorage.getItem('token');
       const response = await fetch(
@@ -102,7 +96,13 @@ const LLMMetricsPage = () => {
     } catch (err) {
       console.error('Failed to fetch errors:', err);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchMetrics();
+    fetchCostSummary();
+    fetchErrors();
+  }, [fetchMetrics, fetchCostSummary, fetchErrors]);
 
   const formatCurrency = (value) => {
     return new Intl.NumberFormat('en-US', {
