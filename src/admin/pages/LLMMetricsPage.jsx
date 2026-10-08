@@ -9,7 +9,7 @@ import {
   Database,
   Activity,
 } from 'lucide-react';
-import { API_BASE_URL } from '../../config';
+import API from '../../config';
 import './LLMMetricsPage.css';
 
 const LLMMetricsPage = () => {
@@ -37,7 +37,7 @@ const LLMMetricsPage = () => {
       startDate.setDate(startDate.getDate() - parseInt(dateRange));
 
       const response = await fetch(
-        `${API_BASE_URL}/api/v1/admin/llm-metrics?` +
+        `${API.MARNEE}/admin/llm-metrics?` +
           `start_date=${startDate.toISOString()}&` +
           `group_by=${groupBy}`,
         {
@@ -65,7 +65,7 @@ const LLMMetricsPage = () => {
       startDate.setDate(startDate.getDate() - parseInt(dateRange));
 
       const response = await fetch(
-        `${API_BASE_URL}/api/v1/admin/llm-metrics/cost-summary?` +
+        `${API.MARNEE}/admin/llm-metrics/cost-summary?` +
           `start_date=${startDate.toISOString()}`,
         {
           headers: {
@@ -87,7 +87,7 @@ const LLMMetricsPage = () => {
     try {
       const token = localStorage.getItem('token');
       const response = await fetch(
-        `${API_BASE_URL}/api/v1/admin/llm-metrics/errors`,
+        `${API.MARNEE}/admin/llm-metrics/errors`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
