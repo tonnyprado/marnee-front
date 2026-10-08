@@ -21,7 +21,7 @@ import {
   SentimentSatisfiedAlt,
   SentimentDissatisfied,
   SentimentNeutral,
-  HelpOutline,
+  Help,
   Lightbulb,
   Warning,
   CheckCircle,
@@ -82,7 +82,7 @@ const InstagramCommentsInsights = () => {
       positive: <SentimentSatisfiedAlt sx={{ fontSize: 40, color: '#4caf50' }} />,
       negative: <SentimentDissatisfied sx={{ fontSize: 40, color: '#f44336' }} />,
       neutral: <SentimentNeutral sx={{ fontSize: 40, color: '#9e9e9e' }} />,
-      questions: <HelpOutline sx={{ fontSize: 40, color: '#2196f3' }} />
+      questions: <Help sx={{ fontSize: 40, color: '#2196f3' }} />
     };
 
     const colors = {
