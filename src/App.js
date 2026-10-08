@@ -64,6 +64,7 @@ const PlatformUsageDashboard = lazy(() => import("./admin/pages/PlatformUsageDas
 const PlatformAgentsPage = lazy(() => import("./admin/pages/PlatformAgentsPage"));
 const PlatformAPIKeysPage = lazy(() => import("./admin/pages/PlatformAPIKeysPage"));
 const PlatformTenantsPage = lazy(() => import("./admin/pages/PlatformTenantsPage"));
+const LLMMetricsPage = lazy(() => import("./admin/pages/LLMMetricsPage"));
 
 // Loading fallback component
 const PageLoader = () => (
@@ -256,6 +257,7 @@ function AppContent() {
           <Route path="platform/agents" element={<PlatformAgentsPage />} />
           <Route path="platform/api-keys" element={<PlatformAPIKeysPage />} />
           <Route path="platform/tenants" element={<PlatformTenantsPage />} />
+          <Route path="platform/llm-metrics" element={<LLMMetricsPage />} />
         </Route>
 
         {/* fallback */}
