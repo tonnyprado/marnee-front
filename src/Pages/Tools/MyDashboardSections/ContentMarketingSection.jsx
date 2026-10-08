@@ -4,6 +4,7 @@
  * Versión refactorizada usando componentes reutilizables
  */
 import { useState, useEffect } from 'react';
+import { Tabs, Tab, Box } from '@mui/material';
 import {
   PageHeader,
   DashboardButton,
@@ -24,6 +25,7 @@ import {
   getInstagramMedia,
   connectInstagram
 } from '../../../services/instagramApi';
+import InstagramCommentsInsights from '../../../components/InstagramCommentsInsights';
 
 // Icons
 const CalendarIcon = () => (
@@ -55,6 +57,7 @@ export default function ContentMarketingSection() {
   const [insights, setInsights] = useState(null);
   const [topPosts, setTopPosts] = useState([]);
   const [loadingData, setLoadingData] = useState(false);
+  const [selectedTab, setSelectedTab] = useState('overview');
 
   // Fetch data when connected
   useEffect(() => {
@@ -248,8 +251,21 @@ export default function ContentMarketingSection() {
           note: "Requires Instagram Business or Creator account connected to a Facebook Page"
         }}
       >
-        {/* Connected - Show Data */}
-        <div className="space-y-5">
+        {/* Tabs Navigation */}
+        <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
+          <Tabs
+            value={selectedTab}
+            onChange={(_, newValue) => setSelectedTab(newValue)}
+            aria-label="Instagram insights tabs"
+          >
+            <Tab label="Overview" value="overview" />
+            <Tab label="Comments Insights" value="comments" />
+          </Tabs>
+        </Box>
+
+        {/* Tab Content: Overview */}
+        {selectedTab === 'overview' && (
+          <div className="space-y-5">
           {/* Metrics Grid */}
           <MetricsGrid
             metrics={metrics}
@@ -298,7 +314,15 @@ export default function ContentMarketingSection() {
           {!loadingData && (
             <GoalsProgress goals={goals} />
           )}
-        </div>
+          </div>
+        )}
+
+        {/* Tab Content: Comments Insights */}
+        {selectedTab === 'comments' && (
+          <Box mt={3}>
+            <InstagramCommentsInsights />
+          </Box>
+        )}
       </DataGuard>
     </div>
   );

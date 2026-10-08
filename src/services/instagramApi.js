@@ -243,3 +243,142 @@ export const getInstagramReels = async (limit = 10) => {
     throw error;
   }
 };
+
+// ============ INSTAGRAM CONTENT PUBLISHING ============
+
+/**
+ * Publish a single image to Instagram
+ * @param {string} imageUrl - Public HTTPS URL to image (JPEG/PNG)
+ * @param {string} caption - Optional caption (max 2,200 characters)
+ * @param {string} locationId - Optional Facebook Location ID
+ * @returns {Promise<{success: boolean, media_id: string, permalink: string}>}
+ */
+export const publishInstagramImage = async (imageUrl, caption = null, locationId = null) => {
+  try {
+    const params = new URLSearchParams();
+    params.append('image_url', imageUrl);
+    if (caption) params.append('caption', caption);
+    if (locationId) params.append('location_id', locationId);
+
+    const response = await apiClient.post(
+      `${API_BASE_URL}/instagram/publish?${params.toString()}`
+    );
+    return response.data;
+  } catch (error) {
+    if (process.env.NODE_ENV === 'development') console.error('Error publishing Instagram image:', error.message);
+    throw error;
+  }
+};
+
+/**
+ * Publish a video to Instagram
+ * @param {string} videoUrl - Public HTTPS URL to video (MP4, max 100MB)
+ * @param {string} caption - Optional caption
+ * @param {string} locationId - Optional Facebook Location ID
+ * @returns {Promise<{success: boolean, media_id: string, permalink: string, processing_time: number}>}
+ */
+export const publishInstagramVideo = async (videoUrl, caption = null, locationId = null) => {
+  try {
+    const params = new URLSearchParams();
+    params.append('video_url', videoUrl);
+    if (caption) params.append('caption', caption);
+    if (locationId) params.append('location_id', locationId);
+
+    const response = await apiClient.post(
+      `${API_BASE_URL}/instagram/publish/video?${params.toString()}`
+    );
+    return response.data;
+  } catch (error) {
+    if (process.env.NODE_ENV === 'development') console.error('Error publishing Instagram video:', error.message);
+    throw error;
+  }
+};
+
+/**
+ * Publish a carousel (multiple images) to Instagram
+ * @param {string[]} mediaUrls - Array of 2-10 public image URLs
+ * @param {string} caption - Optional carousel caption
+ * @param {string} locationId - Optional Facebook Location ID
+ * @returns {Promise<{success: boolean, media_id: string, permalink: string, items_count: number}>}
+ */
+export const publishInstagramCarousel = async (mediaUrls, caption = null, locationId = null) => {
+  try {
+    if (!Array.isArray(mediaUrls) || mediaUrls.length < 2 || mediaUrls.length > 10) {
+      throw new Error('Carousel must have 2-10 images');
+    }
+
+    const params = new URLSearchParams();
+    mediaUrls.forEach(url => params.append('media_urls', url));
+    if (caption) params.append('caption', caption);
+    if (locationId) params.append('location_id', locationId);
+
+    const response = await apiClient.post(
+      `${API_BASE_URL}/instagram/publish/carousel?${params.toString()}`
+    );
+    return response.data;
+  } catch (error) {
+    if (process.env.NODE_ENV === 'development') console.error('Error publishing Instagram carousel:', error.message);
+    throw error;
+  }
+};
+
+// ============ INSTAGRAM COMMENTS ANALYTICS ============
+
+/**
+ * Get comments on a specific Instagram post
+ * @param {string} mediaId - Instagram Media ID
+ * @param {number} limit - Number of comments to fetch (1-100, default 50)
+ * @returns {Promise<{comments: Array, count: number}>}
+ */
+export const getMediaComments = async (mediaId, limit = 50) => {
+  try {
+    const response = await apiClient.get(`${API_BASE_URL}/instagram/media/${mediaId}/comments`, {
+      params: { limit }
+    });
+    return response.data;
+  } catch (error) {
+    if (process.env.NODE_ENV === 'development') console.error('Error fetching Instagram comments:', error.message);
+    throw error;
+  }
+};
+
+/**
+ * Get AI-powered analytics of Instagram comments
+ * Analyzes comments across recent posts to provide:
+ * - Sentiment analysis (positive/negative/neutral/questions)
+ * - Key topics and frequently mentioned words
+ * - Marnee's AI observations and insights
+ * - Actionable recommendations
+ *
+ * @param {number} limitPosts - Number of recent posts to analyze (5-50, default 20)
+ * @returns {Promise<{
+ *   summary: {
+ *     total_comments: number,
+ *     avg_comments_per_post: number,
+ *     top_commented_post: object
+ *   },
+ *   sentiment: {
+ *     positive: number,
+ *     negative: number,
+ *     neutral: number,
+ *     questions: number,
+ *     positive_percentage: number,
+ *     negative_percentage: number,
+ *     sentiment_score: number
+ *   },
+ *   key_topics: Array<{topic: string, mentions: number, percentage: number}>,
+ *   marnee_observations: Array<{type: string, category: string, observation: string, impact: string, details: string}>,
+ *   action_items: Array<string>
+ * }>}
+ */
+export const getCommentsAnalytics = async (limitPosts = 20) => {
+  try {
+    const response = await apiClient.get(`${API_BASE_URL}/instagram/comments/analytics`, {
+      params: { limit_posts: limitPosts }
+    });
+    return response.data;
+  } catch (error) {
+    if (process.env.NODE_ENV === 'development') console.error('Error fetching comments analytics:', error.message);
+    throw error;
+  }
+};
