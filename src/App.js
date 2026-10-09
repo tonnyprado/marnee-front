@@ -37,6 +37,7 @@ const BrainstormingPage = lazy(() => import("./Pages/Tools/BrainstormingPage"));
 const ScriptsPage = lazy(() => import("./Pages/Tools/ScriptsPage"));
 const BillingPage = lazy(() => import("./Pages/Tools/BillingPage"));
 const ProfileSettingsPage = lazy(() => import("./Pages/Tools/ProfileSettingsPage"));
+const SecuritySettings = lazy(() => import("./Pages/SecuritySettings"));
 const HelpSupportPage = lazy(() => import("./Pages/Tools/HelpSupportPage"));
 const MyDashboard = lazy(() => import("./Pages/Tools/MyDashboard"));
 const ReportsPage = lazy(() => import("./Pages/Tools/ReportsPage"));
@@ -217,6 +218,8 @@ function AppContent() {
           <Route path="billing" element={<BillingPage />} />
           {/* /app/profile-settings */}
           <Route path="profile-settings" element={<ProfileSettingsPage />} />
+          {/* /app/security-settings */}
+          <Route path="security-settings" element={<SecuritySettings />} />
           {/* /app/help-support */}
           <Route path="help-support" element={<HelpSupportPage />} />
           {/* /app/dashboard */}

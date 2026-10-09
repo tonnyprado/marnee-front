@@ -19,6 +19,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import storage from '../core/services/StorageService';
 import { isAuthenticated as checkIsAuthenticated, getAuthSession } from '../core/utils/auth';
+import sessionService from '../core/services/SessionService';
 
 const AuthContext = createContext(null);
 
@@ -77,9 +78,19 @@ export function AuthProvider({ children }) {
   /**
    * Clear user session and authentication
    */
-  const logout = () => {
-    console.log('[AuthContext] Logout - clearing session');
+  const logout = async () => {
+    console.log('[AuthContext] Logout - revoking session');
 
+    try {
+      // Call backend to revoke session
+      await sessionService.logout();
+      console.log('[AuthContext] Session revoked on backend');
+    } catch (error) {
+      console.error('[AuthContext] Failed to revoke session on backend:', error);
+      // Continue with local logout even if API call fails
+    }
+
+    // Clear local storage
     storage.removeMultiple([
       STORAGE_KEYS.FOUNDER_ID,
       STORAGE_KEYS.SESSION_ID,

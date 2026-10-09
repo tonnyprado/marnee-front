@@ -16,6 +16,8 @@ import {
   BarChart3,
   Music,
   ExternalLink,
+  Shield,
+  ChevronRight,
 } from "lucide-react";
 import { getAuthSession, setAuthSession } from "../../services/api";
 import PageTransition from "../../Component/PageTransition";
@@ -594,6 +596,25 @@ export default function ProfileSettingsPage() {
               <Lock className="w-4 h-4" />
               Update Password
             </button>
+          </div>
+
+          {/* Security & Sessions */}
+          <div
+            onClick={() => navigate("/app/security-settings")}
+            className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm cursor-pointer hover:border-[#40086d] hover:shadow-md transition-all group"
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-[#40086d] rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <Shield className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-gray-900">Security & Sessions</h2>
+                  <p className="text-sm text-gray-500">Manage active sessions and security settings</p>
+                </div>
+              </div>
+              <ChevronRight className="w-6 h-6 text-gray-400 group-hover:text-[#40086d] group-hover:translate-x-1 transition-all" />
+            </div>
           </div>
 
           {/* Preferences */}
