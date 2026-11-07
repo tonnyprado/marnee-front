@@ -1,367 +1,110 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState, useMemo } from "react";
 import { api } from "../services/api";
 import { useMarnee } from "../context/MarneeContext";
 import InteractiveTest from "../Component/InteractiveTest/InteractiveTest";
+import RoleSelector from "../components/BusinessTest/RoleSelector";
+import { getQuestionsForRole, getFormTitleForRole } from "../config/businessTestQuestions";
 
-// Question types: radio, textarea, url, multiSelect (tags), select
-const STEPS = [
-  // =====================
-  // SECTION 1: Business Context (3 questions)
-  // =====================
-  {
-    id: 1,
-    section: "Business Context",
-    field: "businessDescription",
-    title: "Describe your business",
-    question: "In one sentence, how would you describe your business?",
-    subtitle: "",
-    type: "textarea",
-    placeholder: "e.g., We help SaaS companies scale their content marketing...",
-    required: true,
-  },
-  {
-    id: 2,
-    section: "Business Context",
-    field: "websiteUrl",
-    title: "Website",
-    question: "Do you have a website?",
-    subtitle: "If yes, please share the URL",
-    type: "url",
-    placeholder: "https://example.com",
-    required: false,
-  },
-  {
-    id: 3,
-    section: "Business Context",
-    field: "businessStage",
-    title: "Business stage",
-    question: "What stage are you currently at?",
-    subtitle: "",
-    type: "radio",
-    required: true,
-    options: [
-      { value: "idea", label: "Idea" },
-      { value: "validation", label: "Validation" },
-      { value: "first_clients", label: "First Clients" },
-      { value: "already_selling", label: "Already Selling" },
-    ],
-  },
+// Helper function to convert businessTestQuestions format to InteractiveTest STEPS format
+const convertQuestionsToSteps = (questions, selectedRole) => {
+  return questions.map((q, index) => {
+    const stepId = index + 1;
 
-  // =====================
-  // SECTION 2: Business Model (4 questions) - KEY SECTION
-  // =====================
-  {
-    id: 4,
-    section: "Business Model",
-    field: "businessFocus",
-    title: "Business focus",
-    question: "Is your main focus B2B, B2C, or both?",
-    subtitle: "This is critical for determining your marketing strategy",
-    type: "radio",
-    required: true,
-    options: [
-      { value: "b2b", label: "B2B" },
-      { value: "b2c", label: "B2C" },
-      { value: "both", label: "Both" },
-    ],
-  },
-  {
-    id: 5,
-    section: "Business Model",
-    field: "priorityFocus",
-    title: "Priority focus",
-    question: "Which one do you want to prioritise right now?",
-    subtitle: "Since you selected 'Both', tell us where to focus first",
-    type: "radio",
-    required: false,
-    showIf: { field: "businessFocus", value: "both" },
-    options: [
-      { value: "b2b", label: "B2B" },
-      { value: "b2c", label: "B2C" },
-    ],
-  },
-  {
-    id: 6,
-    section: "Business Model",
-    field: "revenueGeneration",
-    title: "Revenue generation",
-    question: "How do you generate revenue exactly?",
-    subtitle: "",
-    type: "textarea",
-    placeholder: "e.g., Monthly subscriptions, one-time purchases, consulting fees...",
-    required: true,
-  },
-  {
-    id: 7,
-    section: "Business Model",
-    field: "servicesProductsDescription",
-    title: "Services/Products",
-    question: "What type of services/products do you want to market?",
-    subtitle: "Describe what you're selling",
-    type: "textarea",
-    placeholder: "Describe your main offering...",
-    required: true,
-  },
+    // Determine section based on question position
+    let section = "Business Information";
 
-  // =====================
-  // SECTION 3: Core Offer (3 questions)
-  // =====================
-  {
-    id: 8,
-    section: "Core Offer",
-    field: "mainBenefit",
-    title: "Main benefit",
-    question: "What is the main benefit your customer gets from your main product/service?",
-    subtitle: "",
-    type: "textarea",
-    placeholder: "e.g., Save 10 hours per week, increase revenue by 30%...",
-    required: true,
-  },
-  {
-    id: 9,
-    section: "Core Offer",
-    field: "differentiator",
-    title: "Your differentiator",
-    question: "What makes your offer different from competitors?",
-    subtitle: "What's your unique selling proposition?",
-    type: "textarea",
-    placeholder: "e.g., We're the only ones who..., Unlike others, we focus on...",
-    required: true,
-  },
-  {
-    id: 10,
-    section: "Core Offer",
-    field: "promisedResult",
-    title: "Promised result",
-    question: "What result are you promising your client?",
-    subtitle: "",
-    type: "textarea",
-    placeholder: "e.g., Double your traffic in 6 months...",
-    required: true,
-  },
+    // First 3 questions are always "Business Context"
+    if (stepId <= 3) {
+      section = "Business Context";
+    }
+    // Role-specific questions get their own section
+    else if (stepId > 3 && stepId <= questions.length - 2) {
+      const roleLabels = {
+        'MARKETING_AGENCY': 'Agency Details',
+        'COMMUNITY_MANAGER': 'Community Manager Profile',
+        'INFLUENCER': 'Influencer Profile',
+        'SMALL_BUSINESS': 'Business Details'
+      };
+      section = roleLabels[selectedRole] || 'Role-Specific Information';
+    }
+    // Last 2 questions are always "Core Offer"
+    else {
+      section = "Core Offer";
+    }
 
-  // =====================
-  // SECTION 4: Ideal Customer (3 questions)
-  // =====================
-  {
-    id: 11,
-    section: "Ideal Customer",
-    field: "idealCustomer",
-    title: "Ideal customer profile",
-    question: "Who is your ideal customer right now?",
-    subtitle: "Be specific: demographics, company size, role, pain points...",
-    type: "textarea",
-    placeholder: "e.g., B2B SaaS companies with $1M-$10M ARR...",
-    required: true,
-  },
-  {
-    id: 12,
-    section: "Ideal Customer",
-    field: "customerLocation",
-    title: "Where to find them",
-    question: "Where can we find these people?",
-    subtitle: "Events, platforms, communities...",
-    type: "textarea",
-    placeholder: "e.g., LinkedIn, Instagram, specific events, communities...",
-    required: true,
-  },
-  {
-    id: 13,
-    section: "Ideal Customer",
-    field: "whyChooseYou",
-    title: "Why you?",
-    question: "Why do you think they would choose you?",
-    subtitle: "",
-    type: "textarea",
-    placeholder: "What makes you the best choice for them?",
-    required: true,
-  },
+    // Map question types
+    let mappedType = q.type;
+    if (q.type === 'multiselect') {
+      mappedType = 'multiSelect';
+    } else if (q.type === 'boolean') {
+      mappedType = 'radio';
+    } else if (q.type === 'select' && q.options) {
+      mappedType = 'radio';
+    }
 
-  // =====================
-  // SECTION 5: Positioning & Market (4 questions)
-  // =====================
-  {
-    id: 14,
-    section: "Positioning & Market",
-    field: "mainCompetitors",
-    title: "Competitors",
-    question: "Who are your main competitors?",
-    subtitle: "List your top 3-5 competitors",
-    type: "textarea",
-    placeholder: "e.g., Company A, Company B, in-house teams...",
-    required: false,
-  },
-  {
-    id: 15,
-    section: "Positioning & Market",
-    field: "associatedKeywords",
-    title: "Keywords",
-    question: "What keywords do you associate with your business?",
-    subtitle: "Add keywords that describe your business (select up to 10)",
-    type: "multiSelect",
-    maxSelect: 10,
-    options: [
-      "Marketing", "Content", "SaaS", "B2B", "B2C", "E-commerce",
-      "Technology", "AI", "Automation", "Analytics", "Design",
-      "Branding", "Strategy", "Social Media", "SEO", "Consulting",
-      "Education", "Health", "Finance", "Real Estate", "Other"
-    ],
-    required: false,
-  },
-  {
-    id: 16,
-    section: "Positioning & Market",
-    field: "brandDiscoveryPreference",
-    title: "Brand discovery",
-    question: "How would you like people to find your brand?",
-    subtitle: "",
-    type: "textarea",
-    placeholder: "e.g., Through Google search, social media, referrals...",
-    required: false,
-  },
-  {
-    id: 17,
-    section: "Positioning & Market",
-    field: "tagline",
-    title: "Tagline",
-    question: "Do you already have a tagline or key message?",
-    subtitle: "",
-    type: "textarea",
-    placeholder: "Your brand's tagline or main message...",
-    required: false,
-  },
+    // Build step object
+    const step = {
+      id: stepId,
+      section: section,
+      field: q.key,
+      title: q.question.split('?')[0], // Use first part of question as title
+      question: q.question,
+      subtitle: "",
+      type: mappedType,
+      placeholder: q.placeholder || "",
+      required: q.required !== undefined ? q.required : false,
+    };
 
-  // =====================
-  // SECTION 6: Branding & Assets (2 questions)
-  // =====================
-  {
-    id: 18,
-    section: "Branding & Assets",
-    field: "hasBrandGuidelines",
-    title: "Brand guidelines",
-    question: "Do you have brand guidelines?",
-    subtitle: "",
-    type: "radio",
-    required: false,
-    options: [
-      { value: "yes", label: "Yes, I have brand guidelines" },
-      { value: "no", label: "No, I don't have brand guidelines" },
-    ],
-    conditionalUpload: {
-      showWhen: "yes",
-      field: "brandGuidelinesFile",
-      label: "Upload your brand guidelines (optional)",
-      description: "Marnee will analyze your brand guidelines to better understand your brand identity",
-      accept: {
-        'application/pdf': ['.pdf'],
-        'image/*': ['.png', '.jpg', '.jpeg'],
-      },
-      maxSize: 10 * 1024 * 1024, // 10MB
-    },
-  },
+    // Add options if they exist
+    if (q.options) {
+      if (q.type === 'multiselect') {
+        // For multiSelect, options are just an array of strings
+        step.options = q.options.map(opt =>
+          typeof opt === 'string' ? opt : opt.label
+        );
+      } else if (q.type === 'boolean') {
+        // Convert boolean to radio options
+        step.options = [
+          { value: true, label: "Sí" },
+          { value: false, label: "No" }
+        ];
+      } else {
+        // For radio/select, options are objects with value and label
+        step.options = q.options.map(opt => ({
+          value: opt.value,
+          label: opt.label
+        }));
+      }
+    }
 
-  // =====================
-  // SECTION 7: Marketing & Channels (1 question)
-  // =====================
-  {
-    id: 19,
-    section: "Marketing & Channels",
-    field: "currentClientAcquisition",
-    title: "Client acquisition",
-    question: "How are you currently getting clients?",
-    subtitle: "If applicable",
-    type: "textarea",
-    placeholder: "e.g., Referrals, paid ads, cold outreach, content marketing...",
-    required: false,
-  },
-
-  // =====================
-  // SECTION 8: Content & Execution (3 questions)
-  // =====================
-  {
-    id: 20,
-    section: "Content & Execution",
-    field: "contentCreationExperience",
-    title: "Content experience",
-    question: "Do you have experience creating content?",
-    subtitle: "",
-    type: "textarea",
-    placeholder: "Describe your experience with video, photos, podcasts, writing...",
-    required: false,
-  },
-  {
-    id: 21,
-    section: "Content & Execution",
-    field: "teamContentCreator",
-    title: "Team content creators",
-    question: "Is there anyone in your team creating content?",
-    subtitle: "",
-    type: "radio",
-    required: false,
-    options: [
-      { value: "yes", label: "Yes, we have content creators on the team" },
-      { value: "no", label: "No, we don't have content creators yet" },
-    ],
-  },
-  {
-    id: 22,
-    section: "Content & Execution",
-    field: "interestedInPersonalBrand",
-    title: "Personal brand",
-    question: "Are you interested in building a personal brand as well?",
-    subtitle: "",
-    type: "radio",
-    required: false,
-    options: [
-      { value: "yes", label: "Yes, I want to build my personal brand" },
-      { value: "no", label: "No, just focus on the business brand" },
-    ],
-  },
-
-  // =====================
-  // SECTION 9: Growth & Priorities (3 questions)
-  // =====================
-  {
-    id: 23,
-    section: "Growth & Priorities",
-    field: "mainPriority",
-    title: "Main priority",
-    question: "What is your main priority right now?",
-    subtitle: "",
-    type: "radio",
-    required: true,
-    options: [
-      { value: "getting_clients", label: "Getting clients" },
-      { value: "building_awareness", label: "Building brand awareness" },
-      { value: "validating_idea", label: "Validating the idea" },
-    ],
-  },
-  {
-    id: 24,
-    section: "Growth & Priorities",
-    field: "marketingBudget",
-    title: "Marketing budget",
-    question: "What is your budget for doing marketing?",
-    subtitle: "",
-    type: "textarea",
-    placeholder: "e.g., $5,000/month, $50K/year, bootstrapped...",
-    required: false,
-  },
-  {
-    id: 25,
-    section: "Growth & Priorities",
-    field: "upcomingEvents",
-    title: "Upcoming events",
-    question: "Are there any upcoming launches, events, or important dates?",
-    subtitle: "",
-    type: "textarea",
-    placeholder: "e.g., Product launch in Q2, conference in May...",
-    required: false,
-  },
-];
+    return step;
+  });
+};
 
 export default function BusinessTestPage() {
   const { founderId: contextFounderId, setFounderId: setContextFounderId } = useMarnee();
+
+  // Role selection state
+  const [selectedRole, setSelectedRole] = useState(null);
+  const [showRoleSelector, setShowRoleSelector] = useState(true);
+
+  // Generate dynamic steps based on selected role
+  const STEPS = useMemo(() => {
+    if (!selectedRole) return [];
+    const questions = getQuestionsForRole(selectedRole);
+    return convertQuestionsToSteps(questions, selectedRole);
+  }, [selectedRole]);
+
+  // Handle role selection
+  const handleRoleSelect = useCallback((role) => {
+    setSelectedRole(role);
+  }, []);
+
+  const handleRoleContinue = useCallback(() => {
+    if (selectedRole) {
+      setShowRoleSelector(false);
+    }
+  }, [selectedRole]);
 
   // Load existing data
   const handleLoadData = useCallback(async () => {
@@ -388,18 +131,32 @@ export default function BusinessTestPage() {
       try {
         const existingTest = await api.getBusinessTestMe();
         if (existingTest) {
+          // Load businessRole first
+          if (existingTest.businessRole) {
+            setSelectedRole(existingTest.businessRole);
+            setShowRoleSelector(false); // Skip role selector if already selected
+          }
+
           const prefilledAnswers = {};
-          STEPS.forEach((step) => {
-            const value = existingTest[step.field];
-            if (value !== undefined && value !== null && value !== '') {
-              // Convert boolean values back to "yes"/"no" for radio buttons
-              if (step.type === 'radio' && ['hasBrandGuidelines', 'teamContentCreator', 'interestedInPersonalBrand'].includes(step.field)) {
-                prefilledAnswers[step.field] = value ? 'yes' : 'no';
-              } else {
-                prefilledAnswers[step.field] = value;
+
+          // Only process fields if we have a role (and thus STEPS)
+          if (existingTest.businessRole) {
+            const questions = getQuestionsForRole(existingTest.businessRole);
+            const steps = convertQuestionsToSteps(questions, existingTest.businessRole);
+
+            steps.forEach((step) => {
+              const value = existingTest[step.field];
+              if (value !== undefined && value !== null && value !== '') {
+                // Convert boolean values back to appropriate format
+                if (step.type === 'radio' && typeof value === 'boolean') {
+                  prefilledAnswers[step.field] = value;
+                } else {
+                  prefilledAnswers[step.field] = value;
+                }
               }
-            }
-          });
+            });
+          }
+
           return prefilledAnswers;
         }
       } catch (error) {
@@ -484,16 +241,15 @@ export default function BusinessTestPage() {
     }
 
     // Build payload
-    const payload = { founderId: currentFounderId };
+    const payload = {
+      founderId: currentFounderId,
+      businessRole: selectedRole // Include selected role
+    };
+
     STEPS.forEach((step) => {
       const value = answers[step.field];
       if (value !== undefined && value !== null && value !== '') {
-        // Convert "yes"/"no" back to boolean for specific fields
-        if (['hasBrandGuidelines', 'teamContentCreator', 'interestedInPersonalBrand'].includes(step.field) && step.type === 'radio') {
-          payload[step.field] = value === 'yes';
-        } else {
-          payload[step.field] = value;
-        }
+        payload[step.field] = value;
       }
     });
 
@@ -509,12 +265,24 @@ export default function BusinessTestPage() {
     localStorage.setItem('hasBusinessTest', 'true');
 
     // Navigation will be handled by CompletionScreen
-  }, [contextFounderId, setContextFounderId]);
+  }, [contextFounderId, setContextFounderId, selectedRole, STEPS]);
 
+  // Show role selector first
+  if (showRoleSelector) {
+    return (
+      <RoleSelector
+        onSelectRole={handleRoleSelect}
+        onContinue={handleRoleContinue}
+        selectedRole={selectedRole}
+      />
+    );
+  }
+
+  // Then show the business test with dynamic questions
   return (
     <InteractiveTest
       steps={STEPS}
-      title="Business Test"
+      title={getFormTitleForRole(selectedRole)}
       onSubmit={handleSubmit}
       onLoadData={handleLoadData}
       loadingMessage="Saving your business profile..."

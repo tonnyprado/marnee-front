@@ -6,7 +6,7 @@ import React from 'react';
 import { BUSINESS_ROLES } from '../../config/businessTestQuestions';
 import './RoleSelector.css';
 
-const RoleSelector = ({ onSelectRole, selectedRole }) => {
+const RoleSelector = ({ onSelectRole, onContinue, selectedRole }) => {
   return (
     <div className="role-selector-container">
       <div className="role-selector-header">
@@ -36,7 +36,7 @@ const RoleSelector = ({ onSelectRole, selectedRole }) => {
 
       {selectedRole && (
         <div className="role-selector-footer">
-          <button className="role-continue-button" onClick={() => {}}>
+          <button className="role-continue-button" onClick={onContinue}>
             Continuar
             <span className="button-arrow">→</span>
           </button>
