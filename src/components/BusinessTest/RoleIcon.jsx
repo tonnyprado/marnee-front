@@ -10,15 +10,7 @@ const RoleIcon = ({ animationData, play }) => {
   const animationRef = useRef(null);
 
   useEffect(() => {
-    if (!containerRef.current) {
-      console.error('[RoleIcon] Container ref not available');
-      return;
-    }
-
-    if (!animationData) {
-      console.error('[RoleIcon] Animation data not provided');
-      return;
-    }
+    if (!containerRef.current || !animationData) return;
 
     try {
       // Initialize Lottie animation
@@ -30,7 +22,9 @@ const RoleIcon = ({ animationData, play }) => {
         animationData: animationData,
       });
 
-      console.log('[RoleIcon] Animation loaded successfully');
+      // Start at the last frame (fully visible state)
+      const totalFrames = animationRef.current.totalFrames;
+      animationRef.current.goToAndStop(totalFrames - 1, true);
     } catch (error) {
       console.error('[RoleIcon] Error loading animation:', error);
     }
@@ -47,12 +41,13 @@ const RoleIcon = ({ animationData, play }) => {
     if (!animationRef.current) return;
 
     if (play) {
-      // Reset to start and play
+      // Reset to start and play animation
       animationRef.current.goToAndStop(0, true);
       animationRef.current.play();
     } else {
-      // Stop and reset to first frame
-      animationRef.current.goToAndStop(0, true);
+      // Show the last frame (fully visible state)
+      const totalFrames = animationRef.current.totalFrames;
+      animationRef.current.goToAndStop(totalFrames - 1, true);
     }
   }, [play]);
 
