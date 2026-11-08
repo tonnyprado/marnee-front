@@ -10,16 +10,30 @@ const RoleIcon = ({ animationData, play }) => {
   const animationRef = useRef(null);
 
   useEffect(() => {
-    if (!containerRef.current || !animationData) return;
+    if (!containerRef.current) {
+      console.error('[RoleIcon] Container ref not available');
+      return;
+    }
 
-    // Initialize Lottie animation
-    animationRef.current = lottie.loadAnimation({
-      container: containerRef.current,
-      renderer: 'svg',
-      loop: false,
-      autoplay: false,
-      animationData: animationData,
-    });
+    if (!animationData) {
+      console.error('[RoleIcon] Animation data not provided');
+      return;
+    }
+
+    try {
+      // Initialize Lottie animation
+      animationRef.current = lottie.loadAnimation({
+        container: containerRef.current,
+        renderer: 'svg',
+        loop: false,
+        autoplay: false,
+        animationData: animationData,
+      });
+
+      console.log('[RoleIcon] Animation loaded successfully');
+    } catch (error) {
+      console.error('[RoleIcon] Error loading animation:', error);
+    }
 
     return () => {
       // Cleanup on unmount

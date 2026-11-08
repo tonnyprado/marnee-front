@@ -21,6 +21,15 @@ const ICON_MAP = {
   'iconly-icon-export-1794115391.json': smallBusinessIcon,
 };
 
+// Debug: Log all imports
+console.log('[RoleSelector] All icon imports:', {
+  influencerIcon,
+  communityManagerIcon,
+  marketingAgencyIcon,
+  smallBusinessIcon,
+});
+console.log('[RoleSelector] ICON_MAP:', ICON_MAP);
+
 const RoleSelector = ({ onSelectRole, onContinue, selectedRole }) => {
   const { t } = useLanguage();
   const [hoveredRole, setHoveredRole] = useState(null);
@@ -56,6 +65,13 @@ const RoleSelector = ({ onSelectRole, onContinue, selectedRole }) => {
       <div className="role-options-row">
         {BUSINESS_ROLES.map((role) => {
           const roleKey = getRoleKey(role.value);
+          const animationData = ICON_MAP[role.iconFile];
+
+          // Debug logging
+          console.log(`[RoleSelector] Role: ${role.value}`);
+          console.log(`[RoleSelector] Icon file: ${role.iconFile}`);
+          console.log(`[RoleSelector] Animation data:`, animationData);
+
           return (
             <div
               key={role.value}
@@ -66,7 +82,7 @@ const RoleSelector = ({ onSelectRole, onContinue, selectedRole }) => {
             >
               <div className="role-icon-wrapper">
                 <RoleIcon
-                  animationData={ICON_MAP[role.iconFile]}
+                  animationData={animationData}
                   play={hoveredRole === role.value || selectedRole === role.value}
                 />
               </div>
