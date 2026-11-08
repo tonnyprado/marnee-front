@@ -5,7 +5,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus } from '@animateicons/react/lucide';
+import { Plus } from 'lucide-react';
 import PostCard from './PostCard';
 import {
   TIME_SLOTS,

@@ -1,6 +1,6 @@
 // src/admin/components/MetaMaintenanceCard.jsx
 import React, { useState, useEffect } from 'react';
-import { Camera, AlertTriangle, CheckCircle2, Clock, RefreshCw, AlertCircle } from '@animateicons/react/lucide';
+import { Camera, AlertTriangle, CheckCircle2, Clock, RefreshCw, AlertCircle } from 'lucide-react';
 import { getMetaIntegrationsStatus } from '../../services/adminIntegrationsApi';
 
 /**

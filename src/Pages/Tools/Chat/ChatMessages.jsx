@@ -11,7 +11,7 @@
 
 import React, { useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Loader2 } from '@animateicons/react/lucide';
+import { Loader2 } from 'lucide-react';
 import MessageItem from './MessageItem';
 import PromptSuggestions from '../../../Component/PromptSuggestions';
 

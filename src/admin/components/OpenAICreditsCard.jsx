@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { RefreshCw, DollarSign, TrendingUp, AlertCircle } from '@animateicons/react/lucide';
+import { RefreshCw, DollarSign, TrendingUp, AlertCircle } from 'lucide-react';
 import { getOpenAIUsage } from '../../services/promptsApi';
 
 export default function OpenAICreditsCard() {

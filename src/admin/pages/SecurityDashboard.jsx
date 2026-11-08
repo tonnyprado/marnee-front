@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { AlertTriangle, Users, Activity, AlertCircle } from '@animateicons/react/lucide';
+import { AlertTriangle, Users, Activity, AlertCircle } from 'lucide-react';
 import SecurityStatCard from '../components/SecurityStatCard';
 import { getSecurityDashboardStats, getLoginStats } from '../../services/adminSecurityApi';
 import { Link } from 'react-router-dom';

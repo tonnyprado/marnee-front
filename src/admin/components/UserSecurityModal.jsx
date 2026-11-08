@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X, Shield, Activity, CheckCircle, XCircle } from '@animateicons/react/lucide';
+import { X, Shield, Activity, CheckCircle, XCircle } from 'lucide-react';
 import { getUserSecurityDetails, forceVerifyEmail, revokeAllUserSessions } from '../../services/adminSecurityApi';
 import { formatDistanceToNow } from 'date-fns';
 import SessionCard from './SessionCard';

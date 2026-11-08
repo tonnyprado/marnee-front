@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LogOut, X } from '@animateicons/react/lucide';
+import { LogOut, X } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 /**

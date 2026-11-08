@@ -31,7 +31,7 @@ import {
   Download,
   FileText,
   Calendar
-} from '@animateicons/react/lucide';
+} from 'lucide-react';
 
 // Tab content animation variants
 const tabContentVariants = {

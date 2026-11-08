@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ChevronDown, ChevronRight, Folder, FileText, Sparkles, ListOrdered, GitBranch } from '@animateicons/react/lucide';
+import { ChevronDown, ChevronRight, Folder, FileText, Sparkles, ListOrdered, GitBranch } from 'lucide-react';
 import { getCategories, getPrompts } from '../../services/promptsApi';
 
 const ICON_MAP = {

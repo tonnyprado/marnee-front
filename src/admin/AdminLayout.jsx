@@ -4,7 +4,7 @@ import {
   Users, LayoutDashboard, CreditCard, FileText,
   BarChart3, LogOut, Settings, Shield, Lock, Activity, AlertTriangle, Sparkles, Brain, ChevronDown, Plug, Database, Mail, Key,
   Zap, Bot, Cpu, Building2
-} from '@animateicons/react/lucide';
+} from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getAuthSession, setAuthSession } from '../services/api';
 import LogoutConfirmModal from './components/LogoutConfirmModal';

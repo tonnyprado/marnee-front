@@ -9,7 +9,7 @@ import {
   XCircle,
   RefreshCw,
   BarChart3
-} from '@animateicons/react/lucide';
+} from 'lucide-react';
 import * as mlSettingsApi from '../../services/mlSettingsApi';
 
 export default function MLIntelligencePanel() {

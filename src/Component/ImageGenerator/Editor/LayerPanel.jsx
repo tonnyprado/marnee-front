@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ArrowUp, ArrowDown, Trash2 } from '@animateicons/react/lucide';
+import { ArrowUp, ArrowDown, Trash2 } from 'lucide-react';
 
 /**
  * Panel for managing layers (canvas objects).

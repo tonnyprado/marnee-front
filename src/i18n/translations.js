@@ -189,6 +189,37 @@ export const translations = {
         questionOf: "Question {current} of {total}",
       },
     },
+    roleSelector: {
+      title: "What do you do?",
+      subtitle: "Select the option that best describes your business to personalize your experience",
+      continue: "Continue",
+      roles: {
+        marketingAgency: {
+          label: "Marketing Agency",
+          description: "I manage multiple clients and campaigns",
+        },
+        communityManager: {
+          label: "Community Manager",
+          description: "I manage social media for several brands",
+        },
+        influencer: {
+          label: "Influencer / Content Creator",
+          description: "I build my personal brand",
+        },
+        smallBusiness: {
+          label: "Small Business",
+          description: "I have a local business or startup",
+        },
+      },
+    },
+    businessTest: {
+      formTitles: {
+        marketingAgency: "Tell us about your agency",
+        communityManager: "Tell us about your work as CM",
+        influencer: "Tell us about your personal brand",
+        smallBusiness: "Tell us about your business",
+      },
+    },
     presentation: {
       nav: {
         how: "How it works",
@@ -534,6 +565,37 @@ export const translations = {
         questionOf: "Pregunta {current} de {total}",
       },
     },
+    roleSelector: {
+      title: "¿A qué te dedicas?",
+      subtitle: "Selecciona la opción que mejor describa tu negocio para personalizar tu experiencia",
+      continue: "Continuar",
+      roles: {
+        marketingAgency: {
+          label: "Agencia de Marketing",
+          description: "Manejo múltiples clientes y campañas",
+        },
+        communityManager: {
+          label: "Community Manager",
+          description: "Gestiono redes sociales de varias marcas",
+        },
+        influencer: {
+          label: "Influencer / Creador de Contenido",
+          description: "Construyo mi marca personal",
+        },
+        smallBusiness: {
+          label: "Pequeño Negocio",
+          description: "Tengo un negocio local o emprendimiento",
+        },
+      },
+    },
+    businessTest: {
+      formTitles: {
+        marketingAgency: "Cuéntanos sobre tu agencia",
+        communityManager: "Cuéntanos sobre tu trabajo como CM",
+        influencer: "Cuéntanos sobre tu marca personal",
+        smallBusiness: "Cuéntanos sobre tu negocio",
+      },
+    },
     presentation: {
       nav: {
         how: "Cómo funciona",
@@ -876,6 +938,37 @@ export const translations = {
       },
       progress: {
         questionOf: "{total}개 중 {current}번째 질문",
+      },
+    },
+    roleSelector: {
+      title: "무엇을 하시나요?",
+      subtitle: "경험을 개인화하기 위해 비즈니스를 가장 잘 설명하는 옵션을 선택하세요",
+      continue: "계속",
+      roles: {
+        marketingAgency: {
+          label: "마케팅 에이전시",
+          description: "여러 고객과 캠페인을 관리합니다",
+        },
+        communityManager: {
+          label: "커뮤니티 매니저",
+          description: "여러 브랜드의 소셜 미디어를 관리합니다",
+        },
+        influencer: {
+          label: "인플루언서 / 콘텐츠 크리에이터",
+          description: "개인 브랜드를 구축합니다",
+        },
+        smallBusiness: {
+          label: "소규모 비즈니스",
+          description: "지역 비즈니스 또는 스타트업을 운영합니다",
+        },
+      },
+    },
+    businessTest: {
+      formTitles: {
+        marketingAgency: "귀하의 에이전시에 대해 알려주세요",
+        communityManager: "CM으로서의 업무에 대해 알려주세요",
+        influencer: "귀하의 개인 브랜드에 대해 알려주세요",
+        smallBusiness: "귀하의 비즈니스에 대해 알려주세요",
       },
     },
     presentation: {

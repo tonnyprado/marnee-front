@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Plus, Edit, Trash2, FileText, ExternalLink } from '@animateicons/react/lucide';
+import { Plus, Edit, Trash2, FileText, ExternalLink } from 'lucide-react';
 import {
   getSeoSettings,
   createSeoSettings,

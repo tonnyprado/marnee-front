@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { Brain, MessageSquare, Sparkles } from '@animateicons/react/lucide';
+import { Brain, MessageSquare, Sparkles } from 'lucide-react';
 
 export default function EmptyGraphState({ onStartChat }) {
   return (

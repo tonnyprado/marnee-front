@@ -1,6 +1,6 @@
 // src/components/InstagramRequirementsModal.jsx
 import React from 'react';
-import { X, CheckCircle2, AlertTriangle, ExternalLink, Camera } from '@animateicons/react/lucide';
+import { X, CheckCircle2, AlertTriangle, ExternalLink, Camera } from 'lucide-react';
 
 /**
  * Instagram Requirements Modal

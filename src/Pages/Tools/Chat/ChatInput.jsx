@@ -9,7 +9,7 @@
  */
 
 import React from 'react';
-import { Send, Loader2, Mic, MicOff } from '@animateicons/react/lucide';
+import { Send, Loader2, Mic, MicOff } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function ChatInput({

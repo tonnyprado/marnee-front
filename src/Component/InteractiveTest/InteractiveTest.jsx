@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight } from '@animateicons/react/lucide';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useVoiceRecognition } from "../../Pages/Tools/Chat/useVoiceRecognition";
 import WelcomeScreen from "./WelcomeScreen";
 import QuestionView from "./QuestionView";

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Star, Lightbulb } from '@animateicons/react/lucide';
+import { Star, Lightbulb } from 'lucide-react';
 import { api } from "../services/api";
 import { useLanguage } from "../context/LanguageContext";
 import LoadingTransition from "../Component/LoadingTransition";

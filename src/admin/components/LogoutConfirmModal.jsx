@@ -1,4 +1,4 @@
-import { X, LogOut } from '@animateicons/react/lucide';
+import { X, LogOut } from 'lucide-react';
 import { useState } from 'react';
 
 export default function LogoutConfirmModal({ onConfirm, onCancel }) {

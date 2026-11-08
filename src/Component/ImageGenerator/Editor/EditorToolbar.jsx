@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { MousePointer2, Pencil, Type, Square, Circle, Minus, ArrowRight } from '@animateicons/react/lucide';
+import { MousePointer2, Pencil, Type, Square, Circle, Minus, ArrowRight } from 'lucide-react';
 
 const tools = [
   { id: 'select', icon: MousePointer2, label: 'Select' },

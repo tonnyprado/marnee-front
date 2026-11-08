@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { RefreshCw, Database, Activity, AlertCircle, Zap } from '@animateicons/react/lucide';
+import { RefreshCw, Database, Activity, AlertCircle, Zap } from 'lucide-react';
 import { getDataForSEOUsage } from '../../services/promptsApi';
 
 export default function DataForSEOCreditsCard() {

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { AlertTriangle, User, Mail, Key } from '@animateicons/react/lucide';
+import { AlertTriangle, User, Mail, Key } from 'lucide-react';
 import { getSecurityAlerts } from '../../services/adminSecurityApi';
 import { formatDistanceToNow } from 'date-fns';
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Plus, Edit, Trash2, DollarSign, Package } from '@animateicons/react/lucide';
+import { Plus, Edit, Trash2, DollarSign, Package } from 'lucide-react';
 import {
   getSubscriptionPlans,
   createSubscriptionPlan,

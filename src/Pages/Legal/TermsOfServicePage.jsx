@@ -1,5 +1,5 @@
 import React from "react";
-import { FileText, Calendar } from '@animateicons/react/lucide';
+import { FileText, Calendar } from 'lucide-react';
 import PageTransition from "../../Component/PageTransition";
 import SEO from "../../components/SEO";
 

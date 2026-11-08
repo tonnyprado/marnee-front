@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { CheckCircle, Sparkles, ArrowRight } from '@animateicons/react/lucide';
+import { CheckCircle, Sparkles, ArrowRight } from 'lucide-react';
 import { useLanguage } from "../../context/LanguageContext";
 
 export default function CompletionScreen() {

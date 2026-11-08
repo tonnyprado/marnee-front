@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check } from '@animateicons/react/lucide';
+import { Check } from 'lucide-react';
 
 export default function ProgressBar({
   total,

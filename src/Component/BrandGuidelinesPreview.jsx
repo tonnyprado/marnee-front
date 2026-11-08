@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Palette, ChevronDown, CheckCircle } from '@animateicons/react/lucide';
+import { Palette, ChevronDown, CheckCircle } from 'lucide-react';
 
 /**
  * Extracts color codes from brand guidelines content

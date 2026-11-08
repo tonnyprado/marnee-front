@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Key, Copy, Check, RefreshCw, Lock, Eye, EyeOff, Shield } from '@animateicons/react/lucide';
+import { Key, Copy, Check, RefreshCw, Lock, Eye, EyeOff, Shield } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { verifyAdminPassword, generateSecurePassword } from '../../services/adminSecurityApi';
 

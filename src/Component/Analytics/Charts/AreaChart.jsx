@@ -5,7 +5,7 @@
  */
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { Activity } from '@animateicons/react/lucide';
+import { Activity } from 'lucide-react';
 
 export default function AreaChart({
   data = [],

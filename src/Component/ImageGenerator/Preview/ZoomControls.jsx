@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ZoomIn, ZoomOut, Maximize2, RotateCcw } from '@animateicons/react/lucide';
+import { ZoomIn, ZoomOut, Maximize2, RotateCcw } from 'lucide-react';
 
 /**
  * Zoom control buttons for the image preview.

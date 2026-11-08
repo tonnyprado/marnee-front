@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Save, Eye, EyeOff } from '@animateicons/react/lucide';
+import { Save, Eye, EyeOff } from 'lucide-react';
 
 const STATUS_OPTIONS = [
   { value: 'draft', label: 'Draft', color: 'bg-gray-100 text-gray-700' },
