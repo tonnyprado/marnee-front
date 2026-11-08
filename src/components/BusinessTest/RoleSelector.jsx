@@ -2,11 +2,11 @@
  * Role Selector Component
  * Primera pantalla del Business Test para seleccionar el tipo de negocio
  */
-import React, { useState, useRef } from 'react';
-import { Lottie } from 'lottie-react';
+import React, { useState } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { BUSINESS_ROLES } from '../../config/businessTestQuestions';
 import './RoleSelector.css';
+import RoleIcon from './RoleIcon';
 
 // Import all Lottie animation files
 import influencerIcon from '../../assets/iconly-icon-export-1794115180.json';
@@ -24,14 +24,9 @@ const ICON_MAP = {
 const RoleSelector = ({ onSelectRole, onContinue, selectedRole }) => {
   const { t } = useLanguage();
   const [hoveredRole, setHoveredRole] = useState(null);
-  const lottieRefs = useRef({});
 
   const handleMouseEnter = (roleValue) => {
     setHoveredRole(roleValue);
-    // Play animation on hover
-    if (lottieRefs.current[roleValue]) {
-      lottieRefs.current[roleValue].play();
-    }
   };
 
   const handleMouseLeave = () => {
@@ -70,14 +65,9 @@ const RoleSelector = ({ onSelectRole, onContinue, selectedRole }) => {
               onMouseLeave={handleMouseLeave}
             >
               <div className="role-icon-wrapper">
-                <Lottie
-                  lottieRef={(ref) => {
-                    if (ref) lottieRefs.current[role.value] = ref;
-                  }}
+                <RoleIcon
                   animationData={ICON_MAP[role.iconFile]}
-                  loop={false}
-                  autoplay={false}
-                  style={{ width: '100%', height: '100%' }}
+                  play={hoveredRole === role.value || selectedRole === role.value}
                 />
               </div>
               <h3 className="role-title">{t(`roleSelector.roles.${roleKey}.label`)}</h3>
