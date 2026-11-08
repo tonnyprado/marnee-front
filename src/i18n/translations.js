@@ -219,6 +219,181 @@ export const translations = {
         influencer: "Tell us about your personal brand",
         smallBusiness: "Tell us about your business",
       },
+      questions: {
+        businessDescription: {
+          question: "How would you describe your business in one sentence?",
+          placeholder: "E.g: I help tech companies scale their social media presence",
+        },
+        websiteUrl: {
+          question: "Do you have a website?",
+          placeholder: "https://...",
+        },
+        mainPriority: {
+          question: "What is your main priority right now?",
+          options: {
+            getting_clients: "Getting more clients",
+            building_awareness: "Building awareness/brand",
+            validating_idea: "Validating my business idea",
+          },
+        },
+        numberOfClients: {
+          question: "How many clients do you currently manage?",
+          placeholder: "E.g: 5",
+        },
+        agencySpecialization: {
+          question: "What industry or type of client do you specialize in?",
+          placeholder: "E.g: Fashion e-commerce, B2B SaaS, local restaurants...",
+        },
+        agencyTeamSize: {
+          question: "How many people are on your team?",
+          placeholder: "E.g: 3",
+        },
+        agencyMainChallenge: {
+          question: "What is your main challenge?",
+          options: {
+            client_acquisition: "Getting new clients",
+            content_production: "Producing quality content",
+            team_management: "Managing the team",
+            scaling_operations: "Scaling operations",
+          },
+        },
+        numberOfBrands: {
+          question: "How many brands or projects do you manage?",
+          placeholder: "E.g: 3",
+        },
+        cmPlatformExpertise: {
+          question: "Which platforms do you have the most experience with?",
+          options: {
+            instagram: "Instagram",
+            facebook: "Facebook",
+            tiktok: "TikTok",
+            twitter: "Twitter/X",
+            linkedin: "LinkedIn",
+            youtube: "YouTube",
+          },
+        },
+        cmMainResponsibility: {
+          question: "What is your main responsibility?",
+          options: {
+            content_creation: "Content creation",
+            community_engagement: "Community engagement",
+            social_media_strategy: "Social media strategy",
+            all_of_above: "All of the above",
+          },
+        },
+        cmContentVolume: {
+          question: "How much content do you produce weekly?",
+          options: {
+            "1-10_per_week": "1-10 posts",
+            "11-30_per_week": "11-30 posts",
+            "31-50_per_week": "31-50 posts",
+            "50+_per_week": "More than 50 posts",
+          },
+        },
+        contentCreationExperience: {
+          question: "What experience do you have creating content?",
+          placeholder: "E.g: 3 years editing videos, basic photography, Canva design...",
+        },
+        influencerNiche: {
+          question: "What is your main niche?",
+          placeholder: "E.g: Fitness and nutrition for women 25-35, Personal finance...",
+        },
+        influencerFollowerCount: {
+          question: "How many followers do you have approximately?",
+          options: {
+            under_1k: "Less than 1K",
+            "1k-10k": "1K - 10K",
+            "10k-100k": "10K - 100K",
+            "100k-500k": "100K - 500K",
+            "500k+": "More than 500K",
+          },
+        },
+        influencerMainPlatform: {
+          question: "What is your main platform?",
+          options: {
+            instagram: "Instagram",
+            tiktok: "TikTok",
+            youtube: "YouTube",
+            twitter: "Twitter/X",
+            linkedin: "LinkedIn",
+          },
+        },
+        influencerMonetizationGoal: {
+          question: "How do you want to monetize your personal brand?",
+          options: {
+            brand_deals: "Brand deals",
+            own_products: "Own products",
+            affiliate_marketing: "Affiliate marketing",
+            courses_coaching: "Courses/Coaching",
+            multiple_streams: "Multiple income streams",
+          },
+        },
+        influencerContentType: {
+          question: "What type of content do you mainly create?",
+          options: {
+            educational: "Educational",
+            entertainment: "Entertainment",
+            lifestyle: "Lifestyle",
+            professional: "Professional/Business",
+            mixed: "Mixed",
+          },
+        },
+        businessType: {
+          question: "What type of business do you have?",
+          placeholder: "E.g: Mexican restaurant, Online clothing store, Dental office...",
+        },
+        businessEmployees: {
+          question: "How many employees do you have?",
+          options: {
+            solo: "Just me",
+            "2-5": "2-5 people",
+            "6-10": "6-10 people",
+            "11-20": "11-20 people",
+            "20+": "More than 20 people",
+          },
+        },
+        hasPhysicalLocation: {
+          question: "Do you have a physical location?",
+        },
+        businessMarketingExperience: {
+          question: "What experience do you have with digital marketing?",
+          options: {
+            none: "None, I'm just starting",
+            beginner: "Beginner (I've tried a few things)",
+            intermediate: "Intermediate (I have some active campaigns)",
+            advanced: "Advanced (I manage digital marketing well)",
+          },
+        },
+        businessMarketingBudget: {
+          question: "What is your monthly marketing budget?",
+          options: {
+            under_500: "Less than $500 USD",
+            "500-2000": "$500 - $2,000 USD",
+            "2000-5000": "$2,000 - $5,000 USD",
+            "5000+": "More than $5,000 USD",
+          },
+        },
+        idealCustomer: {
+          question: "Who is your ideal customer?",
+          placeholders: {
+            agency: "E.g: Tech startup founders with 50K-500K in funding...",
+            influencer: "E.g: Women 25-35 interested in fitness...",
+            small_business: "E.g: Families with children in the north part of the city...",
+          },
+        },
+        currentClientAcquisition: {
+          question: "How do you currently acquire clients?",
+          placeholder: "E.g: Referrals, social media, Facebook ads...",
+        },
+        differentiator: {
+          question: "What makes you different from your competition?",
+          placeholder: "E.g: 24/7 personalized attention, unique 3-step process...",
+        },
+        promisedResult: {
+          question: "What result do you promise to your clients/audience?",
+          placeholder: "E.g: Double their sales in 90 days, Lose 10kg in 3 months...",
+        },
+      },
     },
     presentation: {
       nav: {
@@ -595,6 +770,181 @@ export const translations = {
         influencer: "Cuéntanos sobre tu marca personal",
         smallBusiness: "Cuéntanos sobre tu negocio",
       },
+      questions: {
+        businessDescription: {
+          question: "¿Cómo describirías tu negocio en una frase?",
+          placeholder: "Ej: Ayudo a empresas tech a escalar su presencia en redes sociales",
+        },
+        websiteUrl: {
+          question: "¿Tienes un sitio web?",
+          placeholder: "https://...",
+        },
+        mainPriority: {
+          question: "¿Cuál es tu prioridad principal ahora mismo?",
+          options: {
+            getting_clients: "Conseguir más clientes",
+            building_awareness: "Construir awareness/marca",
+            validating_idea: "Validar mi idea de negocio",
+          },
+        },
+        numberOfClients: {
+          question: "¿Cuántos clientes manejas actualmente?",
+          placeholder: "Ej: 5",
+        },
+        agencySpecialization: {
+          question: "¿En qué industria o tipo de cliente te especializas?",
+          placeholder: "Ej: E-commerce de moda, SaaS B2B, restaurantes locales...",
+        },
+        agencyTeamSize: {
+          question: "¿Cuántas personas conforman tu equipo?",
+          placeholder: "Ej: 3",
+        },
+        agencyMainChallenge: {
+          question: "¿Cuál es tu principal desafío?",
+          options: {
+            client_acquisition: "Conseguir nuevos clientes",
+            content_production: "Producir contenido de calidad",
+            team_management: "Gestionar al equipo",
+            scaling_operations: "Escalar las operaciones",
+          },
+        },
+        numberOfBrands: {
+          question: "¿Cuántas marcas o proyectos manejas?",
+          placeholder: "Ej: 3",
+        },
+        cmPlatformExpertise: {
+          question: "¿En qué plataformas tienes más experiencia?",
+          options: {
+            instagram: "Instagram",
+            facebook: "Facebook",
+            tiktok: "TikTok",
+            twitter: "Twitter/X",
+            linkedin: "LinkedIn",
+            youtube: "YouTube",
+          },
+        },
+        cmMainResponsibility: {
+          question: "¿Cuál es tu responsabilidad principal?",
+          options: {
+            content_creation: "Creación de contenido",
+            community_engagement: "Engagement con la comunidad",
+            social_media_strategy: "Estrategia de redes sociales",
+            all_of_above: "Todas las anteriores",
+          },
+        },
+        cmContentVolume: {
+          question: "¿Cuánto contenido produces semanalmente?",
+          options: {
+            "1-10_per_week": "1-10 publicaciones",
+            "11-30_per_week": "11-30 publicaciones",
+            "31-50_per_week": "31-50 publicaciones",
+            "50+_per_week": "Más de 50 publicaciones",
+          },
+        },
+        contentCreationExperience: {
+          question: "¿Qué experiencia tienes creando contenido?",
+          placeholder: "Ej: 3 años editando videos, fotografía básica, diseño en Canva...",
+        },
+        influencerNiche: {
+          question: "¿Cuál es tu nicho principal?",
+          placeholder: "Ej: Fitness y nutrición para mujeres 25-35, Finanzas personales...",
+        },
+        influencerFollowerCount: {
+          question: "¿Cuántos seguidores tienes aproximadamente?",
+          options: {
+            under_1k: "Menos de 1K",
+            "1k-10k": "1K - 10K",
+            "10k-100k": "10K - 100K",
+            "100k-500k": "100K - 500K",
+            "500k+": "Más de 500K",
+          },
+        },
+        influencerMainPlatform: {
+          question: "¿Cuál es tu plataforma principal?",
+          options: {
+            instagram: "Instagram",
+            tiktok: "TikTok",
+            youtube: "YouTube",
+            twitter: "Twitter/X",
+            linkedin: "LinkedIn",
+          },
+        },
+        influencerMonetizationGoal: {
+          question: "¿Cómo quieres monetizar tu marca personal?",
+          options: {
+            brand_deals: "Deals con marcas",
+            own_products: "Productos propios",
+            affiliate_marketing: "Marketing de afiliados",
+            courses_coaching: "Cursos/Coaching",
+            multiple_streams: "Múltiples fuentes de ingreso",
+          },
+        },
+        influencerContentType: {
+          question: "¿Qué tipo de contenido creas principalmente?",
+          options: {
+            educational: "Educativo",
+            entertainment: "Entretenimiento",
+            lifestyle: "Lifestyle",
+            professional: "Profesional/Negocios",
+            mixed: "Mixto",
+          },
+        },
+        businessType: {
+          question: "¿Qué tipo de negocio tienes?",
+          placeholder: "Ej: Restaurante mexicano, Tienda de ropa online, Consultorio dental...",
+        },
+        businessEmployees: {
+          question: "¿Cuántos empleados tienes?",
+          options: {
+            solo: "Solo yo",
+            "2-5": "2-5 personas",
+            "6-10": "6-10 personas",
+            "11-20": "11-20 personas",
+            "20+": "Más de 20 personas",
+          },
+        },
+        hasPhysicalLocation: {
+          question: "¿Tienes ubicación física?",
+        },
+        businessMarketingExperience: {
+          question: "¿Qué experiencia tienes con marketing digital?",
+          options: {
+            none: "Ninguna, estoy empezando",
+            beginner: "Principiante (he probado algunas cosas)",
+            intermediate: "Intermedio (tengo algunas campañas activas)",
+            advanced: "Avanzado (manejo bien el marketing digital)",
+          },
+        },
+        businessMarketingBudget: {
+          question: "¿Cuál es tu presupuesto mensual para marketing?",
+          options: {
+            under_500: "Menos de $500 USD",
+            "500-2000": "$500 - $2,000 USD",
+            "2000-5000": "$2,000 - $5,000 USD",
+            "5000+": "Más de $5,000 USD",
+          },
+        },
+        idealCustomer: {
+          question: "¿Quién es tu cliente ideal?",
+          placeholders: {
+            agency: "Ej: Fundadores de startups tech con 50K-500K en funding...",
+            influencer: "Ej: Mujeres 25-35 interesadas en fitness...",
+            small_business: "Ej: Familias con niños en la zona norte de la ciudad...",
+          },
+        },
+        currentClientAcquisition: {
+          question: "¿Cómo consigues clientes actualmente?",
+          placeholder: "Ej: Referidos, redes sociales, anuncios en Facebook...",
+        },
+        differentiator: {
+          question: "¿Qué te hace diferente de tu competencia?",
+          placeholder: "Ej: Atención personalizada 24/7, proceso único de 3 pasos...",
+        },
+        promisedResult: {
+          question: "¿Qué resultado prometes a tus clientes/audiencia?",
+          placeholder: "Ej: Duplicar sus ventas en 90 días, Perder 10kg en 3 meses...",
+        },
+      },
     },
     presentation: {
       nav: {
@@ -969,6 +1319,181 @@ export const translations = {
         communityManager: "CM으로서의 업무에 대해 알려주세요",
         influencer: "귀하의 개인 브랜드에 대해 알려주세요",
         smallBusiness: "귀하의 비즈니스에 대해 알려주세요",
+      },
+      questions: {
+        businessDescription: {
+          question: "귀하의 비즈니스를 한 문장으로 어떻게 설명하시겠습니까?",
+          placeholder: "예: 기술 회사가 소셜 미디어 존재감을 확장하도록 돕습니다",
+        },
+        websiteUrl: {
+          question: "웹사이트가 있으십니까?",
+          placeholder: "https://...",
+        },
+        mainPriority: {
+          question: "현재 가장 중요한 우선순위는 무엇입니까?",
+          options: {
+            getting_clients: "더 많은 고객 확보",
+            building_awareness: "인지도/브랜드 구축",
+            validating_idea: "비즈니스 아이디어 검증",
+          },
+        },
+        numberOfClients: {
+          question: "현재 몇 명의 고객을 관리하고 있습니까?",
+          placeholder: "예: 5",
+        },
+        agencySpecialization: {
+          question: "어떤 산업이나 고객 유형을 전문으로 하십니까?",
+          placeholder: "예: 패션 전자상거래, B2B SaaS, 지역 레스토랑...",
+        },
+        agencyTeamSize: {
+          question: "팀에 몇 명이 있습니까?",
+          placeholder: "예: 3",
+        },
+        agencyMainChallenge: {
+          question: "가장 큰 과제는 무엇입니까?",
+          options: {
+            client_acquisition: "신규 고객 확보",
+            content_production: "양질의 콘텐츠 제작",
+            team_management: "팀 관리",
+            scaling_operations: "운영 확장",
+          },
+        },
+        numberOfBrands: {
+          question: "몇 개의 브랜드 또는 프로젝트를 관리하고 있습니까?",
+          placeholder: "예: 3",
+        },
+        cmPlatformExpertise: {
+          question: "어떤 플랫폼에서 가장 많은 경험이 있습니까?",
+          options: {
+            instagram: "Instagram",
+            facebook: "Facebook",
+            tiktok: "TikTok",
+            twitter: "Twitter/X",
+            linkedin: "LinkedIn",
+            youtube: "YouTube",
+          },
+        },
+        cmMainResponsibility: {
+          question: "주요 책임은 무엇입니까?",
+          options: {
+            content_creation: "콘텐츠 제작",
+            community_engagement: "커뮤니티 참여",
+            social_media_strategy: "소셜 미디어 전략",
+            all_of_above: "위의 모든 것",
+          },
+        },
+        cmContentVolume: {
+          question: "매주 얼마나 많은 콘텐츠를 제작합니까?",
+          options: {
+            "1-10_per_week": "1-10개 게시물",
+            "11-30_per_week": "11-30개 게시물",
+            "31-50_per_week": "31-50개 게시물",
+            "50+_per_week": "50개 이상 게시물",
+          },
+        },
+        contentCreationExperience: {
+          question: "콘텐츠 제작 경험이 어떻게 되십니까?",
+          placeholder: "예: 3년간 비디오 편집, 기본 사진 촬영, Canva 디자인...",
+        },
+        influencerNiche: {
+          question: "주요 틈새 시장은 무엇입니까?",
+          placeholder: "예: 25-35세 여성을 위한 피트니스 및 영양, 개인 금융...",
+        },
+        influencerFollowerCount: {
+          question: "대략 몇 명의 팔로워가 있습니까?",
+          options: {
+            under_1k: "1천 미만",
+            "1k-10k": "1천 - 1만",
+            "10k-100k": "1만 - 10만",
+            "100k-500k": "10만 - 50만",
+            "500k+": "50만 이상",
+          },
+        },
+        influencerMainPlatform: {
+          question: "주요 플랫폼은 무엇입니까?",
+          options: {
+            instagram: "Instagram",
+            tiktok: "TikTok",
+            youtube: "YouTube",
+            twitter: "Twitter/X",
+            linkedin: "LinkedIn",
+          },
+        },
+        influencerMonetizationGoal: {
+          question: "개인 브랜드를 어떻게 수익화하고 싶으십니까?",
+          options: {
+            brand_deals: "브랜드 협찬",
+            own_products: "자체 제품",
+            affiliate_marketing: "제휴 마케팅",
+            courses_coaching: "강좌/코칭",
+            multiple_streams: "다양한 수입원",
+          },
+        },
+        influencerContentType: {
+          question: "주로 어떤 유형의 콘텐츠를 제작합니까?",
+          options: {
+            educational: "교육적",
+            entertainment: "엔터테인먼트",
+            lifestyle: "라이프스타일",
+            professional: "전문/비즈니스",
+            mixed: "혼합",
+          },
+        },
+        businessType: {
+          question: "어떤 유형의 비즈니스를 운영하십니까?",
+          placeholder: "예: 멕시코 레스토랑, 온라인 의류 매장, 치과 클리닉...",
+        },
+        businessEmployees: {
+          question: "몇 명의 직원이 있습니까?",
+          options: {
+            solo: "나 혼자",
+            "2-5": "2-5명",
+            "6-10": "6-10명",
+            "11-20": "11-20명",
+            "20+": "20명 이상",
+          },
+        },
+        hasPhysicalLocation: {
+          question: "실제 위치가 있습니까?",
+        },
+        businessMarketingExperience: {
+          question: "디지털 마케팅 경험이 어떻게 되십니까?",
+          options: {
+            none: "없음, 이제 시작합니다",
+            beginner: "초급 (몇 가지 시도해 봤습니다)",
+            intermediate: "중급 (일부 활성 캠페인이 있습니다)",
+            advanced: "고급 (디지털 마케팅을 잘 관리합니다)",
+          },
+        },
+        businessMarketingBudget: {
+          question: "월간 마케팅 예산은 얼마입니까?",
+          options: {
+            under_500: "$500 USD 미만",
+            "500-2000": "$500 - $2,000 USD",
+            "2000-5000": "$2,000 - $5,000 USD",
+            "5000+": "$5,000 USD 이상",
+          },
+        },
+        idealCustomer: {
+          question: "이상적인 고객은 누구입니까?",
+          placeholders: {
+            agency: "예: 5만-50만 달러 자금을 확보한 기술 스타트업 창업자...",
+            influencer: "예: 피트니스에 관심 있는 25-35세 여성...",
+            small_business: "예: 도시 북부 지역에 있는 어린이를 둔 가족...",
+          },
+        },
+        currentClientAcquisition: {
+          question: "현재 어떻게 고객을 확보합니까?",
+          placeholder: "예: 추천, 소셜 미디어, Facebook 광고...",
+        },
+        differentiator: {
+          question: "경쟁사와 차별화되는 점은 무엇입니까?",
+          placeholder: "예: 연중무휴 맞춤형 서비스, 독특한 3단계 프로세스...",
+        },
+        promisedResult: {
+          question: "고객/청중에게 어떤 결과를 약속합니까?",
+          placeholder: "예: 90일 내에 매출 두 배, 3개월 내에 10kg 감량...",
+        },
       },
     },
     presentation: {
