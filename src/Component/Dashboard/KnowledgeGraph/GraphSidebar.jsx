@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useMemo } from 'react';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronUp } from '@animateicons/react/lucide';
 import { NODE_COLORS, NODE_SHAPES, CATEGORY_LABELS, LEGEND_CATEGORIES } from '../../../constants/graphConstants';
 
 // Iconos de formas por categoría

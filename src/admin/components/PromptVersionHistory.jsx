@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Clock, User, RotateCcw, Eye, GitBranch } from 'lucide-react';
+import { Clock, User, RotateCcw, Eye, GitBranch } from '@animateicons/react/lucide';
 import { getPromptVersions, rollbackToVersion, getVersionContent } from '../../services/promptsApi';
 
 const CHANGE_TYPE_ICONS = {

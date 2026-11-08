@@ -1,5 +1,5 @@
 import React from "react";
-import { Shield, Calendar } from "lucide-react";
+import { Shield, Calendar } from '@animateicons/react/lucide';
 import PageTransition from "../../Component/PageTransition";
 import SEO from "../../components/SEO";
 

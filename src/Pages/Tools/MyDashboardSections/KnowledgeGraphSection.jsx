@@ -5,7 +5,7 @@
 
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Brain, RefreshCw, ZoomIn, ZoomOut, Maximize2, Minimize2, RotateCcw } from 'lucide-react';
+import { Brain, RefreshCw, ZoomIn, ZoomOut, Maximize2, Minimize2, RotateCcw } from '@animateicons/react/lucide';
 import { useKnowledgeGraph } from '../../../hooks/useKnowledgeGraph';
 import { ForceGraph, GraphSidebar, EmptyGraphState, NodeTooltip } from '../../../Component/Dashboard/KnowledgeGraph';
 

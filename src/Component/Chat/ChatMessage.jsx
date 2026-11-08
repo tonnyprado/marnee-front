@@ -7,7 +7,7 @@
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Copy, Check, Star } from 'lucide-react';
+import { Copy, Check, Star } from '@animateicons/react/lucide';
 import { aiMarkdownComponents, userMarkdownComponents } from './ChatMarkdownComponents';
 
 // Animation variants for messages

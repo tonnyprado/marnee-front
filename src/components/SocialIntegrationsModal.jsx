@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, CheckCircle, Loader2, Camera, Video, BarChart3, TrendingUp, Building2, AlertCircle, Music } from 'lucide-react';
+import { X, CheckCircle, Loader2, Camera, Video, BarChart3, TrendingUp, Building2, AlertCircle, Music } from '@animateicons/react/lucide';
 import { getInstagramStatus, connectInstagram, disconnectInstagram } from '../services/instagramApi';
 import { getGoogleStatus, connectGoogle, disconnectGoogle, disconnectGoogleService, addGoogleService } from '../services/googleApi';
 import { getTikTokStatus, connectTikTok, disconnectTikTok } from '../services/tiktokApi';

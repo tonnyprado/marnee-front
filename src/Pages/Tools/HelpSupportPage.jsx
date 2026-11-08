@@ -11,7 +11,7 @@ import {
   ChevronUp,
   Send,
   ExternalLink
-} from "lucide-react";
+} from '@animateicons/react/lucide';
 
 export default function HelpSupportPage() {
   const [openFaq, setOpenFaq] = useState(null);

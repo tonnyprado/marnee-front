@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Sparkles } from "lucide-react";
+import { ArrowLeft, Sparkles } from '@animateicons/react/lucide';
 import { useLanguage } from "../../context/LanguageContext";
 
 export default function WelcomeScreen({ title, onStart, onBack }) {

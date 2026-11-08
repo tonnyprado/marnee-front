@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Image, FileText, File } from 'lucide-react';
+import { X, Image, FileText, File } from '@animateicons/react/lucide';
 
 function getFileIcon(type) {
   if (type.startsWith('image/')) return Image;

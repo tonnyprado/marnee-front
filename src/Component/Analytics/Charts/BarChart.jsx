@@ -5,7 +5,7 @@
  */
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { BarChart3 } from 'lucide-react';
+import { BarChart3 } from '@animateicons/react/lucide';
 
 export default function BarChart({
   data = [],

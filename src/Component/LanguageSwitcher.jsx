@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Languages } from "lucide-react";
+import { Languages } from '@animateicons/react/lucide';
 import { useLanguage } from "../context/LanguageContext";
 
 export default function LanguageSwitcher({ className = "" }) {

@@ -4,7 +4,7 @@
  * Muestra valor actual, valor predicho, timeline y confianza
  */
 import { motion } from 'framer-motion';
-import { TrendingUp, Sparkles, Calendar } from 'lucide-react';
+import { TrendingUp, Sparkles, Calendar } from '@animateicons/react/lucide';
 import { LineChart } from './Charts';
 
 export default function ForecastCard({

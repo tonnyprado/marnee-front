@@ -4,7 +4,7 @@
  * Generados por IA para mejorar performance
  */
 import { motion } from 'framer-motion';
-import { Lightbulb, Target, Clock, TrendingUp, Calendar, Hash } from 'lucide-react';
+import { Lightbulb, Target, Clock, TrendingUp, Calendar, Hash } from '@animateicons/react/lucide';
 
 export default function InsightCard({
   type = 'recommendation', // 'recommendation', 'insight', 'strategy'

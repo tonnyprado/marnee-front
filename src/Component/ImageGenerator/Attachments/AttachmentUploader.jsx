@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Image, FileText, AlertCircle } from 'lucide-react';
+import { Image, FileText, AlertCircle } from '@animateicons/react/lucide';
 
 /**
  * File uploader component with drag & drop support.

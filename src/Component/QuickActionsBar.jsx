@@ -16,7 +16,7 @@ import {
   ChevronDown,
   ChevronUp,
   Star,
-} from 'lucide-react';
+} from '@animateicons/react/lucide';
 import { useChatTheme, CHAT_THEMES } from '../context/ChatThemeContext';
 
 /**

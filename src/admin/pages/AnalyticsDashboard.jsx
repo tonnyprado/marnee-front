@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import {
   TrendingUp, Users, Calendar, MessageSquare, Eye, Activity
-} from 'lucide-react';
+} from '@animateicons/react/lucide';
 import {
   getAnalyticsOverview,
   getUserAnalytics,

@@ -1,5 +1,5 @@
 import React from "react";
-import { CreditCard, ArrowRight, CheckCircle, Edit3 } from "lucide-react";
+import { CreditCard, ArrowRight, CheckCircle, Edit3 } from '@animateicons/react/lucide';
 import PageTransition from "../../Component/PageTransition";
 
 export default function BillingPage() {

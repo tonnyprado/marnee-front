@@ -1,6 +1,6 @@
 // src/components/InstagramConnectionButton.jsx
 import React, { useState, useEffect } from 'react';
-import { CheckCircle2, Loader2, Link2 } from 'lucide-react';
+import { CheckCircle2, Loader2, Link2 } from '@animateicons/react/lucide';
 import { getInstagramStatus } from '../services/instagramApi';
 import SocialIntegrationsModal from './SocialIntegrationsModal';
 

@@ -18,7 +18,7 @@ import {
   ExternalLink,
   Shield,
   ChevronRight,
-} from "lucide-react";
+} from '@animateicons/react/lucide';
 import { getAuthSession, setAuthSession } from "../../services/api";
 import PageTransition from "../../Component/PageTransition";
 import { useLanguage } from "../../context/LanguageContext";

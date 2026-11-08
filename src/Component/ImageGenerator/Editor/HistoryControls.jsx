@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Undo, Redo } from 'lucide-react';
+import { Undo, Redo } from '@animateicons/react/lucide';
 
 /**
  * Undo/Redo controls for the editor.

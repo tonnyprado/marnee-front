@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Mail, Download, Trash2, Users } from 'lucide-react';
+import { Mail, Download, Trash2, Users } from '@animateicons/react/lucide';
 import { api } from '../../services/api';
 
 export default function WaitlistManagement() {

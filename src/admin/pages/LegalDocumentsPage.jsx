@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { FileText, Shield, Save, Eye, Calendar, AlertCircle } from 'lucide-react';
+import { FileText, Shield, Save, Eye, Calendar, AlertCircle } from '@animateicons/react/lucide';
 import AdminTransition from '../components/AdminTransition';
 
 export default function LegalDocumentsPage() {

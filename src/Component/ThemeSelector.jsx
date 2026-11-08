@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Palette, Volume2, VolumeX, X } from 'lucide-react';
+import { Palette, Volume2, VolumeX, X } from '@animateicons/react/lucide';
 import { useChatTheme, CHAT_THEMES } from '../context/ChatThemeContext';
 
 export default function ThemeSelector() {

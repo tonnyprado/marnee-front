@@ -15,7 +15,7 @@ import {
   Check,
   FileText,
   Clock
-} from 'lucide-react';
+} from '@animateicons/react/lucide';
 import {
   CONTENT_TYPE_COLORS,
   STATUS_COLORS,

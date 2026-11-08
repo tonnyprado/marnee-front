@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Star, Trash2, Copy, Check } from 'lucide-react';
+import { X, Star, Trash2, Copy, Check } from '@animateicons/react/lucide';
 import { api } from '../services/api';
 
 /**

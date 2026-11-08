@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Share2, Copy, Check, Link2, Lock, Globe } from 'lucide-react';
+import { X, Share2, Copy, Check, Link2, Lock, Globe } from '@animateicons/react/lucide';
 
 /**
  * ShareModal - Modal to generate and share conversation link

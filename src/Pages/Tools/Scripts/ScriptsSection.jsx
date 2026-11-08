@@ -8,7 +8,7 @@ import {
 } from "../../../constants/scriptConstants";
 import { CONTENT_TYPE_COLORS } from "../../../constants/calendarViewConstants";
 import ScriptModal from "./ScriptModal";
-import { FileText, Plus, Trash2, Link2, ExternalLink, Calendar } from "lucide-react";
+import { FileText, Plus, Trash2, Link2, ExternalLink, Calendar } from '@animateicons/react/lucide';
 
 export default function ScriptsSection() {
   const { founderId } = useAuth();

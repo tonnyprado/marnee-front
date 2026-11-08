@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { ZoomIn, ZoomOut, RotateCcw, Maximize2 } from 'lucide-react';
+import { ZoomIn, ZoomOut, RotateCcw, Maximize2 } from '@animateicons/react/lucide';
 
 export default function GraphControls({
   graphRef,

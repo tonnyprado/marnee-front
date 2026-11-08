@@ -1,4 +1,4 @@
-import { Monitor, X } from 'lucide-react';
+import { Monitor, X } from '@animateicons/react/lucide';
 import { formatDistanceToNow } from 'date-fns';
 
 export default function SessionCard({ session, onRevoke, showUser = true }) {

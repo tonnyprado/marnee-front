@@ -1,6 +1,6 @@
 // src/admin/pages/IntegrationsPage.jsx
 import React, { useState, useEffect } from 'react';
-import { Plug, AlertTriangle, CheckCircle2, Clock } from 'lucide-react';
+import { Plug, AlertTriangle, CheckCircle2, Clock } from '@animateicons/react/lucide';
 import MetaMaintenanceCard from '../components/MetaMaintenanceCard';
 import { getIntegrationsOverview } from '../../services/adminIntegrationsApi';
 

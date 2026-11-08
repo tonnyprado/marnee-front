@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { api } from '../../services/api';
-import { Send, Loader2, MessageCircle, Search, X, Menu, Mic, MicOff, Copy, Check, Star, Sparkles } from 'lucide-react';
+import { Send, Loader2, MessageCircle, Search, X, Menu, Mic, MicOff, Copy, Check, Star, Sparkles } from '@animateicons/react/lucide';
 import { motion, AnimatePresence } from 'framer-motion';
 import PageTransition from '../../Component/PageTransition';
 import ConversationSidebar from '../../Component/ConversationSidebar';

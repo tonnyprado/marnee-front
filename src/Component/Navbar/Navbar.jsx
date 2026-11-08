@@ -4,7 +4,7 @@
  */
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from '@animateicons/react/lucide';
 import { getAuthSession } from "../../services/api";
 import { useLanguage } from "../../context/LanguageContext";
 import NavItem from "./NavItem";

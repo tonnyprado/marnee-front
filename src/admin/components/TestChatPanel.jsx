@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Send, Trash2, Clock, Hash } from 'lucide-react';
+import { Send, Trash2, Clock, Hash } from '@animateicons/react/lucide';
 import { testChat } from '../../services/promptsApi';
 
 export default function TestChatPanel({ prompts = [] }) {

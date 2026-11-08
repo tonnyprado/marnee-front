@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Download, Brain, MessageSquare, Cpu, FileText } from 'lucide-react';
+import { Download, Brain, MessageSquare, Cpu, FileText } from '@animateicons/react/lucide';
 import PromptCategoryTree from '../components/PromptCategoryTree';
 import PromptEditor from '../components/PromptEditor';
 import PromptVersionHistory from '../components/PromptVersionHistory';

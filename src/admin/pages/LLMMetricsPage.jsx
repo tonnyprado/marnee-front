@@ -8,7 +8,7 @@ import {
   AlertCircle,
   Database,
   Activity,
-} from 'lucide-react';
+} from '@animateicons/react/lucide';
 import API from '../../config';
 import './LLMMetricsPage.css';
 

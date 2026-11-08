@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Users, CreditCard, Package, UserCheck } from 'lucide-react';
+import { Users, CreditCard, Package, UserCheck } from '@animateicons/react/lucide';
 import { getDashboardStats, getAnalyticsOverview } from '../../services/adminApi';
 import OpenAICreditsCard from '../components/OpenAICreditsCard';
 import DataForSEOCreditsCard from '../components/DataForSEOCreditsCard';

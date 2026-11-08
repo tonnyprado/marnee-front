@@ -5,7 +5,7 @@
  */
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { PieChart as PieIcon } from 'lucide-react';
+import { PieChart as PieIcon } from '@animateicons/react/lucide';
 
 export default function PieChart({
   data = [],

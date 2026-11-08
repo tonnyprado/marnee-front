@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Mic, MicOff, Upload, FileText, X, CheckCircle } from "lucide-react";
+import { Mic, MicOff, Upload, FileText, X, CheckCircle } from '@animateicons/react/lucide';
 import { useDropzone } from "react-dropzone";
 
 // Animation variants for question transitions

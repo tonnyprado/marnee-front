@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, FileText, Edit3, Clock, Monitor, Film, Tag, Calendar, Link2, Unlink, Loader2 } from "lucide-react";
+import { X, FileText, Edit3, Clock, Monitor, Film, Tag, Calendar, Link2, Unlink, Loader2 } from '@animateicons/react/lucide';
 import { api } from "../../../services/api";
 import CustomSelect from "../../../Component/ui/CustomSelect";
 import {

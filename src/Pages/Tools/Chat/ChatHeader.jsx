@@ -9,7 +9,7 @@
  */
 
 import React from 'react';
-import { MessageCircle, Search, X, Menu, Sparkles } from 'lucide-react';
+import { MessageCircle, Search, X, Menu, Sparkles } from '@animateicons/react/lucide';
 import { motion } from 'framer-motion';
 
 export default function ChatHeader({

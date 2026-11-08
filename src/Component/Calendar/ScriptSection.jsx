@@ -7,7 +7,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { api } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
-import { FileText, Link2, Unlink, Search, Loader2, Plus, Sparkles, PenLine, ChevronDown } from 'lucide-react';
+import { FileText, Link2, Unlink, Search, Loader2, Plus, Sparkles, PenLine, ChevronDown } from '@animateicons/react/lucide';
 import ScriptModal from '../../Pages/Tools/Scripts/ScriptModal';
 
 export default function ScriptSection({ form, onChange, postId }) {

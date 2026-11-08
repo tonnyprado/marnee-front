@@ -6,7 +6,7 @@ import { useMarnee } from "../../context/MarneeContext";
 import marneeMascot from "../../assets/mascot/marnee12.png";
 import ChatDebugger from "../../Component/ChatDebugger";
 import LanguageSwitcher from "../../Component/LanguageSwitcher";
-import { Search, Send, Calendar, Loader2 } from "lucide-react";
+import { Search, Send, Calendar, Loader2 } from '@animateicons/react/lucide';
 import { motion, AnimatePresence } from "framer-motion";
 
 // Custom markdown components with Tailwind styles for AI messages

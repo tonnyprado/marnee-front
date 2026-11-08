@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Search, Edit, Trash2, Key, Shield, Lock, UserPlus } from 'lucide-react';
+import { Search, Edit, Trash2, Key, Shield, Lock, UserPlus } from '@animateicons/react/lucide';
 import {
   getUsers,
   searchUsers,

@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Eye, Pencil } from 'lucide-react';
+import { X, Eye, Pencil } from '@animateicons/react/lucide';
 
 // Preview mode components
 import ZoomablePreview from './Preview/ZoomablePreview';

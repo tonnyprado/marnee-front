@@ -5,7 +5,7 @@
  */
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { TrendingUp } from 'lucide-react';
+import { TrendingUp } from '@animateicons/react/lucide';
 
 export default function LineChart({
   data = [],

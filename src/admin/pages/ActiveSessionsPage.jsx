@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from '@animateicons/react/lucide';
 import { getAllActiveSessions, revokeSession, revokeAllUserSessions } from '../../services/adminSecurityApi';
 import SessionCard from '../components/SessionCard';
 

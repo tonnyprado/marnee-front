@@ -10,7 +10,7 @@ import {
   Music,
   ArrowRight,
   Sparkles,
-} from "lucide-react";
+} from '@animateicons/react/lucide';
 import { useLanguage } from "../../context/LanguageContext";
 import {
   getInstagramStatus,

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, FileDown, FileText, FileType, Download } from 'lucide-react';
+import { X, FileDown, FileText, FileType, Download } from '@animateicons/react/lucide';
 import jsPDF from 'jspdf';
 
 /**

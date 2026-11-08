@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Download, Filter, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Download, Filter, ChevronLeft, ChevronRight } from '@animateicons/react/lucide';
 import { getAuditLogs, exportAuditLogs } from '../../services/adminSecurityApi';
 import { formatDistanceToNow } from 'date-fns';
 

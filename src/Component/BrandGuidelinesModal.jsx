@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Upload, FileText, CheckCircle, Loader2, AlertCircle, Palette } from 'lucide-react';
+import { X, Upload, FileText, CheckCircle, Loader2, AlertCircle, Palette } from '@animateicons/react/lucide';
 import { useDropzone } from 'react-dropzone';
 import { api } from '../services/api';
 

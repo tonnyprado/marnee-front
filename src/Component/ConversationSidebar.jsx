@@ -1,7 +1,7 @@
 import React, { useState, useCallback, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageCircle, Plus, X, Trash2, PanelLeftClose, PanelLeft, Sparkles, Palette } from 'lucide-react';
+import { MessageCircle, Plus, X, Trash2, PanelLeftClose, PanelLeft, Sparkles, Palette } from '@animateicons/react/lucide';
 import BrandGuidelinesModal from './BrandGuidelinesModal';
 import { api } from '../services/api';
 
