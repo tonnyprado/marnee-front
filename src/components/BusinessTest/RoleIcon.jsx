@@ -22,9 +22,15 @@ const RoleIcon = ({ animationData, play }) => {
         animationData: animationData,
       });
 
-      // Start at the last frame (fully visible state)
-      const totalFrames = animationRef.current.totalFrames;
-      animationRef.current.goToAndStop(totalFrames - 1, true);
+      console.log('[RoleIcon] Animation loaded, totalFrames:', animationRef.current.totalFrames);
+      console.log('[RoleIcon] Animation name:', animationData.nm);
+
+      // Wait for the animation to be ready, then show last frame
+      animationRef.current.addEventListener('DOMLoaded', () => {
+        const totalFrames = animationRef.current.totalFrames;
+        console.log('[RoleIcon] DOMLoaded, going to frame:', totalFrames - 1);
+        animationRef.current.goToAndStop(totalFrames - 1, true);
+      });
     } catch (error) {
       console.error('[RoleIcon] Error loading animation:', error);
     }
