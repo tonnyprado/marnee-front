@@ -5,28 +5,28 @@
 
 export const BUSINESS_ROLES = [
   {
-    value: 'MARKETING_AGENCY',
-    label: 'Agencia de Marketing',
-    description: 'Manejo múltiples clientes y campañas',
-    icon: '🏢',
+    value: 'INFLUENCER',
+    label: 'Influencer / Creador de Contenido',
+    description: 'Construyo mi marca personal',
+    iconFile: 'iconly-icon-export-1794115180.json',
   },
   {
     value: 'COMMUNITY_MANAGER',
     label: 'Community Manager',
     description: 'Gestiono redes sociales de varias marcas',
-    icon: '👥',
+    iconFile: 'iconly-icon-export-1794115263.json',
   },
   {
-    value: 'INFLUENCER',
-    label: 'Influencer / Creador de Contenido',
-    description: 'Construyo mi marca personal',
-    icon: '⭐',
+    value: 'MARKETING_AGENCY',
+    label: 'Agencia de Marketing',
+    description: 'Manejo múltiples clientes y campañas',
+    iconFile: 'iconly-icon-export-1794115324.json',
   },
   {
     value: 'SMALL_BUSINESS',
     label: 'Pequeño Negocio',
     description: 'Tengo un negocio local o emprendimiento',
-    icon: '🏪',
+    iconFile: 'iconly-icon-export-1794115391.json',
   },
 ];
 
