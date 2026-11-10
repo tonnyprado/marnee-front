@@ -13,33 +13,24 @@ const RoleIcon = ({ animationData, play }) => {
     if (!containerRef.current || !animationData) return;
 
     try {
-      // Initialize Lottie animation
+      // Initialize Lottie animation with initial segment set to last frame
+      const totalFrames = animationData.op || 90; // Use op (out point) from animation data
+
       animationRef.current = lottie.loadAnimation({
         container: containerRef.current,
         renderer: 'svg',
         loop: false,
         autoplay: false,
         animationData: animationData,
+        initialSegment: [totalFrames - 1, totalFrames], // Start at last frame
       });
 
-      console.log('[RoleIcon] Animation loaded, totalFrames:', animationRef.current.totalFrames);
-      console.log('[RoleIcon] Animation name:', animationData.nm);
+      console.log('[RoleIcon] Animation loaded:', animationData.nm);
+      console.log('[RoleIcon] Initial segment set to:', [totalFrames - 1, totalFrames]);
 
-      // Use data_ready event which fires when animation is ready to be manipulated
-      animationRef.current.addEventListener('data_ready', () => {
-        const totalFrames = animationRef.current.totalFrames;
-        console.log('[RoleIcon] data_ready, going to frame:', totalFrames - 1);
-        animationRef.current.goToAndStop(totalFrames - 1, true);
-      });
-
-      // Also try immediately in case the event already fired
-      setTimeout(() => {
-        if (animationRef.current) {
-          const totalFrames = animationRef.current.totalFrames;
-          console.log('[RoleIcon] setTimeout fallback, going to frame:', totalFrames - 1);
-          animationRef.current.goToAndStop(totalFrames - 1, true);
-        }
-      }, 100);
+      // Force render at last frame
+      animationRef.current.goToAndStop(totalFrames - 1, true);
+      console.log('[RoleIcon] Forced to frame:', totalFrames - 1);
     } catch (error) {
       console.error('[RoleIcon] Error loading animation:', error);
     }
