@@ -25,12 +25,21 @@ const RoleIcon = ({ animationData, play }) => {
       console.log('[RoleIcon] Animation loaded, totalFrames:', animationRef.current.totalFrames);
       console.log('[RoleIcon] Animation name:', animationData.nm);
 
-      // Wait for the animation to be ready, then show last frame
-      animationRef.current.addEventListener('DOMLoaded', () => {
+      // Use data_ready event which fires when animation is ready to be manipulated
+      animationRef.current.addEventListener('data_ready', () => {
         const totalFrames = animationRef.current.totalFrames;
-        console.log('[RoleIcon] DOMLoaded, going to frame:', totalFrames - 1);
+        console.log('[RoleIcon] data_ready, going to frame:', totalFrames - 1);
         animationRef.current.goToAndStop(totalFrames - 1, true);
       });
+
+      // Also try immediately in case the event already fired
+      setTimeout(() => {
+        if (animationRef.current) {
+          const totalFrames = animationRef.current.totalFrames;
+          console.log('[RoleIcon] setTimeout fallback, going to frame:', totalFrames - 1);
+          animationRef.current.goToAndStop(totalFrames - 1, true);
+        }
+      }, 100);
     } catch (error) {
       console.error('[RoleIcon] Error loading animation:', error);
     }
