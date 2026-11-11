@@ -7,18 +7,18 @@ import { useLanguage } from '../../context/LanguageContext';
 import { BUSINESS_ROLES } from '../../config/businessTestQuestions';
 import './RoleSelector.css';
 import RoleIcon from './RoleIcon';
+import StaticIcon from './icons/StaticIcon';
 
-// Import all Lottie animation files
-import influencerIcon from '../../assets/iconly-icon-export-1794115180.json';
+// Import Lottie animation files (only for Community Manager and Marketing Agency)
 import communityManagerIcon from '../../assets/iconly-icon-export-1794115263.json';
 import marketingAgencyIcon from '../../assets/iconly-icon-export-1794115324.json';
-import smallBusinessIcon from '../../assets/iconly-icon-export-1794115391.json';
 
-const ICON_MAP = {
-  'iconly-icon-export-1794115180.json': influencerIcon,
-  'iconly-icon-export-1794115263.json': communityManagerIcon,
-  'iconly-icon-export-1794115324.json': marketingAgencyIcon,
-  'iconly-icon-export-1794115391.json': smallBusinessIcon,
+// Icon configuration following DIP (Dependency Inversion Principle)
+const ICON_CONFIG = {
+  'INFLUENCER': { type: 'static', iconType: 'starMedal' },
+  'COMMUNITY_MANAGER': { type: 'lottie', animationData: communityManagerIcon },
+  'MARKETING_AGENCY': { type: 'lottie', animationData: marketingAgencyIcon },
+  'SMALL_BUSINESS': { type: 'static', iconType: 'shoppingBag' },
 };
 
 const RoleSelector = ({ onSelectRole, onContinue, selectedRole }) => {
@@ -56,6 +56,9 @@ const RoleSelector = ({ onSelectRole, onContinue, selectedRole }) => {
       <div className="role-options-row">
         {BUSINESS_ROLES.map((role) => {
           const roleKey = getRoleKey(role.value);
+          const iconConfig = ICON_CONFIG[role.value];
+          const isHoveredOrSelected = hoveredRole === role.value || selectedRole === role.value;
+
           return (
             <div
               key={role.value}
@@ -65,10 +68,17 @@ const RoleSelector = ({ onSelectRole, onContinue, selectedRole }) => {
               onMouseLeave={handleMouseLeave}
             >
               <div className="role-icon-wrapper">
-                <RoleIcon
-                  animationData={ICON_MAP[role.iconFile]}
-                  play={hoveredRole === role.value || selectedRole === role.value}
-                />
+                {iconConfig.type === 'static' ? (
+                  <StaticIcon
+                    iconType={iconConfig.iconType}
+                    play={isHoveredOrSelected}
+                  />
+                ) : (
+                  <RoleIcon
+                    animationData={iconConfig.animationData}
+                    play={isHoveredOrSelected}
+                  />
+                )}
               </div>
               <h3 className="role-title">{t(`roleSelector.roles.${roleKey}.label`)}</h3>
               <p className="role-description">{t(`roleSelector.roles.${roleKey}.description`)}</p>
