@@ -13,24 +13,23 @@ const RoleIcon = ({ animationData, play }) => {
     if (!containerRef.current || !animationData) return;
 
     try {
-      // Initialize Lottie animation with initial segment set to last frame
-      const totalFrames = animationData.op || 90; // Use op (out point) from animation data
-
+      // Initialize Lottie animation
       animationRef.current = lottie.loadAnimation({
         container: containerRef.current,
         renderer: 'svg',
         loop: false,
-        autoplay: false,
+        autoplay: true, // Autoplay to ensure rendering
         animationData: animationData,
-        initialSegment: [totalFrames - 1, totalFrames], // Start at last frame
       });
 
       console.log('[RoleIcon] Animation loaded:', animationData.nm);
-      console.log('[RoleIcon] Initial segment set to:', [totalFrames - 1, totalFrames]);
 
-      // Force render at last frame
-      animationRef.current.goToAndStop(totalFrames - 1, true);
-      console.log('[RoleIcon] Forced to frame:', totalFrames - 1);
+      // Once animation completes, go to last frame and stop
+      animationRef.current.addEventListener('complete', () => {
+        console.log('[RoleIcon] Animation complete, staying at last frame');
+        const totalFrames = animationRef.current.totalFrames;
+        animationRef.current.goToAndStop(totalFrames - 1, true);
+      });
     } catch (error) {
       console.error('[RoleIcon] Error loading animation:', error);
     }
